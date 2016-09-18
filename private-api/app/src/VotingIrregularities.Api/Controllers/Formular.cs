@@ -27,6 +27,19 @@ namespace VotingIrregularities.Api.Controllers
         }
 
         /// <summary>
+        /// Se apeleaza aceast metoda cand observatorul salveaza informatiile legate de ora sosirii. ora plecarii, zona urbana, info despre presedintele BESV.
+        /// Aceste informatii sunt insotite de id-ul sectiei de votare si codul formularului.
+        /// </summary>
+        /// <param name="formular">Datele despre header-ul unui formular</param>
+        /// <returns></returns>
+        [HttpPost()]
+        public async Task Inregistreaza(ModelFormular formular)
+        {
+            // TODO[DH] se salveaza efectiv
+            await Task.Delay(0);
+        }
+
+        /// <summary>
         /// Se interogheaza ultima versiunea a formularului pentru observatori si se primeste definitia lui. 
         /// In definitia unui formular nu intra intrebarile standard (ora sosirii, etc). 
         /// Acestea se considera implicite pe fiecare formular.
