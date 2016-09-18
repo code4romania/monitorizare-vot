@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.PlatformAbstractions;
 using Swashbuckle.Swagger.Model;
+using VotingIrregularities.Api.Extensions;
 using VotingIrregularities.Domain;
 using VotingIrregularities.Api.Models;
 
@@ -59,6 +60,8 @@ namespace VotingIrregularities.Api
                     TermsOfService = "TBD",
                     Contact = new Contact {Email = "info@monitorizarevot.ro", Name = "Code for Romania", Url = "http://monitorizarevot.ro"}
                 });
+
+                options.OperationFilter<AddFileUploadParams>();
 
                 var path = PlatformServices.Default.Application.ApplicationBasePath +System.IO.Path.DirectorySeparatorChar+ "VotingIrregularities.Api.xml";
 
