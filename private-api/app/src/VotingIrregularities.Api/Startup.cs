@@ -9,6 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.PlatformAbstractions;
+using Swashbuckle.Swagger.Model;
 using VotingIrregularities.Domain;
 using VotingIrregularities.Api.Models;
 
@@ -46,6 +48,23 @@ namespace VotingIrregularities.Api
             services.AddMvc();
 
             services.AddSwaggerGen();
+
+            services.ConfigureSwaggerGen(options =>
+            {
+                options.SingleApiVersion(new Info
+                {
+                    Version = "v1",
+                    Title = "Monitorizare Vot - API privat",
+                    Description = "API care ofera suport aplicatiilor folosite de observatori.",
+                    TermsOfService = "TBD",
+                    Contact = new Contact {Email = "info@monitorizarevot.ro", Name = "Code for Romania", Url = "http://monitorizarevot.ro"}
+                });
+
+                var path = PlatformServices.Default.Application.ApplicationBasePath +System.IO.Path.DirectorySeparatorChar+ "VotingIrregularities.Api.xml";
+
+                if (System.IO.File.Exists(path))
+                    options.IncludeXmlComments(path);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

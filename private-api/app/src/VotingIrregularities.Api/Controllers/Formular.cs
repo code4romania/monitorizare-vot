@@ -5,17 +5,34 @@ using VotingIrregularities.Api.Models;
 
 namespace VotingIrregularities.Api.Controllers
 {
+    /// <summary>
+    /// Ruta Formular ofera suport pentru toate operatiile legate de formularele completate de observatori
+    /// </summary>
     [Route("api/v1/formular")]
     public class Formular : Controller
     {
-        // GET api/formulare
+        /// <summary>
+        /// Returneaza versiunea unui formular sub forma unui numar intreg. 
+        /// Aceasta metoda trebuie apelata de fiecare data cand se afiseaza un formular in aplicatie. 
+        /// Daca id-ul returnat difera de cel din aplicatie, atunci trebuie incarcat formularul printr-un apel la 
+        /// <code>api//v1//formular</code>
+        /// </summary>
+        /// <param name="idformular">Id-ul formularului pentru care trebuie aflat versiunea</param>
+        /// <returns>Returneaza un obiect care are proprietatea de tip int, versiune</returns>
         [HttpGet("versiune")]
         public async Task<dynamic> Versiune(string idformular)
         {
             //DH TODO[DH] se ia din BD versiunea
-            return await Task.Run(() => new { versiune= "1"});
+            return await Task.Run(() => new { versiune = 1 });
         }
 
+        /// <summary>
+        /// Se interogheaza ultima versiunea a formularului pentru observatori si se primeste definitia lui. 
+        /// In definitia unui formular nu intra intrebarile standard (ora sosirii, etc). 
+        /// Acestea se considera implicite pe fiecare formular.
+        /// </summary>
+        /// <param name="idformular">Id-ul formularului pentru care trebuie preluata definitia</param>
+        /// <returns>Returneaza o structura pe baza careia se poate genera un formular pentru observatori</returns>
         [HttpGet]
         public async Task<IEnumerable<ModelIntrebare>> Citeste(string idformular)
         {
