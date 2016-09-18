@@ -41,14 +41,10 @@ namespace VotingIrregularities.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Add framework services.
             services.AddApplicationInsightsTelemetry(Configuration);
-
-            // TODO[DH] Register EFContext
 
             services.AddMvc();
 
-            // Add application services.
             services.AddSwaggerGen();
         }
 
@@ -60,24 +56,7 @@ namespace VotingIrregularities.Api
 
             app.UseApplicationInsightsRequestTelemetry();
 
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
-                app.UseBrowserLink();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-            }
-
-            app.UseApplicationInsightsExceptionTelemetry();
-
-            app.UseStaticFiles();
-
-            //TODO[DH] Add app.UseIdentity();
-
-            // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
+         
 
             app.UseMvc(routes =>
             {

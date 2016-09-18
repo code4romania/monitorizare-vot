@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using NUglify.JavaScript.Syntax;
 using VotingIrregularities.Api.Models;
 
 namespace VotingIrregularities.Api.Controllers
@@ -30,9 +29,9 @@ namespace VotingIrregularities.Api.Controllers
                     TextIntrebare = "Iti place berea? (se alege o singura optiune)",
                     RaspunsuriDisponibile = new List<ModelRaspunsDisponibil>
                     {
-                        new ModelRaspunsDisponibil { IdOptiune = 23, TextOptiune = "DA"},
-                        new ModelRaspunsDisponibil { IdOptiune = 23, TextOptiune = "NU"},
-                        new ModelRaspunsDisponibil { IdOptiune = 23, TextOptiune = "Nu stiu"}
+                        new ModelRaspunsDisponibil { IdOptiune = 24, TextOptiune = "DA"},
+                        new ModelRaspunsDisponibil { IdOptiune = 25, TextOptiune = "NU"},
+                        new ModelRaspunsDisponibil { IdOptiune = 26, TextOptiune = "Nu stiu"}
                     }
                 },
 
@@ -44,10 +43,10 @@ namespace VotingIrregularities.Api.Controllers
                     TextIntrebare = "Ce tipuri de bere iti plac? (se pot alege mai multe optiuni)",
                     RaspunsuriDisponibile = new List<ModelRaspunsDisponibil>
                     {
-                        new ModelRaspunsDisponibil { IdOptiune = 23, TextOptiune = "Dark Island"},
-                        new ModelRaspunsDisponibil { IdOptiune = 23, TextOptiune = "London Pride"},
-                        new ModelRaspunsDisponibil { IdOptiune = 23, TextOptiune = "Zaganu"},
-                        new ModelRaspunsDisponibil { IdOptiune = 23, TextOptiune = "Altele (specificaţi)", SeIntroduceText = true},
+                        new ModelRaspunsDisponibil { IdOptiune = 27, TextOptiune = "Dark Island"},
+                        new ModelRaspunsDisponibil { IdOptiune = 28, TextOptiune = "London Pride"},
+                        new ModelRaspunsDisponibil { IdOptiune = 29, TextOptiune = "Zaganu"},
+                        new ModelRaspunsDisponibil { IdOptiune = 30, TextOptiune = "Altele (specificaţi)", SeIntroduceText = true},
                     }
                 }
             });
