@@ -246,3 +246,4 @@ ModelManifest.xml
 *.pubxml
 *.ps1
 *.psm1
+/private-api/app/src/VotingIrregularities.Api/appsettings.development.json

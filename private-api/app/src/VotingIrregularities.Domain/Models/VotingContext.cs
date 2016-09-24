@@ -28,6 +28,22 @@ namespace VotingIrregularities.Domain.Models
                     .HasConstraintName("FK_AccesObservatoriPerDevice_Observator");
             });
 
+            modelBuilder.Entity<DispozitivObservator>(entity =>
+            {
+                entity.HasKey(e => e.IdDispozitivObservator)
+                    .HasName("PK_DispozitivObservator");
+
+                entity.Property(e => e.IdentificatorUnic)
+                    .IsRequired()
+                    .HasMaxLength(200);
+
+                entity.HasOne(d => d.IdObservatorNavigation)
+                    .WithMany(p => p.DispozitivObservator)
+                    .HasForeignKey(d => d.IdObservator)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("FK_DispozitivObservator_Observator");
+            });
+
             modelBuilder.Entity<Intrebare>(entity =>
             {
                 entity.HasKey(e => e.IdIntrebare)
@@ -281,6 +297,7 @@ namespace VotingIrregularities.Domain.Models
         }
 
         public virtual DbSet<AccesObservatoriPerDevice> AccesObservatoriPerDevice { get; set; }
+        public virtual DbSet<DispozitivObservator> DispozitivObservator { get; set; }
         public virtual DbSet<Intrebare> Intrebare { get; set; }
         public virtual DbSet<Judet> Judet { get; set; }
         public virtual DbSet<Nota> Nota { get; set; }
