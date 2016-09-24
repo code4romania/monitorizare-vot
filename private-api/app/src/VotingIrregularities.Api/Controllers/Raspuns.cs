@@ -15,14 +15,14 @@ namespace VotingIrregularities.Api.Controllers
     public class Raspuns : Controller
     {
         /// <summary>
-        /// Aici se inregistreaza raspunsul dat de observator la o intrebare, pentru o sectie de votare.
+        /// Aici se inregistreaza raspunsul dat de observator la una sau mai multe intrebari, pentru o sectie de votare.
         /// Raspunsul (ModelOptiuniSelectate) poate avea mai multe optiuni (IdOptiune) si potential un text (Value).
         /// </summary>
         /// <param name="raspuns">Sectia de votare, lista de optiuni si textul asociat unei optiuni care se completeaza cand 
         /// optiunea <code>SeIntroduceText = true</code></param>
         /// <returns></returns>
         [HttpPost()]
-        public async Task CompleteazaRaspuns([FromBody] ModelRaspuns raspuns)
+        public async Task CompleteazaRaspuns([FromBody] ModelRaspuns[] raspuns)
         {
             // TODO[DH] se salveaza efectiv
             await Task.Delay(0);

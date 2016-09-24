@@ -7,7 +7,6 @@ namespace VotingIrregularities.Api.Models
     {
 
         public int IdIntrebare { get; set; }
-        public string CodSectiune { get; set; }
         public string TextIntrebare { get; set; }
         public int IdTipIntrebare { get; set; }
 

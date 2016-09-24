@@ -17,9 +17,11 @@ namespace VotingIrregularities.Domain.Models
         public string CodSectiune { get; set; }
         public string TextIntrebare { get; set; }
         public int IdTipIntrebare { get; set; }
+        public int IdSectiune { get; set; }
 
         public virtual ICollection<Nota> Nota { get; set; }
         public virtual ICollection<Raspuns> Raspuns { get; set; }
         public virtual ICollection<RaspunsDisponibil> RaspunsDisponibil { get; set; }
+        public virtual Sectiune CodSectiuneNavigation { get; set; }
     }
 }

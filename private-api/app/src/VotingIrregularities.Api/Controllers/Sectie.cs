@@ -20,7 +20,7 @@ namespace VotingIrregularities.Api.Controllers
         [HttpGet]
         public async Task<List<ModelSectie>> Cauta(int? idJudet, int? numarSectie)
         {
-            return await Task.Run(() => new List<ModelSectie>
+            return await Task.FromResult(new List<ModelSectie>
             {
                 new ModelSectie
                 {
@@ -38,6 +38,20 @@ namespace VotingIrregularities.Api.Controllers
                     Judet = "HUNEDOARA"
                 }
             });
+        }
+
+
+        /// <summary>
+        /// Se apeleaza aceast metoda cand observatorul salveaza informatiile legate de ora sosirii. ora plecarii, zona urbana, info despre presedintele BESV.
+        /// Aceste informatii sunt insotite de id-ul sectiei de votare.
+        /// </summary>
+        /// <param name="dateSectie">Informatii despre sectia de votare si observatorul alocat ei</param>
+        /// <returns></returns>
+        [HttpPost()]
+        public async Task Inregistreaza([FromBody] ModelDateSectie dateSectie)
+        {
+            // TODO[DH] se salveaza efectiv
+            await Task.FromResult(0);
         }
     }
 }

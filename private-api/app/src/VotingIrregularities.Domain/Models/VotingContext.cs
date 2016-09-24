@@ -8,7 +8,6 @@ namespace VotingIrregularities.Domain.Models
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -34,17 +33,25 @@ namespace VotingIrregularities.Domain.Models
                 entity.HasKey(e => e.IdIntrebare)
                     .HasName("PK_Intrebare");
 
+                entity.Property(e => e.IdIntrebare).ValueGeneratedNever();
+
                 entity.Property(e => e.CodFormular)
                     .IsRequired()
                     .HasMaxLength(2);
 
                 entity.Property(e => e.CodSectiune)
                     .IsRequired()
-                    .HasMaxLength(2);
+                    .HasMaxLength(4);
 
                 entity.Property(e => e.TextIntrebare)
                     .IsRequired()
                     .HasMaxLength(200);
+
+                entity.HasOne(d => d.CodSectiuneNavigation)
+                    .WithMany(p => p.Intrebare)
+                    .HasForeignKey(d => d.CodSectiune)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("FK_Intrebare_Sectiune1");
             });
 
             modelBuilder.Entity<Judet>(entity =>
@@ -54,7 +61,13 @@ namespace VotingIrregularities.Domain.Models
 
                 entity.Property(e => e.IdJudet).ValueGeneratedNever();
 
-                entity.Property(e => e.Nume).HasMaxLength(100);
+                entity.Property(e => e.CodJudet)
+                    .IsRequired()
+                    .HasMaxLength(4);
+
+                entity.Property(e => e.Nume)
+                    .IsRequired()
+                    .HasMaxLength(100);
             });
 
             modelBuilder.Entity<Nota>(entity =>
@@ -71,6 +84,18 @@ namespace VotingIrregularities.Domain.Models
                     .HasForeignKey(d => d.IdIntrebare)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_Nota_Intrebare");
+
+                entity.HasOne(d => d.IdObservatorNavigation)
+                    .WithMany(p => p.Nota)
+                    .HasForeignKey(d => d.IdObservator)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("FK_Nota_Observator");
+
+                entity.HasOne(d => d.IdSectieDeVotareNavigation)
+                    .WithMany(p => p.Nota)
+                    .HasForeignKey(d => d.IdSectieDeVotare)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("FK_Nota_SectieDeVotare");
             });
 
             modelBuilder.Entity<Observator>(entity =>
@@ -119,21 +144,11 @@ namespace VotingIrregularities.Domain.Models
                 entity.HasKey(e => e.IdOptiune)
                     .HasName("PK_Optiune");
 
+                entity.Property(e => e.IdOptiune).ValueGeneratedNever();
+
                 entity.Property(e => e.SeIntroduceText).HasDefaultValueSql("0");
 
                 entity.Property(e => e.TextOptiune)
-                    .IsRequired()
-                    .HasMaxLength(100);
-            });
-
-            modelBuilder.Entity<Oras>(entity =>
-            {
-                entity.HasKey(e => e.IdOras)
-                    .HasName("PK_Oras");
-
-                entity.Property(e => e.IdOras).ValueGeneratedNever();
-
-                entity.Property(e => e.NumeOras)
                     .IsRequired()
                     .HasMaxLength(100);
             });
@@ -196,10 +211,12 @@ namespace VotingIrregularities.Domain.Models
 
             modelBuilder.Entity<RaspunsFormular>(entity =>
             {
-                entity.HasKey(e => new { e.CodFormular, e.IdObservator, e.IdSectieDeVotare })
-                    .HasName("PK_RaspunsFormular");
+                entity.HasKey(e => new { e.IdObservator, e.IdSectieDeVotare })
+                    .HasName("PK_RaspunsFormular_1");
 
-                entity.Property(e => e.CodFormular).HasMaxLength(2);
+                entity.Property(e => e.DataUltimeiModificari)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("getdate()");
 
                 entity.Property(e => e.OraPlecarii).HasColumnType("datetime");
 
@@ -229,16 +246,37 @@ namespace VotingIrregularities.Domain.Models
 
                 entity.Property(e => e.Coordonate).HasColumnType("varchar(200)");
 
+                entity.Property(e => e.DenumireUat).HasMaxLength(100);
+
+                entity.Property(e => e.LocalitateComponenta)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
                 entity.HasOne(d => d.IdJudetNavigation)
                     .WithMany(p => p.SectieDeVotare)
                     .HasForeignKey(d => d.IdJudet)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_SectieDeVotare_Judet");
+            });
 
-                entity.HasOne(d => d.IdOrasNavigation)
-                    .WithMany(p => p.SectieDeVotare)
-                    .HasForeignKey(d => d.IdOras)
-                    .HasConstraintName("FK_SectieDeVotare_Oras");
+            modelBuilder.Entity<Sectiune>(entity =>
+            {
+                entity.HasKey(e => e.CodSectiune)
+                    .HasName("PK_Sectiune_1");
+
+                entity.Property(e => e.CodSectiune).HasMaxLength(4);
+
+                entity.Property(e => e.Descriere)
+                    .IsRequired()
+                    .HasMaxLength(200);
+            });
+
+            modelBuilder.Entity<VersiuneFormular>(entity =>
+            {
+                entity.HasKey(e => e.CodFormular)
+                    .HasName("PK_VersiuneFormular");
+
+                entity.Property(e => e.CodFormular).HasMaxLength(2);
             });
         }
 
@@ -249,10 +287,11 @@ namespace VotingIrregularities.Domain.Models
         public virtual DbSet<Observator> Observator { get; set; }
         public virtual DbSet<Ong> Ong { get; set; }
         public virtual DbSet<Optiune> Optiune { get; set; }
-        public virtual DbSet<Oras> Oras { get; set; }
         public virtual DbSet<Raspuns> Raspuns { get; set; }
         public virtual DbSet<RaspunsDisponibil> RaspunsDisponibil { get; set; }
         public virtual DbSet<RaspunsFormular> RaspunsFormular { get; set; }
         public virtual DbSet<SectieDeVotare> SectieDeVotare { get; set; }
+        public virtual DbSet<Sectiune> Sectiune { get; set; }
+        public virtual DbSet<VersiuneFormular> VersiuneFormular { get; set; }
     }
 }

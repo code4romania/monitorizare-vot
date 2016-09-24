@@ -23,21 +23,9 @@ namespace VotingIrregularities.Api.Controllers
         public async Task<dynamic> Versiune(string idformular)
         {
             //DH TODO[DH] se ia din BD versiunea
-            return await Task.Run(() => new { versiune = 1 });
+            return await Task.FromResult(new { versiune = 1 });
         }
 
-        /// <summary>
-        /// Se apeleaza aceast metoda cand observatorul salveaza informatiile legate de ora sosirii. ora plecarii, zona urbana, info despre presedintele BESV.
-        /// Aceste informatii sunt insotite de id-ul sectiei de votare si codul formularului.
-        /// </summary>
-        /// <param name="formular">Datele despre header-ul unui formular</param>
-        /// <returns></returns>
-        [HttpPost()]
-        public async Task Inregistreaza(ModelFormular formular)
-        {
-            // TODO[DH] se salveaza efectiv
-            await Task.Delay(0);
-        }
 
         /// <summary>
         /// Se interogheaza ultima versiunea a formularului pentru observatori si se primeste definitia lui. 
@@ -47,38 +35,77 @@ namespace VotingIrregularities.Api.Controllers
         /// <param name="idformular">Id-ul formularului pentru care trebuie preluata definitia</param>
         /// <returns>Returneaza o structura pe baza careia se poate genera un formular pentru observatori</returns>
         [HttpGet]
-        public async Task<IEnumerable<ModelIntrebare>> Citeste(string idformular)
+        public async Task<IEnumerable<ModelSectiune>> Citeste(string idformular)
         {
-            return await Task.Run(() => new List<ModelIntrebare>
+            return await Task.FromResult(new List<ModelSectiune>
             {
-                new ModelIntrebare
+                new ModelSectiune
                 {
                     CodSectiune = "A",
-                    IdIntrebare = 12,
-                    IdTipIntrebare = 1,
-                    TextIntrebare = "Iti place berea? (se alege o singura optiune)",
-                    RaspunsuriDisponibile = new List<ModelRaspunsDisponibil>
+                    Intrebari = new List<ModelIntrebare>
                     {
-                        new ModelRaspunsDisponibil { IdOptiune = 24, TextOptiune = "DA"},
-                        new ModelRaspunsDisponibil { IdOptiune = 25, TextOptiune = "NU"},
-                        new ModelRaspunsDisponibil { IdOptiune = 26, TextOptiune = "Nu stiu"}
+                        new ModelIntrebare
+                        {
+                            IdIntrebare = 1,
+                            IdTipIntrebare = 0,
+                            TextIntrebare = "Ce tipuri de bere iti plac? (se pot alege optiuni multiple)",
+                            RaspunsuriDisponibile = new List<ModelRaspunsDisponibil>
+                            {
+                                new ModelRaspunsDisponibil { IdOptiune = 27, TextOptiune = "Dark Island"},
+                                new ModelRaspunsDisponibil { IdOptiune = 28, TextOptiune = "London Pride"},
+                                new ModelRaspunsDisponibil { IdOptiune = 29, TextOptiune = "Zaganu"},
+                            }
+                        },
+                        new ModelIntrebare
+                        {
+                            IdIntrebare = 12,
+                            IdTipIntrebare = 1,
+                            TextIntrebare = "Iti place berea? (se alege o singura optiune selectabila)",
+                            RaspunsuriDisponibile = new List<ModelRaspunsDisponibil>
+                            {
+                                new ModelRaspunsDisponibil { IdOptiune = 24, TextOptiune = "DA"},
+                                new ModelRaspunsDisponibil { IdOptiune = 25, TextOptiune = "NU"},
+                                new ModelRaspunsDisponibil { IdOptiune = 26, TextOptiune = "Nu stiu"}
+                            }
+                        }
                     }
                 },
-
-                new ModelIntrebare
+                 new ModelSectiune
                 {
                     CodSectiune = "A",
-                    IdIntrebare = 1,
-                    IdTipIntrebare = 2,
-                    TextIntrebare = "Ce tipuri de bere iti plac? (se pot alege mai multe optiuni)",
-                    RaspunsuriDisponibile = new List<ModelRaspunsDisponibil>
+                    Intrebari = new List<ModelIntrebare>
                     {
-                        new ModelRaspunsDisponibil { IdOptiune = 27, TextOptiune = "Dark Island"},
-                        new ModelRaspunsDisponibil { IdOptiune = 28, TextOptiune = "London Pride"},
-                        new ModelRaspunsDisponibil { IdOptiune = 29, TextOptiune = "Zaganu"},
-                        new ModelRaspunsDisponibil { IdOptiune = 30, TextOptiune = "Altele (specificaţi)", SeIntroduceText = true},
+
+
+                        new ModelIntrebare
+                        {
+                            IdIntrebare = 1,
+                            IdTipIntrebare = 2,
+                            TextIntrebare = "Ce tip de transmisie are masina ta? (se poate alege O singura optiune selectabila + text pe O singura optiune)",
+                            RaspunsuriDisponibile = new List<ModelRaspunsDisponibil>
+                            {
+                                new ModelRaspunsDisponibil { IdOptiune = 31, TextOptiune = "Transmisia manualã"},
+                                new ModelRaspunsDisponibil { IdOptiune = 32, TextOptiune = "Transmisia automatã"},
+                                new ModelRaspunsDisponibil { IdOptiune = 33, TextOptiune = "Transmisia non-sincron"},
+                                new ModelRaspunsDisponibil { IdOptiune = 34, TextOptiune = "Altele (specificaţi)", SeIntroduceText = true},
+                            }
+                        },
+
+                        new ModelIntrebare
+                        {
+                            IdIntrebare = 1,
+                            IdTipIntrebare = 3,
+                            TextIntrebare = "Ce mijloace de transport folosesti sa ajungi la birou? (se pot alege mai multe optiuni)",
+                            RaspunsuriDisponibile = new List<ModelRaspunsDisponibil>
+                            {
+                                new ModelRaspunsDisponibil { IdOptiune = 27, TextOptiune = "Metrou"},
+                                new ModelRaspunsDisponibil { IdOptiune = 28, TextOptiune = "Tramvai"},
+                                new ModelRaspunsDisponibil { IdOptiune = 29, TextOptiune = "Autobuz"},
+                                new ModelRaspunsDisponibil { IdOptiune = 30, TextOptiune = "Altele (specificaţi)", SeIntroduceText = true},
+                            }
+                        }
                     }
-                }
+            }
             });
         }
 

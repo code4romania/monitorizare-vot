@@ -5,9 +5,8 @@ using System.Threading.Tasks;
 
 namespace VotingIrregularities.Api.Models
 {
-    public class ModelFormular
+    public class ModelDateSectie
     {
-        public string CodFormular { get; set; }
         public int IdSectieDeVotare { get; set; }
         public DateTime? OraSosirii { get; set; }
         public DateTime? OraPlecarii { get; set; }
