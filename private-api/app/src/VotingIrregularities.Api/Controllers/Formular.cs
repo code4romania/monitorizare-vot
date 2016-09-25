@@ -32,7 +32,9 @@ namespace VotingIrregularities.Api.Controllers
         [HttpGet("versiune")]
         public async Task<dynamic> Versiune(string idformular)
         {
-            return await _mediator.SendAsync(new ModelFormular.VersiuneQuery {CodFormular = idformular});
+            var versiune = await _mediator.SendAsync(new ModelFormular.VersiuneQuery {CodFormular = idformular});
+
+            return new {versiune};
         }
 
 
