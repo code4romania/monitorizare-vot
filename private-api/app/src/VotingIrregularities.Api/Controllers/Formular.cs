@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using VotingIrregularities.Api.Models;
 using VotingIrregularities.Domain.Models;
@@ -13,6 +14,13 @@ namespace VotingIrregularities.Api.Controllers
     [Route("api/v1/formular")]
     public class Formular : Controller
     {
+        private readonly IMediator _mediator;
+
+        public Formular(IMediator mediator)
+        {
+            _mediator = mediator;
+        }
+
         /// <summary>
         /// Returneaza versiunea unui formular sub forma unui numar intreg. 
         /// Aceasta metoda trebuie apelata de fiecare data cand se afiseaza un formular in aplicatie. 
@@ -24,7 +32,7 @@ namespace VotingIrregularities.Api.Controllers
         [HttpGet("versiune")]
         public async Task<dynamic> Versiune(string idformular)
         {
-            return await Task.FromResult(new { versiune = 1 });
+            return await _mediator.SendAsync(new ModelFormular.VersiuneQuery {CodFormular = idformular});
         }
 
 
