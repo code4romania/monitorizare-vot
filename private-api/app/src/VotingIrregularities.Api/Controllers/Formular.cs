@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using VotingIrregularities.Api.Models;
+using VotingIrregularities.Domain.Models;
 
 namespace VotingIrregularities.Api.Controllers
 {
@@ -22,7 +24,6 @@ namespace VotingIrregularities.Api.Controllers
         [HttpGet("versiune")]
         public async Task<dynamic> Versiune(string idformular)
         {
-            //DH TODO[DH] se ia din BD versiunea
             return await Task.FromResult(new { versiune = 1 });
         }
 

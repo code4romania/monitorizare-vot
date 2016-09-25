@@ -6,10 +6,6 @@ namespace VotingIrregularities.Domain.Models
 {
     public partial class VotingContext : DbContext
     {
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AccesObservatoriPerDevice>(entity =>
