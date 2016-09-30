@@ -3,9 +3,6 @@
   "version": 2,
   "targets": {
     ".NETCoreApp,Version=v1.0": {
-      "Desktop.Analyzers/1.2.0-beta2": {
-        "type": "package"
-      },
       "Libuv/1.9.0": {
         "type": "package",
         "dependencies": {
@@ -58,9 +55,6 @@
           "lib/netstandard1.1/MediatR.dll": {}
         }
       },
-      "Microsoft.ApiDesignGuidelines.Analyzers/1.2.0-beta2": {
-        "type": "package"
-      },
       "Microsoft.ApplicationInsights/2.1.0": {
         "type": "package",
         "dependencies": {
@@ -91,28 +85,17 @@
           "lib/dotnet5.4/Microsoft.ApplicationInsights.dll": {}
         }
       },
-      "Microsoft.ApplicationInsights.AspNetCore/1.0.1": {
+      "Microsoft.ApplicationInsights.AspNetCore/1.0.2": {
         "type": "package",
         "dependencies": {
-          "Desktop.Analyzers": "1.2.0-beta2",
-          "Microsoft.ApiDesignGuidelines.Analyzers": "1.2.0-beta2",
           "Microsoft.ApplicationInsights": "2.1.0",
           "Microsoft.AspNetCore.Hosting.Abstractions": "1.0.0",
           "Microsoft.AspNetCore.Http.Abstractions": "1.0.0",
           "Microsoft.AspNetCore.Mvc.ViewFeatures": "1.0.1",
-          "Microsoft.CodeAnalysis.Analyzers": "1.2.0-beta2",
-          "Microsoft.Composition.Analyzers": "1.2.0-beta2",
           "Microsoft.Extensions.Configuration": "1.0.0",
           "Microsoft.Extensions.DiagnosticAdapter": "1.0.0",
           "Microsoft.Extensions.Logging.Abstractions": "1.0.0",
-          "Microsoft.Maintainability.Analyzers": "1.2.0-beta2",
-          "Microsoft.QualityGuidelines.Analyzers": "1.2.0-beta2",
-          "Roslyn.Diagnostics.Analyzers": "1.2.0-beta2",
-          "System.Collections.Immutable.Analyzers": "1.2.0-beta2",
-          "System.Net.NameResolution": "4.0.0",
-          "System.Runtime.Analyzers": "1.2.0-beta2",
-          "System.Runtime.InteropServices.Analyzers": "1.2.0-beta2",
-          "System.Threading.Tasks.Analyzers": "1.2.0-beta2"
+          "System.Net.NameResolution": "4.0.0"
         },
         "compile": {
           "lib/netstandard1.6/Microsoft.ApplicationInsights.AspNetCore.dll": {}
@@ -894,7 +877,7 @@
           "lib/netstandard1.3/Microsoft.AspNetCore.WebUtilities.dll": {}
         }
       },
-      "Microsoft.CodeAnalysis.Analyzers/1.2.0-beta2": {
+      "Microsoft.CodeAnalysis.Analyzers/1.1.0": {
         "type": "package"
       },
       "Microsoft.CodeAnalysis.Common/1.3.0": {
@@ -970,9 +953,6 @@
         "runtime": {
           "lib/netstandard1.3/Microsoft.CodeAnalysis.VisualBasic.dll": {}
         }
-      },
-      "Microsoft.Composition.Analyzers/1.2.0-beta2": {
-        "type": "package"
       },
       "Microsoft.CSharp/4.0.1": {
         "type": "package",
@@ -1680,9 +1660,6 @@
           "lib/netstandard1.0/Microsoft.Extensions.WebEncoders.dll": {}
         }
       },
-      "Microsoft.Maintainability.Analyzers/1.2.0-beta2": {
-        "type": "package"
-      },
       "Microsoft.Net.Http.Headers/1.0.0": {
         "type": "package",
         "dependencies": {
@@ -1798,9 +1775,6 @@
         }
       },
       "Microsoft.NETCore.Windows.ApiSets/1.0.1": {
-        "type": "package"
-      },
-      "Microsoft.QualityGuidelines.Analyzers/1.2.0-beta2": {
         "type": "package"
       },
       "Microsoft.VisualBasic/10.0.1": {
@@ -2181,9 +2155,6 @@
           "lib/netstandard1.0/Remotion.Linq.dll": {}
         }
       },
-      "Roslyn.Diagnostics.Analyzers/1.2.0-beta2": {
-        "type": "package"
-      },
       "runtime.native.System/4.0.0": {
         "type": "package",
         "dependencies": {
@@ -2473,9 +2444,6 @@
         "runtime": {
           "lib/netstandard1.0/System.Collections.Immutable.dll": {}
         }
-      },
-      "System.Collections.Immutable.Analyzers/1.2.0-beta2": {
-        "type": "package"
       },
       "System.Collections.NonGeneric/4.0.1": {
         "type": "package",
@@ -3675,9 +3643,6 @@
           "lib/portable-net45+win8+wp80+wpa81/_._": {}
         }
       },
-      "System.Runtime.Analyzers/1.2.0-beta2": {
-        "type": "package"
-      },
       "System.Runtime.Extensions/4.1.0": {
         "type": "package",
         "dependencies": {
@@ -3719,9 +3684,6 @@
         "runtime": {
           "lib/portable-net45+win8+wpa81/_._": {}
         }
-      },
-      "System.Runtime.InteropServices.Analyzers/1.2.0-beta2": {
-        "type": "package"
       },
       "System.Runtime.InteropServices.RuntimeInformation/4.0.0": {
         "type": "package",
@@ -4207,9 +4169,6 @@
           "lib/portable-net45+win8+wp8+wpa81/_._": {}
         }
       },
-      "System.Threading.Tasks.Analyzers/1.2.0-beta2": {
-        "type": "package"
-      },
       "System.Threading.Tasks.Dataflow/4.6.0": {
         "type": "package",
         "dependencies": {
@@ -4413,46 +4372,37 @@
       },
       "VotingIrregularities.Domain/1.0.0": {
         "type": "project",
-        "framework": ".NETStandard,Version=v1.6",
+        "framework": ".NETCoreApp,Version=v1.0",
         "dependencies": {
           "MediatR": "2.1.0",
+          "Microsoft.AspNetCore.Hosting": "1.0.0",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "1.0.0",
+          "Microsoft.EntityFrameworkCore": "1.0.1",
+          "Microsoft.EntityFrameworkCore.SqlServer": "1.0.1",
+          "Microsoft.EntityFrameworkCore.SqlServer.Design": "1.0.1",
+          "Microsoft.Extensions.Configuration": "1.0.0",
+          "Microsoft.Extensions.Configuration.FileExtensions": "1.0.0",
+          "Microsoft.Extensions.Configuration.Json": "1.0.0",
+          "Microsoft.Extensions.Logging.Console": "1.0.0",
+          "Microsoft.Extensions.Logging.Debug": "1.0.0",
+          "Microsoft.Extensions.PlatformAbstractions": "1.0.0",
+          "Microsoft.NETCore.App": "1.0.1",
           "NETStandard.Library": "1.6.0",
-          "SimpleInjector": "3.2.2"
+          "SimpleInjector": "3.2.2",
+          "System.Linq.Queryable": "4.0.1"
         },
         "compile": {
-          "netstandard1.6/VotingIrregularities.Domain.dll": {}
+          "netcoreapp1.0/VotingIrregularities.Domain.dll": {}
         },
         "runtime": {
-          "netstandard1.6/VotingIrregularities.Domain.dll": {}
+          "netcoreapp1.0/VotingIrregularities.Domain.dll": {}
         }
       }
     }
   },
   "libraries": {
-    "Desktop.Analyzers/1.2.0-beta2": {
-      "sha512": "casK1/J2ZJ6X45hRaEwRWq/n7cjnAJCf31G6DsFQYIeE0aunDEnoO2xY2fO3gni7BgVfetWihLZa7ucymMRJDQ==",
-      "type": "package",
-      "path": "Desktop.Analyzers/1.2.0-beta2",
-      "files": [
-        "Desktop.Analyzers.1.2.0-beta2.nupkg.sha512",
-        "Desktop.Analyzers.nuspec",
-        "ThirdPartyNotices.rtf",
-        "analyzers/dotnet/cs/Analyzer.Utilities.dll",
-        "analyzers/dotnet/cs/Desktop.Analyzers.dll",
-        "analyzers/dotnet/cs/Desktop.CSharp.Analyzers.dll",
-        "analyzers/dotnet/vb/Analyzer.Utilities.dll",
-        "analyzers/dotnet/vb/Desktop.Analyzers.dll",
-        "analyzers/dotnet/vb/Desktop.VisualBasic.Analyzers.dll",
-        "build/Desktop.Analyzers.props",
-        "build/Desktop.CSharp.Analyzers.props",
-        "build/Desktop.VisualBasic.Analyzers.props",
-        "tools/install.ps1",
-        "tools/uninstall.ps1"
-      ]
-    },
     "Libuv/1.9.0": {
-      "sha512": "MjstOcBIAHnax8dDN3dq9BY3pzAKRwing/zcKqHprx1EgsI2IBAH4XLfwgfQltwBhbbToN4rT9hjTODoQS8VEQ==",
+      "sha512": "9Q7AaqtQhS8JDSIvRBt6ODSLWDBI4c8YxNxyCQemWebBFUtBbc6M5Vi5Gz1ZyIUlTW3rZK9bIr5gnVyv0z7a2Q==",
       "type": "package",
       "path": "Libuv/1.9.0",
       "files": [
@@ -4480,27 +4430,6 @@
         "lib/netstandard1.1/MediatR.dll"
       ]
     },
-    "Microsoft.ApiDesignGuidelines.Analyzers/1.2.0-beta2": {
-      "sha512": "+69CcmkDq7y1eRmaFiIU0j8AzOQ5XwkhEc7r1mZ6sthKS/iuatyMNpbSPiWUjHxfb7M790iARa8OF3ie6QASLw==",
-      "type": "package",
-      "path": "Microsoft.ApiDesignGuidelines.Analyzers/1.2.0-beta2",
-      "files": [
-        "Microsoft.ApiDesignGuidelines.Analyzers.1.2.0-beta2.nupkg.sha512",
-        "Microsoft.ApiDesignGuidelines.Analyzers.nuspec",
-        "ThirdPartyNotices.rtf",
-        "analyzers/dotnet/cs/Analyzer.Utilities.dll",
-        "analyzers/dotnet/cs/Microsoft.ApiDesignGuidelines.Analyzers.dll",
-        "analyzers/dotnet/cs/Microsoft.ApiDesignGuidelines.CSharp.Analyzers.dll",
-        "analyzers/dotnet/vb/Analyzer.Utilities.dll",
-        "analyzers/dotnet/vb/Microsoft.ApiDesignGuidelines.Analyzers.dll",
-        "analyzers/dotnet/vb/Microsoft.ApiDesignGuidelines.VisualBasic.Analyzers.dll",
-        "build/Microsoft.ApiDesignGuidelines.Analyzers.props",
-        "build/Microsoft.ApiDesignGuidelines.CSharp.Analyzers.props",
-        "build/Microsoft.ApiDesignGuidelines.VisualBasic.Analyzers.props",
-        "tools/install.ps1",
-        "tools/uninstall.ps1"
-      ]
-    },
     "Microsoft.ApplicationInsights/2.1.0": {
       "sha512": "mviO8PLQd3r22Pmv8JfjYzTCQ9ByhkU9wdC4fwd6WmAARwAMgMw9HEbHeYS3r+8pB3w+fZMi7p4LKijzgNybRQ==",
       "type": "package",
@@ -4521,12 +4450,12 @@
         "lib/wp8/Microsoft.ApplicationInsights.dll"
       ]
     },
-    "Microsoft.ApplicationInsights.AspNetCore/1.0.1": {
-      "sha512": "CEWe0ZKJMvfzH5oh++/fhjgf4jmDIOnVF/+BhrDy1cKjh3a39GCEWEog+c8NitlGc24155SORLKCMEkZwYiM8A==",
+    "Microsoft.ApplicationInsights.AspNetCore/1.0.2": {
+      "sha512": "2pe22FuypQRT5YNd4cIehYqDduxiQzt1o/585LgG6vJmOfuX7aF2h4uSI5epRrvu1EikuoZEzBchAR6U8cBybQ==",
       "type": "package",
-      "path": "Microsoft.ApplicationInsights.AspNetCore/1.0.1",
+      "path": "Microsoft.ApplicationInsights.AspNetCore/1.0.2",
       "files": [
-        "Microsoft.ApplicationInsights.AspNetCore.1.0.1.nupkg.sha512",
+        "Microsoft.ApplicationInsights.AspNetCore.1.0.2.nupkg.sha512",
         "Microsoft.ApplicationInsights.AspNetCore.nuspec",
         "lib/net451/Microsoft.ApplicationInsights.AspNetCore.dll",
         "lib/net451/Microsoft.ApplicationInsights.AspNetCore.xml",
@@ -5113,18 +5042,16 @@
         "lib/netstandard1.3/Microsoft.AspNetCore.WebUtilities.xml"
       ]
     },
-    "Microsoft.CodeAnalysis.Analyzers/1.2.0-beta2": {
-      "sha512": "CIrL5rFuYb5sUEykf3KOH6Ch5mZ4Q0JFJctPb3Fif9LPWk8TnVMhIxD1dpRza/xsvM5tItv1GGXrx87Ww2lYwQ==",
+    "Microsoft.CodeAnalysis.Analyzers/1.1.0": {
+      "sha512": "HS3iRWZKcUw/8eZ/08GXKY2Bn7xNzQPzf8gRPHGSowX7u7XXu9i9YEaBeBNKUXWfI7qjvT2zXtLUvbN0hds8vg==",
       "type": "package",
-      "path": "Microsoft.CodeAnalysis.Analyzers/1.2.0-beta2",
+      "path": "Microsoft.CodeAnalysis.Analyzers/1.1.0",
       "files": [
-        "Microsoft.CodeAnalysis.Analyzers.1.2.0-beta2.nupkg.sha512",
+        "Microsoft.CodeAnalysis.Analyzers.1.1.0.nupkg.sha512",
         "Microsoft.CodeAnalysis.Analyzers.nuspec",
         "ThirdPartyNotices.rtf",
-        "analyzers/dotnet/cs/Analyzer.Utilities.dll",
         "analyzers/dotnet/cs/Microsoft.CodeAnalysis.Analyzers.dll",
         "analyzers/dotnet/cs/Microsoft.CodeAnalysis.CSharp.Analyzers.dll",
-        "analyzers/dotnet/vb/Analyzer.Utilities.dll",
         "analyzers/dotnet/vb/Microsoft.CodeAnalysis.Analyzers.dll",
         "analyzers/dotnet/vb/Microsoft.CodeAnalysis.VisualBasic.Analyzers.dll",
         "tools/install.ps1",
@@ -5132,7 +5059,7 @@
       ]
     },
     "Microsoft.CodeAnalysis.Common/1.3.0": {
-      "sha512": "JIeQcvHMhRUJUv5MQ24d1YgU0V1lYJV8inJeF5uIHLS68IyCPQsZiJ2HFBrGTx/KIgxTrq+g2AxfaduM8pBF5Q==",
+      "sha512": "V09G35cs0CT1C4Dr1IEOh8IGfnWALEVAOO5JXsqagxXwmYR012TlorQ+vx2eXxfZRKs3gAS/r92gN9kRBLba5A==",
       "type": "package",
       "path": "Microsoft.CodeAnalysis.Common/1.3.0",
       "files": [
@@ -5148,7 +5075,7 @@
       ]
     },
     "Microsoft.CodeAnalysis.CSharp/1.3.0": {
-      "sha512": "W2J0dBpWQUCjq3IXzIqcm/au6S1ZNDQQTtQV8i0/YccHkGlPd1B3Ooonsm+fSFZdunWC0JVAgHD45Qj86mCwIw==",
+      "sha512": "BgWDIAbSFsHuGeLSn/rljLi51nXqkSo4DZ0qEIrHyPVasrhxEVq7aV8KKZ3HEfSFB+GIhBmOogE+mlOLYg19eg==",
       "type": "package",
       "path": "Microsoft.CodeAnalysis.CSharp/1.3.0",
       "files": [
@@ -5164,7 +5091,7 @@
       ]
     },
     "Microsoft.CodeAnalysis.VisualBasic/1.3.0": {
-      "sha512": "4zBAGu71mM+l4Bm7L6XoILZnDeYCkMeUvNakw26mDOso9Q38noGj5TRFzYCiN7hBgY6R4tVvMNJ1qr8EObheBQ==",
+      "sha512": "Sf3k8PkTkWqBmXnnblJbvb7ewO6mJzX6WO2t7m04BmOY5qBq6yhhyXnn/BMM+QCec3Arw3X35Zd8f9eBql0qgg==",
       "type": "package",
       "path": "Microsoft.CodeAnalysis.VisualBasic/1.3.0",
       "files": [
@@ -5177,27 +5104,6 @@
         "lib/netstandard1.3/Microsoft.CodeAnalysis.VisualBasic.xml",
         "lib/portable-net45+win8/Microsoft.CodeAnalysis.VisualBasic.dll",
         "lib/portable-net45+win8/Microsoft.CodeAnalysis.VisualBasic.xml"
-      ]
-    },
-    "Microsoft.Composition.Analyzers/1.2.0-beta2": {
-      "sha512": "hjkaFFXQBFrup4H+awqGKE7B+xnUiNWj9dVJNOd2AXzttRrERGwnU5Ch41XmOjqnhONRT8B0p/eMtXSrJreHXA==",
-      "type": "package",
-      "path": "Microsoft.Composition.Analyzers/1.2.0-beta2",
-      "files": [
-        "Microsoft.Composition.Analyzers.1.2.0-beta2.nupkg.sha512",
-        "Microsoft.Composition.Analyzers.nuspec",
-        "ThirdPartyNotices.rtf",
-        "analyzers/dotnet/cs/Analyzer.Utilities.dll",
-        "analyzers/dotnet/cs/Microsoft.Composition.Analyzers.dll",
-        "analyzers/dotnet/cs/Microsoft.Composition.CSharp.Analyzers.dll",
-        "analyzers/dotnet/vb/Analyzer.Utilities.dll",
-        "analyzers/dotnet/vb/Microsoft.Composition.Analyzers.dll",
-        "analyzers/dotnet/vb/Microsoft.Composition.VisualBasic.Analyzers.dll",
-        "build/Microsoft.Composition.Analyzers.props",
-        "build/Microsoft.Composition.CSharp.Analyzers.props",
-        "build/Microsoft.Composition.VisualBasic.Analyzers.props",
-        "tools/install.ps1",
-        "tools/uninstall.ps1"
       ]
     },
     "Microsoft.CSharp/4.0.1": {
@@ -5785,27 +5691,6 @@
         "lib/netstandard1.0/Microsoft.Extensions.WebEncoders.xml"
       ]
     },
-    "Microsoft.Maintainability.Analyzers/1.2.0-beta2": {
-      "sha512": "rNP/OQQN1UXAqumbwkf57zL69leFfqEbfuaMOvmHu5438ugXmCvY4pA1qXeFBTq4uk5/HqFSr+1j7joauwHouw==",
-      "type": "package",
-      "path": "Microsoft.Maintainability.Analyzers/1.2.0-beta2",
-      "files": [
-        "Microsoft.Maintainability.Analyzers.1.2.0-beta2.nupkg.sha512",
-        "Microsoft.Maintainability.Analyzers.nuspec",
-        "ThirdPartyNotices.rtf",
-        "analyzers/dotnet/cs/Analyzer.Utilities.dll",
-        "analyzers/dotnet/cs/Microsoft.Maintainability.Analyzers.dll",
-        "analyzers/dotnet/cs/Microsoft.Maintainability.CSharp.Analyzers.dll",
-        "analyzers/dotnet/vb/Analyzer.Utilities.dll",
-        "analyzers/dotnet/vb/Microsoft.Maintainability.Analyzers.dll",
-        "analyzers/dotnet/vb/Microsoft.Maintainability.VisualBasic.Analyzers.dll",
-        "build/Microsoft.Maintainability.Analyzers.props",
-        "build/Microsoft.Maintainability.CSharp.Analyzers.props",
-        "build/Microsoft.Maintainability.VisualBasic.Analyzers.props",
-        "tools/install.ps1",
-        "tools/uninstall.ps1"
-      ]
-    },
     "Microsoft.Net.Http.Headers/1.0.0": {
       "sha512": "1lr92itF1fKR2oEQ6gk1IUsuCgp7UMlf/b1sjlAyuDeUnttj39ra59GQHYpomglJX1UVNpi1/cSBbEsXoNeIhw==",
       "type": "package",
@@ -5818,7 +5703,7 @@
       ]
     },
     "Microsoft.NETCore.App/1.0.1": {
-      "sha512": "M3iH7u95LntTkJtI/DqN/96MRlb8Wa0SjnXldxHA4FjlvEqghOhwK087bDZAZaTN9C4YHckvaYH3ka9eYWZZZw==",
+      "sha512": "1ZiTaAAc3Msi4siXtdVmallNCrFA5ZUzoGkIh4litHjBJBZcRgWvwRXT60woB5FpWPC9qDiTFc6L1Gr8EbOPog==",
       "type": "package",
       "path": "Microsoft.NETCore.App/1.0.1",
       "files": [
@@ -5830,7 +5715,7 @@
       ]
     },
     "Microsoft.NETCore.DotNetHost/1.0.1": {
-      "sha512": "JsQ5UiFsjSrgPXLINlHUazQA8el+0ZcShLGKK+14+cyTDsFcPjIGU2z7Ar+tz0mE5Rsch+AiOiZaIOvq6tLmhg==",
+      "sha512": "uaMgykq6AckP3hZW4dsD6zjocxyXPz0tcTl8OX7mlSUWsyFXdtf45sjdwI0JIHxt3gnI6GihAlOAwYK8HE4niQ==",
       "type": "package",
       "path": "Microsoft.NETCore.DotNetHost/1.0.1",
       "files": [
@@ -5842,7 +5727,7 @@
       ]
     },
     "Microsoft.NETCore.DotNetHostPolicy/1.0.1": {
-      "sha512": "jPlAEczKJ+eR4g9Bidx+/U7ITAAOy8tIRYiUiv7euTwAZFGTgzAdDrXWQE5H0i3vxtWnKNjpZA5aaYypBmmSrw==",
+      "sha512": "d8AQ+ZVj2iK9sbgl3IEsshCSaumhM1PNTPHxldZAQLOoI1BKF8QZ1zPCNqwBGisPiWOE3f/1SHDbQi1BTRBxuA==",
       "type": "package",
       "path": "Microsoft.NETCore.DotNetHostPolicy/1.0.1",
       "files": [
@@ -5854,7 +5739,7 @@
       ]
     },
     "Microsoft.NETCore.DotNetHostResolver/1.0.1": {
-      "sha512": "hHgzkVdJkghRv/Dr91dXtE/PxHe1z/J8XAQr3gA2dEyPBx23MUlWpOyG6S/o7OjQ3hGsJEem9HiadXdXBHhy2A==",
+      "sha512": "GEXgpAHB9E0OhfcmNJ664Xcd2bJkz2qkGIAFmCgEI5ANlQy4qEEmBVfUqA+Z9HB85ZwWxZc1eIJ6fxdxcjrctg==",
       "type": "package",
       "path": "Microsoft.NETCore.DotNetHostResolver/1.0.1",
       "files": [
@@ -5927,29 +5812,8 @@
         "runtime.json"
       ]
     },
-    "Microsoft.QualityGuidelines.Analyzers/1.2.0-beta2": {
-      "sha512": "VC9X9Q1oZQmCVAjbISYVidE08QctdSE4khfgqoWDnZ18DBdgqoDRXuh6bP7lkLwWLbFG8PgWScrfqjFKabyQng==",
-      "type": "package",
-      "path": "Microsoft.QualityGuidelines.Analyzers/1.2.0-beta2",
-      "files": [
-        "Microsoft.QualityGuidelines.Analyzers.1.2.0-beta2.nupkg.sha512",
-        "Microsoft.QualityGuidelines.Analyzers.nuspec",
-        "ThirdPartyNotices.rtf",
-        "analyzers/dotnet/cs/Analyzer.Utilities.dll",
-        "analyzers/dotnet/cs/Microsoft.QualityGuidelines.Analyzers.dll",
-        "analyzers/dotnet/cs/Microsoft.QualityGuidelines.CSharp.Analyzers.dll",
-        "analyzers/dotnet/vb/Analyzer.Utilities.dll",
-        "analyzers/dotnet/vb/Microsoft.QualityGuidelines.Analyzers.dll",
-        "analyzers/dotnet/vb/Microsoft.QualityGuidelines.VisualBasic.Analyzers.dll",
-        "build/Microsoft.QualityGuidelines.Analyzers.props",
-        "build/Microsoft.QualityGuidelines.CSharp.Analyzers.props",
-        "build/Microsoft.QualityGuidelines.VisualBasic.Analyzers.props",
-        "tools/install.ps1",
-        "tools/uninstall.ps1"
-      ]
-    },
     "Microsoft.VisualBasic/10.0.1": {
-      "sha512": "iaaj1F9tmLLvYOHcbM0nSYO5c743QXhUTfMDzEN+yEXNCieexsWpfUARJziflymwVkVLS3RUW+Ska6N4mctIhA==",
+      "sha512": "HpNyOf/4Tp2lh4FyywB55VITk0SqVxEjDzsVDDyF1yafDN6Bq18xcHowzCPINyYHUTgGcEtmpYiRsFdSo0KKdQ==",
       "type": "package",
       "path": "Microsoft.VisualBasic/10.0.1",
       "files": [
@@ -6307,27 +6171,6 @@
         "lib/portable-net45+win+wpa81+wp80/Remotion.Linq.xml"
       ]
     },
-    "Roslyn.Diagnostics.Analyzers/1.2.0-beta2": {
-      "sha512": "dF5eBU4QJyFi4ev5payIgyQs1hY7Kr9nMzXzIpMwtJAPVJD9BrBWkFBgov9EQAa+WR+d1VDbC+gpr+n2Jg9dzg==",
-      "type": "package",
-      "path": "Roslyn.Diagnostics.Analyzers/1.2.0-beta2",
-      "files": [
-        "Roslyn.Diagnostics.Analyzers.1.2.0-beta2.nupkg.sha512",
-        "Roslyn.Diagnostics.Analyzers.nuspec",
-        "ThirdPartyNotices.rtf",
-        "analyzers/dotnet/cs/Analyzer.Utilities.dll",
-        "analyzers/dotnet/cs/Roslyn.Diagnostics.Analyzers.dll",
-        "analyzers/dotnet/cs/Roslyn.Diagnostics.CSharp.Analyzers.dll",
-        "analyzers/dotnet/vb/Analyzer.Utilities.dll",
-        "analyzers/dotnet/vb/Roslyn.Diagnostics.Analyzers.dll",
-        "analyzers/dotnet/vb/Roslyn.Diagnostics.VisualBasic.Analyzers.dll",
-        "build/Roslyn.Diagnostics.Analyzers.props",
-        "build/Roslyn.Diagnostics.CSharp.Analyzers.props",
-        "build/Roslyn.Diagnostics.VisualBasic.Analyzers.props",
-        "tools/install.ps1",
-        "tools/uninstall.ps1"
-      ]
-    },
     "runtime.native.System/4.0.0": {
       "sha512": "QfS/nQI7k/BLgmLrw7qm7YBoULEvgWnPI+cYsbfCVFTW8Aj+i8JhccxcFMu1RWms0YZzF+UHguNBK4Qn89e2Sg==",
       "type": "package",
@@ -6364,7 +6207,7 @@
       ]
     },
     "runtime.native.System.Net.Http/4.0.1": {
-      "sha512": "RZxViFblGZtsnpbvMumOZvSBhdJNy2+003X/7JwTKU1Zgg6tl//BfCfj7LrvaAi2F1TiCUYEBudL3ws69j/gQA==",
+      "sha512": "Nh0UPZx2Vifh8r+J+H2jxifZUD3sBrmolgiFWJd2yiNrxO0xTa6bAw3YwRn1VOiSen/tUXMS31ttNItCZ6lKuA==",
       "type": "package",
       "path": "runtime.native.System.Net.Http/4.0.1",
       "files": [
@@ -6376,7 +6219,7 @@
       ]
     },
     "runtime.native.System.Net.Security/4.0.1": {
-      "sha512": "6BQWmAY74J6wm1JSe8H6hAZHCkP/jaMOnhkCt8srDy15Gjb0R+u+hZiNpIDyCKVwstBTTs3ZIJrWUI8eLgBzCA==",
+      "sha512": "Az6Ff6rZFb8nYGAaejFR6jr8ktt9f3e1Q/yKdw0pwHNTLaO/1eCAC9vzBoR9YAb0QeZD6fZXl1A9tRB5stpzXA==",
       "type": "package",
       "path": "runtime.native.System.Net.Security/4.0.1",
       "files": [
@@ -6454,7 +6297,7 @@
       ]
     },
     "SimpleInjector.Integration.AspNetCore/3.2.1": {
-      "sha512": "IPlksJvKYNAqu0DUjlWsK38IsexcRd9txWsDHrJEV7bPbYgZ8yMTZ6/VW9gnhwa6NjKEEKjkN7UkianQWBAVTg==",
+      "sha512": "JeXFIQRRnfpU3Ow5ZhlpWGJciOkaSQk2iCLseFVx5k6ZoeV5fA2JLeAjjc3O9UzxXMO5QOcSkoperwJFHGf5JA==",
       "type": "package",
       "path": "SimpleInjector.Integration.AspNetCore/3.2.1",
       "files": [
@@ -6467,7 +6310,7 @@
       ]
     },
     "SimpleInjector.Integration.AspNetCore.Mvc/3.2.3": {
-      "sha512": "YdWcZm9NukIgFDH+8kb+rfSl+hLGN4yayqqJQC9+4vqy44baJEp3jV9jPCfO7a36rmAII6XABGIbrJFn0PilGw==",
+      "sha512": "LMMv7OkR6lYUBidxfS7LpYTAF3uJlr7HNobfhn+scm/Mny/ncsNdJIBD7IVFifbF4KQWLxu8E5zXsh12abQDBA==",
       "type": "package",
       "path": "SimpleInjector.Integration.AspNetCore.Mvc/3.2.3",
       "files": [
@@ -6732,27 +6575,6 @@
         "lib/netstandard1.0/System.Collections.Immutable.xml",
         "lib/portable-net45+win8+wp8+wpa81/System.Collections.Immutable.dll",
         "lib/portable-net45+win8+wp8+wpa81/System.Collections.Immutable.xml"
-      ]
-    },
-    "System.Collections.Immutable.Analyzers/1.2.0-beta2": {
-      "sha512": "5gmhLS5W9CR92y3z5C5X5b1MoK40MtUM+GqLprPPmcmMfSz4G9ZXMqPSJCBya+dkIhLzUaY+firbTauzTWYybA==",
-      "type": "package",
-      "path": "System.Collections.Immutable.Analyzers/1.2.0-beta2",
-      "files": [
-        "System.Collections.Immutable.Analyzers.1.2.0-beta2.nupkg.sha512",
-        "System.Collections.Immutable.Analyzers.nuspec",
-        "ThirdPartyNotices.rtf",
-        "analyzers/dotnet/cs/Analyzer.Utilities.dll",
-        "analyzers/dotnet/cs/System.Collections.Immutable.Analyzers.dll",
-        "analyzers/dotnet/cs/System.Collections.Immutable.CSharp.Analyzers.dll",
-        "analyzers/dotnet/vb/Analyzer.Utilities.dll",
-        "analyzers/dotnet/vb/System.Collections.Immutable.Analyzers.dll",
-        "analyzers/dotnet/vb/System.Collections.Immutable.VisualBasic.Analyzers.dll",
-        "build/System.Collections.Immutable.Analyzers.props",
-        "build/System.Collections.Immutable.CSharp.Analyzers.props",
-        "build/System.Collections.Immutable.VisualBasic.Analyzers.props",
-        "tools/install.ps1",
-        "tools/uninstall.ps1"
       ]
     },
     "System.Collections.NonGeneric/4.0.1": {
@@ -7333,7 +7155,7 @@
       ]
     },
     "System.Diagnostics.FileVersionInfo/4.0.0": {
-      "sha512": "y0AycegpT2hSjJaNUPXneE0gFXIOKVY3Etjo4uQTiWMpPRL8FdPy1KUUWQZO4SfW1CJ5ume1m/D4FNfl4QjcyQ==",
+      "sha512": "qjF74OTAU+mRhLaL4YSfiWy3vj6T3AOz8AW37l5zCwfbBfj0k7E94XnEsRaf2TnhE/7QaV6Hvqakoy2LoV8MVg==",
       "type": "package",
       "path": "System.Diagnostics.FileVersionInfo/4.0.0",
       "files": [
@@ -8090,7 +7912,7 @@
       ]
     },
     "System.IO.FileSystem.Watcher/4.0.0": {
-      "sha512": "oyYnFig3RWz18F4ZW9Mb73LEWBUwIgNwu/ITTdUyIHd8xiODrfnalQZPqEFBv76EokZs7pepHZ3xiaN8/lkdaw==",
+      "sha512": "qM4Wr3La+RYb/03B0mZZjbA7tHsGzDffnuXP8Sl48HW2JwCjn3kfD5qdw0sqyNNowUipcJMi9/q6sMUrOIJ6UQ==",
       "type": "package",
       "path": "System.IO.FileSystem.Watcher/4.0.0",
       "files": [
@@ -8388,7 +8210,7 @@
       ]
     },
     "System.Linq.Parallel/4.0.1": {
-      "sha512": "HArTmbQz/wf/fTVbMgmONOlBUfPJPl6AowBIdTCWF+NTamvOAflaMzT7CzzdIyYRiBxv5DC37azIe2E0ngsWzA==",
+      "sha512": "J7XCa7n2cFn32uLbtceXfBFhgCk5M++50lylHKNbqTiJkw5y4Tglpi6amuJNPCvj9bLzNSI7rs1fi4joLMNRgg==",
       "type": "package",
       "path": "System.Linq.Parallel/4.0.1",
       "files": [
@@ -8443,7 +8265,7 @@
       ]
     },
     "System.Linq.Queryable/4.0.1": {
-      "sha512": "E4LoZhtRGzBIWouzpflWDx5gHAQIORhv+wDwbTbIu1zt4rd9Ri2mIVkJliJsbhVuYgjHht6FGe7iLLGlECHrcw==",
+      "sha512": "Yn/WfYe9RoRfmSLvUt2JerP0BTGGykCZkQPgojaxgzF2N0oPo+/AhB8TXOpdCcNlrG3VRtsamtK2uzsp3cqRVw==",
       "type": "package",
       "path": "System.Linq.Queryable/4.0.1",
       "files": [
@@ -8697,7 +8519,7 @@
       ]
     },
     "System.Net.Requests/4.0.11": {
-      "sha512": "ULq/xoOwzzbRYg3RMXMzakNjFTavM/956MtsrxeQq+WW6MZ0kuHSSqXmj+n6kvQxEiTIwZMSf7RR/RtoIxEQzQ==",
+      "sha512": "vxGt7C0cZixN+VqoSW4Yakc1Y9WknmxauDqzxgpw/FnBdz4kQNN51l4wxdXX5VY1xjqy//+G+4CvJWp1+f+y6Q==",
       "type": "package",
       "path": "System.Net.Requests/4.0.11",
       "files": [
@@ -8778,7 +8600,7 @@
       ]
     },
     "System.Net.Security/4.0.0": {
-      "sha512": "25TFNe52DCqQTfXPj+/XOV4EMTt9XdVvKUjZk5a4amWpOX7SrMHG1zfwRhe+fgN2il1AgU7yatFcPIrYq1VqOg==",
+      "sha512": "uM1JaYJciCc2w7efD6du0EpQ1n5ZQqE6/P43/aI4H5E59qvP+wt3l70KIUF/Ha7NaeXGoGNFPVO0MB80pVHk2g==",
       "type": "package",
       "path": "System.Net.Security/4.0.0",
       "files": [
@@ -8854,7 +8676,7 @@
       ]
     },
     "System.Net.WebHeaderCollection/4.0.1": {
-      "sha512": "4bbxy1pc5ERrgltZgP9sA82IwPg1c5SZoFUQ2y5Q+3VtWNhaRX9Tfp6Y2LYIdQ0IuTSz6zcLB7CBD/qM6ptfNA==",
+      "sha512": "XX2TIAN+wBSAIV51BU2FvvXMdstUa8b0FBSZmDWjZdwUMmggQSifpTOZ5fNH20z9ZCg2fkV1L5SsZnpO2RQDRQ==",
       "type": "package",
       "path": "System.Net.WebHeaderCollection/4.0.1",
       "files": [
@@ -8928,7 +8750,7 @@
       ]
     },
     "System.Numerics.Vectors/4.1.1": {
-      "sha512": "i9DrbrtbK2wCqZhOPawTsmzqRqufFIyPHtKJyyi2UWre9PNIkSDvwcBBTYjBS7GrvdM3KgCoud36qEwWNTnBMQ==",
+      "sha512": "Ex1NSKycC2wi5XBMWUGWPc3lumh6OQWFFmmpZFZz0oLht5lQ+wWPHVZumOrMJuckfUiVMd4p67BrkBos8lcF+Q==",
       "type": "package",
       "path": "System.Numerics.Vectors/4.1.1",
       "files": [
@@ -9108,7 +8930,7 @@
       ]
     },
     "System.Reflection.DispatchProxy/4.0.1": {
-      "sha512": "7xsj6OimVewxMyYjWJ6LBk5MCIpUswTBtxuwhDK7MmVt39vOR5qKH4hsP2hPrCcvjv+MAUtk3vye+Bm2LfVK/A==",
+      "sha512": "GPPgWoSxQEU3aCKSOvsAc1dhTTi4iq92PUVEVfnGPGwqCf6synaAJGYLKMs5E3CuRfel8ufACWUijXqDpOlGrA==",
       "type": "package",
       "path": "System.Reflection.DispatchProxy/4.0.1",
       "files": [
@@ -9205,7 +9027,7 @@
       ]
     },
     "System.Reflection.Emit.Lightweight/4.0.1": {
-      "sha512": "fPLKiEqrzLz6z4WSRhEVoy1iTb2qC4oWqRpQlEPkeJ/5sWR7A5yj8/8+wFoMXer0ZQmx2g2j+pMv4g3MduRlhg==",
+      "sha512": "sSzHHXueZ5Uh0OLpUQprhr+ZYJrLPA2Cmr4gn0wj9+FftNKXx8RIMKvO9qnjk2ebPYUjZ+F2ulGdPOsvj+MEjA==",
       "type": "package",
       "path": "System.Reflection.Emit.Lightweight/4.0.1",
       "files": [
@@ -9413,7 +9235,7 @@
       ]
     },
     "System.Resources.Reader/4.0.0": {
-      "sha512": "+zqygqn9O9BN23VN78MYuJY+yxdTvSYtbb58vXSJnczby3ZdSQ6UP50O2bTy6Gl8WyMipwdH1zMrtBRxWIxazA==",
+      "sha512": "VX1iHAoHxgrLZv+nq/9drCZI6Q4SSCzSVyUm1e0U60sqWdj6XhY7wvKmy3RvsSal9h+/vqSWwxxJsm0J4vn/jA==",
       "type": "package",
       "path": "System.Resources.Reader/4.0.0",
       "files": [
@@ -9567,27 +9389,6 @@
         "ref/xamarinmac20/_._",
         "ref/xamarintvos10/_._",
         "ref/xamarinwatchos10/_._"
-      ]
-    },
-    "System.Runtime.Analyzers/1.2.0-beta2": {
-      "sha512": "JTCqwcOIn4xpSTtKwaN2AyEP5+Ogll+5LTU9EJufIO5wDd3yBqvIJdb90+R+fo4siMNGrNwfPKFQJ13SGKIH6g==",
-      "type": "package",
-      "path": "System.Runtime.Analyzers/1.2.0-beta2",
-      "files": [
-        "System.Runtime.Analyzers.1.2.0-beta2.nupkg.sha512",
-        "System.Runtime.Analyzers.nuspec",
-        "ThirdPartyNotices.rtf",
-        "analyzers/dotnet/cs/Analyzer.Utilities.dll",
-        "analyzers/dotnet/cs/System.Runtime.Analyzers.dll",
-        "analyzers/dotnet/cs/System.Runtime.CSharp.Analyzers.dll",
-        "analyzers/dotnet/vb/Analyzer.Utilities.dll",
-        "analyzers/dotnet/vb/System.Runtime.Analyzers.dll",
-        "analyzers/dotnet/vb/System.Runtime.VisualBasic.Analyzers.dll",
-        "build/System.Runtime.Analyzers.props",
-        "build/System.Runtime.CSharp.Analyzers.props",
-        "build/System.Runtime.VisualBasic.Analyzers.props",
-        "tools/install.ps1",
-        "tools/uninstall.ps1"
       ]
     },
     "System.Runtime.Extensions/4.1.0": {
@@ -9793,27 +9594,6 @@
         "ref/xamarinwatchos10/_._"
       ]
     },
-    "System.Runtime.InteropServices.Analyzers/1.2.0-beta2": {
-      "sha512": "LasP+trmAAO7bLx22y/mEI+eb8SHHz0J3uQKQZtsSdAQfYd3O2f/pNRcl0Q3O2lH5VESnH3rztgnZF1/i2h13A==",
-      "type": "package",
-      "path": "System.Runtime.InteropServices.Analyzers/1.2.0-beta2",
-      "files": [
-        "System.Runtime.InteropServices.Analyzers.1.2.0-beta2.nupkg.sha512",
-        "System.Runtime.InteropServices.Analyzers.nuspec",
-        "ThirdPartyNotices.rtf",
-        "analyzers/dotnet/cs/Analyzer.Utilities.dll",
-        "analyzers/dotnet/cs/System.Runtime.InteropServices.Analyzers.dll",
-        "analyzers/dotnet/cs/System.Runtime.InteropServices.CSharp.Analyzers.dll",
-        "analyzers/dotnet/vb/Analyzer.Utilities.dll",
-        "analyzers/dotnet/vb/System.Runtime.InteropServices.Analyzers.dll",
-        "analyzers/dotnet/vb/System.Runtime.InteropServices.VisualBasic.Analyzers.dll",
-        "build/System.Runtime.InteropServices.Analyzers.props",
-        "build/System.Runtime.InteropServices.CSharp.Analyzers.props",
-        "build/System.Runtime.InteropServices.VisualBasic.Analyzers.props",
-        "tools/install.ps1",
-        "tools/uninstall.ps1"
-      ]
-    },
     "System.Runtime.InteropServices.RuntimeInformation/4.0.0": {
       "sha512": "hWPhJxc453RCa8Z29O91EmfGeZIHX1ZH2A8L6lYQVSaKzku2DfArSfMEb1/MYYzPQRJZeu0c9dmYeJKxW5Fgng==",
       "type": "package",
@@ -9847,7 +9627,7 @@
       ]
     },
     "System.Runtime.Loader/4.0.0": {
-      "sha512": "npdjJiP+KCTW7N4busVkdVBus0ZF8blk45aI4zAKqW1EVP7PCsxM+e9DXgk+ZVyNVTcz3eCk4c++sn6tfBUozQ==",
+      "sha512": "4UN78GOVU/mbDFcXkEWtetJT/sJ0yic2gGk1HSlSpWI0TDf421xnrZTDZnwNBapk1GQeYN7U1lTj/aQB1by6ow==",
       "type": "package",
       "path": "System.Runtime.Loader/4.0.0",
       "files": [
@@ -10072,7 +9852,7 @@
       ]
     },
     "System.Security.Cryptography.Cng/4.2.0": {
-      "sha512": "2oy8oZ1sqyJ1qrLbHEKDIxg7nPBqOKMVtStODTUwK4cFmz919wlyhG577r+FAOHvso7gLTtKJoH9PF7xeE0W9w==",
+      "sha512": "cUJ2h+ZvONDe28Szw3st5dOHdjndhJzQ2WObDEXAWRPEQBtVItVoxbXM/OEsTthl3cNn2dk2k0I3y45igCQcLw==",
       "type": "package",
       "path": "System.Security.Cryptography.Cng/4.2.0",
       "files": [
@@ -10098,7 +9878,7 @@
       ]
     },
     "System.Security.Cryptography.Csp/4.0.0": {
-      "sha512": "21RbbEw+bPi5qsOVcC914rPsZAtnF4FyIMCs21UL9a+5oqvLN6nK7l1+m2FwOv4zs9ak200dtj9imGB+q9kmEA==",
+      "sha512": "/i1Usuo4PgAqgbPNC0NjbO3jPW//BoBlTpcWFD1EHVbidH21y4c1ap5bbEMSGAXjAShhMH4abi/K8fILrnu4BQ==",
       "type": "package",
       "path": "System.Security.Cryptography.Csp/4.0.0",
       "files": [
@@ -10167,7 +9947,7 @@
       ]
     },
     "System.Security.Cryptography.OpenSsl/4.0.0": {
-      "sha512": "3emMforkW+LqGHa4k4fiq0tfrhRfkfiiFNz7jZpqaHMP+3Fbn2hRLokqaAv8YKiw7Fq6CrUikMzJmKXs98RjpQ==",
+      "sha512": "HUG/zNUJwEiLkoURDixzkzZdB5yGA5pQhDP93ArOpDPQMteURIGERRNzzoJlmTreLBWr5lkFSjjMSk8ySEpQMw==",
       "type": "package",
       "path": "System.Security.Cryptography.OpenSsl/4.0.0",
       "files": [
@@ -10412,7 +10192,7 @@
       ]
     },
     "System.Text.Encoding.CodePages/4.0.1": {
-      "sha512": "fRI1xXMOgPyWN9ff+46F+/tZ3UmE/nIJV4ASgYi4aFbzwR/tyewNsZZu682HPggyTj4TRA90F6I0R919BU/p7w==",
+      "sha512": "h4z6rrA/hxWf4655D18IIZ0eaLRa3tQC/j+e26W+VinIHY0l07iEXaAvO0YSYq3MvCjMYy8Zs5AdC1sxNQOB7Q==",
       "type": "package",
       "path": "System.Text.Encoding.CodePages/4.0.1",
       "files": [
@@ -10769,27 +10549,6 @@
         "ref/xamarinmac20/_._",
         "ref/xamarintvos10/_._",
         "ref/xamarinwatchos10/_._"
-      ]
-    },
-    "System.Threading.Tasks.Analyzers/1.2.0-beta2": {
-      "sha512": "qMhOP85bLfsI6HWuWFRuhxGpDcr4thaNB2NfEhPsgT2NgQm9io+nITkGRddsbB2bBtjSknYd86OqTFWDIKJa7A==",
-      "type": "package",
-      "path": "System.Threading.Tasks.Analyzers/1.2.0-beta2",
-      "files": [
-        "System.Threading.Tasks.Analyzers.1.2.0-beta2.nupkg.sha512",
-        "System.Threading.Tasks.Analyzers.nuspec",
-        "ThirdPartyNotices.rtf",
-        "analyzers/dotnet/cs/Analyzer.Utilities.dll",
-        "analyzers/dotnet/cs/System.Threading.Tasks.Analyzers.dll",
-        "analyzers/dotnet/cs/System.Threading.Tasks.CSharp.Analyzers.dll",
-        "analyzers/dotnet/vb/Analyzer.Utilities.dll",
-        "analyzers/dotnet/vb/System.Threading.Tasks.Analyzers.dll",
-        "analyzers/dotnet/vb/System.Threading.Tasks.VisualBasic.Analyzers.dll",
-        "build/System.Threading.Tasks.Analyzers.props",
-        "build/System.Threading.Tasks.CSharp.Analyzers.props",
-        "build/System.Threading.Tasks.VisualBasic.Analyzers.props",
-        "tools/install.ps1",
-        "tools/uninstall.ps1"
       ]
     },
     "System.Threading.Tasks.Dataflow/4.6.0": {
@@ -11180,7 +10939,7 @@
       ]
     },
     "System.Xml.XPath/4.0.1": {
-      "sha512": "x5yinJsOybikqBlkhmJz8GHFy3oxOTS14KABdAZw1yJTbMWyWcw+a0KGDjOu8oPMXb7BxZSwsRzfVv7AmqkkWA==",
+      "sha512": "UWd1H+1IJ9Wlq5nognZ/XJdyj8qPE4XufBUkAW59ijsCPjZkZe0MUzKKJFBr+ZWBe5Wq1u1d5f2CYgE93uH7DA==",
       "type": "package",
       "path": "System.Xml.XPath/4.0.1",
       "files": [
@@ -11217,7 +10976,7 @@
       ]
     },
     "System.Xml.XPath.XDocument/4.0.1": {
-      "sha512": "DuGlWQhrsacriiFLBfa7zUJycYychSln6RbBeb5FxWC2t3VOC3plA/LLrzl00vyVIB2pXSvqMePUlkfN1OMnUw==",
+      "sha512": "FLhdYJx4331oGovQypQ8JIw2kEmNzCsjVOVYY/16kZTUoquZG85oVn7yUhBE2OZt1yGPSXAL0HTEfzjlbNpM7Q==",
       "type": "package",
       "path": "System.Xml.XPath.XDocument/4.0.1",
       "files": [
@@ -11262,7 +11021,7 @@
   "projectFileDependencyGroups": {
     "": [
       "MediatR >= 2.1.0",
-      "Microsoft.ApplicationInsights.AspNetCore >= 1.0.1",
+      "Microsoft.ApplicationInsights.AspNetCore >= 1.0.2",
       "Microsoft.AspNetCore.Authentication.Cookies >= 1.0.0",
       "Microsoft.AspNetCore.Diagnostics >= 1.0.0",
       "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore >= 1.0.0",

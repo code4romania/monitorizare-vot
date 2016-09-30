@@ -12,8 +12,8 @@ namespace VotingIrregularities.Domain.Models
         }
 
         public int IdOptiune { get; set; }
-        public string TextOptiune { get; set; }
         public bool SeIntroduceText { get; set; }
+        public string TextOptiune { get; set; }
 
         public virtual ICollection<Raspuns> Raspuns { get; set; }
         public virtual ICollection<RaspunsDisponibil> RaspunsDisponibil { get; set; }

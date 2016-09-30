@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using VotingIrregularities.Api.Models;
-using VotingIrregularities.Domain.Models;
 
 namespace VotingIrregularities.Api.Controllers
 {

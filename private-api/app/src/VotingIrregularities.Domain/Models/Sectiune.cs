@@ -10,6 +10,7 @@ namespace VotingIrregularities.Domain.Models
             Intrebare = new HashSet<Intrebare>();
         }
 
+        public int IdSectiune { get; set; }
         public string CodSectiune { get; set; }
         public string Descriere { get; set; }
 

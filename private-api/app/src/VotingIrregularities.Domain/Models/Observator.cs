@@ -15,10 +15,10 @@ namespace VotingIrregularities.Domain.Models
         }
 
         public int IdObservator { get; set; }
-        public string NumeIntreg { get; set; }
-        public string NumarTelefon { get; set; }
-        public int IdOng { get; set; }
         public bool EsteDinEchipa { get; set; }
+        public int IdOng { get; set; }
+        public string NumarTelefon { get; set; }
+        public string NumeIntreg { get; set; }
 
         public virtual ICollection<AccesObservatoriPerDevice> AccesObservatoriPerDevice { get; set; }
         public virtual ICollection<DispozitivObservator> DispozitivObservator { get; set; }

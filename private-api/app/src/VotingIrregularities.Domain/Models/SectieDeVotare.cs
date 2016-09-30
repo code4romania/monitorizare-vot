@@ -13,12 +13,12 @@ namespace VotingIrregularities.Domain.Models
         }
 
         public int IdSectieDeVotarre { get; set; }
-        public int NumarSectie { get; set; }
-        public int IdJudet { get; set; }
         public string AdresaSectie { get; set; }
-        public string DenumireUat { get; set; }
-        public string LocalitateComponenta { get; set; }
         public string Coordonate { get; set; }
+        public string DenumireUat { get; set; }
+        public int IdJudet { get; set; }
+        public string LocalitateComponenta { get; set; }
+        public int NumarSectie { get; set; }
 
         public virtual ICollection<Nota> Nota { get; set; }
         public virtual ICollection<Raspuns> Raspuns { get; set; }

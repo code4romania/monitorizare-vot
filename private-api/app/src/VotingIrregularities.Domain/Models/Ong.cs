@@ -11,8 +11,8 @@ namespace VotingIrregularities.Domain.Models
         }
 
         public int IdOng { get; set; }
-        public string NumeOng { get; set; }
         public string AbreviereNumeOng { get; set; }
+        public string NumeOng { get; set; }
 
         public virtual ICollection<Observator> Observator { get; set; }
     }

@@ -1,14 +1,36 @@
 {
   "version": "1.0.0-*",
+  "buildOptions": {
+    "emitEntryPoint": true
+  },
 
   "dependencies": {
+    "Microsoft.NETCore.App": { // in order to support code first migrations
+      "type": "platform",
+      "version": "1.0.1-*"
+    },
     "MediatR": "2.1.0",
     "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "1.0.0",
+    "Microsoft.EntityFrameworkCore": "1.0.1",
+    "Microsoft.EntityFrameworkCore.SqlServer": "1.0.1",
+    "Microsoft.EntityFrameworkCore.SqlServer.Design": "1.0.1",
+    "Microsoft.EntityFrameworkCore.Tools": {
+      "version": "1.0.0-preview2-final",
+      "type": "build"
+    },
     "NETStandard.Library": "1.6.0",
-    "SimpleInjector": "3.2.2"
+    "SimpleInjector": "3.2.2",
+    "Microsoft.Extensions.Configuration": "1.0.0",
+    "Microsoft.Extensions.Configuration.FileExtensions": "1.0.0",
+    "Microsoft.AspNetCore.Hosting": "1.0.0",
+    "Microsoft.Extensions.PlatformAbstractions": "1.0.0",
+    "System.Linq.Queryable": "4.0.1",
+    "Microsoft.Extensions.Configuration.Json": "1.0.0",
+    "Microsoft.Extensions.Logging.Console": "1.0.0",
+    "Microsoft.Extensions.Logging.Debug": "1.0.0"
   },
   "frameworks": {
-    "netstandard1.6": {
+    "netcoreapp1.0": {
       "imports": "dnxcore50"
     }
   },
