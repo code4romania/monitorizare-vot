@@ -21,17 +21,15 @@ namespace VotingIrregularities.Api.Controllers
         }
 
         /// <summary>
-        /// Returneaza versiunea unui formular sub forma unui numar intreg. 
-        /// Aceasta metoda trebuie apelata de fiecare data cand se afiseaza un formular in aplicatie. 
-        /// Daca id-ul returnat difera de cel din aplicatie, atunci trebuie incarcat formularul printr-un apel la 
+        /// Returneaza versiunea toturor formularelor sub forma unui array. 
+        /// Daca versiunea returnat difera de cel din aplicatie, atunci trebuie incarcat formularul printr-un apel la 
         /// <code>api//v1//formular</code>
         /// </summary>
-        /// <param name="idformular">Id-ul formularului pentru care trebuie aflat versiunea</param>
         /// <returns>Returneaza un obiect care are proprietatea de tip int, versiune</returns>
         [HttpGet("versiune")]
-        public async Task<dynamic> Versiune(string idformular)
+        public async Task<dynamic> Versiune()
         {
-            var versiune = await _mediator.SendAsync(new ModelFormular.VersiuneQuery {CodFormular = idformular});
+            var versiune = await _mediator.SendAsync(new ModelFormular.VersiuneQuery());
 
             return new {versiune};
         }

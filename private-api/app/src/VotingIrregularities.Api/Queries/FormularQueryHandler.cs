@@ -9,7 +9,7 @@ using VotingIrregularities.Domain.Models;
 
 namespace VotingIrregularities.Api.Queries
 {
-    public class FormularQueryHandler : IAsyncRequestHandler<ModelFormular.VersiuneQuery,int?>
+    public class FormularQueryHandler : IAsyncRequestHandler<ModelFormular.VersiuneQuery,Dictionary<string,int>>
     {
         private readonly VotingContext _context;
 
@@ -18,12 +18,13 @@ namespace VotingIrregularities.Api.Queries
             _context = context;
         }
 
-        public async Task<int?> Handle(ModelFormular.VersiuneQuery message)
+        public async Task<Dictionary<string, int>> Handle(ModelFormular.VersiuneQuery message)
         {
             var result = await _context.VersiuneFormular
-                .FirstOrDefaultAsync(f => f.CodFormular == message.CodFormular);
+                .AsNoTracking()
+                .ToListAsync();
 
-            return result?.VersiuneaCurenta;
+            return result.ToDictionary(k => k.CodFormular, v => v.VersiuneaCurenta);
         }
     }
 }
