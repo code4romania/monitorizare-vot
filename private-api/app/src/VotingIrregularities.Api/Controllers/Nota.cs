@@ -20,12 +20,15 @@ namespace VotingIrregularities.Api.Controllers
         public async Task Inregistreaza([FromBody] ModelNota nota)
         {
             // TODO[DH] se salveaza efectiv
-            await Task.Delay(0);
+            await Task.FromResult(0);
         }
 
 
         /// <summary>
         /// Aceasta ruta este folosita cand observatorul incarca o imagine sau un clip in cadrul unei note.
+        /// TODO: de adaugat in request header detaliile sectiei. Ex:
+        /// codJudet:BU 
+        /// numarSectie:3243
         /// API-ul va returna adresa publica a fisierului unde este salvat.
         /// </summary>
         /// <param name="file"></param>
@@ -33,7 +36,7 @@ namespace VotingIrregularities.Api.Controllers
         [HttpPost("ataseaza")]
         public async Task<dynamic> Upload(IFormFile file)
         {
-            return await Task.Run(() => new { FileAdress = file?.FileName});
+            return await Task.FromResult(new { FileAdress = file?.FileName});
         }
 
     }

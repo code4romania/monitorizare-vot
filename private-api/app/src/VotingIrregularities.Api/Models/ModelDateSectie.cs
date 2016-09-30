@@ -7,7 +7,8 @@ namespace VotingIrregularities.Api.Models
 {
     public class ModelDateSectie
     {
-        public int IdSectieDeVotare { get; set; }
+        public string CodJudet { get; set; }
+        public int NumarSectie { get; set; }
         public DateTime? OraSosirii { get; set; }
         public DateTime? OraPlecarii { get; set; }
         public bool? EsteZonaUrbana { get; set; }

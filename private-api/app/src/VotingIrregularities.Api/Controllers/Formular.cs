@@ -22,7 +22,7 @@ namespace VotingIrregularities.Api.Controllers
 
         /// <summary>
         /// Returneaza versiunea toturor formularelor sub forma unui array. 
-        /// Daca versiunea returnat difera de cel din aplicatie, atunci trebuie incarcat formularul printr-un apel la 
+        /// Daca versiunea returnata difera de cea din aplicatie, atunci trebuie incarcat formularul outdated printr-un apel la 
         /// <code>api//v1//formular</code>
         /// </summary>
         /// <returns>Returneaza un obiect care are proprietatea de tip int, versiune</returns>
