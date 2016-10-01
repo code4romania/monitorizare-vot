@@ -12,21 +12,21 @@ namespace VotingIrregularities.Api.Extensions
     {
         public void Apply(Operation operation, OperationFilterContext context)
         {
-            if (string.Equals(operation.OperationId, "apiV1NotaataseazaPost",StringComparison.CurrentCultureIgnoreCase))
-            {
-                operation.Consumes.Add("application/form-data");
-                operation.Parameters = new IParameter[]
-                {
-                    new NonBodyParameter
-                    {
+            if (!string.Equals(operation.OperationId, "apiV1NotaataseazaPost", StringComparison.CurrentCultureIgnoreCase))
+                return;
 
-                        Name = "file",
-                        In = "formData",
-                        Required = true,
-                        Type = "file"
-                    }
-                };
-            }
+            operation.Consumes.Add("application/form-data");
+            operation.Parameters = new IParameter[]
+            {
+                new NonBodyParameter
+                {
+
+                    Name = "file",
+                    In = "formData",
+                    Required = true,
+                    Type = "file"
+                }
+            };
         }
     }
 }

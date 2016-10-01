@@ -51,7 +51,7 @@ namespace VotingIrregularities.Domain
                 logger.LogDebug($"Migration finished");
                 logger.LogDebug($"Initializing data seeding...");
                 context.EnsureSeedData();
-                logger.LogDebug($"Data seeded");
+                logger.LogDebug($"Data seeded for {conn}");
 
             }
         }

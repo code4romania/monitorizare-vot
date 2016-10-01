@@ -6,12 +6,6 @@ namespace VotingIrregularities.Domain.Models
 {
     public partial class VotingContext : DbContext
     {
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-            optionsBuilder.UseSqlServer(@"Server=.;Initial Catalog=mv_local;Persist Security Info=False;User ID=vi;Password=vi;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=True;Connection Timeout=30;");
-        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AccesObservatoriPerDevice>(entity =>

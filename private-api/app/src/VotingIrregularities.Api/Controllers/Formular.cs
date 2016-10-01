@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using VotingIrregularities.Api.Models;
 
 namespace VotingIrregularities.Api.Controllers
@@ -14,14 +16,16 @@ namespace VotingIrregularities.Api.Controllers
     public class Formular : Controller
     {
         private readonly IMediator _mediator;
+        private readonly ILogger _logger;
 
-        public Formular(IMediator mediator)
+        public Formular(IMediator mediator, ILoggerFactory logger)
         {
             _mediator = mediator;
+            _logger = logger.CreateLogger("Formular") ;
         }
 
         /// <summary>
-        /// Returneaza versiunea toturor formularelor sub forma unui array. 
+        /// Returneaza versiunea tuturor formularelor sub forma unui array. 
         /// Daca versiunea returnata difera de cea din aplicatie, atunci trebuie incarcat formularul outdated printr-un apel la 
         /// <code>api//v1//formular</code>
         /// </summary>
@@ -29,9 +33,17 @@ namespace VotingIrregularities.Api.Controllers
         [HttpGet("versiune")]
         public async Task<dynamic> Versiune()
         {
-            var versiune = await _mediator.SendAsync(new ModelFormular.VersiuneQuery());
-
-            return new {versiune};
+            return new { versiune = await _mediator.SendAsync(new ModelFormular.VersiuneQuery())};
+            
+            return new
+            {
+                versiune = new
+                {
+                    A = 1,
+                    B = 2,
+                    C = 3
+                }
+            };
         }
 
 

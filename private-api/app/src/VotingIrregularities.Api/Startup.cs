@@ -1,19 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.PlatformAbstractions;
+using Serilog;
 using Swashbuckle.Swagger.Model;
 using VotingIrregularities.Api.Extensions;
 using VotingIrregularities.Domain;
@@ -23,15 +28,13 @@ using SimpleInjector.Extensions.ExecutionContextScoping;
 using SimpleInjector.Integration.AspNetCore;
 using SimpleInjector.Integration.AspNetCore.Mvc;
 using VotingIrregularities.Domain.Models;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace VotingIrregularities.Api
 {
     public class Startup
     {
-        private Container container = new Container
-        {
-           // Options = { DefaultScopedLifestyle = new AspNetRequestLifestyle()}
-        };
+        private readonly Container container = new Container();
 
         public Startup(IHostingEnvironment env)
         {
@@ -96,10 +99,31 @@ namespace VotingIrregularities.Api
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IApplicationLifetime appLifetime)
         {
-            // Simpleinjector
+            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+            loggerFactory.AddDebug();
 
+            loggerFactory.AddSerilog();
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo
+                .ApplicationInsightsTraces(Configuration["ApplicationInsights:InstrumentationKey"])
+                .CreateLogger();
+            app.UseApplicationInsightsRequestTelemetry();
+            appLifetime.ApplicationStopped.Register(Log.CloseAndFlush);
+
+            app.UseExceptionHandler(
+                builder =>
+                {
+                    builder.Run(context =>
+                        {
+                            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                            context.Response.ContentType = "text/html";
+                            return Task.FromResult(0);
+                        }
+                        );
+                }
+            );
             app.UseSimpleInjectorAspNetRequestScoping(container);
 
             container.Options.DefaultScopedLifestyle = new AspNetRequestLifestyle();
@@ -111,13 +135,6 @@ namespace VotingIrregularities.Api
             BuildMediator();
 
             container.Verify();
-
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
-
-            app.UseApplicationInsightsRequestTelemetry();
-
-
 
             app.UseMvc();
 

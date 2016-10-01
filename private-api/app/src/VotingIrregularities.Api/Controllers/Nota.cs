@@ -26,9 +26,11 @@ namespace VotingIrregularities.Api.Controllers
 
         /// <summary>
         /// Aceasta ruta este folosita cand observatorul incarca o imagine sau un clip in cadrul unei note.
-        /// TODO: de adaugat in request header detaliile sectiei. Ex:
+        /// TODO: de adaugat in request header detaliile userului, sectiei si a intrebarii. Ex:
         /// codJudet:BU 
         /// numarSectie:3243
+        /// idObservator: 3022
+        /// idIntrebare: 201
         /// API-ul va returna adresa publica a fisierului unde este salvat.
         /// </summary>
         /// <param name="file"></param>

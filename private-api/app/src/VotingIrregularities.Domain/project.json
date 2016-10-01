@@ -27,7 +27,9 @@
     "System.Linq.Queryable": "4.0.1",
     "Microsoft.Extensions.Configuration.Json": "1.0.0",
     "Microsoft.Extensions.Logging.Console": "1.0.0",
-    "Microsoft.Extensions.Logging.Debug": "1.0.0"
+    "Microsoft.Extensions.Logging.Debug": "1.0.0",
+    "Serilog.Sinks.ApplicationInsights": "2.1.0",
+    "Serilog.Extensions.Logging": "1.3.0-dev-10125"
   },
   "frameworks": {
     "netcoreapp1.0": {
