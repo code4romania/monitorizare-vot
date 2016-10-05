@@ -14,7 +14,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <SchemaVersion>2.0</SchemaVersion>
-    <ApplicationInsightsResourceId>/subscriptions/0fe88028-7dc0-4e2b-9476-9864aa338037/resourcegroups/code4/providers/microsoft.insights/components/votingirregularities</ApplicationInsightsResourceId>
+    <ApplicationInsightsResourceId>/subscriptions/8ad78fbb-bdc8-408b-ac97-bab673b57011/resourcegroups/MonitorizareVot-WestEU/providers/microsoft.insights/components/viuat</ApplicationInsightsResourceId>
   </PropertyGroup>
   <ItemGroup>
     <DnxInvisibleContent Include="bower.json" />

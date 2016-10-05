@@ -5754,7 +5754,7 @@
       ]
     },
     "Microsoft.NETCore.App/1.0.1": {
-      "sha512": "1ZiTaAAc3Msi4siXtdVmallNCrFA5ZUzoGkIh4litHjBJBZcRgWvwRXT60woB5FpWPC9qDiTFc6L1Gr8EbOPog==",
+      "sha512": "M3iH7u95LntTkJtI/DqN/96MRlb8Wa0SjnXldxHA4FjlvEqghOhwK087bDZAZaTN9C4YHckvaYH3ka9eYWZZZw==",
       "type": "package",
       "path": "Microsoft.NETCore.App/1.0.1",
       "files": [
@@ -6387,7 +6387,7 @@
       ]
     },
     "SimpleInjector.Integration.AspNetCore/3.2.1": {
-      "sha512": "JeXFIQRRnfpU3Ow5ZhlpWGJciOkaSQk2iCLseFVx5k6ZoeV5fA2JLeAjjc3O9UzxXMO5QOcSkoperwJFHGf5JA==",
+      "sha512": "IPlksJvKYNAqu0DUjlWsK38IsexcRd9txWsDHrJEV7bPbYgZ8yMTZ6/VW9gnhwa6NjKEEKjkN7UkianQWBAVTg==",
       "type": "package",
       "path": "SimpleInjector.Integration.AspNetCore/3.2.1",
       "files": [
@@ -6400,7 +6400,7 @@
       ]
     },
     "SimpleInjector.Integration.AspNetCore.Mvc/3.2.3": {
-      "sha512": "LMMv7OkR6lYUBidxfS7LpYTAF3uJlr7HNobfhn+scm/Mny/ncsNdJIBD7IVFifbF4KQWLxu8E5zXsh12abQDBA==",
+      "sha512": "YdWcZm9NukIgFDH+8kb+rfSl+hLGN4yayqqJQC9+4vqy44baJEp3jV9jPCfO7a36rmAII6XABGIbrJFn0PilGw==",
       "type": "package",
       "path": "SimpleInjector.Integration.AspNetCore.Mvc/3.2.3",
       "files": [

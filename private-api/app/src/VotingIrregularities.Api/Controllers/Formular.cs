@@ -31,19 +31,9 @@ namespace VotingIrregularities.Api.Controllers
         /// </summary>
         /// <returns>Returneaza un obiect care are proprietatea de tip int, versiune</returns>
         [HttpGet("versiune")]
-        public async Task<dynamic> Versiune()
+        public async Task<ModelVersiune> Versiune()
         {
-            return new { versiune = await _mediator.SendAsync(new ModelFormular.VersiuneQuery())};
-            
-            return new
-            {
-                versiune = new
-                {
-                    A = 1,
-                    B = 2,
-                    C = 3
-                }
-            };
+            return new ModelVersiune { Versiune = await _mediator.SendAsync(new ModelFormular.VersiuneQuery())};
         }
 
 
