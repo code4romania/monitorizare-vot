@@ -2,6 +2,7 @@
   "userSecretsId": "TBR",
 
   "dependencies": {
+    "AutoMapper": "5.1.1",
     "MediatR": "2.1.0",
     "Microsoft.ApplicationInsights.AspNetCore": "1.0.2",
     "Microsoft.AspNetCore.Authentication.Cookies": "1.0.0",

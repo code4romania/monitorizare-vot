@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
+using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
@@ -28,7 +29,7 @@ using SimpleInjector.Extensions.ExecutionContextScoping;
 using SimpleInjector.Integration.AspNetCore;
 using SimpleInjector.Integration.AspNetCore.Mvc;
 using VotingIrregularities.Domain.Models;
-using ILogger = Microsoft.Extensions.Logging.ILogger;
+using IConfigurationProvider = AutoMapper.IConfigurationProvider;
 
 namespace VotingIrregularities.Api
 {
@@ -132,8 +133,10 @@ namespace VotingIrregularities.Api
 
             RegisterDbContext<VotingContext>(Configuration.GetConnectionString("DefaultConnection"));
 
-            BuildMediator();
+            RegisterAutomapper();
 
+            BuildMediator();
+            
             container.Verify();
 
             app.UseMvc();
@@ -203,6 +206,17 @@ namespace VotingIrregularities.Api
             var mediator = container.GetInstance<IMediator>();
 
             return mediator;
+        }
+
+        private void RegisterAutomapper()
+        {
+            Mapper.Initialize(cfg =>
+            {
+                cfg.AddProfiles(GetAssemblies());
+            });
+
+            container.RegisterSingleton(Mapper.Configuration);
+            container.Register<IMapper>(() => new Mapper(Mapper.Configuration),Lifestyle.Scoped);
         }
 
         private static IEnumerable<Assembly> GetAssemblies()
