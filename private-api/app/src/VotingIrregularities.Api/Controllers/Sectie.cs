@@ -7,6 +7,7 @@ using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using VotingIrregularities.Api.Extensions;
 using VotingIrregularities.Api.Models;
 using VotingIrregularities.Domain.SectieAggregate;
 
@@ -32,36 +33,17 @@ namespace VotingIrregularities.Api.Controllers
         [HttpPost()]
         public async Task<IAsyncResult> Inregistreaza([FromBody] ModelDateSectie dateSectie)
         {
-            if (ModelState.IsValid)
-            {
-                var command = _mapper.Map<InregistreazaSectieCommand>(dateSectie);
+            if (!ModelState.IsValid)
+                return this.ResultAsync(HttpStatusCode.BadRequest, ModelState);
 
-                // TODO[DH] get the actual IdObservator from token
+            var command = _mapper.Map<InregistreazaSectieCommand>(dateSectie);
 
-                command.IdObservator = 1;
+            // TODO[DH] get the actual IdObservator from token
+            command.IdObservator = 1;
 
-                var result = await _mediatr.SendAsync(command);
+            var result = await _mediatr.SendAsync(command);
 
-                if (result < 0)
-                    return ResultAsync(HttpStatusCode.NotFound);
-
-            }
-            else
-            {
-                return ResultAsync(HttpStatusCode.BadRequest,ModelState);
-            }
-
-            return ResultAsync(HttpStatusCode.OK); // 204
-        }
-
-        private IAsyncResult ResultAsync(HttpStatusCode statusCode, ModelStateDictionary modelState = null)
-        {
-            Response.StatusCode = (int)statusCode;
-
-            if (modelState == null)
-                return Task.FromResult(new StatusCodeResult((int)statusCode));
-
-            return Task.FromResult(BadRequest(modelState));
+            return this.ResultAsync(result < 0 ? HttpStatusCode.NotFound : HttpStatusCode.OK);
         }
     }
 }
