@@ -40,8 +40,8 @@ namespace VotingIrregularities.Api.Queries
                     .ThenInclude(a => a.RaspunsDisponibil)
                     .ThenInclude(a => a.IdOptiuneNavigation)
                 .Where(a => a.Intrebare.All( i => i.CodFormular == message.CodFormular))
-                .ProjectTo<ModelSectiune>(_provider)
                 .OrderBy(a => a.CodSectiune)
+                .ProjectTo<ModelSectiune>(_provider)
                 .ToListAsync();
 
             return result;

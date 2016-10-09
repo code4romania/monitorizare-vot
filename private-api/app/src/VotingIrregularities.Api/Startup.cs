@@ -30,6 +30,7 @@ using SimpleInjector.Integration.AspNetCore;
 using SimpleInjector.Integration.AspNetCore.Mvc;
 using VotingIrregularities.Domain.Models;
 using IConfigurationProvider = AutoMapper.IConfigurationProvider;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace VotingIrregularities.Api
 {
@@ -169,6 +170,12 @@ namespace VotingIrregularities.Api
 
             // Cross-wire ASP.NET services (if any). For instance:
             container.RegisterSingleton(app.ApplicationServices.GetService<ILoggerFactory>());
+            container.RegisterConditional(
+                    typeof(ILogger),
+                    c => typeof(Logger<>).MakeGenericType(c.Consumer.ImplementationType),
+                    Lifestyle.Singleton,
+                    c => true);
+
             // NOTE: Prevent cross-wired instances as much as possible.
             // See: https://simpleinjector.org/blog/2016/07/
         }

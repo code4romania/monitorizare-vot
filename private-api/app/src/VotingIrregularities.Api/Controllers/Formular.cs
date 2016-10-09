@@ -16,12 +16,10 @@ namespace VotingIrregularities.Api.Controllers
     public class Formular : Controller
     {
         private readonly IMediator _mediator;
-        private readonly ILogger _logger;
 
-        public Formular(IMediator mediator, ILoggerFactory logger)
+        public Formular(IMediator mediator)
         {
             _mediator = mediator;
-            _logger = logger.CreateLogger("Formular") ;
         }
 
         /// <summary>
