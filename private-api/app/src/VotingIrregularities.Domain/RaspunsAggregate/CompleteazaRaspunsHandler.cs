@@ -1,13 +1,16 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoMapper;
+using LinqKit;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using VotingIrregularities.Domain.Models;
 using VotingIrregularities.Domain.RaspunsAggregate.Commands;
+using Z.EntityFramework.Plus;
 
 namespace VotingIrregularities.Domain.RaspunsAggregate
 {
@@ -45,43 +48,32 @@ namespace VotingIrregularities.Domain.RaspunsAggregate
                 .Distinct()
                 .ToList();
 
-                // load all related existing answers in one call
-                var merge = (from l in raspunsuriNoi
-                             join d in _context.Raspuns on
-                                 new { l.IdObservator, l.IdSectieDeVotare, l.IdIntrebare, l.IdOptiune } equals
-                                 new { d.IdObservator, d.IdSectieDeVotare, d.IdIntrebare, d.IdOptiune }
-                                 into raspunsuriExistente
-                             from potrivite in raspunsuriExistente.DefaultIfEmpty()
-                             select new
-                             {
-                                 IdObservator = message.IdObservator,
-                                 IdSectieDeVotare = l.IdSectieDeVotare,
-                                 IdIntrebare = l.IdIntrebare,
-                                 IdOptiune = l.IdOptiune,
-                                 Value = l.Value,
-                                 DataUltimeiModificari = lastModified,
-                                 IsNew = potrivite == null
-                             }).ToList();
+                // stergerea este pe fiecare sectie
+                var sectii = message.Raspunsuri.Select(a => a.IdSectie).Distinct().ToList();
+                var intrebari = message.Raspunsuri.Select(a => a.IdIntrebare).ToList();
 
-                // if the answer is already in db update it, if new then insert it
-                foreach (var raspuns in merge)
+                using (var tran = await _context.Database.BeginTransactionAsync())
                 {
-                    if (raspuns.IsNew)
-                        _context.Raspuns.Add(new Raspuns
-                        {
-                            IdObservator = message.IdObservator,
-                            IdSectieDeVotare = raspuns.IdSectieDeVotare,
-                            IdIntrebare = raspuns.IdIntrebare,
-                            IdOptiune = raspuns.IdOptiune,
-                            Value = raspuns.Value,
-                            DataUltimeiModificari = lastModified,
-                        });
+                    foreach (var sectie in sectii)
+                    {
+                        // delete existing answers for posted questions on this 'sectie'
+                        _context.Raspuns
+                            .Where(
+                                a =>
+                                    a.IdObservator == message.IdObservator &&
+                                    a.IdSectieDeVotare == sectie)
+                                   .WhereRaspunsContains(intrebari)
+                            .Delete();
+                    }
 
-                    else
-                        _context.Entry(raspuns).State = EntityState.Added;
+                    _context.Raspuns.AddRange(raspunsuriNoi);
+
+                    var result =  await _context.SaveChangesAsync();
+
+                    tran.Commit();
+
+                    return result;
                 }
-
-                return await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -91,4 +83,26 @@ namespace VotingIrregularities.Domain.RaspunsAggregate
             return await Task.FromResult(-1);
         }
     }
+
+    public static class EfBuilderExtensions
+    {
+        /// <summary>
+        /// super simple and dumb translation of .Contains because is not supported pe EF plus
+        /// this translates to contains in EF SQL
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="contains"></param>
+        /// <returns></returns>
+        public static IQueryable<Raspuns> WhereRaspunsContains(this IQueryable<Raspuns> source, IList<int> contains)
+        {
+            var ors = contains
+                .Aggregate<int, Expression<Func<Raspuns, bool>>>(null, (expression, id) => 
+                expression == null 
+                    ? (a => a.IdIntrebare == id) 
+                    : expression.Or(a => a.IdIntrebare == id));
+
+            return source.Where(ors);
+        }
+    }
 }
+

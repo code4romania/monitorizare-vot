@@ -60,6 +60,19 @@
           }
         }
       },
+      "LinqKit.Microsoft.EntityFrameworkCore/1.0.5": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.EntityFrameworkCore": "1.0.0",
+          "System.Threading.Tasks": "4.0.11"
+        },
+        "compile": {
+          "lib/netstandard1.3/LinqKit.Microsoft.EntityFrameworkCore.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard1.3/LinqKit.Microsoft.EntityFrameworkCore.dll": {}
+        }
+      },
       "MediatR/2.1.0": {
         "type": "package",
         "dependencies": {
@@ -4436,11 +4449,21 @@
           "lib/netstandard1.3/System.Xml.XPath.XDocument.dll": {}
         }
       },
+      "Z.EntityFramework.Plus.EFCore/1.4.6": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard1.3/Z.EntityFramework.Plus.EFCore.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard1.3/Z.EntityFramework.Plus.EFCore.dll": {}
+        }
+      },
       "VotingIrregularities.Domain/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v1.0",
         "dependencies": {
           "AutoMapper": "5.1.1",
+          "LinqKit.Microsoft.EntityFrameworkCore": "1.0.5",
           "MediatR": "2.1.0",
           "Microsoft.AspNetCore.Hosting": "1.0.0",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "1.0.0",
@@ -4459,7 +4482,8 @@
           "Serilog.Sinks.ApplicationInsights": "2.1.0",
           "SimpleInjector": "3.2.2",
           "System.Linq.Parallel": "4.0.1",
-          "System.Linq.Queryable": "4.0.1"
+          "System.Linq.Queryable": "4.0.1",
+          "Z.EntityFramework.Plus.EFCore": "1.4.6"
         },
         "compile": {
           "netcoreapp1.0/VotingIrregularities.Domain.dll": {}
@@ -4504,6 +4528,29 @@
         "runtimes/win7-arm/native/libuv.dll",
         "runtimes/win7-x64/native/libuv.dll",
         "runtimes/win7-x86/native/libuv.dll"
+      ]
+    },
+    "LinqKit.Microsoft.EntityFrameworkCore/1.0.5": {
+      "sha512": "zoVj2fMpy10fd5JHks/pXf+q+mzT1RH6eDtOWv2tHvDRkm9gYvDNMa1qtyf1A74O5qticcD1yCPUtEoDsqCwHQ==",
+      "type": "package",
+      "path": "LinqKit.Microsoft.EntityFrameworkCore/1.0.5",
+      "files": [
+        "LinqKit.Microsoft.EntityFrameworkCore.1.0.5.nupkg.sha512",
+        "LinqKit.Microsoft.EntityFrameworkCore.nuspec",
+        "lib/dnx451/LinqKit.Microsoft.EntityFrameworkCore.dll",
+        "lib/dnx451/LinqKit.Microsoft.EntityFrameworkCore.xml",
+        "lib/net451/LinqKit.Microsoft.EntityFrameworkCore.dll",
+        "lib/net451/LinqKit.Microsoft.EntityFrameworkCore.xml",
+        "lib/net452/LinqKit.Microsoft.EntityFrameworkCore.dll",
+        "lib/net452/LinqKit.Microsoft.EntityFrameworkCore.xml",
+        "lib/net46/LinqKit.Microsoft.EntityFrameworkCore.dll",
+        "lib/net46/LinqKit.Microsoft.EntityFrameworkCore.xml",
+        "lib/net461/LinqKit.Microsoft.EntityFrameworkCore.dll",
+        "lib/net461/LinqKit.Microsoft.EntityFrameworkCore.xml",
+        "lib/netcore50/LinqKit.Microsoft.EntityFrameworkCore.dll",
+        "lib/netcore50/LinqKit.Microsoft.EntityFrameworkCore.xml",
+        "lib/netstandard1.3/LinqKit.Microsoft.EntityFrameworkCore.dll",
+        "lib/netstandard1.3/LinqKit.Microsoft.EntityFrameworkCore.xml"
       ]
     },
     "MediatR/2.1.0": {
@@ -11136,6 +11183,17 @@
         "ref/xamarinmac20/_._",
         "ref/xamarintvos10/_._",
         "ref/xamarinwatchos10/_._"
+      ]
+    },
+    "Z.EntityFramework.Plus.EFCore/1.4.6": {
+      "sha512": "tpy/M3H7kfnk+oMvH7ZI4IAQie3gEocEZdJkFJNJxyQ2d4hFcjjwMnnniCeQOk2nwj7qtujaf97u8ePOkgdQkQ==",
+      "type": "package",
+      "path": "Z.EntityFramework.Plus.EFCore/1.4.6",
+      "files": [
+        "Z.EntityFramework.Plus.EFCore.1.4.6.nupkg.sha512",
+        "Z.EntityFramework.Plus.EFCore.nuspec",
+        "lib/net451/Z.EntityFramework.Plus.EFCore.dll",
+        "lib/netstandard1.3/Z.EntityFramework.Plus.EFCore.dll"
       ]
     },
     "VotingIrregularities.Domain/1.0.0": {

@@ -38,7 +38,8 @@ namespace VotingIrregularities.Api.Queries
 
             // cross check cu sectiile existente in BD
             var idsectii = (from localSectii in sectii
-                           join dbSectii in _context.SectieDeVotare.Include(s => s.IdJudetNavigation)
+                           join dbSectii in _context.SectieDeVotare
+                                            .Include(s => s.IdJudetNavigation)
                                     on new { localSectii.NumarSectie, localSectii.CodJudet } equals
                                     new { dbSectii.NumarSectie, dbSectii.IdJudetNavigation.CodJudet}
                                     into sectiiExistente
