@@ -12,7 +12,7 @@ namespace VotingIrregularities.Api.Extensions
     {
         public void Apply(Operation operation, OperationFilterContext context)
         {
-            if (!string.Equals(operation.OperationId, "apiV1NotaataseazaPost", StringComparison.CurrentCultureIgnoreCase))
+            if (!string.Equals(operation.OperationId, "ApiV1NoteAtaseazaPost", StringComparison.CurrentCultureIgnoreCase))
                 return;
 
             operation.Consumes.Add("application/form-data");

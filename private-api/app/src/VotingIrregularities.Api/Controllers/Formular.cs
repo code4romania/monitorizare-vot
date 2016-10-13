@@ -24,10 +24,9 @@ namespace VotingIrregularities.Api.Controllers
 
         /// <summary>
         /// Returneaza versiunea tuturor formularelor sub forma unui array. 
-        /// Daca versiunea returnata difera de cea din aplicatie, atunci trebuie incarcat formularul outdated printr-un apel la 
-        /// <code>api//v1//formular</code>
+        /// Daca versiunea returnata difera de cea din aplicatie, atunci trebuie incarcat formularul din nou 
         /// </summary>
-        /// <returns>Returneaza un obiect care are proprietatea de tip int, versiune</returns>
+        /// <returns></returns>
         [HttpGet("versiune")]
         public async Task<ModelVersiune> Versiune()
         {
@@ -41,7 +40,7 @@ namespace VotingIrregularities.Api.Controllers
         /// Acestea se considera implicite pe fiecare formular.
         /// </summary>
         /// <param name="idformular">Id-ul formularului pentru care trebuie preluata definitia</param>
-        /// <returns>Returneaza o structura pe baza careia se poate genera un formular pentru observatori</returns>
+        /// <returns></returns>
         [HttpGet]
         public async Task<IEnumerable<ModelSectiune>> Citeste(string idformular)
         {

@@ -28,6 +28,7 @@ using SimpleInjector;
 using SimpleInjector.Extensions.ExecutionContextScoping;
 using SimpleInjector.Integration.AspNetCore;
 using SimpleInjector.Integration.AspNetCore.Mvc;
+using VotingIrregularities.Api.Services;
 using VotingIrregularities.Domain.Models;
 using IConfigurationProvider = AutoMapper.IConfigurationProvider;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
@@ -84,7 +85,7 @@ namespace VotingIrregularities.Api
                             Email = "info@monitorizarevot.ro",
                             Name = "Code for Romania",
                             Url = "http://monitorizarevot.ro"
-                        }
+                        },
                 });
 
                 options.OperationFilter<AddFileUploadParams>();
@@ -130,6 +131,8 @@ namespace VotingIrregularities.Api
 
             container.Options.DefaultScopedLifestyle = new AspNetRequestLifestyle();
 
+            RegisterServices();
+
             InitializeContainer(app);
 
             RegisterDbContext<VotingContext>(Configuration.GetConnectionString("DefaultConnection"));
@@ -137,6 +140,7 @@ namespace VotingIrregularities.Api
             RegisterAutomapper();
 
             BuildMediator();
+
             
             container.Verify();
 
@@ -158,6 +162,10 @@ namespace VotingIrregularities.Api
                 new SimpleInjectorViewComponentActivator(container));
         }
 
+        private void RegisterServices()
+        {
+            container.Register<ISectieDeVotareService,SectieDevotareDBService>(Lifestyle.Scoped);
+        }
         private void InitializeContainer(IApplicationBuilder app)
         {
             // Add application presentation components:

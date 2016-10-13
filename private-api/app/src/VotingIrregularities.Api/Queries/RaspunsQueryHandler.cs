@@ -9,6 +9,7 @@ using VotingIrregularities.Api.Models;
 using VotingIrregularities.Domain.Models;
 using VotingIrregularities.Domain.RaspunsAggregate.Commands;
 using Microsoft.EntityFrameworkCore;
+using VotingIrregularities.Api.Services;
 using VotingIrregularities.Domain.ValueObjects;
 
 namespace VotingIrregularities.Api.Queries
@@ -20,10 +21,12 @@ namespace VotingIrregularities.Api.Queries
         IAsyncRequestHandler<RaspunsuriBulk, CompleteazaRaspunsCommand>
     {
         private readonly VotingContext _context;
+        private readonly ISectieDeVotareService _svService;
 
-        public RaspunsQueryHandler(VotingContext context)
+        public RaspunsQueryHandler(VotingContext context, ISectieDeVotareService svService)
         {
             _context = context;
+            _svService = svService;
         }
 
         public async Task<CompleteazaRaspunsCommand> Handle(RaspunsuriBulk message)
@@ -36,26 +39,11 @@ namespace VotingIrregularities.Api.Queries
 
             var command = new CompleteazaRaspunsCommand { IdObservator = message.IdObservator };
 
-            //TODO[DH] - se pot obtine dintr-un cache in loc de BD. daca se gaseste mai mult de o sectie la o pereche de NUmarsectie si codjudet se arunca exceptie
+            
             foreach (var sectie in sectii)
             {
-                JudetEnum judet;
-                var j = Enum.TryParse(sectie.CodJudet, true, out judet);
-
-                if (!j)
-                    throw new ArgumentException($"Judet inexistent: {sectie.CodJudet}");
-
-                var idSectie = await
-                    _context.SectieDeVotare.AsNoTracking()
-                        .Where(
-                            a =>
-                                a.IdJudet == (int)judet &&
-                                a.NumarSectie == sectie.NumarSectie)
-                        .Select(a => a.IdSectieDeVotarre)
-                        .ToListAsync();
-
-                if (idSectie.Count == 0)
-                    throw new ArgumentException($"Sectie inexistenta: {sectie}");
+                //TODO[DH] - se pot obtine dintr-un cache in loc de BD. daca se gaseste mai mult de o sectie la o pereche de Numarsectie si codjudet se arunca exceptie
+                var idSectie = await _svService.GetSingleSectieDeVotare(sectie.CodJudet, sectie.NumarSectie);
 
                 command.Raspunsuri.AddRange(message.ModelRaspunsuriBulk
                     .Where(a => a.NumarSectie == sectie.NumarSectie && a.CodJudet == sectie.CodJudet)
@@ -63,7 +51,7 @@ namespace VotingIrregularities.Api.Queries
                 {
                     CodFormular = a.CodFormular,
                     IdIntrebare = a.IdIntrebare,
-                    IdSectie = idSectie.Single(),
+                    IdSectie = idSectie,
                     Optiuni = a.Optiuni
                 }));
             }
