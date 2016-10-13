@@ -43,7 +43,7 @@ namespace VotingIrregularities.Api.Queries
             foreach (var sectie in sectii)
             {
                 JudetEnum judet;
-                var j = Enum.TryParse<JudetEnum>(sectie.CodJudet, true, out judet);
+                var j = Enum.TryParse(sectie.CodJudet, true, out judet);
 
                 if (!j)
                     throw new ArgumentException($"Judet inexistent: {sectie.CodJudet}");
@@ -60,7 +60,9 @@ namespace VotingIrregularities.Api.Queries
                 if (idSectie.Count == 0)
                     throw new ArgumentException($"Sectie inexistenta: {sectie}");
 
-                command.Raspunsuri.AddRange(message.ModelRaspunsuriBulk.Select(a => new ModelRaspuns
+                command.Raspunsuri.AddRange(message.ModelRaspunsuriBulk
+                    .Where(a => a.NumarSectie == sectie.NumarSectie && a.CodJudet == sectie.CodJudet)
+                    .Select(a => new ModelRaspuns
                 {
                     CodFormular = a.CodFormular,
                     IdIntrebare = a.IdIntrebare,

@@ -50,12 +50,13 @@ namespace VotingIrregularities.Domain.RaspunsAggregate
 
                 // stergerea este pe fiecare sectie
                 var sectii = message.Raspunsuri.Select(a => a.IdSectie).Distinct().ToList();
-                var intrebari = message.Raspunsuri.Select(a => a.IdIntrebare).ToList();
 
                 using (var tran = await _context.Database.BeginTransactionAsync())
                 {
                     foreach (var sectie in sectii)
                     {
+                        var intrebari = message.Raspunsuri.Where(a=> a.IdSectie == sectie).Select(a => a.IdIntrebare).ToList();
+
                         // delete existing answers for posted questions on this 'sectie'
                         _context.Raspuns
                             .Where(
