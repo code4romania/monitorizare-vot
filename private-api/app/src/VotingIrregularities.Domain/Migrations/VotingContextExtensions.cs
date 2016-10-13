@@ -17,13 +17,20 @@ namespace VotingIrregularities.Domain.Migrations
             if (!context.AllMigrationsApplied())
                 return;
 
-            context.DataCleanUp();
+            using (var tran = context.Database.BeginTransaction())
+            {
+                context.DataCleanUp();
 
-            context.SeedVersions();
-            context.SeedJudete();
-            context.SeedSectiune();
-            context.SeedOptiuni();
-            context.SeedQuestions();
+                context.SeedVersions();
+                context.SeedJudete();
+                context.SeedSectiune();
+                context.SeedOptiuni();
+                context.SeedQuestions('A');
+                context.SeedQuestions('B');
+                context.SeedQuestions('C');
+
+                tran.Commit();
+            }
         }
 
         private static void SeedJudete(this VotingContext context)
@@ -82,7 +89,7 @@ namespace VotingIrregularities.Domain.Migrations
             context.Database.ExecuteSqlCommand("delete from RaspunsDisponibil");
             context.Database.ExecuteSqlCommand("delete from Intrebare");
             context.Database.ExecuteSqlCommand("delete from Sectiune");
-            context.Database.ExecuteSqlCommand("delete from Judet");
+           // context.Database.ExecuteSqlCommand("delete from Judet");
         }
 
         private static void SeedOptiuni(this VotingContext context)
@@ -119,68 +126,68 @@ namespace VotingIrregularities.Domain.Migrations
             context.SaveChanges();
         }
 
-        private static void SeedQuestions(this VotingContext context)
+        private static void SeedQuestions(this VotingContext context, char idFormular)
         {
-            if (context.Intrebare.Any())
+            if (context.Intrebare.Any(a => a.CodFormular == idFormular.ToString()))
                 return;
 
             context.Intrebare.AddRange(
                 // primul formular
                 new Intrebare
                 {
-                    IdIntrebare = 1,
-                    CodFormular = "A",
+                    IdIntrebare = idFormular * 20 + 1,
+                    CodFormular = idFormular.ToString(),
                     IdSectiune = 1, //B
                     IdTipIntrebare = TipIntrebareEnum.OSinguraOptiune,
-                    TextIntrebare = "Iti place berea? (se alege o singura optiune selectabila)",
+                    TextIntrebare = $"{idFormular}: Iti place berea? (se alege o singura optiune selectabila)",
                     RaspunsDisponibil = new List<RaspunsDisponibil>
                     {
-                        new RaspunsDisponibil {IdRaspunsDisponibil = 1, IdOptiune = 1},
-                        new RaspunsDisponibil {IdRaspunsDisponibil = 2, IdOptiune = 2, RaspunsCuFlag = true},
-                        new RaspunsDisponibil {IdRaspunsDisponibil = 3, IdOptiune = 3}
+                        new RaspunsDisponibil {IdRaspunsDisponibil = idFormular * 20 + 1, IdOptiune = 1},
+                        new RaspunsDisponibil {IdRaspunsDisponibil = idFormular * 20 + 2, IdOptiune = 2, RaspunsCuFlag = true},
+                        new RaspunsDisponibil {IdRaspunsDisponibil = idFormular * 20 + 3, IdOptiune = 3}
                     }
                 },
                  new Intrebare
                  {
-                     IdIntrebare = 2,
-                                    CodFormular = "A",
+                     IdIntrebare = idFormular * 20 + 2,
+                                    CodFormular = idFormular.ToString(),
                                     IdSectiune = 1, //B
                                     IdTipIntrebare = TipIntrebareEnum.OptiuniMultiple,
-                                    TextIntrebare = "Ce tipuri de bere iti plac? (se pot alege optiuni multiple)",
+                                    TextIntrebare = $"{idFormular}: Ce tipuri de bere iti plac? (se pot alege optiuni multiple)",
                                     RaspunsDisponibil = new List<RaspunsDisponibil>
                     {
-                        new RaspunsDisponibil {IdRaspunsDisponibil = 4, IdOptiune = 4, RaspunsCuFlag = true},
-                        new RaspunsDisponibil {IdRaspunsDisponibil = 5, IdOptiune = 5},
-                        new RaspunsDisponibil {IdRaspunsDisponibil = 6, IdOptiune = 6}
+                        new RaspunsDisponibil {IdRaspunsDisponibil = idFormular * 20 + 4, IdOptiune = 4, RaspunsCuFlag = true},
+                        new RaspunsDisponibil {IdRaspunsDisponibil = idFormular * 20 + 5, IdOptiune = 5},
+                        new RaspunsDisponibil {IdRaspunsDisponibil = idFormular * 20 + 6, IdOptiune = 6}
                     }
                  },
                  new Intrebare
                  {
-                     IdIntrebare = 3,
-                     CodFormular = "A",
+                     IdIntrebare = idFormular * 20 + 3,
+                     CodFormular = idFormular.ToString(),
                      IdSectiune = 2, //C
                      IdTipIntrebare = TipIntrebareEnum.OSinguraOptiuneCuText,
-                     TextIntrebare = "Ce tip de transmisie are masina ta? (se poate alege O singura optiune selectabila + text pe O singura optiune)",
+                     TextIntrebare = $"{idFormular}: Ce tip de transmisie are masina ta? (se poate alege O singura optiune selectabila + text pe O singura optiune)",
                      RaspunsDisponibil = new List<RaspunsDisponibil>
                     {
-                        new RaspunsDisponibil {IdRaspunsDisponibil = 7, IdOptiune = 7, RaspunsCuFlag = true},
-                        new RaspunsDisponibil {IdRaspunsDisponibil = 8, IdOptiune = 8},
-                        new RaspunsDisponibil {IdRaspunsDisponibil = 9, IdOptiune = 9}
+                        new RaspunsDisponibil {IdRaspunsDisponibil = idFormular * 20 + 7, IdOptiune = 7, RaspunsCuFlag = true},
+                        new RaspunsDisponibil {IdRaspunsDisponibil = idFormular * 20 + 8, IdOptiune = 8},
+                        new RaspunsDisponibil {IdRaspunsDisponibil = idFormular * 20 + 9, IdOptiune = 9}
                     }
                  },
                  new Intrebare
                  {
-                     IdIntrebare = 4,
-                     CodFormular = "A",
+                     IdIntrebare = idFormular * 20 + 4,
+                     CodFormular = idFormular.ToString(),
                      IdSectiune = 2, //C
                      IdTipIntrebare = TipIntrebareEnum.OptiuniMultipleCuText,
-                     TextIntrebare = "Ce mijloace de transport folosesti sa ajungi la birou? (se pot alege mai multe optiuni + text pe O singura optiune)",
+                     TextIntrebare = $"{idFormular}: Ce mijloace de transport folosesti sa ajungi la birou? (se pot alege mai multe optiuni + text pe O singura optiune)",
                      RaspunsDisponibil = new List<RaspunsDisponibil>
                     {
-                        new RaspunsDisponibil {IdRaspunsDisponibil = 10, IdOptiune = 10, RaspunsCuFlag = true},
-                        new RaspunsDisponibil {IdRaspunsDisponibil = 11, IdOptiune = 11},
-                        new RaspunsDisponibil {IdRaspunsDisponibil = 12, IdOptiune = 12},
-                        new RaspunsDisponibil {IdRaspunsDisponibil = 13, IdOptiune = 9}
+                        new RaspunsDisponibil {IdRaspunsDisponibil = idFormular * 20 + 10, IdOptiune = 10, RaspunsCuFlag = true},
+                        new RaspunsDisponibil {IdRaspunsDisponibil = idFormular * 20 + 11, IdOptiune = 11},
+                        new RaspunsDisponibil {IdRaspunsDisponibil = idFormular * 20 + 12, IdOptiune = 12},
+                        new RaspunsDisponibil {IdRaspunsDisponibil = idFormular * 20 + 13, IdOptiune = 9}
                     }
                  }
                 );
