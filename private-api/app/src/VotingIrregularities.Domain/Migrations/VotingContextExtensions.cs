@@ -89,6 +89,7 @@ namespace VotingIrregularities.Domain.Migrations
             context.Database.ExecuteSqlCommand("delete from RaspunsDisponibil");
             context.Database.ExecuteSqlCommand("delete from Intrebare");
             context.Database.ExecuteSqlCommand("delete from Sectiune");
+            context.Database.ExecuteSqlCommand("delete from VersiuneFormular");
            // context.Database.ExecuteSqlCommand("delete from Judet");
         }
 
@@ -199,15 +200,12 @@ namespace VotingIrregularities.Domain.Migrations
         private static void SeedVersions(this VotingContext context)
         {
             if (context.VersiuneFormular.Any())
-            {
-                context.Database.ExecuteSqlCommand("delete from VersiuneFormular");
                 return;
-            }
 
             context.VersiuneFormular.AddRange(
                  new VersiuneFormular { CodFormular = "A", VersiuneaCurenta = 1 },
-                 new VersiuneFormular { CodFormular = "B", VersiuneaCurenta = 2 },
-                 new VersiuneFormular { CodFormular = "C", VersiuneaCurenta = 3 }
+                 new VersiuneFormular { CodFormular = "B", VersiuneaCurenta = 1 },
+                 new VersiuneFormular { CodFormular = "C", VersiuneaCurenta = 1 }
              );
 
             context.SaveChanges();
