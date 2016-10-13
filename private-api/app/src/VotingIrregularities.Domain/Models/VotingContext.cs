@@ -6,6 +6,7 @@ namespace VotingIrregularities.Domain.Models
 {
     public partial class VotingContext : DbContext
     {
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AccesObservatoriPerDevice>(entity =>
@@ -105,7 +106,6 @@ namespace VotingIrregularities.Domain.Models
                 entity.HasOne(d => d.IdIntrebareNavigation)
                     .WithMany(p => p.Nota)
                     .HasForeignKey(d => d.IdIntrebare)
-                    .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_Nota_Intrebare");
 
                 entity.HasOne(d => d.IdObservatorNavigation)
@@ -291,6 +291,8 @@ namespace VotingIrregularities.Domain.Models
 
                 entity.HasIndex(e => e.IdJudet)
                     .HasName("IX_SectieDeVotare_IdJudet");
+
+                entity.Property(e => e.IdSectieDeVotarre).ValueGeneratedNever();
 
                 entity.Property(e => e.AdresaSectie).HasMaxLength(500);
 

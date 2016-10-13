@@ -8,9 +8,10 @@ using VotingIrregularities.Domain.Models;
 namespace VotingIrregularities.Domain.Migrations
 {
     [DbContext(typeof(VotingContext))]
-    partial class VotingContextModelSnapshot : ModelSnapshot
+    [Migration("20161013123801_SectieDeVotareWithoutIdentity")]
+    partial class SectieDeVotareWithoutIdentity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.1")
@@ -293,7 +294,7 @@ namespace VotingIrregularities.Domain.Migrations
 
             modelBuilder.Entity("VotingIrregularities.Domain.Models.SectieDeVotare", b =>
                 {
-                    b.Property<int>("IdSectieDeVotarre").ValueGeneratedNever();
+                    b.Property<int>("IdSectieDeVotarre");
 
                     b.Property<string>("AdresaSectie")
                         .HasAnnotation("MaxLength", 500);
