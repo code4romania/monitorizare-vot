@@ -8,9 +8,10 @@ using VotingIrregularities.Domain.Models;
 namespace VotingIrregularities.Domain.Migrations
 {
     [DbContext(typeof(VotingContext))]
-    partial class VotingContextModelSnapshot : ModelSnapshot
+    [Migration("20161013113940_NoteAvailableForSectie")]
+    partial class NoteAvailableForSectie
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.1")

@@ -20,15 +20,12 @@ namespace VotingIrregularities.Api.Queries
         IAsyncRequestHandler<RaspunsuriBulk, CompleteazaRaspunsCommand>
     {
         private readonly VotingContext _context;
-        private readonly ILogger _logger;
-        private readonly IMapper _mapper;
 
-        public RaspunsQueryHandler(VotingContext context, ILogger logger, IMapper mapper)
+        public RaspunsQueryHandler(VotingContext context)
         {
             _context = context;
-            _logger = logger;
-            _mapper = mapper;
         }
+
         public async Task<CompleteazaRaspunsCommand> Handle(RaspunsuriBulk message)
         {
             // se identifica sectiile in care observatorul a raspuns

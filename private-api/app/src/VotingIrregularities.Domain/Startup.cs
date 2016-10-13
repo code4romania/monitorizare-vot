@@ -14,7 +14,7 @@ namespace VotingIrregularities.Domain
             var builder = new ConfigurationBuilder()
              .SetBasePath(Directory.GetCurrentDirectory())
              .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-             .AddJsonFile("appsettings.target.json", optional: true);
+             .AddJsonFile("appsettings.development.json", optional: true);
 
             return builder.Build();
         }
