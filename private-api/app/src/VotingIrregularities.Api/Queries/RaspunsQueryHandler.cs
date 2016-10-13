@@ -9,6 +9,7 @@ using VotingIrregularities.Api.Models;
 using VotingIrregularities.Domain.Models;
 using VotingIrregularities.Domain.RaspunsAggregate.Commands;
 using Microsoft.EntityFrameworkCore;
+using VotingIrregularities.Domain.ValueObjects;
 
 namespace VotingIrregularities.Api.Queries
 {
@@ -36,38 +37,39 @@ namespace VotingIrregularities.Api.Queries
                 .Distinct()
                 .ToList();
 
-            // cross check cu sectiile existente in BD
-            var idsectii = (from localSectii in sectii
-                           join dbSectii in _context.SectieDeVotare
-                                            .Include(s => s.IdJudetNavigation)
-                                    on new { localSectii.NumarSectie, localSectii.CodJudet } equals
-                                    new { dbSectii.NumarSectie, dbSectii.IdJudetNavigation.CodJudet}
-                                    into sectiiExistente
-                           from potrivite in sectiiExistente.DefaultIfEmpty() 
-                           select new
-                           {
-                               localSectii.CodJudet,
-                               localSectii.NumarSectie,
-                               potrivite?.IdSectieDeVotarre
-                           }).ToList();
+            var command = new CompleteazaRaspunsCommand { IdObservator = message.IdObservator };
 
-            // daca cel putin o sectie nu exista, se anuleaza comanda
-            if (idsectii.Any(a => !a.IdSectieDeVotarre.HasValue))
-                throw new ArgumentException("Sectii de votare inexistente");
-
-           
-            var command = new CompleteazaRaspunsCommand {IdObservator = message.IdObservator};
-
-            command.Raspunsuri.AddRange(message.ModelRaspunsuriBulk.Select(a => new ModelRaspuns
+            //TODO[DH] - se pot obtine dintr-un cache in loc de BD. daca se gaseste mai mult de o sectie la o pereche de NUmarsectie si codjudet se arunca exceptie
+            foreach (var sectie in sectii)
             {
-                CodFormular = a.CodFormular,
-                IdIntrebare = a.IdIntrebare,
-                IdSectie = idsectii.Single(i => i.CodJudet == a.CodJudet && i.NumarSectie == a.NumarSectie).IdSectieDeVotarre.Value,
-                Optiuni = a.Optiuni
-            }));
+                JudetEnum judet;
+                var j = Enum.TryParse<JudetEnum>(sectie.CodJudet, true, out judet);
+
+                if (!j)
+                    throw new ArgumentException($"Judet inexistent: {sectie.CodJudet}");
+
+                var idSectie = await
+                    _context.SectieDeVotare.AsNoTracking()
+                        .Where(
+                            a =>
+                                a.IdJudet == (int)judet &&
+                                a.NumarSectie == sectie.NumarSectie)
+                        .Select(a => a.IdSectieDeVotarre)
+                        .ToListAsync();
+
+                if (idSectie.Count == 0)
+                    throw new ArgumentException($"Sectie inexistenta: {sectie}");
+
+                command.Raspunsuri.AddRange(message.ModelRaspunsuriBulk.Select(a => new ModelRaspuns
+                {
+                    CodFormular = a.CodFormular,
+                    IdIntrebare = a.IdIntrebare,
+                    IdSectie = idSectie.Single(),
+                    Optiuni = a.Optiuni
+                }));
+            }
 
             return await Task.FromResult(command);
-
         }
     }
 }
