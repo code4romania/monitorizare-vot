@@ -16,12 +16,12 @@ namespace VotingIrregularities.Api.Queries
         IAsyncRequestHandler<ModelFormular.IntrebariQuery,IEnumerable<ModelSectiune>>
     {
         private readonly VotingContext _context;
-        private readonly IConfigurationProvider _provider;
+        private readonly IMapper _mapper;
 
-        public FormularQueryHandler(VotingContext context, IConfigurationProvider provider)
+        public FormularQueryHandler(VotingContext context, IMapper mapper)
         {
             _context = context;
-            _provider = provider;
+            _mapper = mapper;
         }
 
         public async Task<Dictionary<string, int>> Handle(ModelFormular.VersiuneQuery message)
@@ -35,14 +35,22 @@ namespace VotingIrregularities.Api.Queries
 
         public async Task<IEnumerable<ModelSectiune>> Handle(ModelFormular.IntrebariQuery message)
         {
-            var result = await _context.Sectiune
-                .Include(a => a.Intrebare)
-                    .ThenInclude(a => a.RaspunsDisponibil)
-                    .ThenInclude(a => a.IdOptiuneNavigation)
-                .Where(a => a.Intrebare.All( i => i.CodFormular == message.CodFormular))
-                .OrderBy(a => a.CodSectiune)
-                .ProjectTo<ModelSectiune>(_provider)
+            var r = await _context.Intrebare
+                .Include(a => a.IdSectiuneNavigation)
+                .Include(a => a.RaspunsDisponibil)
+                .ThenInclude(a => a.IdOptiuneNavigation)
+                .Where(a => a.CodFormular == message.CodFormular)
                 .ToListAsync();
+
+            var sectiuni = r.Select(a => new { a.IdSectiune, a.IdSectiuneNavigation.CodSectiune , a.IdSectiuneNavigation.Descriere}).Distinct();
+
+            var result = sectiuni.Select(i => new ModelSectiune
+            {
+                CodSectiune = i.CodSectiune,
+                Descriere = i.Descriere,
+                Intrebari = r.Where(a => a.IdSectiune == i.IdSectiune).Select(a => _mapper.Map<ModelIntrebare>(a)).ToList()
+            }).ToList();
+
 
             return result;
 

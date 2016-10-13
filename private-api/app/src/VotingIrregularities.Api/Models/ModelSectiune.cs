@@ -20,9 +20,6 @@ namespace VotingIrregularities.Api.Models
     {
         public FormularProfile()
         {
-            CreateMap<Sectiune, ModelSectiune>()
-                .ForMember(dest => dest.Intrebari, c => c.MapFrom(src => src.Intrebare));
-
             CreateMap<Intrebare, ModelIntrebare>()
                 .ForMember(src => src.RaspunsuriDisponibile, c => c.MapFrom(dest => dest.RaspunsDisponibil));
 
