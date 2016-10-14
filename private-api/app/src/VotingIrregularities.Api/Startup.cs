@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -32,6 +33,9 @@ using VotingIrregularities.Api.Services;
 using VotingIrregularities.Domain.Models;
 using IConfigurationProvider = AutoMapper.IConfigurationProvider;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Caching.Redis;
+using Microsoft.Extensions.Options;
 
 namespace VotingIrregularities.Api
 {
@@ -64,7 +68,6 @@ namespace VotingIrregularities.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddApplicationInsightsTelemetry(Configuration);
 
             services.AddMvc();
@@ -98,11 +101,11 @@ namespace VotingIrregularities.Api
             });
 
             ConfigureContainer(services);
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IApplicationLifetime appLifetime)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory,
+            IApplicationLifetime appLifetime, IDistributedCache cache)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -120,16 +123,18 @@ namespace VotingIrregularities.Api
                 {
                     builder.Run(context =>
                         {
-                            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                            context.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
                             context.Response.ContentType = "text/html";
                             return Task.FromResult(0);
                         }
-                        );
+                    );
                 }
             );
             app.UseSimpleInjectorAspNetRequestScoping(container);
 
             container.Options.DefaultScopedLifestyle = new AspNetRequestLifestyle();
+
+            ConfigureCache(env);
 
             RegisterServices();
 
@@ -141,7 +146,7 @@ namespace VotingIrregularities.Api
 
             BuildMediator();
 
-            
+
             container.Verify();
 
             app.UseMvc();
@@ -153,19 +158,41 @@ namespace VotingIrregularities.Api
             app.UseSwaggerUi();
         }
 
+        private void ConfigureCache(IHostingEnvironment env)
+        {
+            if (env.EnvironmentName.EndsWith("Development", StringComparison.CurrentCultureIgnoreCase))
+            {
+                container.RegisterSingleton(new MemoryDistributedCache(new MemoryCache(new MemoryCacheOptions())));
+
+            }
+            else if (env.EnvironmentName.EndsWith("Production", StringComparison.CurrentCultureIgnoreCase))
+            {
+
+                container.RegisterSingleton<IOptions<RedisCacheOptions>>(
+                new OptionsManager<RedisCacheOptions>(new List<IConfigureOptions<RedisCacheOptions>>
+                {
+                    new ConfigureFromConfigurationOptions<RedisCacheOptions>(
+                        Configuration.GetSection("RedisCacheOptions"))
+                }));
+
+            container.RegisterSingleton<IDistributedCache, RedisCache>();
+            }
+        }
+
 
         private void ConfigureContainer(IServiceCollection services)
         {
             services.AddSingleton<IControllerActivator>(
-            new SimpleInjectorControllerActivator(container));
+                new SimpleInjectorControllerActivator(container));
             services.AddSingleton<IViewComponentActivator>(
                 new SimpleInjectorViewComponentActivator(container));
         }
 
         private void RegisterServices()
         {
-            container.Register<ISectieDeVotareService,SectieDevotareDBService>(Lifestyle.Scoped);
+            container.Register<ISectieDeVotareService, SectieDevotareDBService>(Lifestyle.Scoped);
         }
+
         private void InitializeContainer(IApplicationBuilder app)
         {
             // Add application presentation components:
@@ -179,17 +206,17 @@ namespace VotingIrregularities.Api
             // Cross-wire ASP.NET services (if any). For instance:
             container.RegisterSingleton(app.ApplicationServices.GetService<ILoggerFactory>());
             container.RegisterConditional(
-                    typeof(ILogger),
-                    c => typeof(Logger<>).MakeGenericType(c.Consumer.ImplementationType),
-                    Lifestyle.Singleton,
-                    c => true);
+                typeof(ILogger),
+                c => typeof(Logger<>).MakeGenericType(c.Consumer.ImplementationType),
+                Lifestyle.Singleton,
+                c => true);
 
             // NOTE: Prevent cross-wired instances as much as possible.
             // See: https://simpleinjector.org/blog/2016/07/
         }
 
         private void RegisterDbContext<TDbContext>(string connectionString = null)
-           where TDbContext : DbContext
+            where TDbContext : DbContext
         {
             if (!string.IsNullOrEmpty(connectionString))
             {
@@ -225,20 +252,18 @@ namespace VotingIrregularities.Api
 
         private void RegisterAutomapper()
         {
-            Mapper.Initialize(cfg =>
-            {
-                cfg.AddProfiles(GetAssemblies());
-            });
+            Mapper.Initialize(cfg => { cfg.AddProfiles(GetAssemblies()); });
 
             container.RegisterSingleton(Mapper.Configuration);
-            container.Register<IMapper>(() => new Mapper(Mapper.Configuration),Lifestyle.Scoped);
+            container.Register<IMapper>(() => new Mapper(Mapper.Configuration), Lifestyle.Scoped);
         }
 
         private static IEnumerable<Assembly> GetAssemblies()
         {
             yield return typeof(IMediator).GetTypeInfo().Assembly;
             yield return typeof(Startup).GetTypeInfo().Assembly;
-            yield return typeof(VotingContext).GetTypeInfo().Assembly; // just to identify VotingIrregularities.Domain assembly
+            yield return typeof(VotingContext).GetTypeInfo().Assembly;
+                // just to identify VotingIrregularities.Domain assembly
         }
     }
 }

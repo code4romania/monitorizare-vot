@@ -21,7 +21,7 @@
     "NETStandard.Library": "1.6.0",
     "SimpleInjector": "3.2.2",
     "Microsoft.Extensions.Configuration": "1.0.0",
-    "Microsoft.Extensions.Configuration.FileExtensions": "1.0.0",
+    "Microsoft.Extensions.Configuration.FileExtensions": "1.0.0", 
     "Microsoft.AspNetCore.Hosting": "1.0.0",
     "Microsoft.Extensions.PlatformAbstractions": "1.0.0",
     "System.Linq.Queryable": "4.0.1",
@@ -37,7 +37,7 @@
   },
   "frameworks": {
     "netcoreapp1.0": {
-      "imports": "dnxcore50"
+      "imports": [ "dotnet5.6", "dnxcore50" ]
     }
   },
 

@@ -26,6 +26,9 @@
     "Microsoft.Extensions.Logging.Console": "1.0.0",
     "Microsoft.Extensions.Logging.Debug": "1.0.0",
     "Microsoft.Extensions.Options.ConfigurationExtensions": "1.0.0",
+    "Microsoft.Extensions.Caching.Abstractions": "1.0.0",
+    "Microsoft.Extensions.Caching.Memory": "1.0.0",
+    "StackExchange.Redis": "1.1.608",
     "Microsoft.NETCore.App": {
       "version": "1.0.1",
       "type": "platform"
@@ -36,7 +39,9 @@
     "SimpleInjector.Integration.AspNetCore": "3.2.1",
     "SimpleInjector.Integration.AspNetCore.Mvc": "3.2.3",
     "Swashbuckle": "6.0.0-beta902",
-    "VotingIrregularities.Domain": "1.0.0-*"
+    "VotingIrregularities.Domain": "1.0.0-*",
+    "WebApiContrib.Core": "1.0.0",
+    "Microsoft.Extensions.Caching.Redis": "1.0.0-rc4-*"
   },
 
   "tools": {

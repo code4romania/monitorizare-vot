@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using VotingIrregularities.Api.Models;
 
@@ -16,6 +17,7 @@ namespace VotingIrregularities.Api.Controllers
     public class Formular : Controller
     {
         private readonly IMediator _mediator;
+        private readonly IDistributedCache _cache;
 
         public Formular(IMediator mediator)
         {
