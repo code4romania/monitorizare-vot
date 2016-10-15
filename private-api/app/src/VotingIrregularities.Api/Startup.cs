@@ -162,7 +162,7 @@ namespace VotingIrregularities.Api
         {
             if (env.EnvironmentName.EndsWith("Development", StringComparison.CurrentCultureIgnoreCase))
             {
-                container.RegisterSingleton(new MemoryDistributedCache(new MemoryCache(new MemoryCacheOptions())));
+                container.RegisterSingleton<IDistributedCache>(new MemoryDistributedCache(new MemoryCache(new MemoryCacheOptions())));
 
             }
             else if (env.EnvironmentName.EndsWith("Production", StringComparison.CurrentCultureIgnoreCase))
@@ -175,8 +175,11 @@ namespace VotingIrregularities.Api
                         Configuration.GetSection("RedisCacheOptions"))
                 }));
 
-            container.RegisterSingleton<IDistributedCache, RedisCache>();
+                container.RegisterSingleton<IDistributedCache, RedisCache>();
             }
+
+
+            container.RegisterSingleton<ICacheService, CacheService>();
         }
 
 
