@@ -1,0 +1,19 @@
+﻿{
+  "version": "1.0.0-rc4-*",
+  "description": "Distributed cache implementation of Microsoft.Extensions.Caching.Distributed.IDistributedCache using Redis. Source: https://github.com/WebApiContrib/WebAPIContrib.Core.git",
+  "packOptions": {
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/aspnet/caching"
+    }
+  },
+  "dependencies": {
+    "Microsoft.Extensions.Caching.Abstractions": "1.0.0",
+    "Microsoft.Extensions.Options": "1.0.0",
+    "StackExchange.Redis.StrongName": "1.1.608"
+  },
+  "frameworks": {
+    "netstandard1.6": {
+    }
+  }
+}
