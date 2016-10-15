@@ -2423,23 +2423,31 @@
           "lib/netstandard1.5/StackExchange.Redis.dll": {}
         }
       },
-      "StackExchange.Redis.StrongName/1.1.604-alpha": {
+      "StackExchange.Redis.StrongName/1.1.608": {
         "type": "package",
         "dependencies": {
-          "NETStandard.Library": "1.5.0-rc2-24027",
-          "System.Collections.NonGeneric": "4.0.1-rc2-24027",
-          "System.IO.FileSystem": "4.0.1-rc2-24027",
-          "System.Net.NameResolution": "4.0.0-rc2-24027",
-          "System.Net.Security": "4.0.0-rc2-24027",
-          "System.Net.Sockets": "4.1.0-rc2-24027",
-          "System.Reflection.Emit": "4.0.1-rc2-24027",
-          "System.Reflection.Emit.Lightweight": "4.0.1-rc2-24027",
-          "System.Reflection.TypeExtensions": "4.1.0-rc2-24027",
-          "System.Security.Cryptography.Algorithms": "4.1.0-rc2-24027",
-          "System.Security.Cryptography.X509Certificates": "4.1.0-rc2-24027",
-          "System.Threading.Thread": "4.0.0-rc2-24027",
-          "System.Threading.ThreadPool": "4.0.10-rc2-24027",
-          "System.Threading.Timer": "4.0.1-rc2-24027"
+          "System.Collections": "4.0.11",
+          "System.Collections.Concurrent": "4.0.12",
+          "System.Collections.NonGeneric": "4.0.1",
+          "System.Diagnostics.Tools": "4.0.1",
+          "System.IO.Compression": "4.1.0",
+          "System.IO.FileSystem": "4.0.1",
+          "System.Linq": "4.1.0",
+          "System.Net.NameResolution": "4.0.0",
+          "System.Net.Security": "4.0.0",
+          "System.Net.Sockets": "4.1.0",
+          "System.Reflection.Emit": "4.0.1",
+          "System.Reflection.Emit.Lightweight": "4.0.1",
+          "System.Reflection.TypeExtensions": "4.1.0",
+          "System.Runtime.Extensions": "4.1.0",
+          "System.Runtime.InteropServices.RuntimeInformation": "4.0.0",
+          "System.Security.Cryptography.Algorithms": "4.2.0",
+          "System.Security.Cryptography.X509Certificates": "4.1.0",
+          "System.Text.RegularExpressions": "4.1.0",
+          "System.Threading": "4.0.11",
+          "System.Threading.Thread": "4.0.0",
+          "System.Threading.ThreadPool": "4.0.10",
+          "System.Threading.Timer": "4.0.1"
         },
         "compile": {
           "lib/netstandard1.5/StackExchange.Redis.StrongName.dll": {}
@@ -4534,7 +4542,8 @@
         "dependencies": {
           "Microsoft.Extensions.Caching.Abstractions": "1.0.0",
           "Microsoft.Extensions.Options": "1.0.0",
-          "StackExchange.Redis.StrongName": "1.1.604-alpha"
+          "StackExchange.Redis.StrongName": "1.1.608",
+          "System.Runtime.InteropServices": "4.1.0"
         },
         "compile": {
           "netstandard1.6/Microsoft.Extensions.Caching.Redis.dll": {}
@@ -6597,12 +6606,12 @@
         "lib/netstandard1.5/StackExchange.Redis.xml"
       ]
     },
-    "StackExchange.Redis.StrongName/1.1.604-alpha": {
-      "sha512": "LGgEzf2suPY3F4iQ+bCdTDl2VEccQMIa9nxq+MUvAsV+j+h9j7+fLAbXVM3S09PsB8HiwjEQka5PAI7Azzfhfg==",
+    "StackExchange.Redis.StrongName/1.1.608": {
+      "sha512": "n1Nt4JiBTPmObCTRWoFgfYFl2UfiPSZAbvEYSypgO64da8XD4G4cT4aLoAUIPrDMSXbrIZTTyYlrPO29SvxtKQ==",
       "type": "package",
-      "path": "StackExchange.Redis.StrongName/1.1.604-alpha",
+      "path": "StackExchange.Redis.StrongName/1.1.608",
       "files": [
-        "StackExchange.Redis.StrongName.1.1.604-alpha.nupkg.sha512",
+        "StackExchange.Redis.StrongName.1.1.608.nupkg.sha512",
         "StackExchange.Redis.StrongName.nuspec",
         "lib/net40/StackExchange.Redis.StrongName.dll",
         "lib/net40/StackExchange.Redis.StrongName.xml",
@@ -11328,8 +11337,8 @@
     },
     "Microsoft.Extensions.Caching.Redis/1.0.0-rc4": {
       "type": "project",
-      "path": "../modules/WebAPIContrib.Core/other/Microsoft.Extensions.Caching.Redis/project.json",
-      "msbuildProject": "../modules/WebAPIContrib.Core/other/Microsoft.Extensions.Caching.Redis/Microsoft.Extensions.Caching.Redis.xproj"
+      "path": "../Microsoft.Extensions.Caching.Redis/project.json",
+      "msbuildProject": "../Microsoft.Extensions.Caching.Redis/Microsoft.Extensions.Caching.Redis.xproj"
     },
     "VotingIrregularities.Domain/1.0.0": {
       "type": "project",

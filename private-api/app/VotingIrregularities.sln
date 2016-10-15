@@ -20,6 +20,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{388C55EB-26FF-46AB-9395-549E1A7A99AD}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "VotingIrregularities.Domain.Tests", "test\VotingIrregularities.Domain.Tests\VotingIrregularities.Domain.Tests.xproj", "{4E70B88E-F43A-4546-955C-4A2139C1CC9C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{73125CAC-66E8-40D7-81A7-6A847132C7B3} = {73125CAC-66E8-40D7-81A7-6A847132C7B3}
+	EndProjectSection
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.Extensions.Caching.Redis", "src\Microsoft.Extensions.Caching.Redis\Microsoft.Extensions.Caching.Redis.xproj", "{51334948-33DD-4735-ACAA-A643F13495FD}"
 EndProject
