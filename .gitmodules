@@ -1,3 +1,0 @@
-[submodule "private-api/app/src/WebAPIContrib.Core"]
-	path = private-api/app/src/WebAPIContrib.Core
-	url = https://github.com/WebApiContrib/WebAPIContrib.Core.git
