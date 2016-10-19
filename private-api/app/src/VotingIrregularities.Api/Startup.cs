@@ -48,7 +48,7 @@ namespace VotingIrregularities.Api
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange:true);
 
             if (env.EnvironmentName.EndsWith("Development", StringComparison.CurrentCultureIgnoreCase))
             {
@@ -123,7 +123,7 @@ namespace VotingIrregularities.Api
                 {
                     builder.Run(context =>
                         {
-                            context.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
+                            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                             context.Response.ContentType = "text/html";
                             return Task.FromResult(0);
                         }
@@ -160,26 +160,39 @@ namespace VotingIrregularities.Api
 
         private void ConfigureCache(IHostingEnvironment env)
         {
-            if (env.EnvironmentName.EndsWith("Development", StringComparison.CurrentCultureIgnoreCase))
+            var enableCache = Configuration.GetValue<bool>("ApplicationCacheOptions:Enabled");
+
+            if (!enableCache)
             {
-                container.RegisterSingleton<IDistributedCache>(new MemoryDistributedCache(new MemoryCache(new MemoryCacheOptions())));
-
-            }
-            else if (env.EnvironmentName.EndsWith("Production", StringComparison.CurrentCultureIgnoreCase))
-            {
-
-                container.RegisterSingleton<IOptions<RedisCacheOptions>>(
-                new OptionsManager<RedisCacheOptions>(new List<IConfigureOptions<RedisCacheOptions>>
-                {
-                    new ConfigureFromConfigurationOptions<RedisCacheOptions>(
-                        Configuration.GetSection("RedisCacheOptions"))
-                }));
-
-                container.RegisterSingleton<IDistributedCache, RedisCache>();
+                container.RegisterSingleton<ICacheService>(new NoCacheService());
+                return;
             }
 
+            var cacheProvider = Configuration.GetValue<string>("ApplicationCacheOptions:RedisCache");
 
             container.RegisterSingleton<ICacheService, CacheService>();
+
+            switch (cacheProvider)
+            {
+                case "RedisCache":
+                    {
+                        container.RegisterSingleton<IOptions<RedisCacheOptions>>(
+                          new OptionsManager<RedisCacheOptions>(new List<IConfigureOptions<RedisCacheOptions>>
+                          {
+                                new ConfigureFromConfigurationOptions<RedisCacheOptions>(
+                                    Configuration.GetSection("RedisCacheOptions"))
+                          }));
+
+                        break;
+                    }
+
+                default:
+                case "MemoryDistributedCache":
+                    {
+                        container.RegisterSingleton<IDistributedCache>(new MemoryDistributedCache(new MemoryCache(new MemoryCacheOptions())));
+                        break;
+                    }
+            }
         }
 
 
@@ -266,7 +279,7 @@ namespace VotingIrregularities.Api
             yield return typeof(IMediator).GetTypeInfo().Assembly;
             yield return typeof(Startup).GetTypeInfo().Assembly;
             yield return typeof(VotingContext).GetTypeInfo().Assembly;
-                // just to identify VotingIrregularities.Domain assembly
+            // just to identify VotingIrregularities.Domain assembly
         }
     }
 }

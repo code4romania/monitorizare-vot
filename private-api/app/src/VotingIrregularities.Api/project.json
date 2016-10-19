@@ -41,7 +41,10 @@
     "Swashbuckle": "6.0.0-beta902",
     "VotingIrregularities.Domain": "1.0.0-*",
     "WebApiContrib.Core": "1.0.0",
-    "Microsoft.Extensions.Caching.Redis": "1.0.0-rc4-*"
+    "Microsoft.Extensions.Caching.Redis": "1.0.0-rc4-*",
+    "FluentValidation": "6.4.0-beta3",
+    "System.Linq.Queryable": "4.0.1",
+    "System.Collections.Immutable": "1.2.0"
   },
 
   "tools": {

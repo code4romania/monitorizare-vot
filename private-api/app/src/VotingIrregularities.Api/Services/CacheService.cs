@@ -20,14 +20,14 @@ namespace VotingIrregularities.Api.Services
             _logger = logger;
         }
 
-        public async Task<T> GetOrSaveDataInCache<T>(CacheObjectsName name, Func<T> source, DistributedCacheEntryOptions options = null)
+        public async Task<T> GetOrSaveDataInCacheAsync<T>(CacheObjectsName name, Func<Task<T>> source, DistributedCacheEntryOptions options = null)
         {
             var obj = await GetObjectSafeAsync<T>(name);
 
             if (obj != null)
                 return obj;
 
-            var result = source();
+            var result = await source();
 
             await SaveObjectSafeAsync(name, result, options);
 

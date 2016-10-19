@@ -33,7 +33,8 @@
     "AutoMapper": "5.1.1",
     "System.Linq.Parallel": "4.0.1",
     "Z.EntityFramework.Plus.EFCore": "1.4.6",
-    "LinqKit.Microsoft.EntityFrameworkCore": "1.0.5"
+    "LinqKit.Microsoft.EntityFrameworkCore": "1.0.5",
+    "FluentValidation": "6.4.0-beta3"
   },
   "frameworks": {
     "netcoreapp1.0": {
