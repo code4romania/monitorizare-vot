@@ -46,9 +46,9 @@ namespace VotingIrregularities.Domain
             using (var serviceScope = provider.GetService<IServiceScopeFactory>().CreateScope())
             {
                 var context = serviceScope.ServiceProvider.GetService<VotingContext>();
-                logger.LogDebug($"Initializing Migration for VotingContext...");
-                context.Database.Migrate();
-                logger.LogDebug($"Migration finished");
+                logger.LogDebug($"Initializing Database for VotingContext...");
+                context.Database.EnsureCreated();
+                logger.LogDebug($"Database created");
                 logger.LogDebug($"Initializing data seeding...");
                 context.EnsureSeedData();
                 logger.LogDebug($"Data seeded for {conn}");

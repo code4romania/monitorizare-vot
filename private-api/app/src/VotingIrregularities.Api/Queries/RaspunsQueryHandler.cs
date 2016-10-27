@@ -20,12 +20,10 @@ namespace VotingIrregularities.Api.Queries
     public class RaspunsQueryHandler : 
         IAsyncRequestHandler<RaspunsuriBulk, CompleteazaRaspunsCommand>
     {
-        private readonly VotingContext _context;
         private readonly ISectieDeVotareService _svService;
 
-        public RaspunsQueryHandler(VotingContext context, ISectieDeVotareService svService)
+        public RaspunsQueryHandler(ISectieDeVotareService svService)
         {
-            _context = context;
             _svService = svService;
         }
 
@@ -42,7 +40,6 @@ namespace VotingIrregularities.Api.Queries
             
             foreach (var sectie in sectii)
             {
-                //TODO[DH] - se pot obtine dintr-un cache in loc de BD. daca se gaseste mai mult de o sectie la o pereche de Numarsectie si codjudet se arunca exceptie
                 var idSectie = await _svService.GetSingleSectieDeVotare(sectie.CodJudet, sectie.NumarSectie);
 
                 command.Raspunsuri.AddRange(message.ModelRaspunsuriBulk
@@ -56,7 +53,7 @@ namespace VotingIrregularities.Api.Queries
                 }));
             }
 
-            return await Task.FromResult(command);
+            return command;
         }
     }
 }

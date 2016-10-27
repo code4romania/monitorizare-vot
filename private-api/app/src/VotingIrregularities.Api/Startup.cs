@@ -7,12 +7,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
-using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
@@ -23,15 +19,11 @@ using Microsoft.Extensions.PlatformAbstractions;
 using Serilog;
 using Swashbuckle.Swagger.Model;
 using VotingIrregularities.Api.Extensions;
-using VotingIrregularities.Domain;
-using VotingIrregularities.Api.Models;
 using SimpleInjector;
-using SimpleInjector.Extensions.ExecutionContextScoping;
 using SimpleInjector.Integration.AspNetCore;
 using SimpleInjector.Integration.AspNetCore.Mvc;
 using VotingIrregularities.Api.Services;
 using VotingIrregularities.Domain.Models;
-using IConfigurationProvider = AutoMapper.IConfigurationProvider;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Caching.Redis;
@@ -41,7 +33,7 @@ namespace VotingIrregularities.Api
 {
     public class Startup
     {
-        private readonly Container container = new Container();
+        private readonly Container _container = new Container();
 
         public Startup(IHostingEnvironment env)
         {
@@ -124,15 +116,15 @@ namespace VotingIrregularities.Api
                     builder.Run(context =>
                         {
                             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                            context.Response.ContentType = "text/html";
+                            context.Response.ContentType = "application/json";
                             return Task.FromResult(0);
                         }
                     );
                 }
             );
-            app.UseSimpleInjectorAspNetRequestScoping(container);
+            app.UseSimpleInjectorAspNetRequestScoping(_container);
 
-            container.Options.DefaultScopedLifestyle = new AspNetRequestLifestyle();
+            _container.Options.DefaultScopedLifestyle = new AspNetRequestLifestyle();
 
             ConfigureCache(env);
 
@@ -147,7 +139,7 @@ namespace VotingIrregularities.Api
             BuildMediator();
 
 
-            container.Verify();
+            _container.Verify();
 
             app.UseMvc();
 
@@ -164,19 +156,19 @@ namespace VotingIrregularities.Api
 
             if (!enableCache)
             {
-                container.RegisterSingleton<ICacheService>(new NoCacheService());
+                _container.RegisterSingleton<ICacheService>(new NoCacheService());
                 return;
             }
 
             var cacheProvider = Configuration.GetValue<string>("ApplicationCacheOptions:RedisCache");
 
-            container.RegisterSingleton<ICacheService, CacheService>();
+            _container.RegisterSingleton<ICacheService, CacheService>();
 
             switch (cacheProvider)
             {
                 case "RedisCache":
                     {
-                        container.RegisterSingleton<IOptions<RedisCacheOptions>>(
+                        _container.RegisterSingleton<IOptions<RedisCacheOptions>>(
                           new OptionsManager<RedisCacheOptions>(new List<IConfigureOptions<RedisCacheOptions>>
                           {
                                 new ConfigureFromConfigurationOptions<RedisCacheOptions>(
@@ -189,7 +181,7 @@ namespace VotingIrregularities.Api
                 default:
                 case "MemoryDistributedCache":
                     {
-                        container.RegisterSingleton<IDistributedCache>(new MemoryDistributedCache(new MemoryCache(new MemoryCacheOptions())));
+                        _container.RegisterSingleton<IDistributedCache>(new MemoryDistributedCache(new MemoryCache(new MemoryCacheOptions())));
                         break;
                     }
             }
@@ -199,29 +191,29 @@ namespace VotingIrregularities.Api
         private void ConfigureContainer(IServiceCollection services)
         {
             services.AddSingleton<IControllerActivator>(
-                new SimpleInjectorControllerActivator(container));
+                new SimpleInjectorControllerActivator(_container));
             services.AddSingleton<IViewComponentActivator>(
-                new SimpleInjectorViewComponentActivator(container));
+                new SimpleInjectorViewComponentActivator(_container));
         }
 
         private void RegisterServices()
         {
-            container.Register<ISectieDeVotareService, SectieDevotareDBService>(Lifestyle.Scoped);
+            _container.Register<ISectieDeVotareService, SectieDevotareDBService>(Lifestyle.Scoped);
         }
 
         private void InitializeContainer(IApplicationBuilder app)
         {
             // Add application presentation components:
-            container.RegisterMvcControllers(app);
-            container.RegisterMvcViewComponents(app);
+            _container.RegisterMvcControllers(app);
+            _container.RegisterMvcViewComponents(app);
 
             // Add application services. For instance:
             //container.Register<IUserRepository, SqlUserRepository>(Lifestyle.Scoped);
 
 
             // Cross-wire ASP.NET services (if any). For instance:
-            container.RegisterSingleton(app.ApplicationServices.GetService<ILoggerFactory>());
-            container.RegisterConditional(
+            _container.RegisterSingleton(app.ApplicationServices.GetService<ILoggerFactory>());
+            _container.RegisterConditional(
                 typeof(ILogger),
                 c => typeof(Logger<>).MakeGenericType(c.Consumer.ImplementationType),
                 Lifestyle.Singleton,
@@ -239,29 +231,29 @@ namespace VotingIrregularities.Api
                 var optionsBuilder = new DbContextOptionsBuilder<TDbContext>();
                 optionsBuilder.UseSqlServer(connectionString);
 
-                container.RegisterSingleton(optionsBuilder.Options);
+                _container.RegisterSingleton(optionsBuilder.Options);
 
-                container.Register<TDbContext>(Lifestyle.Scoped);
+                _container.Register<TDbContext>(Lifestyle.Scoped);
             }
             else
             {
-                container.Register<TDbContext>(Lifestyle.Scoped);
+                _container.Register<TDbContext>(Lifestyle.Scoped);
             }
         }
 
         private IMediator BuildMediator()
         {
             var assemblies = GetAssemblies().ToArray();
-            container.RegisterSingleton<IMediator, Mediator>();
-            container.Register(typeof(IRequestHandler<,>), assemblies);
-            container.Register(typeof(IAsyncRequestHandler<,>), assemblies);
-            container.RegisterCollection(typeof(INotificationHandler<>), assemblies);
-            container.RegisterCollection(typeof(IAsyncNotificationHandler<>), assemblies);
-            container.RegisterSingleton(Console.Out);
-            container.RegisterSingleton(new SingleInstanceFactory(container.GetInstance));
-            container.RegisterSingleton(new MultiInstanceFactory(container.GetAllInstances));
+            _container.RegisterSingleton<IMediator, Mediator>();
+            _container.Register(typeof(IRequestHandler<,>), assemblies);
+            _container.Register(typeof(IAsyncRequestHandler<,>), assemblies);
+            _container.RegisterCollection(typeof(INotificationHandler<>), assemblies);
+            _container.RegisterCollection(typeof(IAsyncNotificationHandler<>), assemblies);
+            _container.RegisterSingleton(Console.Out);
+            _container.RegisterSingleton(new SingleInstanceFactory(_container.GetInstance));
+            _container.RegisterSingleton(new MultiInstanceFactory(_container.GetAllInstances));
 
-            var mediator = container.GetInstance<IMediator>();
+            var mediator = _container.GetInstance<IMediator>();
 
             return mediator;
         }
@@ -270,8 +262,8 @@ namespace VotingIrregularities.Api
         {
             Mapper.Initialize(cfg => { cfg.AddProfiles(GetAssemblies()); });
 
-            container.RegisterSingleton(Mapper.Configuration);
-            container.Register<IMapper>(() => new Mapper(Mapper.Configuration), Lifestyle.Scoped);
+            _container.RegisterSingleton(Mapper.Configuration);
+            _container.Register<IMapper>(() => new Mapper(Mapper.Configuration), Lifestyle.Scoped);
         }
 
         private static IEnumerable<Assembly> GetAssemblies()

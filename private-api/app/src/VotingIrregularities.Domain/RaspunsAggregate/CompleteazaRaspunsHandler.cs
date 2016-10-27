@@ -39,8 +39,7 @@ namespace VotingIrregularities.Domain.RaspunsAggregate
                     {
                         IdObservator = message.IdObservator,
                         IdSectieDeVotare = a.IdSectie,
-                        IdIntrebare = a.IdIntrebare,
-                        IdOptiune = o.IdOptiune,
+                        IdRaspunsDisponibil = o.IdOptiune,
                         Value = o.Value,
                         DataUltimeiModificari = lastModified
                     })
@@ -55,7 +54,7 @@ namespace VotingIrregularities.Domain.RaspunsAggregate
                 {
                     foreach (var sectie in sectii)
                     {
-                        var intrebari = message.Raspunsuri.Where(a=> a.IdSectie == sectie).Select(a => a.IdIntrebare).ToList();
+                        var raspunsuri = raspunsuriNoi.Where(a=> a.IdSectieDeVotare == sectie).Select(a => a.IdRaspunsDisponibil).ToList();
 
                         // delete existing answers for posted questions on this 'sectie'
                         _context.Raspuns
@@ -63,7 +62,7 @@ namespace VotingIrregularities.Domain.RaspunsAggregate
                                 a =>
                                     a.IdObservator == message.IdObservator &&
                                     a.IdSectieDeVotare == sectie)
-                                   .WhereRaspunsContains(intrebari)
+                                   .WhereRaspunsContains(raspunsuri)
                             .Delete();
                     }
 
@@ -99,8 +98,8 @@ namespace VotingIrregularities.Domain.RaspunsAggregate
             var ors = contains
                 .Aggregate<int, Expression<Func<Raspuns, bool>>>(null, (expression, id) => 
                 expression == null 
-                    ? (a => a.IdIntrebare == id) 
-                    : expression.Or(a => a.IdIntrebare == id));
+                    ? (a => a.IdRaspunsDisponibil == id) 
+                    : expression.Or(a => a.IdRaspunsDisponibil == id));
 
             return source.Where(ors);
         }

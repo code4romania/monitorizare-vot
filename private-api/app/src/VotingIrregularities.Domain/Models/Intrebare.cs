@@ -8,7 +8,6 @@ namespace VotingIrregularities.Domain.Models
         public Intrebare()
         {
             Nota = new HashSet<Nota>();
-            Raspuns = new HashSet<Raspuns>();
             RaspunsDisponibil = new HashSet<RaspunsDisponibil>();
         }
 
@@ -19,7 +18,6 @@ namespace VotingIrregularities.Domain.Models
         public string TextIntrebare { get; set; }
 
         public virtual ICollection<Nota> Nota { get; set; }
-        public virtual ICollection<Raspuns> Raspuns { get; set; }
         public virtual ICollection<RaspunsDisponibil> RaspunsDisponibil { get; set; }
         public virtual Sectiune IdSectiuneNavigation { get; set; }
     }
