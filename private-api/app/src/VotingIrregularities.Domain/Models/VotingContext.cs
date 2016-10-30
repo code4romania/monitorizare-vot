@@ -177,13 +177,14 @@ namespace VotingIrregularities.Domain.Models
 
             modelBuilder.Entity<Raspuns>(entity =>
             {
-                entity.HasKey(e => e.IdObservator)
+                entity.HasKey(e => new { e.IdObservator, e.IdRaspunsDisponibil, e.IdSectieDeVotare })
                     .HasName("PK_Raspuns_1");
+
+                entity.HasIndex(e => e.IdObservator)
+                    .HasName("IX_Raspuns_IdObservator");
 
                 entity.HasIndex(e => e.IdSectieDeVotare)
                     .HasName("IX_Raspuns_IdSectieDeVotare");
-
-                entity.Property(e => e.IdObservator).ValueGeneratedNever();
 
                 entity.Property(e => e.DataUltimeiModificari)
                     .HasColumnType("datetime")
@@ -192,8 +193,8 @@ namespace VotingIrregularities.Domain.Models
                 entity.Property(e => e.Value).HasMaxLength(1000);
 
                 entity.HasOne(d => d.IdObservatorNavigation)
-                    .WithOne(p => p.Raspuns)
-                    .HasForeignKey<Raspuns>(d => d.IdObservator)
+                    .WithMany(p => p.Raspuns)
+                    .HasForeignKey(d => d.IdObservator)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_Raspuns_Observator");
 

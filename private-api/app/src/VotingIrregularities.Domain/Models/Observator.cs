@@ -10,6 +10,7 @@ namespace VotingIrregularities.Domain.Models
             AccesObservatoriPerDevice = new HashSet<AccesObservatoriPerDevice>();
             DispozitivObservator = new HashSet<DispozitivObservator>();
             Nota = new HashSet<Nota>();
+            Raspuns = new HashSet<Raspuns>();
             RaspunsFormular = new HashSet<RaspunsFormular>();
         }
 
@@ -22,7 +23,7 @@ namespace VotingIrregularities.Domain.Models
         public virtual ICollection<AccesObservatoriPerDevice> AccesObservatoriPerDevice { get; set; }
         public virtual ICollection<DispozitivObservator> DispozitivObservator { get; set; }
         public virtual ICollection<Nota> Nota { get; set; }
-        public virtual Raspuns Raspuns { get; set; }
+        public virtual ICollection<Raspuns> Raspuns { get; set; }
         public virtual ICollection<RaspunsFormular> RaspunsFormular { get; set; }
         public virtual Ong IdOngNavigation { get; set; }
     }
