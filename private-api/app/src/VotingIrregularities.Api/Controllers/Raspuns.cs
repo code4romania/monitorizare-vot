@@ -39,7 +39,7 @@ namespace VotingIrregularities.Api.Controllers
         public async Task<IAsyncResult> CompleteazaRaspuns([FromBody] ModelRaspunsBulk[] raspuns)
         {
             if (!ModelState.IsValid)
-                return this.ResultAsync(HttpStatusCode.BadRequest);
+                return this.ResultAsync(HttpStatusCode.BadRequest, ModelState);
 
             // TODO[DH] use a pipeline instead of separate Send commands
             var command = await _mediator.SendAsync(new RaspunsuriBulk(raspuns));

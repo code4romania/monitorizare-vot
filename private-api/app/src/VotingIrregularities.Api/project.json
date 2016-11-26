@@ -1,5 +1,5 @@
 {
-  "userSecretsId": "TBR",
+  "userSecretsId": "TBRWithASecretkey",
 
   "dependencies": {
     "AutoMapper": "5.1.1",
@@ -44,7 +44,10 @@
     "Microsoft.Extensions.Caching.Redis": "1.0.0-rc4-*",
     "FluentValidation": "6.4.0-beta3",
     "System.Linq.Queryable": "4.0.1",
-    "System.Collections.Immutable": "1.2.0"
+    "System.Collections.Immutable": "1.2.0",
+    "Microsoft.IdentityModel.Tokens": "5.0.0",
+    "System.IdentityModel.Tokens.Jwt": "5.0.0",
+    "Microsoft.AspNetCore.Authentication.JwtBearer": "1.0.0"
   },
 
   "tools": {
