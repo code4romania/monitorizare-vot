@@ -39,7 +39,10 @@ namespace VotingIrregularities.Api.Queries
 
         public async Task<IEnumerable<ModelSectiune>> Handle(ModelFormular.IntrebariQuery message)
         {
-            return await _service.GetOrSaveDataInCacheAsync<IEnumerable<ModelSectiune>>(CacheObjectsName.Formular,
+            CacheObjectsName formular;
+            Enum.TryParse("Formular" + message.CodFormular, out formular);
+
+            return await _service.GetOrSaveDataInCacheAsync<IEnumerable<ModelSectiune>>(formular,
                 async () =>
                 {
                     var r = await _context.Intrebare

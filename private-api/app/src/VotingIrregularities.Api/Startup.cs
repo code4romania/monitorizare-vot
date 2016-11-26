@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.EntityFrameworkCore;
@@ -28,12 +31,15 @@ using ILogger = Microsoft.Extensions.Logging.ILogger;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Caching.Redis;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using VotingIrregularities.Api.Models.AccountViewModels;
 
 namespace VotingIrregularities.Api
 {
     public class Startup
     {
         private readonly Container _container = new Container();
+        private SymmetricSecurityKey _key;
 
         public Startup(IHostingEnvironment env)
         {
@@ -51,6 +57,7 @@ namespace VotingIrregularities.Api
                 builder.AddApplicationInsightsSettings(developerMode: true);
             }
 
+          
             builder.AddEnvironmentVariables();
             Configuration = builder.Build();
         }
@@ -60,9 +67,35 @@ namespace VotingIrregularities.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Get options from app settings
+            services.AddOptions();
+            var jwtAppSettingOptions = Configuration.GetSection(nameof(JwtIssuerOptions));
+        
+            _key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["SecretKey"]));
+
+            // Configure JwtIssuerOptions
+            services.Configure<JwtIssuerOptions>(options =>
+            {
+                options.Issuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)];
+                options.Audience = jwtAppSettingOptions[nameof(JwtIssuerOptions.Audience)];
+                options.SigningCredentials = new SigningCredentials(_key, SecurityAlgorithms.HmacSha256);
+            });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AppUser",
+                                  policy => policy.RequireClaim("Organizatie", "Ong"));
+            });
+
             services.AddApplicationInsightsTelemetry(Configuration);
 
-            services.AddMvc();
+            services.AddMvc(config =>
+            {
+                //var policy = new AuthorizationPolicyBuilder()
+                //                 .RequireAuthenticatedUser()
+                //                 .Build();
+                //config.Filters.Add(new AuthorizeFilter(policy));
+            });
 
             services.AddSwaggerGen();
 
@@ -122,13 +155,37 @@ namespace VotingIrregularities.Api
                     );
                 }
             );
+            var jwtAppSettingOptions = Configuration.GetSection(nameof(JwtIssuerOptions));
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidIssuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)],
+
+                ValidateAudience = true,
+                ValidAudience = jwtAppSettingOptions[nameof(JwtIssuerOptions.Audience)],
+
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = _key,
+
+                RequireExpirationTime = false,
+                ValidateLifetime = false,
+
+                ClockSkew = TimeSpan.Zero
+            };
+
+            app.UseJwtBearerAuthentication(new JwtBearerOptions
+            {
+                AutomaticAuthenticate = true,
+                AutomaticChallenge = true,
+                TokenValidationParameters = tokenValidationParameters
+            });
             app.UseSimpleInjectorAspNetRequestScoping(_container);
 
             _container.Options.DefaultScopedLifestyle = new AspNetRequestLifestyle();
 
             ConfigureCache(env);
 
-            RegisterServices();
+            RegisterServices(app);
 
             InitializeContainer(app);
 
@@ -196,9 +253,10 @@ namespace VotingIrregularities.Api
                 new SimpleInjectorViewComponentActivator(_container));
         }
 
-        private void RegisterServices()
+        private void RegisterServices(IApplicationBuilder app)
         {
             _container.Register<ISectieDeVotareService, SectieDevotareDBService>(Lifestyle.Scoped);
+            _container.RegisterSingleton(() => app.ApplicationServices.GetService<IOptions<JwtIssuerOptions>>());
         }
 
         private void InitializeContainer(IApplicationBuilder app)

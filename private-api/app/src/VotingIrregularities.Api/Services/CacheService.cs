@@ -93,6 +93,8 @@ namespace VotingIrregularities.Api.Services
 
     public enum CacheObjectsName
     {
-        Formular
+        FormularA,
+        FormularB,
+        FormularC
     }
 }

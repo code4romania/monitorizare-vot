@@ -46,7 +46,9 @@ namespace VotingIrregularities.Api.Controllers
         [HttpGet]
         public async Task<IEnumerable<ModelSectiune>> Citeste(string idformular)
         {
-            return await _mediator.SendAsync(new ModelFormular.IntrebariQuery {CodFormular = idformular});
+            var result =  await _mediator.SendAsync(new ModelFormular.IntrebariQuery {CodFormular = idformular});
+
+            return result;
         }
 
     }

@@ -17,7 +17,7 @@ namespace VotingIrregularities.Api.Models
         [Required(AllowEmptyStrings = false)]
         public int NumarSectie { get; set; }
 
-        [Required(AllowEmptyStrings = false)]
+       // [Required(AllowEmptyStrings = false)]
         public string CodFormular { get; set; }
         public List<ModelOptiuniSelectate> Optiuni { get; set; }
     }
