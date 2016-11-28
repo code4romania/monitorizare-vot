@@ -33,6 +33,7 @@ using Microsoft.Extensions.Caching.Redis;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using VotingIrregularities.Api.Models.AccountViewModels;
+using VotingIrregularities.Api.Models;
 
 namespace VotingIrregularities.Api
 {
@@ -185,6 +186,8 @@ namespace VotingIrregularities.Api
 
             ConfigureCache(env);
 
+            ConfigureAzureStorage(env);
+
             RegisterServices(app);
 
             InitializeContainer(app);
@@ -244,6 +247,17 @@ namespace VotingIrregularities.Api
             }
         }
 
+        private void ConfigureAzureStorage(IHostingEnvironment env)
+        {
+            _container.RegisterSingleton<IOptions<BlobStorageOptions>>(
+                new OptionsManager<BlobStorageOptions>(new List<IConfigureOptions<BlobStorageOptions>>
+                {
+                    new ConfigureFromConfigurationOptions<BlobStorageOptions>(
+                        Configuration.GetSection("BlobStorageOptions"))
+                }));
+
+            _container.RegisterSingleton<IFileService, BlobService>();
+        }
 
         private void ConfigureContainer(IServiceCollection services)
         {
