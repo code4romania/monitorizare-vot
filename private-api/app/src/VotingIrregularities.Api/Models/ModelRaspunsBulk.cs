@@ -6,6 +6,10 @@ using VotingIrregularities.Domain.RaspunsAggregate.Commands;
 
 namespace VotingIrregularities.Api.Models
 {
+    public class ModelRaspunsWrapper
+    {
+        public ModelRaspunsBulk[] Raspuns { get; set; }
+    }
     public class ModelRaspunsBulk
     {
         [Required]
@@ -17,7 +21,7 @@ namespace VotingIrregularities.Api.Models
         [Required(AllowEmptyStrings = false)]
         public int NumarSectie { get; set; }
 
-       // [Required(AllowEmptyStrings = false)]
+        //[Required(AllowEmptyStrings = false)]
         public string CodFormular { get; set; }
         public List<ModelOptiuniSelectate> Optiuni { get; set; }
     }

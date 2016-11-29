@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using VotingIrregularities.Api.Extensions;
 using VotingIrregularities.Api.Models;
 using VotingIrregularities.Domain.RaspunsAggregate.Commands;
@@ -21,11 +26,13 @@ namespace VotingIrregularities.Api.Controllers
     {
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
+        private readonly ILogger _logger;
 
-        public Raspuns(IMediator mediator, IMapper mapper)
+        public Raspuns(IMediator mediator, IMapper mapper, ILogger logger)
         {
             _mediator = mediator;
             _mapper = mapper;
+            _logger = logger;
         }
 
         /// <summary>
@@ -36,13 +43,17 @@ namespace VotingIrregularities.Api.Controllers
         /// optiunea <code>SeIntroduceText = true</code></param>
         /// <returns></returns>
         [HttpPost()]
-        public async Task<IAsyncResult> CompleteazaRaspuns([FromBody] ModelRaspunsBulk[] raspuns)
+        public async Task<IAsyncResult> CompleteazaRaspuns([FromBody] ModelRaspunsWrapper raspuns)
         {
+
             if (!ModelState.IsValid)
+            {
                 return this.ResultAsync(HttpStatusCode.BadRequest, ModelState);
 
+            }
+
             // TODO[DH] use a pipeline instead of separate Send commands
-            var command = await _mediator.SendAsync(new RaspunsuriBulk(raspuns));
+            var command = await _mediator.SendAsync(new RaspunsuriBulk(raspuns.Raspuns));
 
             // TODO[DH] get the actual IdObservator from token
             command.IdObservator = 1;
