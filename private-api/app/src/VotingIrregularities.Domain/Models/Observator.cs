@@ -19,6 +19,7 @@ namespace VotingIrregularities.Domain.Models
         public int IdOng { get; set; }
         public string NumarTelefon { get; set; }
         public string NumeIntreg { get; set; }
+        public string Pin { get; set; }
 
         public virtual ICollection<AccesObservatoriPerDevice> AccesObservatoriPerDevice { get; set; }
         public virtual ICollection<DispozitivObservator> DispozitivObservator { get; set; }

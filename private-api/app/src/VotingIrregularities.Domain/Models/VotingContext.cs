@@ -6,6 +6,12 @@ namespace VotingIrregularities.Domain.Models
 {
     public partial class VotingContext : DbContext
     {
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+            optionsBuilder.UseSqlServer(@"Server=.;Initial Catalog=monitorizarevot_uat;Persist Security Info=False;User ID=infrastructure;Password=1nfr@structur3;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=True;Connection Timeout=30;");
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AccesObservatoriPerDevice>(entity =>
@@ -24,6 +30,32 @@ namespace VotingIrregularities.Domain.Models
                     .WithMany(p => p.AccesObservatoriPerDevice)
                     .HasForeignKey(d => d.IdObservator)
                     .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<AdminOng>(entity =>
+            {
+                entity.HasKey(e => e.IdAdminOng)
+                    .HasName("PK_AdminONG");
+
+                entity.ToTable("AdminONG");
+
+                entity.Property(e => e.IdAdminOng)
+                    .HasColumnName("IdAdminONG")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.Cont)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Parola)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.HasOne(d => d.IdOngNavigation)
+                    .WithMany(p => p.AdminOng)
+                    .HasForeignKey(d => d.IdOng)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("FK_AdminONG_ONG");
             });
 
             modelBuilder.Entity<DispozitivObservator>(entity =>
@@ -126,6 +158,8 @@ namespace VotingIrregularities.Domain.Models
                 entity.HasIndex(e => e.IdOng)
                     .HasName("IX_Observator_IdOng");
 
+                entity.Property(e => e.IdObservator).ValueGeneratedNever();
+
                 entity.Property(e => e.EsteDinEchipa).HasDefaultValueSql("0");
 
                 entity.Property(e => e.NumarTelefon)
@@ -135,6 +169,10 @@ namespace VotingIrregularities.Domain.Models
                 entity.Property(e => e.NumeIntreg)
                     .IsRequired()
                     .HasMaxLength(200);
+
+                entity.Property(e => e.Pin)
+                    .IsRequired()
+                    .HasMaxLength(50);
 
                 entity.HasOne(d => d.IdOngNavigation)
                     .WithMany(p => p.Observator)
@@ -159,6 +197,8 @@ namespace VotingIrregularities.Domain.Models
                     .IsRequired()
                     .HasColumnName("NumeONG")
                     .HasMaxLength(200);
+
+                entity.Property(e => e.Organizator).HasDefaultValueSql("0");
             });
 
             modelBuilder.Entity<Optiune>(entity =>
@@ -183,6 +223,9 @@ namespace VotingIrregularities.Domain.Models
                 entity.HasIndex(e => e.IdObservator)
                     .HasName("IX_Raspuns_IdObservator");
 
+                entity.HasIndex(e => e.IdRaspunsDisponibil)
+                    .HasName("IX_Raspuns_IdRaspunsDisponibil");
+
                 entity.HasIndex(e => e.IdSectieDeVotare)
                     .HasName("IX_Raspuns_IdSectieDeVotare");
 
@@ -201,8 +244,7 @@ namespace VotingIrregularities.Domain.Models
                 entity.HasOne(d => d.IdRaspunsDisponibilNavigation)
                     .WithMany(p => p.Raspuns)
                     .HasForeignKey(d => d.IdRaspunsDisponibil)
-                    .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("FK_Raspuns_RaspunsDisponibil");
+                    .OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasOne(d => d.IdSectieDeVotareNavigation)
                     .WithMany(p => p.Raspuns)
@@ -332,6 +374,7 @@ namespace VotingIrregularities.Domain.Models
         }
 
         public virtual DbSet<AccesObservatoriPerDevice> AccesObservatoriPerDevice { get; set; }
+        public virtual DbSet<AdminOng> AdminOng { get; set; }
         public virtual DbSet<DispozitivObservator> DispozitivObservator { get; set; }
         public virtual DbSet<Intrebare> Intrebare { get; set; }
         public virtual DbSet<Judet> Judet { get; set; }
