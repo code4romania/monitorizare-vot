@@ -13,9 +13,9 @@ namespace VotingIrregularities.Api.Queries
     public class ObservatorQueryHandler : IAsyncRequestHandler<ApplicationUser, ModelObservatorInregistrat>
     {
         private readonly VotingContext _context;
-        private readonly HashService _hash;
+        private readonly IHashService _hash;
 
-        public ObservatorQueryHandler(VotingContext context, HashService hash)
+        public ObservatorQueryHandler(VotingContext context, IHashService hash)
         {
             _context = context;
             _hash = hash;
@@ -26,7 +26,7 @@ namespace VotingIrregularities.Api.Queries
 
             var userinfo = _context.Observator
                 .FirstOrDefault(a => a.Pin == hashValue &&
-                                     (string.IsNullOrWhiteSpace(message.UDID) || a.IdDispozitivMobil == message.UDID) &&
+                                     (string.IsNullOrWhiteSpace(a.IdDispozitivMobil) || a.IdDispozitivMobil == message.UDID) &&
                                      a.NumarTelefon == message.Phone);
             if (userinfo == null)
                 return new ModelObservatorInregistrat

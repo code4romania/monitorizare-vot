@@ -42,6 +42,9 @@ namespace VotingIrregularities.Api.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Get([FromBody] ApplicationUser applicationUser)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var identity = await GetClaimsIdentity(applicationUser);
             if (identity == null)
             {

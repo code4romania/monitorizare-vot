@@ -14,7 +14,7 @@ namespace VotingIrregularities.Api.Models.AccountViewModels
         [DataType(DataType.Password)]
         public string Pin { get; set; }
 
-        [Required]
+        [Required(AllowEmptyStrings = false)]
         public string UDID { get; set; }
     }
 
