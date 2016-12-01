@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using VotingIrregularities.Api.Models.AccountViewModels;
+using System.Linq;
 
 namespace VotingIrregularities.Api.Controllers
 {
@@ -34,7 +35,7 @@ namespace VotingIrregularities.Api.Controllers
 
         [HttpPost("token")]
         [AllowAnonymous]
-        public async Task<IActionResult> Get([FromForm] ApplicationUser applicationUser)
+        public async Task<IActionResult> Get([FromBody] ApplicationUser applicationUser)
         {
             var identity = await GetClaimsIdentity(applicationUser);
             if (identity == null)
@@ -50,7 +51,7 @@ namespace VotingIrregularities.Api.Controllers
         new Claim(JwtRegisteredClaimNames.Iat,
                   ToUnixEpochDate(_jwtOptions.IssuedAt).ToString(),
                   ClaimValueTypes.Integer64),
-        identity.FindFirst("Observator")
+        identity.FindFirst("IdObservator")
       };
 
             // Create the JWT security token and encode it.
@@ -75,6 +76,18 @@ namespace VotingIrregularities.Api.Controllers
             return new OkObjectResult(json);
         }
 
+        [Authorize]
+        [HttpPost("test")]
+        public async Task<object> Test()
+        {
+            var claims = User.Claims.Select(c => new
+            {
+                Type = c.Type,
+                Value = c.Value
+            });
+
+            return await Task.FromResult(claims);
+        }
         private static void ThrowIfInvalidOptions(JwtIssuerOptions options)
         {
             if (options == null) throw new ArgumentNullException(nameof(options));
@@ -117,6 +130,7 @@ namespace VotingIrregularities.Api.Controllers
                   new[]
                   {
             new Claim("Observator", "ONG"),
+            new Claim("IdObservator", "1"),
             new Claim(ClaimTypes.Dsa, user.UDID)}));
             }
 
