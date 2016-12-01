@@ -14,24 +14,6 @@ namespace VotingIrregularities.Domain.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<AccesObservatoriPerDevice>(entity =>
-            {
-                entity.HasKey(e => new { e.IdObservator, e.IdDispozitivMobil })
-                    .HasName("PK_AccesObservatoriPerDevice");
-
-                entity.HasIndex(e => e.IdObservator)
-                    .HasName("IX_AccesObservatoriPerDevice_IdObservator");
-
-                entity.Property(e => e.IdDispozitivMobil).HasColumnType("varchar(500)");
-
-                entity.Property(e => e.DataInregistrariiDispozitivului).HasColumnType("datetime");
-
-                entity.HasOne(d => d.IdObservatorNavigation)
-                    .WithMany(p => p.AccesObservatoriPerDevice)
-                    .HasForeignKey(d => d.IdObservator)
-                    .OnDelete(DeleteBehavior.Restrict);
-            });
-
             modelBuilder.Entity<AdminOng>(entity =>
             {
                 entity.HasKey(e => e.IdAdminOng)
@@ -56,24 +38,6 @@ namespace VotingIrregularities.Domain.Models
                     .HasForeignKey(d => d.IdOng)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_AdminONG_ONG");
-            });
-
-            modelBuilder.Entity<DispozitivObservator>(entity =>
-            {
-                entity.HasKey(e => e.IdDispozitivObservator)
-                    .HasName("PK_DispozitivObservator");
-
-                entity.HasIndex(e => e.IdObservator)
-                    .HasName("IX_DispozitivObservator_IdObservator");
-
-                entity.Property(e => e.IdentificatorUnic)
-                    .IsRequired()
-                    .HasMaxLength(200);
-
-                entity.HasOne(d => d.IdObservatorNavigation)
-                    .WithMany(p => p.DispozitivObservator)
-                    .HasForeignKey(d => d.IdObservator)
-                    .OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<Intrebare>(entity =>
@@ -160,7 +124,11 @@ namespace VotingIrregularities.Domain.Models
 
                 entity.Property(e => e.IdObservator).ValueGeneratedNever();
 
+                entity.Property(e => e.DataInregistrariiDispozitivului).HasColumnType("datetime");
+
                 entity.Property(e => e.EsteDinEchipa).HasDefaultValueSql("0");
+
+                entity.Property(e => e.IdDispozitivMobil).HasColumnType("varchar(500)");
 
                 entity.Property(e => e.NumarTelefon)
                     .IsRequired()
@@ -373,9 +341,7 @@ namespace VotingIrregularities.Domain.Models
             });
         }
 
-        public virtual DbSet<AccesObservatoriPerDevice> AccesObservatoriPerDevice { get; set; }
         public virtual DbSet<AdminOng> AdminOng { get; set; }
-        public virtual DbSet<DispozitivObservator> DispozitivObservator { get; set; }
         public virtual DbSet<Intrebare> Intrebare { get; set; }
         public virtual DbSet<Judet> Judet { get; set; }
         public virtual DbSet<Nota> Nota { get; set; }

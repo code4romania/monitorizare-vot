@@ -10,7 +10,9 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using VotingIrregularities.Api.Models.AccountViewModels;
 using System.Linq;
+using MediatR;
 using VotingIrregularities.Api.Services;
+using VotingIrregularities.Domain.UserAggregate;
 
 namespace VotingIrregularities.Api.Controllers
 {
@@ -19,14 +21,16 @@ namespace VotingIrregularities.Api.Controllers
     {
         private readonly JwtIssuerOptions _jwtOptions;
         private readonly ILogger _logger;
+        private readonly IMediator _mediator;
         private readonly JsonSerializerSettings _serializerSettings;
 
-        public Authorization(IOptions<JwtIssuerOptions> jwtOptions, ILogger logger, IHashService hashService)
+        public Authorization(IOptions<JwtIssuerOptions> jwtOptions, ILogger logger, IHashService hashService, IMediator mediator)
         {
             _jwtOptions = jwtOptions.Value;
             ThrowIfInvalidOptions(_jwtOptions);
 
             _logger = logger;
+            _mediator = mediator;
 
             _serializerSettings = new JsonSerializerSettings
             {
@@ -120,23 +124,29 @@ namespace VotingIrregularities.Api.Controllers
         /// You'd want to retrieve claims through your claims provider
         /// in whatever way suits you, the below is purely for demo purposes!
         /// </summary>
-        private static Task<ClaimsIdentity> GetClaimsIdentity(ApplicationUser user)
+        private async Task<ClaimsIdentity> GetClaimsIdentity(ApplicationUser user)
         {
-            if (user.Phone == "0733450005" &&
-                user.Pin == "1234" &&
-                user.UDID == "UDID")
-            {
-                return Task.FromResult(new ClaimsIdentity(
-                  new GenericIdentity(user.Phone, "Token"),
-                  new[]
-                  {
-            new Claim("Observator", "ONG"),
-            new Claim("IdObservator", "1"),
-            new Claim(ClaimTypes.Dsa, user.UDID)}));
-            }
+            // verific daca userul exista si daca nu are asociat un alt device, il returneaza din baza
+            var userInfo = await _mediator.SendAsync(user);
 
-            // Credentials are invalid, or account doesn't exist
-            return Task.FromResult<ClaimsIdentity>(null);
+            if (!userInfo.EsteAutentificat)
+                return await Task.FromResult<ClaimsIdentity>(null);
+
+            if (userInfo.PrimaAutentificare)
+                await
+                    _mediator.SendAsync(new InregistreazaDispozitivCommand
+                    {
+                        IdDispozitivMobil = user.UDID,
+                        IdObservator = userInfo.IdObservator
+                    });
+
+            return await Task.FromResult(new ClaimsIdentity(
+                new GenericIdentity(user.Phone, "Token"),
+                new[]
+                {
+                    new Claim("Observator", "ONG"),
+                    new Claim("IdObservator", userInfo.IdObservator.ToString())
+                }));
         }
     }
 }
