@@ -10,6 +10,7 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using VotingIrregularities.Api.Models.AccountViewModels;
 using System.Linq;
+using MediatR;
 
 namespace VotingIrregularities.Api.Controllers
 {
@@ -20,7 +21,7 @@ namespace VotingIrregularities.Api.Controllers
         private readonly ILogger _logger;
         private readonly JsonSerializerSettings _serializerSettings;
 
-        public Authorization(IOptions<JwtIssuerOptions> jwtOptions, ILogger logger)
+        public Authorization(IOptions<JwtIssuerOptions> jwtOptions, ILogger logger, IMediator mediator)
         {
             _jwtOptions = jwtOptions.Value;
             ThrowIfInvalidOptions(_jwtOptions);
