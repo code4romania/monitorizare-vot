@@ -1,8 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using MediatR;
 
 namespace VotingIrregularities.Api.Models.AccountViewModels
 {
-    public class ApplicationUser
+    public class ApplicationUser : IAsyncRequest<ModelObservatorInregistrat>
     {
         [Required]
         [DataType(DataType.PhoneNumber)]
@@ -14,5 +16,14 @@ namespace VotingIrregularities.Api.Models.AccountViewModels
 
         [Required]
         public string UDID { get; set; }
+    }
+
+    public class ModelObservatorInregistrat
+    {
+        public bool EsteAutentificat { get; set; }
+
+        public int IdObservator { get; set; }
+
+        public bool PrimaAutentificare { get; set; }
     }
 }
