@@ -47,7 +47,7 @@ namespace VotingIrregularities.Api
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange:true);
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
 
             if (env.EnvironmentName.EndsWith("Development", StringComparison.CurrentCultureIgnoreCase))
             {
@@ -58,7 +58,7 @@ namespace VotingIrregularities.Api
                 builder.AddApplicationInsightsSettings(developerMode: true);
             }
 
-          
+
             builder.AddEnvironmentVariables();
             Configuration = builder.Build();
         }
@@ -71,7 +71,7 @@ namespace VotingIrregularities.Api
             // Get options from app settings
             services.AddOptions();
             var jwtAppSettingOptions = Configuration.GetSection(nameof(JwtIssuerOptions));
-        
+
             _key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["SecretKey"]));
 
             // Configure JwtIssuerOptions
@@ -190,6 +190,8 @@ namespace VotingIrregularities.Api
 
             RegisterServices(app);
 
+            ConfigureHash();
+
             InitializeContainer(app);
 
             RegisterDbContext<VotingContext>(Configuration.GetConnectionString("DefaultConnection"));
@@ -259,6 +261,15 @@ namespace VotingIrregularities.Api
             _container.RegisterSingleton<IFileService, BlobService>();
         }
 
+        private void ConfigureHash()
+        {
+            _container.RegisterSingleton<IOptions<HashOptions>>(new OptionsManager<HashOptions>(new List<IConfigureOptions<HashOptions>>
+                {
+                    new ConfigureFromConfigurationOptions<HashOptions>(
+                        Configuration.GetSection("HashOptions"))
+                }));
+        }
+
         private void ConfigureContainer(IServiceCollection services)
         {
             services.AddSingleton<IControllerActivator>(
@@ -271,6 +282,7 @@ namespace VotingIrregularities.Api
         {
             _container.Register<ISectieDeVotareService, SectieDevotareDBService>(Lifestyle.Scoped);
             _container.RegisterSingleton(() => app.ApplicationServices.GetService<IOptions<JwtIssuerOptions>>());
+            _container.RegisterSingleton<IHashService, HashService>();
         }
 
         private void InitializeContainer(IApplicationBuilder app)
