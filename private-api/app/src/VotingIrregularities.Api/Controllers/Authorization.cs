@@ -24,7 +24,7 @@ namespace VotingIrregularities.Api.Controllers
         private readonly IMediator _mediator;
         private readonly JsonSerializerSettings _serializerSettings;
 
-        public Authorization(IOptions<JwtIssuerOptions> jwtOptions, ILogger logger, IHashService hashService, IMediator mediator)
+        public Authorization(IOptions<JwtIssuerOptions> jwtOptions, ILogger logger, IMediator mediator)
         {
             _jwtOptions = jwtOptions.Value;
             ThrowIfInvalidOptions(_jwtOptions);
@@ -119,11 +119,6 @@ namespace VotingIrregularities.Api.Controllers
                                new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero))
                               .TotalSeconds);
 
-        /// <summary>
-        /// IMAGINE BIG RED WARNING SIGNS HERE!
-        /// You'd want to retrieve claims through your claims provider
-        /// in whatever way suits you, the below is purely for demo purposes!
-        /// </summary>
         private async Task<ClaimsIdentity> GetClaimsIdentity(ApplicationUser user)
         {
             // verific daca userul exista si daca nu are asociat un alt device, il returneaza din baza

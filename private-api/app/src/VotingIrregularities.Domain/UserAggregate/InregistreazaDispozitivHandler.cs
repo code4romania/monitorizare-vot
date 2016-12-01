@@ -3,19 +3,39 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using NuGet.Versioning;
 using VotingIrregularities.Domain.Models;
 
 namespace VotingIrregularities.Domain.UserAggregate
 {
     public class InregistreazaDispozitivHandler : IAsyncRequestHandler<InregistreazaDispozitivCommand, int>
     {
-        public InregistreazaDispozitivHandler(VotingContext context)
-        {
+        private readonly VotingContext _context;
+        private readonly ILogger _logger;
 
-        }
-        public Task<int> Handle(InregistreazaDispozitivCommand message)
+        public InregistreazaDispozitivHandler(VotingContext context, ILogger logger)
         {
-            throw new NotImplementedException();
+            _context = context;
+            _logger = logger;
+        }
+        public async Task<int> Handle(InregistreazaDispozitivCommand message)
+        {
+            try
+            {
+                var observator = await _context.Observator.SingleAsync(a => a.IdObservator == message.IdObservator);
+
+                observator.IdDispozitivMobil = message.IdDispozitivMobil;
+
+                return await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(new EventId(), ex, ex.Message);
+            }
+
+            return -1;
         }
     }
 }

@@ -25,7 +25,7 @@ namespace VotingIrregularities.Domain.Models
 
                 entity.Property(e => e.Parola)
                     .IsRequired()
-                    .HasMaxLength(50);
+                    .HasMaxLength(100);
 
                 entity.HasOne(d => d.IdOngNavigation)
                     .WithMany(p => p.AdminOng)
@@ -134,7 +134,7 @@ namespace VotingIrregularities.Domain.Models
 
                 entity.Property(e => e.Pin)
                     .IsRequired()
-                    .HasMaxLength(50);
+                    .HasMaxLength(100);
 
                 entity.HasOne(d => d.IdOngNavigation)
                     .WithMany(p => p.Observator)

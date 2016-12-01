@@ -26,6 +26,8 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "VotingIrregularities.Domain
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.Extensions.Caching.Redis", "src\Microsoft.Extensions.Caching.Redis\Microsoft.Extensions.Caching.Redis.xproj", "{51334948-33DD-4735-ACAA-A643F13495FD}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "VotingIrregularities.Tests", "test\VotingIrregularities.Tests\VotingIrregularities.Tests.xproj", "{41FE87AE-428C-4CD5-88F1-A7A713334F2E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,6 +50,10 @@ Global
 		{51334948-33DD-4735-ACAA-A643F13495FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{51334948-33DD-4735-ACAA-A643F13495FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{51334948-33DD-4735-ACAA-A643F13495FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{41FE87AE-428C-4CD5-88F1-A7A713334F2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{41FE87AE-428C-4CD5-88F1-A7A713334F2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{41FE87AE-428C-4CD5-88F1-A7A713334F2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{41FE87AE-428C-4CD5-88F1-A7A713334F2E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -57,5 +63,6 @@ Global
 		{73125CAC-66E8-40D7-81A7-6A847132C7B3} = {8A09B442-FB79-4293-BF9B-E34DD3AE70F3}
 		{4E70B88E-F43A-4546-955C-4A2139C1CC9C} = {388C55EB-26FF-46AB-9395-549E1A7A99AD}
 		{51334948-33DD-4735-ACAA-A643F13495FD} = {8A09B442-FB79-4293-BF9B-E34DD3AE70F3}
+		{41FE87AE-428C-4CD5-88F1-A7A713334F2E} = {388C55EB-26FF-46AB-9395-549E1A7A99AD}
 	EndGlobalSection
 EndGlobal

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using MediatR;
 using SimpleInjector;
 using VotingIrregularities.Api.Models.AccountViewModels;
+using VotingIrregularities.Api.Services;
 using VotingIrregularities.Domain.Models;
 
 namespace VotingIrregularities.Api.Queries
@@ -12,20 +13,33 @@ namespace VotingIrregularities.Api.Queries
     public class ObservatorQueryHandler : IAsyncRequestHandler<ApplicationUser, ModelObservatorInregistrat>
     {
         private readonly VotingContext _context;
+        private readonly HashService _hash;
 
-        public ObservatorQueryHandler(VotingContext context)
+        public ObservatorQueryHandler(VotingContext context, HashService hash)
         {
             _context = context;
+            _hash = hash;
         }
         public async Task<ModelObservatorInregistrat> Handle(ApplicationUser message)
         {
-            //var userInfo = _context.Observator
-            return await Task.FromResult(new ModelObservatorInregistrat
+            var hashValue = _hash.GetHash(message.Pin);
+
+            var userinfo = _context.Observator
+                .FirstOrDefault(a => a.Pin == hashValue &&
+                                     (string.IsNullOrWhiteSpace(message.UDID) || a.IdDispozitivMobil == message.UDID) &&
+                                     a.NumarTelefon == message.Phone);
+            if (userinfo == null)
+                return new ModelObservatorInregistrat
+                {
+                    EsteAutentificat = false
+                };
+
+            return new ModelObservatorInregistrat
             {
+                IdObservator = userinfo.IdObservator,
                 EsteAutentificat = true,
-                IdObservator = 1,
-                PrimaAutentificare = false
-            });
+                PrimaAutentificare = string.IsNullOrWhiteSpace(userinfo.IdDispozitivMobil)
+            };
         }
     }
 }
