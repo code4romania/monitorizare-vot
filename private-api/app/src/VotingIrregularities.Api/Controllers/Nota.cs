@@ -28,6 +28,7 @@ namespace VotingIrregularities.Api.Controllers
         /// CodJudet:BU 
         /// NumarSectie:3243
         /// IdIntrebare: 201
+        /// TextNota: "asdfasdasdasdas"
         /// API-ul va returna adresa publica a fisierului unde este salvat si obiectul trimis prin formdata
         /// </summary>
         /// <param name="file"></param>
@@ -35,12 +36,12 @@ namespace VotingIrregularities.Api.Controllers
         [HttpPost("ataseaza")]
         public async Task<dynamic> Upload(IFormFile file, [FromForm]ModelNota nota)
         {
-            return await Task.FromResult(new { FileAdress = file?.FileName, note=nota});
+            // daca nota este asociata sectiei
+            if (!ModelState.IsValid)
+                return this.ResultAsync(HttpStatusCode.BadRequest);
 
-            //// daca nota este asociata sectiei
-            //if (!ModelState.IsValid)
-            //    return this.ResultAsync(HttpStatusCode.BadRequest);
-
+            var fileCommand = await _mediator.SendAsync(new ModelFile { File = file });
+            
             //// TODO[DH] use a pipeline instead of separate Send commands
             //var command = await _mediator.SendAsync(new ModelNoteBulk(note));
 
@@ -50,6 +51,8 @@ namespace VotingIrregularities.Api.Controllers
             //var result = await _mediator.SendAsync(command);
 
             //return this.ResultAsync(result < 0 ? HttpStatusCode.NotFound : HttpStatusCode.OK);
+
+            return await Task.FromResult(new { FileAdress = fileCommand.Url, note = nota });
         }
 
 
