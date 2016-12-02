@@ -14,12 +14,12 @@ namespace VotingIrregularities.Api.Controllers
     public class Sectie : Controller
     {
         private readonly IMapper _mapper;
-        private readonly IMediator _mediatr;
+        private readonly IMediator _mediator;
 
-        public Sectie(IMediator mediatr, IMapper mapper)
+        public Sectie(IMediator mediator, IMapper mapper)
         {
             _mapper = mapper;
-            _mediatr = mediatr;
+            _mediator = mediator;
         }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace VotingIrregularities.Api.Controllers
             // TODO[DH] get the actual IdObservator from token
             command.IdObservator = 1;
 
-            var result = await _mediatr.SendAsync(command);
+            var result = await _mediator.SendAsync(command);
 
             return this.ResultAsync(result < 0 ? HttpStatusCode.NotFound : HttpStatusCode.OK);
         }
@@ -56,12 +56,17 @@ namespace VotingIrregularities.Api.Controllers
             if (!ModelState.IsValid)
                 return this.ResultAsync(HttpStatusCode.BadRequest, ModelState);
 
+            int idSectie = await _mediator.SendAsync(_mapper.Map<ModelSectieQuery>(dateSectie));
+            if (idSectie < 0)
+                return this.ResultAsync(HttpStatusCode.NotFound);
+
             var command = _mapper.Map<ActualizeazaSectieCommand>(dateSectie);
 
             // TODO get the actual IdObservator from token
             command.IdObservator = 1;
+            command.IdSectieDeVotare = idSectie;
 
-            var result = await _mediatr.SendAsync(command);
+            var result = await _mediator.SendAsync(command);
 
             return this.ResultAsync(result < 0 ? HttpStatusCode.NotFound : HttpStatusCode.OK);
         }

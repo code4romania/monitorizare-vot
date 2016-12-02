@@ -2,12 +2,11 @@
 using MediatR;
 using VotingIrregularities.Api.Services;
 using VotingIrregularities.Api.Models;
-using VotingIrregularities.Domain.FileAggregate;
 using System.Threading.Tasks;
 
 namespace VotingIrregularities.Api.Queries
 {
-    public class FileQueryHandler : IAsyncRequestHandler<ModelFile, AdaugaFileCommand>
+    public class FileQueryHandler : IAsyncRequestHandler<ModelFile, string>
     {
         IFileService _fileService;
 
@@ -20,11 +19,12 @@ namespace VotingIrregularities.Api.Queries
         ///  Uploads a file in azure blob storage
         /// </summary>
         /// <returns>The url of the blob</returns>
-        public async Task<AdaugaFileCommand> Handle(ModelFile message)
+        public async Task<string> Handle(ModelFile message)
         {
-            string url = await _fileService.UploadFromStreamAsync(message.File.OpenReadStream(), message.File.ContentType,Path.GetExtension(message.File.FileName));
+            if(message.File != null)
+                return await _fileService.UploadFromStreamAsync(message.File.OpenReadStream(), message.File.ContentType,Path.GetExtension(message.File.FileName));
 
-            return new AdaugaFileCommand { Url = url };
+            return string.Empty;
         }
     }
 }

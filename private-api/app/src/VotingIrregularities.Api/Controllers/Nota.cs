@@ -1,24 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
+﻿using System.Net;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VotingIrregularities.Api.Extensions;
 using VotingIrregularities.Api.Models;
+using AutoMapper;
+using VotingIrregularities.Domain.NotaAggregate;
 
 namespace VotingIrregularities.Api.Controllers
 {
     [Route("api/v1/note")]
     public class Nota : Controller
     {
+        private readonly IMapper _mapper;
         private readonly IMediator _mediator;
 
-        public Nota(IMediator mediator)
+        public Nota(IMediator mediator, IMapper mapper)
         {
             _mediator = mediator;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -36,25 +37,29 @@ namespace VotingIrregularities.Api.Controllers
         [HttpPost("ataseaza")]
         public async Task<dynamic> Upload(IFormFile file, [FromForm]ModelNota nota)
         {
-            // daca nota este asociata sectiei
             if (!ModelState.IsValid)
                 return this.ResultAsync(HttpStatusCode.BadRequest);
 
-            var fileCommand = await _mediator.SendAsync(new ModelFile { File = file });
-            
-            //// TODO[DH] use a pipeline instead of separate Send commands
-            //var command = await _mediator.SendAsync(new ModelNoteBulk(note));
+            // TODO[DH] use a pipeline instead of separate Send commands
+            // daca nota este asociata sectiei
+            int idSectie = await _mediator.SendAsync(_mapper.Map<ModelSectieQuery>(nota));
+            if (idSectie < 0)
+                return this.ResultAsync(HttpStatusCode.NotFound);
 
-            //// TODO[DH] get the actual IdObservator from token
-            //command.IdObservator = 1;
+            var command = _mapper.Map<AdaugaNotaCommand>(nota);
+            var fileAddress = await _mediator.SendAsync(new ModelFile { File = file });
 
-            //var result = await _mediator.SendAsync(command);
+            // TODO[DH] get the actual IdObservator from token
+            command.IdObservator = 1;
+            command.CaleFisierAtasat = fileAddress;
+            command.IdSectieDeVotare = idSectie;
 
-            //return this.ResultAsync(result < 0 ? HttpStatusCode.NotFound : HttpStatusCode.OK);
+            var result = await _mediator.SendAsync(command);
 
-            return await Task.FromResult(new { FileAdress = fileCommand.Url, note = nota });
+            if (result < 0)
+                return this.ResultAsync(HttpStatusCode.NotFound);
+
+            return await Task.FromResult(new { FileAdress = fileAddress, nota = nota });
         }
-
-
     }
 }

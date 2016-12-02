@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using MediatR;
 
 namespace VotingIrregularities.Api.Models
 {
-    public class ModelSectie
+    public class ModelSectieQuery : IAsyncRequest<int>
     {
         public string CodJudet { get; set; }
         public int NumarSectie { get; set; }

@@ -21,6 +21,7 @@ namespace VotingIrregularities.Api.Models
     {
         public ModelActualizareDateSectieProfile()
         {
+            CreateMap<ModelActualizareDateSectie, ModelSectieQuery>();
             CreateMap<ModelActualizareDateSectie, ActualizeazaSectieCommand>();
         }
     }

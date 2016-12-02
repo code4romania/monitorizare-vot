@@ -4,7 +4,6 @@ using MediatR;
 using VotingIrregularities.Domain.Models;
 using Microsoft.Extensions.Logging;
 using AutoMapper;
-using System.Linq;
 using Microsoft.EntityFrameworkCore;
 
 namespace VotingIrregularities.Domain.SectieAggregate
@@ -26,28 +25,16 @@ namespace VotingIrregularities.Domain.SectieAggregate
         {
             try
             {
-                //TODO this can be moved to a previous step, before the command is executed
-                int idSectie = await _context.SectieDeVotare
-                    .Where(a =>
-                        a.NumarSectie == message.NumarSectie &&
-                        a.IdJudetNavigation.CodJudet == message.CodJudet).Select(a => a.IdSectieDeVotarre)
-                        .FirstOrDefaultAsync();
-
-                if (idSectie == 0)
-                    throw new ArgumentException("Sectia nu exista");
-
                 var formular = await _context.RaspunsFormular
                     .FirstOrDefaultAsync(a =>
                         a.IdObservator == message.IdObservator &&
-                        a.IdSectieDeVotare == idSectie);
+                        a.IdSectieDeVotare == message.IdSectieDeVotare);
 
                 if (formular == null)
                     throw new ArgumentException("RaspunsFormular nu exista");
-                else
-                {
-                    _mapper.Map(message, formular);
-                    _context.Update(formular);
-                }
+               
+                _mapper.Map(message, formular);
+                _context.Update(formular);
 
                 return await _context.SaveChangesAsync();
 
