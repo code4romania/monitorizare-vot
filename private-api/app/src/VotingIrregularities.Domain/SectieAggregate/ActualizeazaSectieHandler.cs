@@ -1,33 +1,32 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using VotingIrregularities.Domain.Models;
-
+using Microsoft.Extensions.Logging;
+using AutoMapper;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace VotingIrregularities.Domain.SectieAggregate
 {
-    public class InregistreazaSectieHandler : IAsyncRequestHandler<InregistreazaSectieCommand, int>
+    public class ActualizeazaSectieHandler : IAsyncRequestHandler<ActualizeazaSectieCommand, int>
     {
         private readonly VotingContext _context;
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
 
-        public InregistreazaSectieHandler(VotingContext context, ILogger logger, IMapper mapper)
+        public ActualizeazaSectieHandler(VotingContext context, ILogger logger, IMapper mapper)
         {
             _context = context;
             _logger = logger;
             _mapper = mapper;
         }
 
-        public async Task<int> Handle(InregistreazaSectieCommand message)
+        public async Task<int> Handle(ActualizeazaSectieCommand message)
         {
             try
             {
-                //TODO[DH] this can be moved to a previous step, before the command is executed
+                //TODO this can be moved to a previous step, before the command is executed
                 int idSectie = await _context.SectieDeVotare
                     .Where(a =>
                         a.NumarSectie == message.NumarSectie &&
@@ -43,16 +42,11 @@ namespace VotingIrregularities.Domain.SectieAggregate
                         a.IdSectieDeVotare == idSectie);
 
                 if (formular == null)
-                {
-                    formular = _mapper.Map<RaspunsFormular>(message);
-
-                    formular.IdSectieDeVotare = idSectie;
-
-                    _context.Add(formular);
-                }
+                    throw new ArgumentException("RaspunsFormular nu exista");
                 else
                 {
                     _mapper.Map(message, formular);
+                    _context.Update(formular);
                 }
 
                 return await _context.SaveChangesAsync();

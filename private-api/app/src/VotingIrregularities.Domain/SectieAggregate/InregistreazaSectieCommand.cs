@@ -25,6 +25,10 @@ namespace VotingIrregularities.Domain.SectieAggregate
         {
             CreateMap<InregistreazaSectieCommand, RaspunsFormular>()
                 .ForMember(src => src.DataUltimeiModificari, c => c.MapFrom(src => DateTime.UtcNow));
+
+            CreateMap<ActualizeazaSectieCommand, RaspunsFormular>()
+                .ForMember(src => src.DataUltimeiModificari, c => c.MapFrom(src => DateTime.UtcNow))
+                .ForMember(src => src.OraPlecarii, c => c.MapFrom(src => src.OraPlecarii));
         }
     }
 }
