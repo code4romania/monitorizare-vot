@@ -5,6 +5,6 @@ namespace VotingIrregularities.Api.Services
 {
     public interface IFileService
     {
-        Task<string> UploadFromStreamAsync(Stream sourceStream, string mimeType);
+        Task<string> UploadFromStreamAsync(Stream sourceStream, string mimeType, string extension);
     }
 }

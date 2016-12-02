@@ -31,7 +31,7 @@ namespace VotingIrregularities.Api.Services
         /// <summary>
         /// Uploads a file from a stream in azure blob storage
         /// </summary>
-        public async Task<string> UploadFromStreamAsync(Stream sourceStream, string mimeType)
+        public async Task<string> UploadFromStreamAsync(Stream sourceStream, string mimeType, string extension)
         {
             // Get a reference to the container.
             CloudBlobContainer container = _client.GetContainerReference(_storageOptions.Value.Container);
@@ -40,7 +40,7 @@ namespace VotingIrregularities.Api.Services
             await container.CreateIfNotExistsAsync();
 
             // Retrieve reference to a blob.
-            CloudBlockBlob blockBlob = container.GetBlockBlobReference(Guid.NewGuid().ToString("N"));
+            CloudBlockBlob blockBlob = container.GetBlockBlobReference(Guid.NewGuid().ToString("N") + extension);
 
             // Create or overwrite the previous created blob with contents from stream.
             await blockBlob.UploadFromStreamAsync(sourceStream);

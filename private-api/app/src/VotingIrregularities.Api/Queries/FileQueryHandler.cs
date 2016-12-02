@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using System.IO;
+using MediatR;
 using VotingIrregularities.Api.Services;
 using VotingIrregularities.Api.Models;
 using VotingIrregularities.Domain.FileAggregate;
@@ -21,7 +22,7 @@ namespace VotingIrregularities.Api.Queries
         /// <returns>The url of the blob</returns>
         public async Task<AdaugaFileCommand> Handle(ModelFile message)
         {
-            string url = await _fileService.UploadFromStreamAsync(message.File.OpenReadStream(), message.File.ContentType);
+            string url = await _fileService.UploadFromStreamAsync(message.File.OpenReadStream(), message.File.ContentType,Path.GetExtension(message.File.FileName));
 
             return new AdaugaFileCommand { Url = url };
         }
