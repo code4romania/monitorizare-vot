@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -50,7 +51,7 @@ namespace VotingIrregularities.Api.Controllers
             var fileAddress = await _mediator.SendAsync(new ModelFile { File = file });
 
             // TODO[DH] get the actual IdObservator from token
-            command.IdObservator = 1;
+            command.IdObservator = int.Parse(User.Claims.First(c => c.Type == "IdObservator").Value);
             command.CaleFisierAtasat = fileAddress;
             command.IdSectieDeVotare = idSectie;
 

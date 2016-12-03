@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using VotingIrregularities.Api.Extensions;
@@ -37,7 +38,7 @@ namespace VotingIrregularities.Api.Controllers
             var command = _mapper.Map<InregistreazaSectieCommand>(dateSectie);
 
             // TODO[DH] get the actual IdObservator from token
-            command.IdObservator = 1;
+            command.IdObservator = int.Parse(User.Claims.First(c => c.Type == "IdObservator").Value);
 
             var result = await _mediator.SendAsync(command);
 
@@ -63,7 +64,7 @@ namespace VotingIrregularities.Api.Controllers
             var command = _mapper.Map<ActualizeazaSectieCommand>(dateSectie);
 
             // TODO get the actual IdObservator from token
-            command.IdObservator = 1;
+            command.IdObservator = int.Parse(User.Claims.First(c => c.Type == "IdObservator").Value);
             command.IdSectieDeVotare = idSectie;
 
             var result = await _mediator.SendAsync(command);
