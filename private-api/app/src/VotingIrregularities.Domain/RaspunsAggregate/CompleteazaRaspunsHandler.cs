@@ -41,6 +41,8 @@ namespace VotingIrregularities.Domain.RaspunsAggregate
                         IdSectieDeVotare = a.IdSectie,
                         IdRaspunsDisponibil = o.IdOptiune,
                         Value = o.Value,
+                        CodJudet = a.CodJudet,
+                        NumarSectie = a.NumarSectie,
                         DataUltimeiModificari = lastModified
                     })
                 }).SelectMany(a => a.flat)
