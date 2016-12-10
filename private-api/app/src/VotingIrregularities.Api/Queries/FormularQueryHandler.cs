@@ -57,7 +57,9 @@ namespace VotingIrregularities.Api.Queries
                     {
                         CodSectiune = i.CodSectiune,
                         Descriere = i.Descriere,
-                        Intrebari = r.Where(a => a.IdSectiune == i.IdSectiune).Select(a => _mapper.Map<ModelIntrebare>(a)).ToList()
+                        Intrebari = r.Where(a => a.IdSectiune == i.IdSectiune)
+                                     .OrderBy(intrebare => intrebare.CodIntrebare)
+                                     .Select(a => _mapper.Map<ModelIntrebare>(a)).ToList()
                     }).ToList();
                     return result;
                 },
