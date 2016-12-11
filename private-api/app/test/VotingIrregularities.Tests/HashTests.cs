@@ -10,6 +10,7 @@ using Microsoft.Extensions.Options;
 using VotingIrregularities.Api.Models;
 using VotingIrregularities.Api.Services;
 using Xunit;
+using Microsoft.Extensions.PlatformAbstractions;
 
 namespace VotingIrregularities.Tests
 {
@@ -29,41 +30,36 @@ namespace VotingIrregularities.Tests
 
         public IConfigurationRoot Configuration { get; set; }
 
+     
         [Fact]
-        public void HashSizeSmallerThan100()
+        public void SetPasswords()
         {
-            // Arrange
             var hashService = new HashService(new OptionsManager<HashOptions>(new List<IConfigureOptions<HashOptions>>
                 {
                     new ConfigureFromConfigurationOptions<HashOptions>(
                         Configuration.GetSection("HashOptions"))
                 }));
 
-            // Act
-            var hash = hashService.GetHash("123456");
+            var pathToFile = Directory.GetCurrentDirectory()
+               + Path.DirectorySeparatorChar.ToString()
+               + "conturi.txt";
 
-            // Assert
-            Assert.True(hash.Length <= 100);
-            Assert.Equal("dda90869c6fa8be5fde0991da5b37d48c0dd31b8fc63f13f62c2b45ad7555780", hash);
+            using (var newfile = File.Create("conturi-cu-parole.txt"))
+            {
+                using (var logWriter = new System.IO.StreamWriter(newfile))
+                using (StreamReader reader = File.OpenText(pathToFile))
+                {
+                    while (reader.Peek() >= 0)
+                    {
+                        var fileContent = reader.ReadLine();
+
+                        var data = fileContent.Split('\t');
+                        var hashed = hashService.GetHash(data[1]);
+
+                        logWriter.WriteLine(fileContent + '\t' + hashed);
+                    }
+                }
+            }
         }
-
-
-        [Fact]
-        public void HashSizeForAdmin()
-        {
-            // Arrange
-            var hashService = new HashService(new OptionsManager<HashOptions>(new List<IConfigureOptions<HashOptions>>
-                {
-                    new ConfigureFromConfigurationOptions<HashOptions>(
-                        Configuration.GetSection("HashOptions"))
-                }));
-
-            // Act
-            var hash = hashService.GetHash("admin");
-
-            // Assert
-            Assert.True(hash.Length <= 100);
-            Assert.Equal("ffc8c40f31a454aa017afb8c5473f2dc9d1c3f9133facbc9752905acab390440", hash);
         }
     }
-}

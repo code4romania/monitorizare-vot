@@ -253,3 +253,5 @@ ModelManifest.xml
 /private-api/app/src/modules/WebAPIContrib.Core/
 /private-api/app/src/VotingIrregularities.Domain/appsettings.localdevelopment.json
 /private-api/app/test/VotingIrregularities.Tests/appsettings.localDevelopment.json
+/private-api/app/test/VotingIrregularities.Tests/conturi.txt
+/private-api/app/test/VotingIrregularities.Tests/conturi-cu-parole.txt
