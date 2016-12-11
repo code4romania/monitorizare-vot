@@ -43,7 +43,10 @@ namespace VotingIrregularities.Api.Services
                 var cache = await _cache.GetAsync(name.ToString());
 
                 if (cache == null)
+                {
+                    _logger.LogInformation($"Cache missed for {name}");
                     return default(T);
+                }
 
                 var obj = JsonConvert.DeserializeObject<T>(GetString(cache));
 

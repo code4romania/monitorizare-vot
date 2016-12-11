@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Logging;
 using VotingIrregularities.Api.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace VotingIrregularities.Api.Controllers
 {
@@ -16,11 +13,12 @@ namespace VotingIrregularities.Api.Controllers
     [Route("api/v1/formular")]
     public class Formular : Controller
     {
+        private readonly IConfigurationRoot _configuration;
         private readonly IMediator _mediator;
-        private readonly IDistributedCache _cache;
 
-        public Formular(IMediator mediator)
+        public Formular(IMediator mediator, IConfigurationRoot configuration)
         {
+            _configuration = configuration;
             _mediator = mediator;
         }
 
@@ -35,7 +33,6 @@ namespace VotingIrregularities.Api.Controllers
             return new ModelVersiune { Versiune = await _mediator.SendAsync(new ModelFormular.VersiuneQuery())};
         }
 
-
         /// <summary>
         /// Se interogheaza ultima versiunea a formularului pentru observatori si se primeste definitia lui. 
         /// In definitia unui formular nu intra intrebarile standard (ora sosirii, etc). 
@@ -46,10 +43,14 @@ namespace VotingIrregularities.Api.Controllers
         [HttpGet]
         public async Task<IEnumerable<ModelSectiune>> Citeste(string idformular)
         {
-            var result =  await _mediator.SendAsync(new ModelFormular.IntrebariQuery {CodFormular = idformular});
+            var result = await _mediator.SendAsync(new ModelFormular.IntrebariQuery {
+                CodFormular = idformular,
+                CacheHours = _configuration.GetValue<int>("DefaultCacheHours"),
+                CacheMinutes = _configuration.GetValue<int>("DefaultCacheMinutes"),
+                CacheSeconds = _configuration.GetValue<int>("DefaultCacheSeconds")
+            });
 
             return result;
         }
-
     }
 }

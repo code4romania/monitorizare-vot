@@ -222,7 +222,7 @@ namespace VotingIrregularities.Api
                 return;
             }
 
-            var cacheProvider = Configuration.GetValue<string>("ApplicationCacheOptions:RedisCache");
+            var cacheProvider = Configuration.GetValue<string>("ApplicationCacheOptions:Implementation");
 
             _container.RegisterSingleton<ICacheService, CacheService>();
 
@@ -230,13 +230,14 @@ namespace VotingIrregularities.Api
             {
                 case "RedisCache":
                     {
-                        _container.RegisterSingleton<IOptions<RedisCacheOptions>>(
-                          new OptionsManager<RedisCacheOptions>(new List<IConfigureOptions<RedisCacheOptions>>
-                          {
+                        _container.RegisterSingleton<IDistributedCache>(
+                          new RedisCache(
+                              new OptionsManager<RedisCacheOptions>(new List<IConfigureOptions<RedisCacheOptions>>
+                              {
                                 new ConfigureFromConfigurationOptions<RedisCacheOptions>(
                                     Configuration.GetSection("RedisCacheOptions"))
-                          }));
-
+                               })
+                          ));
                         break;
                     }
 
@@ -305,6 +306,8 @@ namespace VotingIrregularities.Api
 
             // NOTE: Prevent cross-wired instances as much as possible.
             // See: https://simpleinjector.org/blog/2016/07/
+
+            _container.RegisterSingleton<IConfigurationRoot>(Configuration);
         }
 
         private void RegisterDbContext<TDbContext>(string connectionString = null)

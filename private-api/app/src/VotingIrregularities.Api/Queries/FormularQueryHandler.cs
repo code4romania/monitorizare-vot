@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
@@ -19,13 +18,13 @@ namespace VotingIrregularities.Api.Queries
     {
         private readonly VotingContext _context;
         private readonly IMapper _mapper;
-        private readonly ICacheService _service;
+        private readonly ICacheService _cacheService;
 
-        public FormularQueryHandler(VotingContext context, IMapper mapper, ICacheService service)
+        public FormularQueryHandler(VotingContext context, IMapper mapper, ICacheService cacheService)
         {
             _context = context;
             _mapper = mapper;
-            _service = service;
+            _cacheService = cacheService;
         }
 
         public async Task<Dictionary<string, int>> Handle(ModelFormular.VersiuneQuery message)
@@ -42,7 +41,7 @@ namespace VotingIrregularities.Api.Queries
             CacheObjectsName formular;
             Enum.TryParse("Formular" + message.CodFormular, out formular);
 
-            return await _service.GetOrSaveDataInCacheAsync<IEnumerable<ModelSectiune>>(formular,
+            return await _cacheService.GetOrSaveDataInCacheAsync<IEnumerable<ModelSectiune>>(formular,
                 async () =>
                 {
                     var r = await _context.Intrebare
@@ -61,9 +60,11 @@ namespace VotingIrregularities.Api.Queries
                         Intrebari = r.Where(a => a.IdSectiune == i.IdSectiune).Select(a => _mapper.Map<ModelIntrebare>(a)).ToList()
                     }).ToList();
                     return result;
+                },
+                new DistributedCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = new TimeSpan(message.CacheHours, message.CacheMinutes, message.CacheMinutes)
                 });
-            
-
         }
     }
 }

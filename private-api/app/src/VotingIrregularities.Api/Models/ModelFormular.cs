@@ -18,6 +18,9 @@ namespace VotingIrregularities.Api.Models
         public class IntrebariQuery : IAsyncRequest<IEnumerable<ModelSectiune>>
         {
             public string CodFormular { get; set; }
+            public int CacheHours { get; set; }
+            public int CacheMinutes { get; set; }
+            public int CacheSeconds { get; set; }
         }
     }
 }
