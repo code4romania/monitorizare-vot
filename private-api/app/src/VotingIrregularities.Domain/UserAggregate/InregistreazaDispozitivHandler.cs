@@ -27,6 +27,7 @@ namespace VotingIrregularities.Domain.UserAggregate
                 var observator = await _context.Observator.SingleAsync(a => a.IdObservator == message.IdObservator);
 
                 observator.IdDispozitivMobil = message.IdDispozitivMobil;
+                observator.DataInregistrariiDispozitivului = DateTime.UtcNow;
 
                 return await _context.SaveChangesAsync();
             }

@@ -46,5 +46,24 @@ namespace VotingIrregularities.Tests
             Assert.True(hash.Length <= 100);
             Assert.Equal("dda90869c6fa8be5fde0991da5b37d48c0dd31b8fc63f13f62c2b45ad7555780", hash);
         }
+
+
+        [Fact]
+        public void HashSizeForAdmin()
+        {
+            // Arrange
+            var hashService = new HashService(new OptionsManager<HashOptions>(new List<IConfigureOptions<HashOptions>>
+                {
+                    new ConfigureFromConfigurationOptions<HashOptions>(
+                        Configuration.GetSection("HashOptions"))
+                }));
+
+            // Act
+            var hash = hashService.GetHash("admin");
+
+            // Assert
+            Assert.True(hash.Length <= 100);
+            Assert.Equal("ffc8c40f31a454aa017afb8c5473f2dc9d1c3f9133facbc9752905acab390440", hash);
+        }
     }
 }

@@ -49,7 +49,9 @@ namespace VotingIrregularities.Api.Queries
                     CodFormular = a.CodFormular,
                     IdIntrebare = a.IdIntrebare,
                     IdSectie = idSectie,
-                    Optiuni = a.Optiuni
+                    Optiuni = a.Optiuni,
+                    NumarSectie = a.NumarSectie,
+                    CodJudet = a.CodJudet
                 }));
             }
 

@@ -10,6 +10,8 @@ namespace VotingIrregularities.Domain.Models
         public int IdSectieDeVotare { get; set; }
         public DateTime DataUltimeiModificari { get; set; }
         public string Value { get; set; }
+        public string CodJudet { get; set; }
+        public int NumarSectie { get; set; }
 
         public virtual Observator IdObservatorNavigation { get; set; }
         public virtual RaspunsDisponibil IdRaspunsDisponibilNavigation { get; set; }

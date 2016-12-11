@@ -56,7 +56,7 @@ namespace VotingIrregularities.Api.Controllers
             var command = await _mediator.SendAsync(new RaspunsuriBulk(raspuns.Raspuns));
 
             // TODO[DH] get the actual IdObservator from token
-            command.IdObservator = 1;//int.Parse(User.Claims.First(c => c.Type == "IdObservator").Value);
+            command.IdObservator = int.Parse(User.Claims.First(c => c.Type == "IdObservator").Value);
 
             var result = await _mediator.SendAsync(command);
 
