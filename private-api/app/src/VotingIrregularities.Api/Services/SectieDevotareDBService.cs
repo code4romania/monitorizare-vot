@@ -53,7 +53,7 @@ namespace VotingIrregularities.Api.Services
                     .ToListAsync();
 
                 if (idSectie.Count == 0)
-                    throw new ArgumentException($"Sectie inexistenta pentru: {new { idJudet, idSectie }}");
+                    throw new ArgumentException($"Sectie inexistenta pentru: {new { idJudet, numarSectie }}");
 
 
                 if (idSectie.Count > 1)

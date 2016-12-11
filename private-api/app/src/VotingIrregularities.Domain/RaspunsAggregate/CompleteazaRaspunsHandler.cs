@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using LinqKit;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using VotingIrregularities.Domain.Models;
 using VotingIrregularities.Domain.RaspunsAggregate.Commands;
@@ -56,15 +57,17 @@ namespace VotingIrregularities.Domain.RaspunsAggregate
                 {
                     foreach (var sectie in sectii)
                     {
-                        var raspunsuri = raspunsuriNoi.Where(a=> a.IdSectieDeVotare == sectie).Select(a => a.IdRaspunsDisponibil).ToList();
+
+                        var intrebari = message.Raspunsuri.Select(a => a.IdIntrebare).Distinct().ToList();
 
                         // delete existing answers for posted questions on this 'sectie'
                         _context.Raspuns
+                            .Include(a => a.IdRaspunsDisponibilNavigation)
                             .Where(
                                 a =>
                                     a.IdObservator == message.IdObservator &&
                                     a.IdSectieDeVotare == sectie)
-                                   .WhereRaspunsContains(raspunsuri)
+                                   .WhereRaspunsContains(intrebari)
                             .Delete();
                     }
 
@@ -100,11 +103,10 @@ namespace VotingIrregularities.Domain.RaspunsAggregate
             var ors = contains
                 .Aggregate<int, Expression<Func<Raspuns, bool>>>(null, (expression, id) => 
                 expression == null 
-                    ? (a => a.IdRaspunsDisponibil == id) 
-                    : expression.Or(a => a.IdRaspunsDisponibil == id));
+                    ? (a => a.IdRaspunsDisponibilNavigation.IdIntrebare == id) 
+                    : expression.Or(a => a.IdRaspunsDisponibilNavigation.IdIntrebare == id));
 
             return source.Where(ors);
         }
     }
 }
-
