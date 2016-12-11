@@ -49,7 +49,7 @@ namespace VotingIrregularities.Api.Controllers
             if (identity == null)
             {
                 _logger.LogInformation($"Invalid Phone ({applicationUser.Phone}) or password ({applicationUser.Pin})");
-                return BadRequest("Invalid credentials");
+               return BadRequest("{ \"error\": \"La ora asta observatorii ar trebui sa doarma! :) Aplicatia va fi functionala la ora 6. Asigura-te ca ai cea mai recenta versiune. Fa un update!\" }");
             }
 
             var claims = new[]
