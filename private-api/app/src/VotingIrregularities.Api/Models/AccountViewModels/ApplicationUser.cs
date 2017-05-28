@@ -4,7 +4,7 @@ using MediatR;
 
 namespace VotingIrregularities.Api.Models.AccountViewModels
 {
-    public class ApplicationUser : IAsyncRequest<ModelObservatorInregistrat>
+    public class ApplicationUser : IRequest<ModelObservatorInregistrat>
     {
         [Required]
         [DataType(DataType.PhoneNumber)]

@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using NuGet.Versioning;
 using VotingIrregularities.Domain.Models;
 
 namespace VotingIrregularities.Domain.UserAggregate

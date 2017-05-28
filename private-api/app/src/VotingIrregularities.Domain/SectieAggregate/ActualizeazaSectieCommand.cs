@@ -3,7 +3,7 @@ using System;
 
 namespace VotingIrregularities.Domain.SectieAggregate
 {
-    public class ActualizeazaSectieCommand : IAsyncRequest<int>
+    public class ActualizeazaSectieCommand : IRequest<int>
     {
         public int IdObservator { get; set; }
         public int IdSectieDeVotare { get; set; }

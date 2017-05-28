@@ -3,7 +3,7 @@ using MediatR;
 
 namespace VotingIrregularities.Domain.RaspunsAggregate.Commands
 {
-    public class CompleteazaRaspunsCommand : IAsyncRequest<int>
+    public class CompleteazaRaspunsCommand : IRequest<int>
     {
         public CompleteazaRaspunsCommand()
         {

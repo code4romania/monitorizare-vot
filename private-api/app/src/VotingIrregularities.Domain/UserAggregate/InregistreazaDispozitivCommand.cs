@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace VotingIrregularities.Domain.UserAggregate
 {
-    public class InregistreazaDispozitivCommand : IAsyncRequest<int>
+    public class InregistreazaDispozitivCommand : IRequest<int>
     {
         public string IdDispozitivMobil { get; set; }
         public int IdObservator { get; set; }

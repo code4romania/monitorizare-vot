@@ -53,12 +53,12 @@ namespace VotingIrregularities.Api.Controllers
             }
 
             // TODO[DH] use a pipeline instead of separate Send commands
-            var command = await _mediator.SendAsync(new RaspunsuriBulk(raspuns.Raspuns));
+            var command = await _mediator.Send(new RaspunsuriBulk(raspuns.Raspuns));
 
             // TODO[DH] get the actual IdObservator from token
             command.IdObservator = int.Parse(User.Claims.First(c => c.Type == "IdObservator").Value);
 
-            var result = await _mediator.SendAsync(command);
+            var result = await _mediator.Send(command);
 
             return this.ResultAsync(result < 0 ? HttpStatusCode.NotFound : HttpStatusCode.OK);
         }

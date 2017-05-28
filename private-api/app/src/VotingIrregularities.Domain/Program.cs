@@ -7,7 +7,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Builder.Internal;
-using Microsoft.DotNet.InternalAbstractions;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.PlatformAbstractions;
 using VotingIrregularities.Domain.Models;

@@ -5,7 +5,7 @@ using VotingIrregularities.Domain.Models;
 
 namespace VotingIrregularities.Domain.NotaAggregate
 {
-    public class AdaugaNotaCommand : IAsyncRequest<int>
+    public class AdaugaNotaCommand : IRequest<int>
     {
         public int IdObservator { get; set; }
         public int IdSectieDeVotare { get; set; }

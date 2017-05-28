@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace VotingIrregularities.Api.Models
 {
-    public class ModelFile : IAsyncRequest<string>
+    public class ModelFile : IRequest<string>
     {
         public IFormFile File { get; set; }
     }

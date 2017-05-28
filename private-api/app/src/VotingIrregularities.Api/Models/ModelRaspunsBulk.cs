@@ -26,7 +26,7 @@ namespace VotingIrregularities.Api.Models
         public List<ModelOptiuniSelectate> Optiuni { get; set; }
     }
 
-    public class RaspunsuriBulk : IAsyncRequest<CompleteazaRaspunsCommand>
+    public class RaspunsuriBulk : IRequest<CompleteazaRaspunsCommand>
     {
         public RaspunsuriBulk(IEnumerable<ModelRaspunsBulk> raspunsuri)
         {

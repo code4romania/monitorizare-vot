@@ -11,11 +11,11 @@ namespace VotingIrregularities.Api.Models
 {
     public class ModelFormular
     {
-        public class VersiuneQuery : IAsyncRequest<Dictionary<string,int>>
+        public class VersiuneQuery : IRequest<Dictionary<string,int>>
         {
         }
 
-        public class IntrebariQuery : IAsyncRequest<IEnumerable<ModelSectiune>>
+        public class IntrebariQuery : IRequest<IEnumerable<ModelSectiune>>
         {
             public string CodFormular { get; set; }
             public int CacheHours { get; set; }

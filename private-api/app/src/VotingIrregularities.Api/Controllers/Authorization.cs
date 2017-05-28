@@ -125,14 +125,14 @@ namespace VotingIrregularities.Api.Controllers
         private async Task<ClaimsIdentity> GetClaimsIdentity(ApplicationUser user)
         {
             // verific daca userul exista si daca nu are asociat un alt device, il returneaza din baza
-            var userInfo = await _mediator.SendAsync(user);
+            var userInfo = await _mediator.Send(user);
 
             if (!userInfo.EsteAutentificat)
                 return await Task.FromResult<ClaimsIdentity>(null);
 
             if (userInfo.PrimaAutentificare)
                 await
-                    _mediator.SendAsync(new InregistreazaDispozitivCommand
+                    _mediator.Send(new InregistreazaDispozitivCommand
                     {
                         IdDispozitivMobil = user.UDID,
                         IdObservator = userInfo.IdObservator

@@ -30,7 +30,7 @@ namespace VotingIrregularities.Api.Controllers
         [HttpGet("versiune")]
         public async Task<ModelVersiune> Versiune()
         {
-            return new ModelVersiune { Versiune = await _mediator.SendAsync(new ModelFormular.VersiuneQuery())};
+            return new ModelVersiune { Versiune = await _mediator.Send(new ModelFormular.VersiuneQuery())};
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace VotingIrregularities.Api.Controllers
         [HttpGet]
         public async Task<IEnumerable<ModelSectiune>> Citeste(string idformular)
         {
-            var result = await _mediator.SendAsync(new ModelFormular.IntrebariQuery {
+            var result = await _mediator.Send(new ModelFormular.IntrebariQuery {
                 CodFormular = idformular,
                 CacheHours = _configuration.GetValue<int>("DefaultCacheHours"),
                 CacheMinutes = _configuration.GetValue<int>("DefaultCacheMinutes"),

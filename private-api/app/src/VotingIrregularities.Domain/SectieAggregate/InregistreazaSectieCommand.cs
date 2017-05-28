@@ -8,7 +8,7 @@ using VotingIrregularities.Domain.Models;
 
 namespace VotingIrregularities.Domain.SectieAggregate
 {
-    public class InregistreazaSectieCommand : IAsyncRequest<int>
+    public class InregistreazaSectieCommand : IRequest<int>
     {
         public int IdObservator { get; set; }
         public string CodJudet { get; set; }

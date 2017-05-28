@@ -40,7 +40,7 @@ namespace VotingIrregularities.Api.Controllers
             // TODO[DH] get the actual IdObservator from token
             command.IdObservator = int.Parse(User.Claims.First(c => c.Type == "IdObservator").Value);
 
-            var result = await _mediator.SendAsync(command);
+            var result = await _mediator.Send(command);
 
             return this.ResultAsync(result < 0 ? HttpStatusCode.NotFound : HttpStatusCode.OK);
         }
@@ -57,7 +57,7 @@ namespace VotingIrregularities.Api.Controllers
             if (!ModelState.IsValid)
                 return this.ResultAsync(HttpStatusCode.BadRequest, ModelState);
 
-            int idSectie = await _mediator.SendAsync(_mapper.Map<ModelSectieQuery>(dateSectie));
+            int idSectie = await _mediator.Send(_mapper.Map<ModelSectieQuery>(dateSectie));
             if (idSectie < 0)
                 return this.ResultAsync(HttpStatusCode.NotFound);
 
@@ -67,7 +67,7 @@ namespace VotingIrregularities.Api.Controllers
             command.IdObservator = int.Parse(User.Claims.First(c => c.Type == "IdObservator").Value);
             command.IdSectieDeVotare = idSectie;
 
-            var result = await _mediator.SendAsync(command);
+            var result = await _mediator.Send(command);
 
             return this.ResultAsync(result < 0 ? HttpStatusCode.NotFound : HttpStatusCode.OK);
         }
