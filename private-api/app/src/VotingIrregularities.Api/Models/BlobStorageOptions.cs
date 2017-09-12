@@ -17,9 +17,6 @@
         /// </summary>
         public string Container { get; set; }
 
-        public BlobStorageOptions Value
-        {
-            get { return this; }
-        }
+        public BlobStorageOptions Value => this;
     }
 }

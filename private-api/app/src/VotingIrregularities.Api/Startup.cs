@@ -34,6 +34,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using VotingIrregularities.Api.Models.AccountViewModels;
 using VotingIrregularities.Api.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace VotingIrregularities.Api
 {
@@ -52,7 +53,7 @@ namespace VotingIrregularities.Api
             if (env.EnvironmentName.EndsWith("Development", StringComparison.CurrentCultureIgnoreCase))
             {
                 // For more details on using the user secret store see http://go.microsoft.com/fwlink/?LinkID=532709
-                builder.AddUserSecrets();
+                builder.AddUserSecrets<Startup>();
 
                 // This will push telemetry data through Application Insights pipeline faster, allowing you to view results immediately.
                 builder.AddApplicationInsightsSettings(developerMode: true);
@@ -82,6 +83,18 @@ namespace VotingIrregularities.Api
                 options.SigningCredentials = new SigningCredentials(_key, SecurityAlgorithms.HmacSha256);
             });
 
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+                    .AddJwtBearer(options =>
+                     {
+                        options.Audience = jwtAppSettingOptions[nameof(JwtIssuerOptions.Audience)];
+                         options.RequireHttpsMetadata = false;
+                         options.ClaimsIssuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)];
+                     });
+                
+
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("AppUser",
@@ -89,6 +102,8 @@ namespace VotingIrregularities.Api
             });
 
             services.AddApplicationInsightsTelemetry(Configuration);
+
+
 
             services.AddMvc(config =>
             {
@@ -126,7 +141,15 @@ namespace VotingIrregularities.Api
                     options.IncludeXmlComments(path);
             });
 
+            services.UseSimpleInjectorAspNetRequestScoping(_container);
+
             ConfigureContainer(services);
+
+            ConfigureCache(services);
+
+            services.Configure<BlobStorageOptions>(Configuration.GetSection("BlobStorageOptions"));
+            services.Configure<HashOptions>(Configuration.GetSection("HashOptions"));
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -141,7 +164,8 @@ namespace VotingIrregularities.Api
                 .WriteTo
                 .ApplicationInsightsTraces(Configuration["ApplicationInsights:InstrumentationKey"])
                 .CreateLogger();
-            app.UseApplicationInsightsRequestTelemetry();
+           // app.UseApplicationInsightsRequestTelemetry();
+
             appLifetime.ApplicationStopped.Register(Log.CloseAndFlush);
 
             app.UseExceptionHandler(
@@ -156,41 +180,20 @@ namespace VotingIrregularities.Api
                     );
                 }
             );
-            var jwtAppSettingOptions = Configuration.GetSection(nameof(JwtIssuerOptions));
-            var tokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidIssuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)],
 
-                ValidateAudience = true,
-                ValidAudience = jwtAppSettingOptions[nameof(JwtIssuerOptions.Audience)],
+            app.UseAuthentication();
 
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = _key,
 
-                RequireExpirationTime = false,
-                ValidateLifetime = false,
+            _container.Options.DefaultScopedLifestyle = new SimpleInjector.Lifestyles.AsyncScopedLifestyle();
 
-                ClockSkew = TimeSpan.Zero
-            };
 
-            app.UseJwtBearerAuthentication(new JwtBearerOptions
-            {
-                AutomaticAuthenticate = true,
-                AutomaticChallenge = true,
-                TokenValidationParameters = tokenValidationParameters
-            });
-            app.UseSimpleInjectorAspNetRequestScoping(_container);
 
-            _container.Options.DefaultScopedLifestyle = new AspNetRequestLifestyle();
-
-            ConfigureCache(env);
-
-            ConfigureAzureStorage(env);
 
             RegisterServices(app);
+            ConfigureAzureStorage(app);
 
-            ConfigureHash();
+
+            ConfigureHash(app);
 
             InitializeContainer(app);
 
@@ -212,7 +215,7 @@ namespace VotingIrregularities.Api
             app.UseSwaggerUi();
         }
 
-        private void ConfigureCache(IHostingEnvironment env)
+        private void ConfigureCache(IServiceCollection services)
         {
             var enableCache = Configuration.GetValue<bool>("ApplicationCacheOptions:Enabled");
 
@@ -224,51 +227,47 @@ namespace VotingIrregularities.Api
 
             var cacheProvider = Configuration.GetValue<string>("ApplicationCacheOptions:Implementation");
 
+
             _container.RegisterSingleton<ICacheService, CacheService>();
 
             switch (cacheProvider)
             {
                 case "RedisCache":
                     {
-                        _container.RegisterSingleton<IDistributedCache>(
-                          new RedisCache(
-                              new OptionsManager<RedisCacheOptions>(new List<IConfigureOptions<RedisCacheOptions>>
-                              {
-                                new ConfigureFromConfigurationOptions<RedisCacheOptions>(
-                                    Configuration.GetSection("RedisCacheOptions"))
-                               })
-                          ));
+
+                        services.AddDistributedRedisCache(options =>
+                        {
+                            Configuration.GetSection("RedisCacheOptions").Bind(options);
+                        });
+
                         break;
                     }
 
                 default:
                 case "MemoryDistributedCache":
                     {
-                        _container.RegisterSingleton<IDistributedCache>(new MemoryDistributedCache(new MemoryCache(new MemoryCacheOptions())));
-                        break;
+
+                        services.AddDistributedMemoryCache();
+                         break;
                     }
             }
         }
 
-        private void ConfigureAzureStorage(IHostingEnvironment env)
+        private void ConfigureAzureStorage(IApplicationBuilder app)
         {
-            _container.RegisterSingleton<IOptions<BlobStorageOptions>>(
-                new OptionsManager<BlobStorageOptions>(new List<IConfigureOptions<BlobStorageOptions>>
-                {
-                    new ConfigureFromConfigurationOptions<BlobStorageOptions>(
-                        Configuration.GetSection("BlobStorageOptions"))
-                }));
+            
+            _container.Register(
+                app.GetRequestService<IOptionsSnapshot<BlobStorageOptions>>);
+
 
             _container.RegisterSingleton<IFileService, BlobService>();
         }
 
-        private void ConfigureHash()
+        private void ConfigureHash(IApplicationBuilder app)
         {
-            _container.RegisterSingleton<IOptions<HashOptions>>(new OptionsManager<HashOptions>(new List<IConfigureOptions<HashOptions>>
-                {
-                    new ConfigureFromConfigurationOptions<HashOptions>(
-                        Configuration.GetSection("HashOptions"))
-                }));
+            _container.Register(
+                app.GetRequestService< IOptions< HashOptions>>);
+
         }
 
         private void ConfigureContainer(IServiceCollection services)

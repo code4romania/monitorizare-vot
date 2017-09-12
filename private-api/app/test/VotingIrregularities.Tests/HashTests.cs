@@ -34,11 +34,7 @@ namespace VotingIrregularities.Tests
         [Fact]
         public void SetPasswords()
         {
-            var hashService = new HashService(new OptionsManager<HashOptions>(new List<IConfigureOptions<HashOptions>>
-                {
-                    new ConfigureFromConfigurationOptions<HashOptions>(
-                        Configuration.GetSection("HashOptions"))
-                }));
+            var hashService = new HashService((Microsoft.Extensions.Options.IOptions<VotingIrregularities.Api.Models.HashOptions>)new ConfigureOptions<HashOptions>((options) => Configuration.GetSection("HashOptions").Bind(options)));
 
             var pathToFile = Directory.GetCurrentDirectory()
                + Path.DirectorySeparatorChar.ToString()
