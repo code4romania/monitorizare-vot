@@ -24,7 +24,7 @@ namespace VotingIrregularities.Tests
         private IConfigurationRoot Configuration { get; set; }
 
      
-        [Fact]//(Skip = "Used for generating the password files")]
+        [Fact(Skip = "Used for generating the password files")]
         public void SetPasswords()
         {
             var hashOptions = new HashOptions();
