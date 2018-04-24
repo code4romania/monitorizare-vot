@@ -20,7 +20,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.PlatformAbstractions;
 using Serilog;
-using Swashbuckle.Swagger.Model;
 using VotingIrregularities.Api.Extensions;
 using SimpleInjector;
 using SimpleInjector.Integration.AspNetCore;
@@ -35,12 +34,14 @@ using Microsoft.IdentityModel.Tokens;
 using VotingIrregularities.Api.Models.AccountViewModels;
 using VotingIrregularities.Api.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using SimpleInjector.Lifestyles;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace VotingIrregularities.Api
 {
     public class Startup
     {
-        private readonly Container _container = new Container();
+        private readonly Container _container = new Container() { Options = { DefaultLifestyle = Lifestyle.Scoped, DefaultScopedLifestyle = new AsyncScopedLifestyle() } };
         private SymmetricSecurityKey _key;
 
         public Startup(IHostingEnvironment env)
@@ -89,11 +90,11 @@ namespace VotingIrregularities.Api
             })
                     .AddJwtBearer(options =>
                      {
-                        options.Audience = jwtAppSettingOptions[nameof(JwtIssuerOptions.Audience)];
+                         options.Audience = jwtAppSettingOptions[nameof(JwtIssuerOptions.Audience)];
                          options.RequireHttpsMetadata = false;
                          options.ClaimsIssuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)];
                      });
-                
+
 
             services.AddAuthorization(options =>
             {
@@ -102,9 +103,7 @@ namespace VotingIrregularities.Api
             });
 
             services.AddApplicationInsightsTelemetry(Configuration);
-
-
-
+            
             services.AddMvc(config =>
             {
                 var policy = new AuthorizationPolicyBuilder()
@@ -113,11 +112,11 @@ namespace VotingIrregularities.Api
                 config.Filters.Add(new AuthorizeFilter(policy));
             });
 
-            services.AddSwaggerGen();
+            //services.AddSwaggerGen();
 
-            services.ConfigureSwaggerGen(options =>
+            services.AddSwaggerGen(options =>
             {
-                options.SingleApiVersion(new Info
+                options.SwaggerDoc("v1", new Info
                 {
                     Version = "v1",
                     Title = "Monitorizare Vot - API privat",
@@ -156,6 +155,8 @@ namespace VotingIrregularities.Api
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory,
             IApplicationLifetime appLifetime, IDistributedCache cache)
         {
+            app.UseStaticFiles();
+
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
@@ -164,7 +165,7 @@ namespace VotingIrregularities.Api
                 .WriteTo
                 .ApplicationInsightsTraces(Configuration["ApplicationInsights:InstrumentationKey"])
                 .CreateLogger();
-           // app.UseApplicationInsightsRequestTelemetry();
+            // app.UseApplicationInsightsRequestTelemetry();
 
             appLifetime.ApplicationStopped.Register(Log.CloseAndFlush);
 
@@ -183,15 +184,9 @@ namespace VotingIrregularities.Api
 
             app.UseAuthentication();
 
-
-            _container.Options.DefaultScopedLifestyle = new SimpleInjector.Lifestyles.AsyncScopedLifestyle();
-
-
-
-
             RegisterServices(app);
-            ConfigureAzureStorage(app);
 
+            ConfigureAzureStorage(app);
 
             ConfigureHash(app);
 
@@ -203,16 +198,15 @@ namespace VotingIrregularities.Api
 
             BuildMediator();
 
-
             _container.Verify();
-
-            app.UseMvc();
 
             // Enable middleware to serve generated Swagger as a JSON endpoint
             app.UseSwagger();
 
             // Enable middleware to serve swagger-ui assets (HTML, JS, CSS etc.)
-            app.UseSwaggerUi();
+            app.UseSwaggerUI(o => o.SwaggerEndpoint("/swagger/v1/swagger.json", "MV API v1"));
+
+            app.UseMvc();
         }
 
         private void ConfigureCache(IServiceCollection services)
@@ -248,26 +242,22 @@ namespace VotingIrregularities.Api
                     {
 
                         services.AddDistributedMemoryCache();
-                         break;
+                        break;
                     }
             }
         }
 
         private void ConfigureAzureStorage(IApplicationBuilder app)
         {
-            
-            _container.Register(
-                app.GetRequestService<IOptionsSnapshot<BlobStorageOptions>>);
-
-
+            _container.RegisterSingleton(() => app.ApplicationServices.GetService<IOptions<BlobStorageOptions>>());
+            _container.RegisterSingleton(() => app.ApplicationServices.GetService<IOptionsSnapshot<BlobStorageOptions>>());
             _container.RegisterSingleton<IFileService, BlobService>();
         }
 
         private void ConfigureHash(IApplicationBuilder app)
         {
-            _container.Register(
-                app.GetRequestService< IOptions< HashOptions>>);
-
+            _container.RegisterSingleton(() => app.ApplicationServices.GetService<IOptions<HashOptions>>());
+            _container.RegisterSingleton<IHashService, HashService>();
         }
 
         private void ConfigureContainer(IServiceCollection services)
@@ -282,7 +272,6 @@ namespace VotingIrregularities.Api
         {
             _container.Register<ISectieDeVotareService, SectieDevotareDBService>(Lifestyle.Scoped);
             _container.RegisterSingleton(() => app.ApplicationServices.GetService<IOptions<JwtIssuerOptions>>());
-            _container.RegisterSingleton<IHashService, HashService>();
         }
 
         private void InitializeContainer(IApplicationBuilder app)
