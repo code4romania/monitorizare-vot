@@ -24,11 +24,13 @@ namespace VotingIrregularities.Tests
         private IConfigurationRoot Configuration { get; set; }
 
      
-        [Fact(Skip = "Used for generating the password files")]
+        [Fact]//(Skip = "Used for generating the password files")]
         public void SetPasswords()
         {
-            var optionsList = (IOptions<HashOptions>) new ConfigureOptions<HashOptions>(options =>
-                Configuration.GetSection("HashOptions").Bind(options));
+            var hashOptions = new HashOptions();
+            Configuration.GetSection("HashOptions").Bind(hashOptions);
+
+            var optionsList = Options.Create(hashOptions);
 
             var hashService = new HashService(optionsList);
 
