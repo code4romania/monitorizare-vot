@@ -5,7 +5,7 @@
     <AssemblyName>VotingIrregularities.Domain</AssemblyName>
     <OutputType>Exe</OutputType>
     <PackageId>VotingIrregularities.Domain</PackageId>
-    <RuntimeFrameworkVersion>2.1.1</RuntimeFrameworkVersion>
+    <RuntimeFrameworkVersion>2.1.0</RuntimeFrameworkVersion>
     <NetStandardImplicitPackageVersion>2.0</NetStandardImplicitPackageVersion>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
