@@ -29,11 +29,11 @@ namespace VotingIrregularities.Api.Queries
 
         public async Task<Dictionary<string, int>> Handle(ModelFormular.VersiuneQuery message)
         {
-            var result = await _context.VersiuneFormular
+            var result = await _context.FormVersions
                 .AsNoTracking()
                 .ToListAsync();
 
-            return result.ToDictionary(k => k.CodFormular, v => v.VersiuneaCurenta);
+            return result.ToDictionary(k => k.Code, v => v.CurrentVersion);
         }
 
         public async Task<IEnumerable<ModelSectiune>> Handle(ModelFormular.IntrebariQuery message)
@@ -44,21 +44,21 @@ namespace VotingIrregularities.Api.Queries
             return await _cacheService.GetOrSaveDataInCacheAsync<IEnumerable<ModelSectiune>>(formular,
                 async () =>
                 {
-                    var r = await _context.Intrebare
-                        .Include(a => a.IdSectiuneNavigation)
-                        .Include(a => a.RaspunsDisponibil)
-                        .ThenInclude(a => a.IdOptiuneNavigation)
-                        .Where(a => a.CodFormular == message.CodFormular)
+                    var r = await _context.Questions
+                        .Include(a => a.FormSection)
+                        .Include(a => a.OptionsToQuestions)
+                        .ThenInclude(a => a.Option)
+                        .Where(a => a.FormCode == message.CodFormular)
                         .ToListAsync();
 
-                    var sectiuni = r.Select(a => new { a.IdSectiune, a.IdSectiuneNavigation.CodSectiune, a.IdSectiuneNavigation.Descriere }).Distinct();
+                    var sectiuni = r.Select(a => new { IdSectiune = a.IdSection, CodSectiune = a.FormSection.Code, Descriere = a.FormSection.Description }).Distinct();
 
                     var result = sectiuni.Select(i => new ModelSectiune
                     {
                         CodSectiune = i.CodSectiune,
                         Descriere = i.Descriere,
-                        Intrebari = r.Where(a => a.IdSectiune == i.IdSectiune)
-                                     .OrderBy(intrebare => intrebare.CodIntrebare)
+                        Intrebari = r.Where(a => a.IdSection == i.IdSectiune)
+                                     .OrderBy(intrebare => intrebare.Code)
                                      .Select(a => _mapper.Map<ModelIntrebare>(a)).ToList()
                     }).ToList();
                     return result;

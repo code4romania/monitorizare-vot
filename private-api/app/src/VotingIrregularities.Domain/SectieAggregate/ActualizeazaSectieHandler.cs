@@ -25,13 +25,13 @@ namespace VotingIrregularities.Domain.SectieAggregate
         {
             try
             {
-                var formular = await _context.RaspunsFormular
+                var formular = await _context.PollingStationInfos
                     .FirstOrDefaultAsync(a =>
-                        a.IdObservator == message.IdObservator &&
-                        a.IdSectieDeVotare == message.IdSectieDeVotare);
+                        a.IdObserver == message.IdObservator &&
+                        a.IdPollingStation == message.IdSectieDeVotare);
 
                 if (formular == null)
-                    throw new ArgumentException("RaspunsFormular nu exista");
+                    throw new ArgumentException("PollingStationInfo nu exista");
                
                 _mapper.Map(message, formular);
                 _context.Update(formular);

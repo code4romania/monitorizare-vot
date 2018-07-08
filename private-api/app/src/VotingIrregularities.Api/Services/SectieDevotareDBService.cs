@@ -27,7 +27,7 @@ namespace VotingIrregularities.Api.Services
                 var j = Enum.TryParse(codJudet, true, out judet);
 
                 if (!j)
-                    throw new ArgumentException($"Judet inexistent: {codJudet}");
+                    throw new ArgumentException($"County inexistent: {codJudet}");
 
                 return await GetSingleSectieDeVotare((int)judet, numarSectie);
             }
@@ -44,12 +44,12 @@ namespace VotingIrregularities.Api.Services
             try
             {
                 var idSectie = await
-                _context.SectieDeVotare
+                _context.PollingStations
                     .Where(
                         a =>
-                            a.IdJudet == idJudet &&
-                            a.NumarSectie == numarSectie)
-                    .Select(a => a.IdSectieDeVotarre)
+                            a.IdCounty == idJudet &&
+                            a.Number == numarSectie)
+                    .Select(a => a.Id)
                     .ToListAsync();
 
                 if (idSectie.Count == 0)

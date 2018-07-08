@@ -23,12 +23,12 @@ namespace VotingIrregularities.Domain.SectieAggregate
     {
         public RaspunsFormularProfile()
         {
-            CreateMap<InregistreazaSectieCommand, RaspunsFormular>()
-                .ForMember(src => src.DataUltimeiModificari, c => c.MapFrom(src => DateTime.UtcNow));
+            CreateMap<InregistreazaSectieCommand, PollingStationInfo>()
+                .ForMember(src => src.LastModified, c => c.MapFrom(src => DateTime.UtcNow));
 
-            CreateMap<ActualizeazaSectieCommand, RaspunsFormular>()
-                .ForMember(src => src.DataUltimeiModificari, c => c.MapFrom(src => DateTime.UtcNow))
-                .ForMember(src => src.OraPlecarii, c => c.MapFrom(src => src.OraPlecarii));
+            CreateMap<ActualizeazaSectieCommand, PollingStationInfo>()
+                .ForMember(src => src.LastModified, c => c.MapFrom(src => DateTime.UtcNow))
+                .ForMember(src => src.ObserverLeaveTime, c => c.MapFrom(src => src.OraPlecarii));
         }
     }
 }

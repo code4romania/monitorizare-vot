@@ -36,15 +36,15 @@ namespace VotingIrregularities.Domain.RaspunsAggregate
 
                 var raspunsuriNoi = message.Raspunsuri.Select(a => new
                 {
-                    flat = a.Optiuni.Select(o => new Raspuns
+                    flat = a.Optiuni.Select(o => new Answer
                     {
-                        IdObservator = message.IdObservator,
-                        IdSectieDeVotare = a.IdSectie,
-                        IdRaspunsDisponibil = o.IdOptiune,
+                        IdObserver = message.IdObservator,
+                        IdPollingStation = a.IdSectie,
+                        IdOptionToQuestion = o.IdOptiune,
                         Value = o.Value,
-                        CodJudet = a.CodJudet,
-                        NumarSectie = a.NumarSectie,
-                        DataUltimeiModificari = lastModified
+                        CountyCode = a.CodJudet,
+                        PollingStationNumber = a.NumarSectie,
+                        LastModified = lastModified
                     })
                 }).SelectMany(a => a.flat)
                 .Distinct()
@@ -61,17 +61,17 @@ namespace VotingIrregularities.Domain.RaspunsAggregate
                         var intrebari = message.Raspunsuri.Select(a => a.IdIntrebare).Distinct().ToList();
 
                         // delete existing answers for posted questions on this 'sectie'
-                        _context.Raspuns
-                            .Include(a => a.IdRaspunsDisponibilNavigation)
+                        _context.Answers
+                            .Include(a => a.OptionAnswered)
                             .Where(
                                 a =>
-                                    a.IdObservator == message.IdObservator &&
-                                    a.IdSectieDeVotare == sectie)
+                                    a.IdObserver == message.IdObservator &&
+                                    a.IdPollingStation == sectie)
                                    .WhereRaspunsContains(intrebari)
                             .Delete();
                     }
 
-                    _context.Raspuns.AddRange(raspunsuriNoi);
+                    _context.Answers.AddRange(raspunsuriNoi);
 
                     var result =  await _context.SaveChangesAsync();
 
@@ -98,13 +98,13 @@ namespace VotingIrregularities.Domain.RaspunsAggregate
         /// <param name="source"></param>
         /// <param name="contains"></param>
         /// <returns></returns>
-        public static IQueryable<Raspuns> WhereRaspunsContains(this IQueryable<Raspuns> source, IList<int> contains)
+        public static IQueryable<Answer> WhereRaspunsContains(this IQueryable<Answer> source, IList<int> contains)
         {
             var ors = contains
-                .Aggregate<int, Expression<Func<Raspuns, bool>>>(null, (expression, id) => 
+                .Aggregate<int, Expression<Func<Answer, bool>>>(null, (expression, id) => 
                 expression == null 
-                    ? (a => a.IdRaspunsDisponibilNavigation.IdIntrebare == id) 
-                    : expression.Or(a => a.IdRaspunsDisponibilNavigation.IdIntrebare == id));
+                    ? (a => a.OptionAnswered.IdQuestion == id) 
+                    : expression.Or(a => a.OptionAnswered.IdQuestion == id));
 
             return source.Where(ors);
         }

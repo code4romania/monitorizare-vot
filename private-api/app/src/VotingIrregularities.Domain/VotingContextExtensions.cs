@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using VotingIrregularities.Domain.Models;
 using VotingIrregularities.Domain.ValueObjects;
 
-namespace VotingIrregularities.Domain.Migrations
+namespace VotingIrregularities.Domain
 {
     public static class VotingContextExtensions
     {
@@ -22,9 +20,9 @@ namespace VotingIrregularities.Domain.Migrations
                 context.DataCleanUp();
 
                 context.SeedVersions();
-                context.SeedJudete();
-                context.SeedSectiune();
-                context.SeedOptiuni();
+                context.SeedCounties();
+                context.SeedFormSections();
+                context.SeedOptions();
                 context.SeedQuestions('A');
                 context.SeedQuestions('B');
                 context.SeedQuestions('C');
@@ -33,95 +31,96 @@ namespace VotingIrregularities.Domain.Migrations
             }
         }
 
-        private static void SeedJudete(this VotingContext context)
+        private static void SeedCounties(this VotingContext context)
         {
-            if (context.Judet.Any())
+            if (context.Counties.Any())
                 return;
 
-            context.Judet.AddRange(
-                new Judet { IdJudet = 0, CodJudet = "AB", Nume = "ALBA" },
-                new Judet { IdJudet = 1, CodJudet = "AR", Nume = "ARAD" },
-                new Judet { IdJudet = 2, CodJudet = "AG", Nume = "ARGES" },
-                new Judet { IdJudet = 3, CodJudet = "BC", Nume = "BACAU" },
-                new Judet { IdJudet = 4, CodJudet = "BH", Nume = "BIHOR" },
-                new Judet { IdJudet = 5, CodJudet = "BN", Nume = "BISTRITA-NASAUD" },
-                new Judet { IdJudet = 6, CodJudet = "BT", Nume = "BOTOSANI" },
-                new Judet { IdJudet = 7, CodJudet = "BV", Nume = "BRASOV" },
-                new Judet { IdJudet = 8, CodJudet = "BR", Nume = "BRAILA" },
-                new Judet { IdJudet = 9, CodJudet = "BZ", Nume = "BUZAU" },
-                new Judet { IdJudet = 10, CodJudet = "CS", Nume = "CARAS-SEVERIN" },
-                new Judet { IdJudet = 11, CodJudet = "CL", Nume = "CALARASI" },
-                new Judet { IdJudet = 12, CodJudet = "CJ", Nume = "CLUJ" },
-                new Judet { IdJudet = 13, CodJudet = "CT", Nume = "CONSTANTA" },
-                new Judet { IdJudet = 14, CodJudet = "CV", Nume = "COVASNA" },
-                new Judet { IdJudet = 15, CodJudet = "DB", Nume = "DÂMBOVITA" },
-                new Judet { IdJudet = 16, CodJudet = "DJ", Nume = "DOLJ" },
-                new Judet { IdJudet = 17, CodJudet = "GL", Nume = "GALATI" },
-                new Judet { IdJudet = 18, CodJudet = "GR", Nume = "GIURGIU" },
-                new Judet { IdJudet = 19, CodJudet = "GJ", Nume = "GORJ" },
-                new Judet { IdJudet = 20, CodJudet = "HR", Nume = "HARGHITA" },
-                new Judet { IdJudet = 21, CodJudet = "HD", Nume = "HUNEDOARA" },
-                new Judet { IdJudet = 22, CodJudet = "IL", Nume = "IALOMITA" },
-                new Judet { IdJudet = 23, CodJudet = "IS", Nume = "IASI" },
-                new Judet { IdJudet = 24, CodJudet = "IF", Nume = "ILFOV" },
-                new Judet { IdJudet = 25, CodJudet = "MM", Nume = "MARAMURES" },
-                new Judet { IdJudet = 26, CodJudet = "MH", Nume = "MEHEDINTI" },
-                new Judet { IdJudet = 27, CodJudet = "B", Nume = "MUNICIPIUL BUCURESTI" },
-                new Judet { IdJudet = 28, CodJudet = "MS", Nume = "MURES" },
-                new Judet { IdJudet = 29, CodJudet = "NT", Nume = "NEAMT" },
-                new Judet { IdJudet = 30, CodJudet = "OT", Nume = "OLT" },
-                new Judet { IdJudet = 31, CodJudet = "PH", Nume = "PRAHOVA" },
-                new Judet { IdJudet = 32, CodJudet = "SM", Nume = "SATU MARE" },
-                new Judet { IdJudet = 33, CodJudet = "SJ", Nume = "SALAJ" },
-                new Judet { IdJudet = 34, CodJudet = "SB", Nume = "SIBIU" },
-                new Judet { IdJudet = 35, CodJudet = "SV", Nume = "SUCEAVA" },
-                new Judet { IdJudet = 36, CodJudet = "TR", Nume = "TELEORMAN" },
-                new Judet { IdJudet = 37, CodJudet = "TM", Nume = "TIMIS" },
-                new Judet { IdJudet = 38, CodJudet = "TL", Nume = "TULCEA" },
-                new Judet { IdJudet = 39, CodJudet = "VS", Nume = "VASLUI" },
-                new Judet { IdJudet = 40, CodJudet = "VL", Nume = "VÂLCEA" },
-                new Judet { IdJudet = 41, CodJudet = "VN", Nume = "VRANCEA" }
+            context.Counties.AddRange(
+                new County { Id = 0, Code = "AB", Name = "ALBA" },
+                new County { Id = 1, Code = "AR", Name = "ARAD" },
+                new County { Id = 2, Code = "AG", Name = "ARGES" },
+                new County { Id = 3, Code = "BC", Name = "BACAU" },
+                new County { Id = 4, Code = "BH", Name = "BIHOR" },
+                new County { Id = 5, Code = "BN", Name = "BISTRITA-NASAUD" },
+                new County { Id = 6, Code = "BT", Name = "BOTOSANI" },
+                new County { Id = 7, Code = "BV", Name = "BRASOV" },
+                new County { Id = 8, Code = "BR", Name = "BRAILA" },
+                new County { Id = 9, Code = "BZ", Name = "BUZAU" },
+                new County { Id = 10, Code = "CS", Name = "CARAS-SEVERIN" },
+                new County { Id = 11, Code = "CL", Name = "CALARASI" },
+                new County { Id = 12, Code = "CJ", Name = "CLUJ" },
+                new County { Id = 13, Code = "CT", Name = "CONSTANTA" },
+                new County { Id = 14, Code = "CV", Name = "COVASNA" },
+                new County { Id = 15, Code = "DB", Name = "DÂMBOVITA" },
+                new County { Id = 16, Code = "DJ", Name = "DOLJ" },
+                new County { Id = 17, Code = "GL", Name = "GALATI" },
+                new County { Id = 18, Code = "GR", Name = "GIURGIU" },
+                new County { Id = 19, Code = "GJ", Name = "GORJ" },
+                new County { Id = 20, Code = "HR", Name = "HARGHITA" },
+                new County { Id = 21, Code = "HD", Name = "HUNEDOARA" },
+                new County { Id = 22, Code = "IL", Name = "IALOMITA" },
+                new County { Id = 23, Code = "IS", Name = "IASI" },
+                new County { Id = 24, Code = "IF", Name = "ILFOV" },
+                new County { Id = 25, Code = "MM", Name = "MARAMURES" },
+                new County { Id = 26, Code = "MH", Name = "MEHEDINTI" },
+                new County { Id = 27, Code = "B", Name = "MUNICIPIUL BUCURESTI" },
+                new County { Id = 28, Code = "MS", Name = "MURES" },
+                new County { Id = 29, Code = "NT", Name = "NEAMT" },
+                new County { Id = 30, Code = "OT", Name = "OLT" },
+                new County { Id = 31, Code = "PH", Name = "PRAHOVA" },
+                new County { Id = 32, Code = "SM", Name = "SATU MARE" },
+                new County { Id = 33, Code = "SJ", Name = "SALAJ" },
+                new County { Id = 34, Code = "SB", Name = "SIBIU" },
+                new County { Id = 35, Code = "SV", Name = "SUCEAVA" },
+                new County { Id = 36, Code = "TR", Name = "TELEORMAN" },
+                new County { Id = 37, Code = "TM", Name = "TIMIS" },
+                new County { Id = 38, Code = "TL", Name = "TULCEA" },
+                new County { Id = 39, Code = "VS", Name = "VASLUI" },
+                new County { Id = 40, Code = "VL", Name = "VÂLCEA" },
+                new County { Id = 41, Code = "VN", Name = "VRANCEA" },
+                new County { Id = 42, Code = "D", Name = "DIASPORA" }
                 );
         }
 
         private static void DataCleanUp(this VotingContext context)
         {
-            context.Database.ExecuteSqlCommand("delete from RaspunsDisponibil");
-            context.Database.ExecuteSqlCommand("delete from Intrebare");
-            context.Database.ExecuteSqlCommand("delete from Sectiune");
-            context.Database.ExecuteSqlCommand("delete from VersiuneFormular");
-           // context.Database.ExecuteSqlCommand("delete from Judet");
+            context.Database.ExecuteSqlCommand("delete from OptionsToQuestions");
+            context.Database.ExecuteSqlCommand("delete from Questions");
+            context.Database.ExecuteSqlCommand("delete from FormSections");
+            context.Database.ExecuteSqlCommand("delete from FormVersions");
+           // context.Database.ExecuteSqlCommand("delete from County");
         }
 
-        private static void SeedOptiuni(this VotingContext context)
+        private static void SeedOptions(this VotingContext context)
         {
-            if (context.Optiune.Any())
+            if (context.Options.Any())
                 return;
-            context.Optiune.AddRange(
-                new Optiune { IdOptiune = 1, TextOptiune = "Da", },
-                new Optiune { IdOptiune = 2, TextOptiune = "Nu", },
-                new Optiune { IdOptiune = 3, TextOptiune = "Nu stiu", },
-                new Optiune { IdOptiune = 4, TextOptiune = "Dark Island", },
-                new Optiune { IdOptiune = 5, TextOptiune = "London Pride", },
-                new Optiune { IdOptiune = 6, TextOptiune = "Zaganu", },
-                new Optiune { IdOptiune = 7, TextOptiune = "Transmisia manualã", },
-                new Optiune { IdOptiune = 8, TextOptiune = "Transmisia automatã", },
-                new Optiune { IdOptiune = 9, TextOptiune = "Altele (specificaţi)", SeIntroduceText = true },
-                new Optiune { IdOptiune = 10, TextOptiune = "Metrou" },
-                new Optiune { IdOptiune = 11, TextOptiune = "Tramvai" },
-                new Optiune { IdOptiune = 12, TextOptiune = "Autobuz" }
+            context.Options.AddRange(
+                new Option { Id = 1, Text = "Da", },
+                new Option { Id = 2, Text = "Nu", },
+                new Option { Id = 3, Text = "Nu stiu", },
+                new Option { Id = 4, Text = "Dark Island", },
+                new Option { Id = 5, Text = "London Pride", },
+                new Option { Id = 6, Text = "Zaganu", },
+                new Option { Id = 7, Text = "Transmisia manualã", },
+                new Option { Id = 8, Text = "Transmisia automatã", },
+                new Option { Id = 9, Text = "Altele (specificaţi)", IsFreeText = true },
+                new Option { Id = 10, Text = "Metrou" },
+                new Option { Id = 11, Text = "Tramvai" },
+                new Option { Id = 12, Text = "Autobuz" }
             );
 
             context.SaveChanges();
         }
-        private static void SeedSectiune(this VotingContext context)
+        private static void SeedFormSections(this VotingContext context)
         {
-            if (context.Sectiune.Any())
+            if (context.FormSections.Any())
                 return;
 
-            context.Sectiune.AddRange(
-                new Sectiune { IdSectiune = 1, CodSectiune = "B", Descriere = "Despre Bere" },
-                new Sectiune { IdSectiune = 2, CodSectiune = "C", Descriere = "Descriere masini" }
+            context.FormSections.AddRange(
+                new FormSection { Id = 1, Code = "B", Description = "Despre Bere" },
+                new FormSection { Id = 2, Code = "C", Description = "Description masini" }
                 );
 
             context.SaveChanges();
@@ -129,66 +128,66 @@ namespace VotingIrregularities.Domain.Migrations
 
         private static void SeedQuestions(this VotingContext context, char idFormular)
         {
-            if (context.Intrebare.Any(a => a.CodFormular == idFormular.ToString()))
+            if (context.Questions.Any(a => a.FormCode == idFormular.ToString()))
                 return;
 
-            context.Intrebare.AddRange(
+            context.Questions.AddRange(
                 // primul formular
-                new Intrebare
+                new Question
                 {
-                    IdIntrebare = idFormular * 20 + 1,
-                    CodFormular = idFormular.ToString(),
-                    IdSectiune = 1, //B
-                    IdTipIntrebare = TipIntrebareEnum.OSinguraOptiune,
-                    TextIntrebare = $"{idFormular}: Iti place berea? (se alege o singura optiune selectabila)",
-                    RaspunsDisponibil = new List<RaspunsDisponibil>
+                    Id = idFormular * 20 + 1,
+                    FormCode = idFormular.ToString(),
+                    IdSection = 1, //B
+                    QuestionType = QuestionType.SingleOption,
+                    Text = $"{idFormular}: Iti place berea? (se alege o singura optiune selectabila)",
+                    OptionsToQuestions = new List<OptionToQuestion>
                     {
-                        new RaspunsDisponibil {IdRaspunsDisponibil = idFormular * 20 + 1, IdOptiune = 1},
-                        new RaspunsDisponibil {IdRaspunsDisponibil = idFormular * 20 + 2, IdOptiune = 2, RaspunsCuFlag = true},
-                        new RaspunsDisponibil {IdRaspunsDisponibil = idFormular * 20 + 3, IdOptiune = 3}
+                        new OptionToQuestion {Id = idFormular * 20 + 1, IdOption = 1},
+                        new OptionToQuestion {Id = idFormular * 20 + 2, IdOption = 2, Flagged = true},
+                        new OptionToQuestion {Id = idFormular * 20 + 3, IdOption = 3}
                     }
                 },
-                 new Intrebare
+                 new Question
                  {
-                     IdIntrebare = idFormular * 20 + 2,
-                                    CodFormular = idFormular.ToString(),
-                                    IdSectiune = 1, //B
-                                    IdTipIntrebare = TipIntrebareEnum.OptiuniMultiple,
-                                    TextIntrebare = $"{idFormular}: Ce tipuri de bere iti plac? (se pot alege optiuni multiple)",
-                                    RaspunsDisponibil = new List<RaspunsDisponibil>
+                     Id = idFormular * 20 + 2,
+                                    FormCode = idFormular.ToString(),
+                                    IdSection = 1, //B
+                                    QuestionType = QuestionType.MultipleOption,
+                                    Text = $"{idFormular}: Ce tipuri de bere iti plac? (se pot alege optiuni multiple)",
+                                    OptionsToQuestions = new List<OptionToQuestion>
                     {
-                        new RaspunsDisponibil {IdRaspunsDisponibil = idFormular * 20 + 4, IdOptiune = 4, RaspunsCuFlag = true},
-                        new RaspunsDisponibil {IdRaspunsDisponibil = idFormular * 20 + 5, IdOptiune = 5},
-                        new RaspunsDisponibil {IdRaspunsDisponibil = idFormular * 20 + 6, IdOptiune = 6}
+                        new OptionToQuestion {Id = idFormular * 20 + 4, IdOption = 4, Flagged = true},
+                        new OptionToQuestion {Id = idFormular * 20 + 5, IdOption = 5},
+                        new OptionToQuestion {Id = idFormular * 20 + 6, IdOption = 6}
                     }
                  },
-                 new Intrebare
+                 new Question
                  {
-                     IdIntrebare = idFormular * 20 + 3,
-                     CodFormular = idFormular.ToString(),
-                     IdSectiune = 2, //C
-                     IdTipIntrebare = TipIntrebareEnum.OSinguraOptiuneCuText,
-                     TextIntrebare = $"{idFormular}: Ce tip de transmisie are masina ta? (se poate alege O singura optiune selectabila + text pe O singura optiune)",
-                     RaspunsDisponibil = new List<RaspunsDisponibil>
+                     Id = idFormular * 20 + 3,
+                     FormCode = idFormular.ToString(),
+                     IdSection = 2, //C
+                     QuestionType = QuestionType.SingleOptionWithText,
+                     Text = $"{idFormular}: Ce tip de transmisie are masina ta? (se poate alege O singura optiune selectabila + text pe O singura optiune)",
+                     OptionsToQuestions = new List<OptionToQuestion>
                     {
-                        new RaspunsDisponibil {IdRaspunsDisponibil = idFormular * 20 + 7, IdOptiune = 7, RaspunsCuFlag = true},
-                        new RaspunsDisponibil {IdRaspunsDisponibil = idFormular * 20 + 8, IdOptiune = 8},
-                        new RaspunsDisponibil {IdRaspunsDisponibil = idFormular * 20 + 9, IdOptiune = 9}
+                        new OptionToQuestion {Id = idFormular * 20 + 7, IdOption = 7, Flagged = true},
+                        new OptionToQuestion {Id = idFormular * 20 + 8, IdOption = 8},
+                        new OptionToQuestion {Id = idFormular * 20 + 9, IdOption = 9}
                     }
                  },
-                 new Intrebare
+                 new Question
                  {
-                     IdIntrebare = idFormular * 20 + 4,
-                     CodFormular = idFormular.ToString(),
-                     IdSectiune = 2, //C
-                     IdTipIntrebare = TipIntrebareEnum.OptiuniMultipleCuText,
-                     TextIntrebare = $"{idFormular}: Ce mijloace de transport folosesti sa ajungi la birou? (se pot alege mai multe optiuni + text pe O singura optiune)",
-                     RaspunsDisponibil = new List<RaspunsDisponibil>
+                     Id = idFormular * 20 + 4,
+                     FormCode = idFormular.ToString(),
+                     IdSection = 2, //C
+                     QuestionType = QuestionType.MultipleOptionWithText,
+                     Text = $"{idFormular}: Ce mijloace de transport folosesti sa ajungi la birou? (se pot alege mai multe optiuni + text pe O singura optiune)",
+                     OptionsToQuestions = new List<OptionToQuestion>
                     {
-                        new RaspunsDisponibil {IdRaspunsDisponibil = idFormular * 20 + 10, IdOptiune = 10, RaspunsCuFlag = true},
-                        new RaspunsDisponibil {IdRaspunsDisponibil = idFormular * 20 + 11, IdOptiune = 11},
-                        new RaspunsDisponibil {IdRaspunsDisponibil = idFormular * 20 + 12, IdOptiune = 12},
-                        new RaspunsDisponibil {IdRaspunsDisponibil = idFormular * 20 + 13, IdOptiune = 9}
+                        new OptionToQuestion {Id = idFormular * 20 + 10, IdOption = 10, Flagged = true},
+                        new OptionToQuestion {Id = idFormular * 20 + 11, IdOption = 11},
+                        new OptionToQuestion {Id = idFormular * 20 + 12, IdOption = 12},
+                        new OptionToQuestion {Id = idFormular * 20 + 13, IdOption = 9}
                     }
                  }
                 );
@@ -199,13 +198,13 @@ namespace VotingIrregularities.Domain.Migrations
 
         private static void SeedVersions(this VotingContext context)
         {
-            if (context.VersiuneFormular.Any())
+            if (context.FormVersions.Any())
                 return;
 
-            context.VersiuneFormular.AddRange(
-                 new VersiuneFormular { CodFormular = "A", VersiuneaCurenta = 1 },
-                 new VersiuneFormular { CodFormular = "B", VersiuneaCurenta = 1 },
-                 new VersiuneFormular { CodFormular = "C", VersiuneaCurenta = 1 }
+            context.FormVersions.AddRange(
+                 new FormVersion { Code = "A", CurrentVersion = 1 },
+                 new FormVersion { Code = "B", CurrentVersion = 1 },
+                 new FormVersion { Code = "C", CurrentVersion = 1 }
              );
 
             context.SaveChanges();

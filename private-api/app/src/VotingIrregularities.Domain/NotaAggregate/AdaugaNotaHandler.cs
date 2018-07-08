@@ -27,13 +27,13 @@ namespace VotingIrregularities.Domain.NotaAggregate
             {
                 if (message.IdIntrebare.HasValue && message.IdIntrebare.Value > 0)
                 {
-                    var existaIntrebare = await _context.Intrebare.AnyAsync(i => i.IdIntrebare == message.IdIntrebare.Value);
+                    var existaIntrebare = await _context.Questions.AnyAsync(i => i.Id == message.IdIntrebare.Value);
 
                     if(!existaIntrebare)
                         throw new ArgumentException("Intrebarea nu exista");
                 }
 
-                var nota = _mapper.Map<Nota>(message);
+                var nota = _mapper.Map<Note>(message);
                 _context.Add(nota);
 
                 return await _context.SaveChangesAsync();

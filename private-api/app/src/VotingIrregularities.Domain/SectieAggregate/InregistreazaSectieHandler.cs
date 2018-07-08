@@ -28,25 +28,25 @@ namespace VotingIrregularities.Domain.SectieAggregate
             try
             {
                 //TODO[DH] this can be moved to a previous step, before the command is executed
-                int idSectie = await _context.SectieDeVotare
+                int idSectie = await _context.PollingStations
                     .Where(a =>
-                        a.NumarSectie == message.NumarSectie &&
-                        a.IdJudetNavigation.CodJudet == message.CodJudet).Select(a => a.IdSectieDeVotarre)
+                        a.Number == message.NumarSectie &&
+                        a.County.Code == message.CodJudet).Select(a => a.Id)
                         .FirstOrDefaultAsync();
 
                 if (idSectie == 0)
                     throw new ArgumentException("Sectia nu exista");
 
-                var formular = await _context.RaspunsFormular
+                var formular = await _context.PollingStationInfos
                     .FirstOrDefaultAsync(a =>
-                        a.IdObservator == message.IdObservator &&
-                        a.IdSectieDeVotare == idSectie);
+                        a.IdObserver == message.IdObservator &&
+                        a.IdPollingStation == idSectie);
 
                 if (formular == null)
                 {
-                    formular = _mapper.Map<RaspunsFormular>(message);
+                    formular = _mapper.Map<PollingStationInfo>(message);
 
-                    formular.IdSectieDeVotare = idSectie;
+                    formular.IdPollingStation = idSectie;
 
                     _context.Add(formular);
                 }

@@ -1,18 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Builder.Internal;
-using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.Extensions.PlatformAbstractions;
 using VotingIrregularities.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using VotingIrregularities.Domain.Migrations;
 
 namespace VotingIrregularities.Domain
 {

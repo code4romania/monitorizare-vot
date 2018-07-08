@@ -23,10 +23,10 @@ namespace VotingIrregularities.Domain.UserAggregate
         {
             try
             {
-                var observator = await _context.Observator.SingleAsync(a => a.IdObservator == message.IdObservator);
+                var observator = await _context.Observers.SingleAsync(a => a.Id == message.IdObservator);
 
-                observator.IdDispozitivMobil = message.IdDispozitivMobil;
-                observator.DataInregistrariiDispozitivului = DateTime.UtcNow;
+                observator.MobileDeviceId = message.IdDispozitivMobil;
+                observator.DeviceRegisterDate = DateTime.UtcNow;
 
                 return await _context.SaveChangesAsync();
             }

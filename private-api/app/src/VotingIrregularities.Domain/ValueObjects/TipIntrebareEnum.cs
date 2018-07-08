@@ -1,10 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace VotingIrregularities.Domain.ValueObjects
+﻿namespace VotingIrregularities.Domain.ValueObjects
 {
+    public enum QuestionType
+    {
+        MultipleOption = 0,
+        SingleOption = 1,
+        SingleOptionWithText = 2,
+        MultipleOptionWithText = 3
+    }
     public struct TipIntrebareEnum
     {
         /// <summary>

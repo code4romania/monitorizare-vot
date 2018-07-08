@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using SimpleInjector;
 using VotingIrregularities.Api.Models.AccountViewModels;
 using VotingIrregularities.Api.Services;
 using VotingIrregularities.Domain.Models;
@@ -25,10 +21,10 @@ namespace VotingIrregularities.Api.Queries
         {
             var hashValue = _hash.GetHash(message.Pin);
 
-            var userinfo = await _context.Observator
+            var userinfo = await _context.Observers
                 .FirstOrDefaultAsync(a => a.Pin == hashValue &&
-                                     (string.IsNullOrWhiteSpace(a.IdDispozitivMobil) || a.IdDispozitivMobil == message.UDID) &&
-                                     a.NumarTelefon == message.Phone);
+                                     (string.IsNullOrWhiteSpace(a.MobileDeviceId) || a.MobileDeviceId == message.UDID) &&
+                                     a.Phone == message.Phone);
             if (userinfo == null)
                 return new ModelObservatorInregistrat
                 {
@@ -37,9 +33,9 @@ namespace VotingIrregularities.Api.Queries
 
             return new ModelObservatorInregistrat
             {
-                IdObservator = userinfo.IdObservator,
+                IdObservator = userinfo.Id,
                 EsteAutentificat = true,
-                PrimaAutentificare = string.IsNullOrWhiteSpace(userinfo.IdDispozitivMobil)
+                PrimaAutentificare = string.IsNullOrWhiteSpace(userinfo.MobileDeviceId)
             };
         }
     }

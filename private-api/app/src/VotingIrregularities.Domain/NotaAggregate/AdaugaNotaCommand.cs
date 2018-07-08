@@ -18,11 +18,11 @@ namespace VotingIrregularities.Domain.NotaAggregate
     {
         public NotaProfile()
         {
-            CreateMap<AdaugaNotaCommand, Nota>()
-                .ForMember(src => src.IdIntrebare, c => c.MapFrom(src => 
+            CreateMap<AdaugaNotaCommand, Note>()
+                .ForMember(src => src.IdQuestion, c => c.MapFrom(src => 
                     !src.IdIntrebare.HasValue || src.IdIntrebare.Value <= 0 ? null : src.IdIntrebare)
                  )
-                .ForMember(src => src.DataUltimeiModificari, c => c.MapFrom(src => DateTime.UtcNow));
+                .ForMember(src => src.LastModified, c => c.MapFrom(src => DateTime.UtcNow));
         }
     }
 }

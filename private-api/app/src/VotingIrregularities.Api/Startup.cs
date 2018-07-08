@@ -318,15 +318,22 @@ namespace VotingIrregularities.Api
 
         private IMediator BuildMediator()
         {
+
             var assemblies = GetAssemblies().ToArray();
             _container.RegisterSingleton<IMediator, Mediator>();
             _container.Register(typeof(IRequestHandler<,>), assemblies);
             _container.Register(typeof(IAsyncRequestHandler<,>), assemblies);
             _container.Collection.Register(typeof(INotificationHandler<>), assemblies);
             _container.Collection.Register(typeof(IAsyncNotificationHandler<>), assemblies);
+
+            // had to add this registration as we were getting the same behavior as described here: https://github.com/jbogard/MediatR/issues/155
+            _container.Collection.Register(typeof(IPipelineBehavior<,>), Enumerable.Empty<Type>());
+
             _container.RegisterInstance(Console.Out);
             _container.RegisterInstance(new SingleInstanceFactory(_container.GetInstance));
             _container.RegisterInstance(new MultiInstanceFactory(_container.GetAllInstances));
+
+            
 
             var mediator = _container.GetInstance<IMediator>();
 
