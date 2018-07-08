@@ -34,6 +34,7 @@ namespace VotingIrregularities.Api.Controllers
         /// API-ul va returna adresa publica a fisierului unde este salvat si obiectul trimis prin formdata
         /// </summary>
         /// <param name="file"></param>
+        /// <param name="nota"></param>
         /// <returns></returns>
         [HttpPost("ataseaza")]
         public async Task<dynamic> Upload(IFormFile file, [FromForm]ModelNota nota)

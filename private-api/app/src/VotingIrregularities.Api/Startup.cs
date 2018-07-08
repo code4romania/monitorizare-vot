@@ -215,7 +215,7 @@ namespace VotingIrregularities.Api
 
             if (!enableCache)
             {
-                _container.RegisterSingleton<ICacheService>(new NoCacheService());
+                _container.RegisterInstance<ICacheService>(new NoCacheService());
                 return;
             }
 
@@ -285,7 +285,7 @@ namespace VotingIrregularities.Api
 
 
             // Cross-wire ASP.NET services (if any). For instance:
-            _container.RegisterSingleton(app.ApplicationServices.GetService<ILoggerFactory>());
+            _container.RegisterInstance(app.ApplicationServices.GetService<ILoggerFactory>());
             _container.RegisterConditional(
                 typeof(ILogger),
                 c => typeof(Logger<>).MakeGenericType(c.Consumer.ImplementationType),
@@ -295,7 +295,7 @@ namespace VotingIrregularities.Api
             // NOTE: Prevent cross-wired instances as much as possible.
             // See: https://simpleinjector.org/blog/2016/07/
 
-            _container.RegisterSingleton<IConfigurationRoot>(Configuration);
+            _container.RegisterInstance<IConfigurationRoot>(Configuration);
         }
 
         private void RegisterDbContext<TDbContext>(string connectionString = null)
@@ -306,7 +306,7 @@ namespace VotingIrregularities.Api
                 var optionsBuilder = new DbContextOptionsBuilder<TDbContext>();
                 optionsBuilder.UseSqlServer(connectionString);
 
-                _container.RegisterSingleton(optionsBuilder.Options);
+                _container.RegisterInstance(optionsBuilder.Options);
 
                 _container.Register<TDbContext>(Lifestyle.Scoped);
             }
@@ -322,11 +322,11 @@ namespace VotingIrregularities.Api
             _container.RegisterSingleton<IMediator, Mediator>();
             _container.Register(typeof(IRequestHandler<,>), assemblies);
             _container.Register(typeof(IAsyncRequestHandler<,>), assemblies);
-            _container.RegisterCollection(typeof(INotificationHandler<>), assemblies);
-            _container.RegisterCollection(typeof(IAsyncNotificationHandler<>), assemblies);
-            _container.RegisterSingleton(Console.Out);
-            _container.RegisterSingleton(new SingleInstanceFactory(_container.GetInstance));
-            _container.RegisterSingleton(new MultiInstanceFactory(_container.GetAllInstances));
+            _container.Collection.Register(typeof(INotificationHandler<>), assemblies);
+            _container.Collection.Register(typeof(IAsyncNotificationHandler<>), assemblies);
+            _container.RegisterInstance(Console.Out);
+            _container.RegisterInstance(new SingleInstanceFactory(_container.GetInstance));
+            _container.RegisterInstance(new MultiInstanceFactory(_container.GetAllInstances));
 
             var mediator = _container.GetInstance<IMediator>();
 
@@ -337,7 +337,7 @@ namespace VotingIrregularities.Api
         {
             Mapper.Initialize(cfg => { cfg.AddProfiles(GetAssemblies()); });
 
-            _container.RegisterSingleton(Mapper.Configuration);
+            _container.RegisterInstance(Mapper.Configuration);
             _container.Register<IMapper>(() => new Mapper(Mapper.Configuration), Lifestyle.Scoped);
         }
 
