@@ -38,6 +38,22 @@ https://github.com/code4romania/monitorizare-vot-docs
 
 https://github.com/code4romania/monitorizare-vot-votanti-admin
 
+## Creating the database
+
+The Assembly VotingIrregularities.Domain has EF Migrations configured and can generate a database complete with test data.
+
+To do this, follow the steps bellow:
+
+Fill-in `appsetings.json` OR add in a new `appsettings.target.json` file the connectionstring to the SQL instance where the DB should be created.
+
+Run the following console command from the `VotingIrregularities.Domain` folder:
+
+ ```sh
+private-api\app\VotingIrregularities.Domain> dotnet run
+```
+
+**Important:** the migrate action with delete the data from the following tables: RaspunsDisponibil, Intrebare, Sectiune, Optiune.
+
 ## Deployment
 
 1. install .NetCore (Open Source/Free/Multiplatform) from [here](https://www.microsoft.com/net/core#windows)
