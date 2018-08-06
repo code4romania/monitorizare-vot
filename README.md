@@ -20,23 +20,19 @@ The app also has a web version, available for every citizen who wants to report 
 
 ## Repos and projects
 
-Related projects:
+Client apps:
 
-https://github.com/code4romania/monitorizare-vot-android
+- android - https://github.com/code4romania/monitorizare-vot-android
+- iOS - https://github.com/code4romania/monitorizare-vot-ios
 
-https://github.com/code4romania/monitorizare-vot-ios
+Other MV related repos:
 
-https://github.com/code4romania/monitorizare-vot-admin
-
-https://github.com/code4romania/monitorizare-vot-ong
-
-https://github.com/code4romania/monitorizare-vot-votanti-client/
-
-https://github.com/code4romania/monitorizare-vot-votanti-api
-
-https://github.com/code4romania/monitorizare-vot-docs
-
-https://github.com/code4romania/monitorizare-vot-votanti-admin
+- https://github.com/code4romania/monitorizare-vot-admin
+- https://github.com/code4romania/monitorizare-vot-ong
+- https://github.com/code4romania/monitorizare-vot-votanti-client/
+- https://github.com/code4romania/monitorizare-vot-votanti-api
+- https://github.com/code4romania/monitorizare-vot-votanti-admin
+- https://github.com/code4romania/monitorizare-vot-docs
 
 ## Creating the database
 
