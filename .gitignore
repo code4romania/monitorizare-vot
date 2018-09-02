@@ -255,3 +255,4 @@ ModelManifest.xml
 /private-api/app/test/VotingIrregularities.Tests/appsettings.localDevelopment.json
 /private-api/app/test/VotingIrregularities.Tests/conturi.txt
 /private-api/app/test/VotingIrregularities.Tests/conturi-cu-parole.txt
+.vscode
