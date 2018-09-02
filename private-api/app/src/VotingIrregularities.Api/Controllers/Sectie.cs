@@ -11,6 +11,9 @@ using VotingIrregularities.Domain.SectieAggregate;
 
 namespace VotingIrregularities.Api.Controllers
 {
+    /// <summary>
+    /// Controller responsible for interacting with the polling stations - PollingStationInfo 
+    /// </summary>
     [Route("api/v1/sectie")]
     public class Sectie : Controller
     {

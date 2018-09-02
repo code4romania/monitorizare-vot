@@ -11,11 +11,11 @@ using Newtonsoft.Json;
 using VotingIrregularities.Api.Models.AccountViewModels;
 using System.Linq;
 using MediatR;
-using VotingIrregularities.Api.Services;
 using VotingIrregularities.Domain.UserAggregate;
 
 namespace VotingIrregularities.Api.Controllers
 {
+    /// <inheritdoc />
     [Route("api/v1/access")]
     public class Authorization : Controller
     {
@@ -24,6 +24,7 @@ namespace VotingIrregularities.Api.Controllers
         private readonly IMediator _mediator;
         private readonly JsonSerializerSettings _serializerSettings;
 
+        /// <inheritdoc />
         public Authorization(IOptions<JwtIssuerOptions> jwtOptions, ILogger logger, IMediator mediator)
         {
             _jwtOptions = jwtOptions.Value;
@@ -38,6 +39,11 @@ namespace VotingIrregularities.Api.Controllers
             };
         }
 
+        /// <summary>
+        /// Get the auth token to be passed to subsequent requests
+        /// </summary>
+        /// <param name="applicationUser"></param>
+        /// <returns></returns>
         [HttpPost("token")]
         [AllowAnonymous]
         public async Task<IActionResult> Get([FromBody] ApplicationUser applicationUser)
@@ -83,7 +89,10 @@ namespace VotingIrregularities.Api.Controllers
             var json = JsonConvert.SerializeObject(response, _serializerSettings);
             return new OkObjectResult(json);
         }
-
+        /// <summary>
+        /// Test action to get claims
+        /// </summary>
+        /// <returns></returns>
         [Authorize]
         [HttpPost("test")]
         public async Task<object> Test()

@@ -9,19 +9,17 @@ using VotingIrregularities.Api.Models;
 
 namespace VotingIrregularities.Api.Services
 {
+    /// <inheritdoc />
     public class BlobService : IFileService
     {
         private CloudBlobClient _client;
         private IOptions<BlobStorageOptions> _storageOptions;
+        /// <summary>
+        /// 
+        /// </summary>
+        public StorageCredentials Credentials => new StorageCredentials(_storageOptions.Value.AccountName, _storageOptions.Value.AccountKey);
 
-        public StorageCredentials Credentials
-        {
-            get
-            {
-                return new StorageCredentials(_storageOptions.Value.AccountName, _storageOptions.Value.AccountKey);
-            }
-        }
-
+        /// <inheritdoc />
         public BlobService(IOptions<BlobStorageOptions> storageOptions)
         {
             _storageOptions = storageOptions;
@@ -34,13 +32,13 @@ namespace VotingIrregularities.Api.Services
         public async Task<string> UploadFromStreamAsync(Stream sourceStream, string mimeType, string extension)
         {
             // Get a reference to the container.
-            CloudBlobContainer container = _client.GetContainerReference(_storageOptions.Value.Container);
+            var container = _client.GetContainerReference(_storageOptions.Value.Container);
 
             // Create the container if it doesn't already exist.
             await container.CreateIfNotExistsAsync();
 
             // Retrieve reference to a blob.
-            CloudBlockBlob blockBlob = container.GetBlockBlobReference(Guid.NewGuid().ToString("N") + extension);
+            var blockBlob = container.GetBlockBlobReference(Guid.NewGuid().ToString("N") + extension);
 
             // Create or overwrite the previous created blob with contents from stream.
             await blockBlob.UploadFromStreamAsync(sourceStream);

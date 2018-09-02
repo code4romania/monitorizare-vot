@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace VotingIrregularities.Api.Controllers
 {
+    /// <inheritdoc />
     /// <summary>
     /// Ruta Formular ofera suport pentru toate operatiile legate de formularele completate de observatori
     /// </summary>

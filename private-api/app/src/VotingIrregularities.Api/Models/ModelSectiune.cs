@@ -16,6 +16,7 @@ namespace VotingIrregularities.Api.Models
     }
 
 
+    /// <inheritdoc />
     public class FormularProfile : Profile
     {
         public FormularProfile()

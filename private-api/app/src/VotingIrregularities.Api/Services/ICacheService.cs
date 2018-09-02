@@ -6,6 +6,9 @@ using Microsoft.Extensions.Caching.Distributed;
 
 namespace VotingIrregularities.Api.Services
 {
+    /// <summary>
+    /// Interface for the caching service to be used.
+    /// </summary>
     public interface ICacheService
     {
         Task<T> GetOrSaveDataInCacheAsync<T>(CacheObjectsName name, Func<Task<T>> source, DistributedCacheEntryOptions options = null);

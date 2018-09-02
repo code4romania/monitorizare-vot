@@ -12,6 +12,7 @@ using VotingIrregularities.Domain.Models;
 
 namespace VotingIrregularities.Api.Queries
 {
+    /// <inheritdoc cref="IAsyncRequestHandler{TRequest,TResponse}" />
     public class FormularQueryHandler :
         IAsyncRequestHandler<ModelFormular.VersiuneQuery,Dictionary<string,int>>,
         IAsyncRequestHandler<ModelFormular.IntrebariQuery,IEnumerable<ModelSectiune>>

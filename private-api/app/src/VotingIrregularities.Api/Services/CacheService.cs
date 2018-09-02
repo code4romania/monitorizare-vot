@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
@@ -9,6 +6,7 @@ using Newtonsoft.Json;
 
 namespace VotingIrregularities.Api.Services
 {
+    /// <inheritdoc />
     public class CacheService : ICacheService
     {
         private readonly IDistributedCache _cache;
@@ -81,23 +79,34 @@ namespace VotingIrregularities.Api.Services
 
         private static byte[] GetBytes(string str)
         {
-            byte[] bytes = new byte[str.Length * sizeof(char)];
+            var bytes = new byte[str.Length * sizeof(char)];
             System.Buffer.BlockCopy(str.ToCharArray(), 0, bytes, 0, bytes.Length);
             return bytes;
         }
         private static string GetString(byte[] bytes)
         {
-            char[] chars = new char[bytes.Length / sizeof(char)];
+            var chars = new char[bytes.Length / sizeof(char)];
             System.Buffer.BlockCopy(bytes, 0, chars, 0, bytes.Length);
             return new string(chars);
         }
 
     }
-
+    /// <summary>
+    /// Enum for forms' names in cache
+    /// </summary>
     public enum CacheObjectsName
     {
+        /// <summary>
+        /// First form
+        /// </summary>
         FormularA,
+        /// <summary>
+        /// Second form
+        /// </summary>
         FormularB,
+        /// <summary>
+        /// this is becoming redundant
+        /// </summary>
         FormularC
     }
 }
