@@ -22,13 +22,10 @@ using Microsoft.Extensions.PlatformAbstractions;
 using Serilog;
 using VotingIrregularities.Api.Extensions;
 using SimpleInjector;
-using SimpleInjector.Integration.AspNetCore;
 using SimpleInjector.Integration.AspNetCore.Mvc;
 using VotingIrregularities.Api.Services;
 using VotingIrregularities.Domain.Models;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Caching.Redis;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using VotingIrregularities.Api.Models.AccountViewModels;
@@ -84,6 +81,23 @@ namespace VotingIrregularities.Api
                 options.SigningCredentials = new SigningCredentials(_key, SecurityAlgorithms.HmacSha256);
             });
 
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidIssuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)],
+
+                ValidateAudience = true,
+                ValidAudience = jwtAppSettingOptions[nameof(JwtIssuerOptions.Audience)],
+
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = _key,
+
+                RequireExpirationTime = false,
+                ValidateLifetime = false,
+
+                ClockSkew = TimeSpan.Zero
+            };
+
             services.AddAuthentication(options =>
             {
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -93,6 +107,7 @@ namespace VotingIrregularities.Api
                          options.Audience = jwtAppSettingOptions[nameof(JwtIssuerOptions.Audience)];
                          options.RequireHttpsMetadata = false;
                          options.ClaimsIssuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)];
+                         options.TokenValidationParameters = tokenValidationParameters;
                      });
 
 
@@ -103,7 +118,7 @@ namespace VotingIrregularities.Api
             });
 
             services.AddApplicationInsightsTelemetry(Configuration);
-            
+
             services.AddMvc(config =>
             {
                 var policy = new AuthorizationPolicyBuilder()
@@ -333,7 +348,7 @@ namespace VotingIrregularities.Api
             _container.RegisterInstance(new SingleInstanceFactory(_container.GetInstance));
             _container.RegisterInstance(new MultiInstanceFactory(_container.GetAllInstances));
 
-            
+
 
             var mediator = _container.GetInstance<IMediator>();
 
