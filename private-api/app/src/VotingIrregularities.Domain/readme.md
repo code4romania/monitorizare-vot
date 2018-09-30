@@ -12,4 +12,11 @@ Pentru acest lucru trebuie urmati pasii de mai jos:
 private-api\app\VotingIrregularities.Domain> dotnet run
 ```
 
+
+If you also want to seed some sample data please use the `-seed` argument:
+
+```sh
+private-api\app\VotingIrregularities.Domain> dotnet run
+```
+
 Important este faptul ca actiunea de migrare va *sterge* datele din tabelele RaspunsDisponibil, Intrebare, Sectiune, Optiune.
