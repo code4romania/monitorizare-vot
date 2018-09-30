@@ -48,6 +48,9 @@ namespace VotingIrregularities.Domain
                 logger.LogDebug($"Initializing Database for VotingContext...");
                 context.Database.EnsureCreated();
                 logger.LogDebug($"Database created");
+
+                if (!args.Contains("-seed")) return;
+
                 logger.LogDebug($"Initializing data seeding...");
                 context.EnsureSeedData();
                 logger.LogDebug($"Data seeded for {conn}");
