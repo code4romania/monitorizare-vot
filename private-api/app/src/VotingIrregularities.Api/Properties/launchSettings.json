@@ -13,7 +13,7 @@
       "launchBrowser": true,
       "launchUrl": "swagger",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "LocalDevelopment"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
     "VotingIrregularities.Api": {
