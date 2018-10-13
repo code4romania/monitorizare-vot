@@ -350,6 +350,9 @@ namespace VotingIrregularities.Api
 
 
 
+            // had to add this registration as we were getting the same behavior as described here: https://github.com/jbogard/MediatR/issues/155
+            _container.RegisterCollection(typeof(IPipelineBehavior<,>), Enumerable.Empty<Type>());
+
             var mediator = _container.GetInstance<IMediator>();
 
             return mediator;
