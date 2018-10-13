@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using VotingIrregularities.Domain.Models;
@@ -8,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace VotingIrregularities.Domain.SectieAggregate
 {
-    public class ActualizeazaSectieHandler : IAsyncRequestHandler<ActualizeazaSectieCommand, int>
+    public class ActualizeazaSectieHandler : AsyncRequestHandler<ActualizeazaSectieCommand, int>
     {
         private readonly VotingContext _context;
         private readonly ILogger _logger;
@@ -21,7 +22,7 @@ namespace VotingIrregularities.Domain.SectieAggregate
             _mapper = mapper;
         }
 
-        public async Task<int> Handle(ActualizeazaSectieCommand message)
+        protected override async Task<int> HandleCore(ActualizeazaSectieCommand message)
         {
             try
             {

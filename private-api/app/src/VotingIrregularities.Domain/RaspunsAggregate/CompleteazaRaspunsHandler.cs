@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using LinqKit;
@@ -15,7 +16,7 @@ using Z.EntityFramework.Plus;
 
 namespace VotingIrregularities.Domain.RaspunsAggregate
 {
-    public class CompleteazaRaspunsHandler : IAsyncRequestHandler<CompleteazaRaspunsCommand, int>
+    public class CompleteazaRaspunsHandler : AsyncRequestHandler<CompleteazaRaspunsCommand, int>
     {
         private readonly VotingContext _context;
         private readonly IMapper _mapper;
@@ -27,7 +28,7 @@ namespace VotingIrregularities.Domain.RaspunsAggregate
             _mapper = mapper;
             _logger = logger;
         }
-        public async Task<int> Handle(CompleteazaRaspunsCommand message)
+        protected override async Task<int> HandleCore(CompleteazaRaspunsCommand message)
         {
             try
             {

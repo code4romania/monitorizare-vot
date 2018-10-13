@@ -39,6 +39,7 @@ namespace VotingIrregularities.Domain
                 var context = serviceScope.ServiceProvider.GetService<VotingContext>();
                 logger.LogDebug($"Initializing Database for VotingContext...");
                 context.Database.EnsureCreated();
+                //context.Database.Migrate();
                 logger.LogDebug($"Database created");
 
                 if (!args.Contains("-seed")) return;

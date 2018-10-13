@@ -5,7 +5,7 @@ using VotingIrregularities.Api.Services;
 
 namespace VotingIrregularities.Api.Queries
 {
-    public class SectieQueryHandler : IAsyncRequestHandler<ModelSectieQuery, int>
+    public class SectieQueryHandler : AsyncRequestHandler<ModelSectieQuery, int>
     {
         private readonly ISectieDeVotareService _svService;
 
@@ -14,7 +14,7 @@ namespace VotingIrregularities.Api.Queries
             _svService = svService;
         }
 
-        public async Task<int> Handle(ModelSectieQuery message)
+        protected override async Task<int> HandleCore(ModelSectieQuery message)
         {
             return await _svService.GetSingleSectieDeVotare(message.CodJudet, message.NumarSectie);
         }
