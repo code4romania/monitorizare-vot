@@ -19,6 +19,7 @@ namespace VotingIrregularities.Domain
             {
                 context.DataCleanUp();
 
+                context.SeedNGOs();
                 context.SeedVersions();
                 context.SeedCounties();
                 context.SeedFormSections();
@@ -64,7 +65,7 @@ namespace VotingIrregularities.Domain
                 new County { Id = 24, Code = "IF", Name = "ILFOV" },
                 new County { Id = 25, Code = "MM", Name = "MARAMURES" },
                 new County { Id = 26, Code = "MH", Name = "MEHEDINTI" },
-                new County { Id = 27, Code = "B", Name = "MUNICIPIUL BUCURESTI" },
+                new County { Id = 27, Code = "B", Name = "BUCURESTI" },
                 new County { Id = 28, Code = "MS", Name = "MURES" },
                 new County { Id = 29, Code = "NT", Name = "NEAMT" },
                 new County { Id = 30, Code = "OT", Name = "OLT" },
@@ -89,7 +90,7 @@ namespace VotingIrregularities.Domain
             context.Database.ExecuteSqlCommand("delete from Questions");
             context.Database.ExecuteSqlCommand("delete from FormSections");
             context.Database.ExecuteSqlCommand("delete from FormVersions");
-           // context.Database.ExecuteSqlCommand("delete from County");
+            context.Database.ExecuteSqlCommand("delete from Counties");
         }
 
         private static void SeedOptions(this VotingContext context)
@@ -209,6 +210,27 @@ namespace VotingIrregularities.Domain
 
             context.SaveChanges();
         }
+
+        private static void SeedNGOs(this VotingContext context)
+        {
+            if(context.Ngos.Any())
+                return;
+
+            context.Ngos.Add(new Ngo
+            {
+                Id = 1, Name = "Code4Romania", Organizer = true, ShortName = "C4R"
+            });
+            context.Ngos.Add(new Ngo
+            {
+                Id = 2,
+                Name = "Guest NGO",
+                Organizer = false,
+                ShortName = "GUE"
+            });
+            context.SaveChanges();
+
+        }
+
 
         private static bool AllMigrationsApplied(this DbContext context)
         {

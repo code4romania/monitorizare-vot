@@ -7,7 +7,7 @@ using VotingIrregularities.Domain.Models;
 
 namespace VotingIrregularities.Api.Queries
 {
-    public class ObservatorQueryHandler : IAsyncRequestHandler<ApplicationUser, ModelObservatorInregistrat>
+    public class ObservatorQueryHandler : AsyncRequestHandler<ApplicationUser, ModelObservatorInregistrat>
     {
         private readonly VotingContext _context;
         private readonly IHashService _hash;
@@ -17,7 +17,8 @@ namespace VotingIrregularities.Api.Queries
             _context = context;
             _hash = hash;
         }
-        public async Task<ModelObservatorInregistrat> Handle(ApplicationUser message)
+
+        protected override async Task<ModelObservatorInregistrat> HandleCore(ApplicationUser message)
         {
             var hashValue = _hash.GetHash(message.Pin);
 

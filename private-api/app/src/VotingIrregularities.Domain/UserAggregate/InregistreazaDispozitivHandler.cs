@@ -1,15 +1,13 @@
 ﻿using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Threading.Tasks;
 using VotingIrregularities.Domain.Models;
 
 namespace VotingIrregularities.Domain.UserAggregate
 {
-    public class InregistreazaDispozitivHandler : IAsyncRequestHandler<InregistreazaDispozitivCommand, int>
+    public class InregistreazaDispozitivHandler : AsyncRequestHandler<InregistreazaDispozitivCommand, int>
     {
         private readonly VotingContext _context;
         private readonly ILogger _logger;
@@ -19,7 +17,7 @@ namespace VotingIrregularities.Domain.UserAggregate
             _context = context;
             _logger = logger;
         }
-        public async Task<int> Handle(InregistreazaDispozitivCommand message)
+        protected override async Task<int> HandleCore(InregistreazaDispozitivCommand message)
         {
             try
             {

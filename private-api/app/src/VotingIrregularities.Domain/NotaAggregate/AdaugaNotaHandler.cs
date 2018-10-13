@@ -4,11 +4,12 @@ using VotingIrregularities.Domain.Models;
 using Microsoft.Extensions.Logging;
 using AutoMapper;
 using System;
+using System.Threading;
 using Microsoft.EntityFrameworkCore;
 
 namespace VotingIrregularities.Domain.NotaAggregate
 {
-    public class AdaugaNotaHandler : IAsyncRequestHandler<AdaugaNotaCommand, int>
+    public class AdaugaNotaHandler : IRequestHandler<AdaugaNotaCommand, int>
     {
         private readonly VotingContext _context;
         private readonly ILogger _logger;
@@ -21,13 +22,13 @@ namespace VotingIrregularities.Domain.NotaAggregate
             _mapper = mapper;
         }
 
-        public async Task<int> Handle(AdaugaNotaCommand message)
+        public async Task<int> Handle(AdaugaNotaCommand message, CancellationToken token)
         {
             try
             {
                 if (message.IdIntrebare.HasValue && message.IdIntrebare.Value > 0)
                 {
-                    var existaIntrebare = await _context.Questions.AnyAsync(i => i.Id == message.IdIntrebare.Value);
+                    var existaIntrebare = await _context.Questions.AnyAsync(i => i.Id == message.IdIntrebare.Value, token);
 
                     if(!existaIntrebare)
                         throw new ArgumentException("Intrebarea nu exista");
@@ -36,7 +37,7 @@ namespace VotingIrregularities.Domain.NotaAggregate
                 var nota = _mapper.Map<Note>(message);
                 _context.Add(nota);
 
-                return await _context.SaveChangesAsync();
+                return await _context.SaveChangesAsync(token);
             }
             catch (Exception ex)
             {

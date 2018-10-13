@@ -18,7 +18,7 @@ namespace VotingIrregularities.Api.Queries
     /// Hidrateaza sectiile de votare din comanda data de observator.
     /// </summary>
     public class RaspunsQueryHandler : 
-        IAsyncRequestHandler<RaspunsuriBulk, CompleteazaRaspunsCommand>
+        AsyncRequestHandler<RaspunsuriBulk, CompleteazaRaspunsCommand>
     {
         private readonly ISectieDeVotareService _svService;
 
@@ -27,7 +27,7 @@ namespace VotingIrregularities.Api.Queries
             _svService = svService;
         }
 
-        public async Task<CompleteazaRaspunsCommand> Handle(RaspunsuriBulk message)
+        protected override async Task<CompleteazaRaspunsCommand> HandleCore(RaspunsuriBulk message)
         {
             // se identifica sectiile in care observatorul a raspuns
             var sectii = message.ModelRaspunsuriBulk

@@ -12,10 +12,8 @@ using VotingIrregularities.Domain.Models;
 
 namespace VotingIrregularities.Api.Queries
 {
-    /// <inheritdoc cref="IAsyncRequestHandler{TRequest,TResponse}" />
     public class FormularQueryHandler :
-        IAsyncRequestHandler<ModelFormular.VersiuneQuery,Dictionary<string,int>>,
-        IAsyncRequestHandler<ModelFormular.IntrebariQuery,IEnumerable<ModelSectiune>>
+        AsyncRequestHandler<FormQuestionsQuery, IEnumerable<ModelSectiune>>
     {
         private readonly VotingContext _context;
         private readonly IMapper _mapper;
@@ -28,16 +26,7 @@ namespace VotingIrregularities.Api.Queries
             _cacheService = cacheService;
         }
 
-        public async Task<Dictionary<string, int>> Handle(ModelFormular.VersiuneQuery message)
-        {
-            var result = await _context.FormVersions
-                .AsNoTracking()
-                .ToListAsync();
-
-            return result.ToDictionary(k => k.Code, v => v.CurrentVersion);
-        }
-
-        public async Task<IEnumerable<ModelSectiune>> Handle(ModelFormular.IntrebariQuery message)
+        protected override async Task<IEnumerable<ModelSectiune>> HandleCore(FormQuestionsQuery message)
         {
             CacheObjectsName formular;
             Enum.TryParse("Formular" + message.CodFormular, out formular);

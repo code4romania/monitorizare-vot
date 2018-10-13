@@ -10,16 +10,16 @@ using Serilog.Context;
 namespace VotingIrregularities.Api.Extensions
 {
     public class MediatorPipeline<TRequest, TResponse>
-      : IRequestHandler<TRequest, TResponse>
+      : RequestHandler<TRequest, TResponse>
       where TRequest : IRequest<TResponse>
     {
-        private readonly IRequestHandler<TRequest, TResponse> _inner;
+        private readonly RequestHandler<TRequest, TResponse> _inner;
         private readonly IMessageAuthorizer _authorizer;
         private readonly IMessageCache _cache;
         private readonly IEnumerable<IMessageValidator<TRequest>> _validators;
 
         public MediatorPipeline(
-                    IRequestHandler<TRequest, TResponse> inner,
+                    RequestHandler<TRequest, TResponse> inner,
                     IEnumerable<IMessageValidator<TRequest>> validator,
                     IMessageAuthorizer authorizer,
                     IMessageCache cache)
@@ -30,7 +30,7 @@ namespace VotingIrregularities.Api.Extensions
             _cache = cache;
         }
 
-        public TResponse Handle(TRequest message)
+        protected override TResponse HandleCore(TRequest message)
         {
             using (LogContext.PushProperty("MediatRRequestType", typeof(TRequest).FullName))
             using (Metrics.Time("MediatRRequest"))
@@ -44,7 +44,8 @@ namespace VotingIrregularities.Api.Extensions
                 if (failures.Any())
                     throw new ValidationException(string.Join(", ", failures));
 
-                return _inner.Handle(message);
+                return this.HandleCore(message);
+
             }
         }
     }
