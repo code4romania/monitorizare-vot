@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
 using VotingIrregularities.Domain.Models;
@@ -24,16 +21,16 @@ namespace VotingIrregularities.Domain.SectieAggregate
         public RaspunsFormularProfile()
         {
             CreateMap<InregistreazaSectieCommand, PollingStationInfo>()
-                .ForMember(src => src.LastModified, c => c.MapFrom(src => DateTime.UtcNow))
-                .ForMember(src => src.IdObserver, c => c.MapFrom(src => src.IdObservator))
-                .ForMember(src => src.ObserverArrivalTime, c => c.MapFrom(src => src.OraSosirii))
-                .ForMember(src => src.ObserverLeaveTime, c => c.MapFrom(src => src.OraPlecarii))
-                .ForMember(src => src.IsPollingStationPresidentFemale, c => c.MapFrom(src => src.PresedinteBesvesteFemeie))
-                ;
+                .ForMember(dest => dest.IdObserver, c => c.MapFrom(src => src.IdObservator))
+                .ForMember(dest => dest.LastModified, c => c.MapFrom(src => DateTime.UtcNow))
+                .ForMember(dest => dest.UrbanArea, c => c.MapFrom(src => src.EsteZonaUrbana))
+                .ForMember(dest => dest.ObserverArrivalTime, c => c.MapFrom(src => src.OraSosirii))
+                .ForMember(dest => dest.ObserverLeaveTime, c => c.MapFrom(src => src.OraPlecarii))
+                .ForMember(dest => dest.IsPollingStationPresidentFemale, c => c.MapFrom(src => src.PresedinteBesvesteFemeie));
 
             CreateMap<ActualizeazaSectieCommand, PollingStationInfo>()
-                .ForMember(src => src.LastModified, c => c.MapFrom(src => DateTime.UtcNow))
-                .ForMember(src => src.ObserverLeaveTime, c => c.MapFrom(src => src.OraPlecarii));
+                .ForMember(dest => dest.LastModified, c => c.MapFrom(src => DateTime.UtcNow))
+                .ForMember(dest => dest.ObserverLeaveTime, c => c.MapFrom(src => src.OraPlecarii));
         }
     }
 }
