@@ -6,7 +6,7 @@ namespace VotingIrregularities.Api.Models.AccountViewModels
     /// <summary>
     /// Model received from client applications in order to perform the authentication
     /// </summary>
-    public class ApplicationUser : IRequest<ModelObservatorInregistrat>
+    public class ApplicationUser : IRequest<RegisteredObserverModel>
     {
         /// <summary>
         /// User's phone number
@@ -29,11 +29,11 @@ namespace VotingIrregularities.Api.Models.AccountViewModels
         public string UDID { get; set; }
     }
 
-    public class ModelObservatorInregistrat
+    public class RegisteredObserverModel
     {
-        public bool EsteAutentificat { get; set; }
+        public bool IsAuthenticated { get; set; }
 
-        public int IdObservator { get; set; }
+        public int ObserverId { get; set; }
 
         public bool FirstAuthentication { get; set; }
     }

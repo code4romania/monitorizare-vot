@@ -139,7 +139,7 @@ namespace VotingIrregularities.Api.Controllers
             // verific daca userul exista si daca nu are asociat un alt device, il returneaza din baza
             var userInfo = await _mediator.Send(user);
 
-            if (!userInfo.EsteAutentificat)
+            if (!userInfo.IsAuthenticated)
                 return await Task.FromResult<ClaimsIdentity>(null);
 
             if (userInfo.FirstAuthentication && _mobileSecurityOptions.LockDevice)
@@ -147,7 +147,7 @@ namespace VotingIrregularities.Api.Controllers
                     _mediator.Send(new RegisterDeviceId
                     {
                         MobileDeviceId = user.UDID,
-                        ObserverId = userInfo.IdObservator
+                        ObserverId = userInfo.ObserverId
                     });
 
             return await Task.FromResult(new ClaimsIdentity(
@@ -155,7 +155,7 @@ namespace VotingIrregularities.Api.Controllers
                 new[]
                 {
                     new Claim("Observator", "ONG"),
-                    new Claim("ObserverId", userInfo.IdObservator.ToString())
+                    new Claim("ObserverId", userInfo.ObserverId.ToString())
                 }));
         }
     }
