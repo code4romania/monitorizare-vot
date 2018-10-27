@@ -148,6 +148,15 @@ namespace VotingIrregularities.Api
                         },
                 });
 
+                options.AddSecurityDefinition("bearer", new ApiKeyScheme()
+                {
+                    Name = "Authorization",
+                    In = "header",
+                    Type = "apiKey"
+                });
+                options.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>>{
+                    { "bearer", new[] {"readAccess", "writeAccess" } } });
+
                 options.OperationFilter<AddFileUploadParams>();
 
                 var path = PlatformServices.Default.Application.ApplicationBasePath +
