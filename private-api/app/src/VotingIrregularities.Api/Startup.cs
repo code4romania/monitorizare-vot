@@ -33,6 +33,7 @@ using VotingIrregularities.Api.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using SimpleInjector.Lifestyles;
 using Swashbuckle.AspNetCore.Swagger;
+using VotingIrregularities.Api.Options;
 
 namespace VotingIrregularities.Api
 {
@@ -57,7 +58,6 @@ namespace VotingIrregularities.Api
                 builder.AddApplicationInsightsSettings(developerMode: true);
             }
 
-
             builder.AddEnvironmentVariables();
             Configuration = builder.Build();
         }
@@ -69,6 +69,11 @@ namespace VotingIrregularities.Api
         {
             // Get options from app settings
             services.AddOptions();
+
+            services.Configure<BlobStorageOptions>(Configuration.GetSection("BlobStorageOptions"));
+            services.Configure<HashOptions>(Configuration.GetSection("HashOptions"));
+            services.Configure<MobileSecurityOptions>(Configuration.GetSection("MobileSecurity"));
+            
             var jwtAppSettingOptions = Configuration.GetSection(nameof(JwtIssuerOptions));
 
             _key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["SecretKey"]));
@@ -110,7 +115,6 @@ namespace VotingIrregularities.Api
                          options.TokenValidationParameters = tokenValidationParameters;
                      });
 
-
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("AppUser",
@@ -126,8 +130,6 @@ namespace VotingIrregularities.Api
                                  .Build();
                 config.Filters.Add(new AuthorizeFilter(policy));
             });
-
-            //services.AddSwaggerGen();
 
             services.AddSwaggerGen(options =>
             {
@@ -169,10 +171,6 @@ namespace VotingIrregularities.Api
             ConfigureContainer(services);
 
             ConfigureCache(services);
-
-            services.Configure<BlobStorageOptions>(Configuration.GetSection("BlobStorageOptions"));
-            services.Configure<HashOptions>(Configuration.GetSection("HashOptions"));
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -207,6 +205,8 @@ namespace VotingIrregularities.Api
             );
 
             app.UseAuthentication();
+
+            _container.RegisterSingleton(() => app.ApplicationServices.GetService<IOptions<MobileSecurityOptions>>());
 
             RegisterServices(app);
 
