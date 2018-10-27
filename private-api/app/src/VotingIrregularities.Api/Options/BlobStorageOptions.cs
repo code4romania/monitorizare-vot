@@ -21,6 +21,11 @@
         public string Container { get; set; }
 
         /// <summary>
+        /// Whether or not use https to connect
+        /// </summary>
+        public bool UseHttps { get; set; }
+
+        /// <summary>
         /// //convention
         /// </summary>
         public BlobStorageOptions Value => this;
