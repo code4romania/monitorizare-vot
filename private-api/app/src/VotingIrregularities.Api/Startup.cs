@@ -63,16 +63,21 @@ namespace VotingIrregularities.Api
         }
 
         public IConfigurationRoot Configuration { get; }
+        public void ConfigureCustomOptions(IServiceCollection services)
+        {
+            services.Configure<BlobStorageOptions>(Configuration.GetSection("BlobStorageOptions"));
+            services.Configure<HashOptions>(Configuration.GetSection("HashOptions"));
+            services.Configure<MobileSecurityOptions>(Configuration.GetSection("MobileSecurity"));
+            services.Configure<FileServiceOptions>(Configuration.GetSection(nameof(FileServiceOptions)));
 
+        }
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             // Get options from app settings
             services.AddOptions();
 
-            services.Configure<BlobStorageOptions>(Configuration.GetSection("BlobStorageOptions"));
-            services.Configure<HashOptions>(Configuration.GetSection("HashOptions"));
-            services.Configure<MobileSecurityOptions>(Configuration.GetSection("MobileSecurity"));
+            ConfigureCustomOptions(services);
             
             var jwtAppSettingOptions = Configuration.GetSection(nameof(JwtIssuerOptions));
 
@@ -210,7 +215,7 @@ namespace VotingIrregularities.Api
 
             RegisterServices(app);
 
-            ConfigureAzureStorage(app);
+            ConfigureFileService(app);
 
             ConfigureHash(app);
 
@@ -269,6 +274,20 @@ namespace VotingIrregularities.Api
                         break;
                     }
             }
+        }
+
+        private void ConfigureFileService(IApplicationBuilder app)
+        {
+            var fileServiceOptions = new FileServiceOptions();
+            Configuration.GetSection(nameof(FileServiceOptions)).Bind(fileServiceOptions);
+
+            if (fileServiceOptions.Type == "LocalFileService")
+            {
+                _container.RegisterSingleton(() => app.ApplicationServices.GetService<IOptions<FileServiceOptions>>());
+                _container.RegisterSingleton<IFileService, LocalFileService>();
+            }
+            else
+                ConfigureAzureStorage(app);
         }
 
         private void ConfigureAzureStorage(IApplicationBuilder app)
