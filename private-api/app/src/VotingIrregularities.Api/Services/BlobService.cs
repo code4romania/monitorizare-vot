@@ -23,7 +23,7 @@ namespace VotingIrregularities.Api.Services
         public BlobService(IOptions<BlobStorageOptions> storageOptions)
         {
             _storageOptions = storageOptions;
-            _client = new CloudStorageAccount(Credentials, false).CreateCloudBlobClient();
+            _client = new CloudStorageAccount(Credentials, _storageOptions.Value.UseHttps).CreateCloudBlobClient();
         }
 
         /// <summary>
