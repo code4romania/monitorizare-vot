@@ -36,7 +36,7 @@ namespace VotingIrregularities.Api.Queries
             {
                 IdObservator = userinfo.Id,
                 EsteAutentificat = true,
-                PrimaAutentificare = string.IsNullOrWhiteSpace(userinfo.MobileDeviceId)
+                FirstAuthentication = string.IsNullOrWhiteSpace(userinfo.MobileDeviceId)
             };
         }
     }

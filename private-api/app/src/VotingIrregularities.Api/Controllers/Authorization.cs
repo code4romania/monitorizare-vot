@@ -12,6 +12,7 @@ using VotingIrregularities.Api.Models.AccountViewModels;
 using System.Linq;
 using MediatR;
 using VotingIrregularities.Domain.UserAggregate;
+using VotingIrregularities.Api.Options;
 
 namespace VotingIrregularities.Api.Controllers
 {
@@ -23,15 +24,17 @@ namespace VotingIrregularities.Api.Controllers
         private readonly ILogger _logger;
         private readonly IMediator _mediator;
         private readonly JsonSerializerSettings _serializerSettings;
+        private readonly MobileSecurityOptions _mobileSecurityOptions;
 
         /// <inheritdoc />
-        public Authorization(IOptions<JwtIssuerOptions> jwtOptions, ILogger logger, IMediator mediator)
+        public Authorization(IOptions<JwtIssuerOptions> jwtOptions, ILogger logger, IMediator mediator, IOptions<MobileSecurityOptions> mobileSecurityOptions)
         {
             _jwtOptions = jwtOptions.Value;
             ThrowIfInvalidOptions(_jwtOptions);
 
             _logger = logger;
             _mediator = mediator;
+            _mobileSecurityOptions = mobileSecurityOptions.Value;
 
             _serializerSettings = new JsonSerializerSettings
             {
@@ -99,8 +102,8 @@ namespace VotingIrregularities.Api.Controllers
         {
             var claims = User.Claims.Select(c => new
             {
-                Type = c.Type,
-                Value = c.Value
+                c.Type,
+                c.Value
             });
 
             return await Task.FromResult(claims);
@@ -139,12 +142,12 @@ namespace VotingIrregularities.Api.Controllers
             if (!userInfo.EsteAutentificat)
                 return await Task.FromResult<ClaimsIdentity>(null);
 
-            if (userInfo.PrimaAutentificare)
+            if (userInfo.FirstAuthentication && _mobileSecurityOptions.LockDevice)
                 await
-                    _mediator.Send(new InregistreazaDispozitivCommand
+                    _mediator.Send(new RegisterDeviceId
                     {
-                        IdDispozitivMobil = user.UDID,
-                        IdObservator = userInfo.IdObservator
+                        MobileDeviceId = user.UDID,
+                        ObserverId = userInfo.IdObservator
                     });
 
             return await Task.FromResult(new ClaimsIdentity(
@@ -152,7 +155,7 @@ namespace VotingIrregularities.Api.Controllers
                 new[]
                 {
                     new Claim("Observator", "ONG"),
-                    new Claim("IdObservator", userInfo.IdObservator.ToString())
+                    new Claim("ObserverId", userInfo.IdObservator.ToString())
                 }));
         }
     }
