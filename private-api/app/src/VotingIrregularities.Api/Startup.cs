@@ -313,7 +313,7 @@ namespace VotingIrregularities.Api
 
         private void RegisterServices(IApplicationBuilder app)
         {
-            _container.Register<ISectieDeVotareService, SectieDevotareDBService>(Lifestyle.Scoped);
+            _container.Register<IPollingStationService, PollingStationService>(Lifestyle.Scoped);
             _container.RegisterSingleton(() => app.ApplicationServices.GetService<IOptions<JwtIssuerOptions>>());
         }
 

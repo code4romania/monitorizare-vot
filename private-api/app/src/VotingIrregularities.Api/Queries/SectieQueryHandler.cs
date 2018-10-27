@@ -7,16 +7,16 @@ namespace VotingIrregularities.Api.Queries
 {
     public class SectieQueryHandler : AsyncRequestHandler<ModelSectieQuery, int>
     {
-        private readonly ISectieDeVotareService _svService;
+        private readonly IPollingStationService _pollingStationService;
 
-        public SectieQueryHandler(ISectieDeVotareService svService)
+        public SectieQueryHandler(IPollingStationService svService)
         {
-            _svService = svService;
+            _pollingStationService = svService;
         }
 
         protected override async Task<int> HandleCore(ModelSectieQuery message)
         {
-            return await _svService.GetSingleSectieDeVotare(message.CodJudet, message.NumarSectie);
+            return await _pollingStationService.GetPollingStationByCountyCode(message.NumarSectie, message.CodJudet);
         }
     }
 }

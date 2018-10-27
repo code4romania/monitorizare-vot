@@ -1,58 +1,52 @@
-﻿using System;
+﻿using MediatR;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
-using MediatR;
-using Microsoft.Extensions.Logging;
 using VotingIrregularities.Api.Models;
-using VotingIrregularities.Domain.Models;
-using VotingIrregularities.Domain.RaspunsAggregate.Commands;
-using Microsoft.EntityFrameworkCore;
 using VotingIrregularities.Api.Services;
-using VotingIrregularities.Domain.ValueObjects;
+using VotingIrregularities.Domain.RaspunsAggregate.Commands;
 
 namespace VotingIrregularities.Api.Queries
 {
     /// <summary>
     /// Hidrateaza sectiile de votare din comanda data de observator.
     /// </summary>
-    public class RaspunsQueryHandler : 
+    public class RaspunsQueryHandler :
         AsyncRequestHandler<RaspunsuriBulk, CompleteazaRaspunsCommand>
     {
-        private readonly ISectieDeVotareService _svService;
+        private readonly IPollingStationService _pollingStationService;
 
-        public RaspunsQueryHandler(ISectieDeVotareService svService)
+        public RaspunsQueryHandler(IPollingStationService svService)
         {
-            _svService = svService;
+            _pollingStationService = svService;
         }
 
         protected override async Task<CompleteazaRaspunsCommand> HandleCore(RaspunsuriBulk message)
         {
             // se identifica sectiile in care observatorul a raspuns
             var sectii = message.ModelRaspunsuriBulk
-                .Select(a => new {a.NumarSectie, a.CodJudet})
+                .Select(a => new { a.NumarSectie, a.CodJudet })
                 .Distinct()
                 .ToList();
 
             var command = new CompleteazaRaspunsCommand { IdObservator = message.IdObservator };
 
-            
+
             foreach (var sectie in sectii)
             {
-                var idSectie = await _svService.GetSingleSectieDeVotare(sectie.CodJudet, sectie.NumarSectie);
+                var idSectie = await _pollingStationService.GetPollingStationByCountyCode(sectie.NumarSectie, sectie.CodJudet);
 
                 command.Raspunsuri.AddRange(message.ModelRaspunsuriBulk
                     .Where(a => a.NumarSectie == sectie.NumarSectie && a.CodJudet == sectie.CodJudet)
                     .Select(a => new ModelRaspuns
-                {
-                    CodFormular = a.CodFormular,
-                    IdIntrebare = a.IdIntrebare,
-                    IdSectie = idSectie,
-                    Optiuni = a.Optiuni,
-                    NumarSectie = a.NumarSectie,
-                    CodJudet = a.CodJudet
-                }));
+                    {
+                        CodFormular = a.CodFormular,
+                        IdIntrebare = a.IdIntrebare,
+                        IdSectie = idSectie,
+                        Optiuni = a.Optiuni,
+                        NumarSectie = a.NumarSectie,
+                        CodJudet = a.CodJudet
+                    }));
             }
 
             return command;
