@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
@@ -18,10 +19,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.PlatformAbstractions;
 using Serilog;
-using Swashbuckle.Swagger.Model;
-using VotingIrregularities.Api.Extensions;
 using SimpleInjector;
 using SimpleInjector.Integration.AspNetCore;
 using SimpleInjector.Integration.AspNetCore.Mvc;
@@ -32,6 +30,8 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Caching.Redis;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Swashbuckle.AspNetCore.Swagger;
+using VotingIrregularities.Api.Extensions;
 using VotingIrregularities.Api.Models.AccountViewModels;
 using VotingIrregularities.Api.Models;
 
@@ -98,11 +98,9 @@ namespace VotingIrregularities.Api
                 config.Filters.Add(new AuthorizeFilter(policy));
             });
 
-            services.AddSwaggerGen();
-
-            services.ConfigureSwaggerGen(options =>
+            services.AddSwaggerGen(c =>
             {
-                options.SingleApiVersion(new Info
+                c.SwaggerDoc("v1", new Info
                 {
                     Version = "v1",
                     Title = "Monitorizare Vot - API privat",
@@ -114,16 +112,15 @@ namespace VotingIrregularities.Api
                             Email = "info@monitorizarevot.ro",
                             Name = "Code for Romania",
                             Url = "http://monitorizarevot.ro"
-                        },
+                        }
                 });
 
-                options.OperationFilter<AddFileUploadParams>();
+                c.OperationFilter<AddFileUploadParams>();
 
-                var path = PlatformServices.Default.Application.ApplicationBasePath +
-                           System.IO.Path.DirectorySeparatorChar + "VotingIrregularities.Api.xml";
-
-                if (System.IO.File.Exists(path))
-                    options.IncludeXmlComments(path);
+                // Set the comments path for the Swagger JSON and UI.
+                var xmlFile = $"{Assembly.GetEntryAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
             });
 
             ConfigureContainer(services);
@@ -205,11 +202,15 @@ namespace VotingIrregularities.Api
 
             app.UseMvc();
 
-            // Enable middleware to serve generated Swagger as a JSON endpoint
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
 
-            // Enable middleware to serve swagger-ui assets (HTML, JS, CSS etc.)
-            app.UseSwaggerUi();
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), 
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
         }
 
         private void ConfigureCache(IHostingEnvironment env)

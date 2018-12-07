@@ -49,7 +49,7 @@
     <PackageReference Include="SimpleInjector" Version="4.0.7" />
     <PackageReference Include="SimpleInjector.Integration.AspNetCore" Version="4.0.7" />
     <PackageReference Include="SimpleInjector.Integration.AspNetCore.Mvc" Version="4.0.7" />
-    <PackageReference Include="Swashbuckle" Version="6.0.0-beta902" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="3.0.0" />
     <PackageReference Include="WebApiContrib.Core" Version="1.1.0" />
     <PackageReference Include="FluentValidation" Version="7.0.2" />
     <PackageReference Include="System.Linq.Queryable" Version="4.3.0" />
