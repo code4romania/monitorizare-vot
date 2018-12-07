@@ -1,0 +1,19 @@
+version: '3'
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - CONNECTION_STRING=db://etc/something
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+  db:
+    image: microsoft/mssql-server-linux:2017-latest
+    ports:
+      - "1433:1433"
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=someSuperSecretPa55w0rd
