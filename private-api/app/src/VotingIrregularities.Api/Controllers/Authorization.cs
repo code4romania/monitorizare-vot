@@ -54,13 +54,13 @@ namespace VotingIrregularities.Api.Controllers
 
             var claims = new[]
             {
-        new Claim(JwtRegisteredClaimNames.Sub, applicationUser.Phone),
-        new Claim(JwtRegisteredClaimNames.Jti, await _jwtOptions.JtiGenerator()),
-        new Claim(JwtRegisteredClaimNames.Iat,
-                  ToUnixEpochDate(_jwtOptions.IssuedAt).ToString(),
-                  ClaimValueTypes.Integer64),
-        identity.FindFirst("IdObservator")
-      };
+                new Claim(JwtRegisteredClaimNames.Sub, applicationUser.Phone),
+                new Claim(JwtRegisteredClaimNames.Jti, await _jwtOptions.JtiGenerator()),
+                new Claim(JwtRegisteredClaimNames.Iat,
+                          ToUnixEpochDate(_jwtOptions.IssuedAt).ToString(),
+                          ClaimValueTypes.Integer64),
+                identity.FindFirst("ObserverId")
+            };
 
             // Create the JWT security token and encode it.
             var jwt = new JwtSecurityToken(
@@ -127,23 +127,23 @@ namespace VotingIrregularities.Api.Controllers
             // verific daca userul exista si daca nu are asociat un alt device, il returneaza din baza
             var userInfo = await _mediator.Send(user);
 
-            if (!userInfo.EsteAutentificat)
+            if (!userInfo.IsAuthenticated)
                 return await Task.FromResult<ClaimsIdentity>(null);
 
-            if (userInfo.PrimaAutentificare)
+            if (userInfo.FirstAuthentication)
                 await
-                    _mediator.Send(new InregistreazaDispozitivCommand
+                    _mediator.Send(new RegisterDeviceCommand
                     {
-                        IdDispozitivMobil = user.UDID,
-                        IdObservator = userInfo.IdObservator
+                        MobileDeviceId = user.UDID,
+                        ObserverId = userInfo.ObserverId
                     });
 
             return await Task.FromResult(new ClaimsIdentity(
                 new GenericIdentity(user.Phone, "Token"),
                 new[]
                 {
-                    new Claim("Observator", "ONG"),
-                    new Claim("IdObservator", userInfo.IdObservator.ToString())
+                    new Claim("Observers", "ONG"),
+                    new Claim("ObserverId", userInfo.ObserverId.ToString())
                 }));
         }
     }
