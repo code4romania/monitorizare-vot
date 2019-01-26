@@ -66,7 +66,7 @@ Under the build output folder (probably: monitorizare-vot\private-api\app\test\V
 ```{phoneNumber}\t{desiredPin}```
 on each line. (yes, these are tab separated values, you can export an excel file with that format)
 
-Uncomment the `Skip` handle from the `Fact` attribute in the HashTests.cs\SetPasswords test.
+Comment (or remove) the `Skip` handle from the `Fact` attribute in the HashTests.cs\SetPasswords test.
 
 The result of the test should be another file called `conturi-cu-parole.txt` that will also contain the hashes of those PINs as another column.
 
