@@ -1,5 +1,8 @@
 ﻿namespace VotingIrregularities.Api.Models
 {
+    /// <summary>
+    /// Manages the details about the blob storage being used
+    /// </summary>
     public class BlobStorageOptions
     {
         /// <summary>
@@ -17,9 +20,14 @@
         /// </summary>
         public string Container { get; set; }
 
-        public BlobStorageOptions Value
-        {
-            get { return this; }
-        }
+        /// <summary>
+        /// Whether or not use https to connect
+        /// </summary>
+        public bool UseHttps { get; set; }
+
+        /// <summary>
+        /// //convention
+        /// </summary>
+        public BlobStorageOptions Value => this;
     }
 }

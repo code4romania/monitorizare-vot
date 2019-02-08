@@ -1,6 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace VotingIrregularities.Domain.Models
 {
@@ -8,127 +6,126 @@ namespace VotingIrregularities.Domain.Models
     {
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<AdminOng>(entity =>
+            modelBuilder.Entity<NgoAdmin>(entity =>
             {
-                entity.HasKey(e => e.IdAdminOng)
-                    .HasName("PK_AdminONG");
+                entity.HasKey(e => e.Id)
+                    .HasName("PK_NgoAdminId");
 
-                entity.ToTable("AdminONG");
+                entity.ToTable("NgoAdmin");
 
-                entity.Property(e => e.IdAdminOng)
-                    .HasColumnName("IdAdminONG")
+                entity.Property(e => e.Id)
                     .ValueGeneratedNever();
 
-                entity.Property(e => e.Cont)
+                entity.Property(e => e.Account)
                     .IsRequired()
                     .HasMaxLength(50);
 
-                entity.Property(e => e.Parola)
+                entity.Property(e => e.Password)
                     .IsRequired()
                     .HasMaxLength(100);
 
-                entity.HasOne(d => d.IdOngNavigation)
-                    .WithMany(p => p.AdminOng)
-                    .HasForeignKey(d => d.IdOng)
+                entity.HasOne(d => d.Ngo)
+                    .WithMany(p => p.NgoAdmins)
+                    .HasForeignKey(d => d.IdNgo)
                     .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("FK_AdminONG_ONG");
+                    .HasConstraintName("FK_NgoAdmin_Ngo");
             });
 
-            modelBuilder.Entity<Intrebare>(entity =>
+            modelBuilder.Entity<Question>(entity =>
             {
-                entity.HasKey(e => e.IdIntrebare)
-                    .HasName("PK_Intrebare");
+                entity.HasKey(e => e.Id)
+                    .HasName("PK_Question");
 
-                entity.HasIndex(e => e.IdSectiune)
-                    .HasName("IX_Intrebare_IdSectiune");
+                entity.HasIndex(e => e.IdSection)
+                    .HasName("IX_Question_IdSection");
 
-                entity.Property(e => e.IdIntrebare).ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.CodFormular)
+                entity.Property(e => e.FormCode)
                     .IsRequired()
                     .HasMaxLength(2);
 
-                entity.Property(e => e.TextIntrebare)
+                entity.Property(e => e.Text)
                     .IsRequired()
                     .HasMaxLength(200);
 
-                entity.HasOne(d => d.IdSectiuneNavigation)
-                    .WithMany(p => p.Intrebare)
-                    .HasForeignKey(d => d.IdSectiune)
+                entity.HasOne(d => d.FormSection)
+                    .WithMany(p => p.Questions)
+                    .HasForeignKey(d => d.IdSection)
                     .OnDelete(DeleteBehavior.Restrict);
             });
 
-            modelBuilder.Entity<Judet>(entity =>
+            modelBuilder.Entity<County>(entity =>
             {
-                entity.HasKey(e => e.IdJudet)
-                    .HasName("PK_Judet");
+                entity.HasKey(e => e.Id)
+                    .HasName("PK_County");
 
-                entity.Property(e => e.IdJudet).ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.CodJudet)
+                entity.Property(e => e.Code)
                     .IsRequired()
-                    .HasMaxLength(4);
+                    .HasMaxLength(20);
 
-                entity.Property(e => e.Nume)
+                entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(100);
             });
 
-            modelBuilder.Entity<Nota>(entity =>
+            modelBuilder.Entity<Note>(entity =>
             {
-                entity.HasKey(e => e.IdNota)
-                    .HasName("PK_Nota");
+                entity.HasKey(e => e.Id)
+                    .HasName("PK_Note");
 
-                entity.HasIndex(e => e.IdIntrebare)
-                    .HasName("IX_Nota_IdIntrebare");
+                entity.HasIndex(e => e.IdQuestion)
+                    .HasName("IX_Note_IdQuestion");
 
-                entity.HasIndex(e => e.IdObservator)
-                    .HasName("IX_Nota_IdObservator");
+                entity.HasIndex(e => e.IdObserver)
+                    .HasName("IX_Note_IdObserver");
 
-                entity.HasIndex(e => e.IdSectieDeVotare)
-                    .HasName("IX_Nota_IdSectieDeVotare");
+                entity.HasIndex(e => e.IdPollingStation)
+                    .HasName("IX_Note_IdPollingStation");
 
-                entity.Property(e => e.CaleFisierAtasat).HasMaxLength(1000);
+                entity.Property(e => e.AttachementPath).HasMaxLength(1000);
 
-                entity.Property(e => e.DataUltimeiModificari).HasColumnType("datetime");
+                entity.Property(e => e.LastModified).HasColumnType("datetime");
 
-                entity.HasOne(d => d.IdIntrebareNavigation)
-                    .WithMany(p => p.Nota)
-                    .HasForeignKey(d => d.IdIntrebare)
-                    .HasConstraintName("FK_Nota_Intrebare");
+                entity.HasOne(d => d.Question)
+                    .WithMany(p => p.Notes)
+                    .HasForeignKey(d => d.IdQuestion)
+                    .HasConstraintName("FK_Note_Question");
 
-                entity.HasOne(d => d.IdObservatorNavigation)
-                    .WithMany(p => p.Nota)
-                    .HasForeignKey(d => d.IdObservator)
+                entity.HasOne(d => d.Observer)
+                    .WithMany(p => p.Notes)
+                    .HasForeignKey(d => d.IdObserver)
                     .OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasOne(d => d.IdSectieDeVotareNavigation)
-                    .WithMany(p => p.Nota)
-                    .HasForeignKey(d => d.IdSectieDeVotare)
+                entity.HasOne(d => d.PollingStation)
+                    .WithMany(p => p.Notes)
+                    .HasForeignKey(d => d.IdPollingStation)
                     .OnDelete(DeleteBehavior.Restrict);
             });
 
-            modelBuilder.Entity<Observator>(entity =>
+            modelBuilder.Entity<Observer>(entity =>
             {
-                entity.HasKey(e => e.IdObservator)
-                    .HasName("PK_Observator");
+                entity.HasKey(e => e.Id)
+                    .HasName("PK_Observer");
 
-                entity.HasIndex(e => e.IdOng)
-                    .HasName("IX_Observator_IdOng");
+                entity.HasIndex(e => e.IdNgo)
+                    .HasName("IX_Observer_IdNgo");
 
-                entity.Property(e => e.IdObservator).ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.DataInregistrariiDispozitivului).HasColumnType("datetime");
+                entity.Property(e => e.DeviceRegisterDate).HasColumnType("datetime");
 
-                entity.Property(e => e.EsteDinEchipa).HasDefaultValueSql("0");
+                entity.Property(e => e.FromTeam).HasDefaultValueSql("0");
 
-                entity.Property(e => e.IdDispozitivMobil).HasColumnType("varchar(500)");
+                entity.Property(e => e.MobileDeviceId).HasColumnType("varchar(500)");
 
-                entity.Property(e => e.NumarTelefon)
+                entity.Property(e => e.Phone)
                     .IsRequired()
                     .HasMaxLength(20);
 
-                entity.Property(e => e.NumeIntreg)
+                entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(200);
 
@@ -136,219 +133,214 @@ namespace VotingIrregularities.Domain.Models
                     .IsRequired()
                     .HasMaxLength(100);
 
-                entity.HasOne(d => d.IdOngNavigation)
-                    .WithMany(p => p.Observator)
-                    .HasForeignKey(d => d.IdOng)
+                entity.HasOne(d => d.Ngo)
+                    .WithMany(p => p.Observers)
+                    .HasForeignKey(d => d.IdNgo)
                     .OnDelete(DeleteBehavior.Restrict);
             });
 
-            modelBuilder.Entity<Ong>(entity =>
+            modelBuilder.Entity<Ngo>(entity =>
             {
-                entity.HasKey(e => e.IdOng)
-                    .HasName("PK_ONG");
+                entity.HasKey(e => e.Id)
+                    .HasName("PK_NGO");
 
-                entity.ToTable("ONG");
+                entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.IdOng).ValueGeneratedNever();
-
-                entity.Property(e => e.AbreviereNumeOng)
+                entity.Property(e => e.ShortName)
                     .IsRequired()
                     .HasMaxLength(10);
 
-                entity.Property(e => e.NumeOng)
+                entity.Property(e => e.Name)
                     .IsRequired()
-                    .HasColumnName("NumeONG")
                     .HasMaxLength(200);
 
-                entity.Property(e => e.Organizator).HasDefaultValueSql("0");
+                entity.Property(e => e.Organizer).HasDefaultValueSql("0");
             });
 
-            modelBuilder.Entity<Optiune>(entity =>
+            modelBuilder.Entity<Option>(entity =>
             {
-                entity.HasKey(e => e.IdOptiune)
-                    .HasName("PK_Optiune");
+                entity.HasKey(e => e.Id)
+                    .HasName("PK_Option");
 
-                entity.Property(e => e.IdOptiune).ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.SeIntroduceText).HasDefaultValueSql("0");
+                entity.Property(e => e.IsFreeText).HasDefaultValueSql("0");
 
-                entity.Property(e => e.TextOptiune)
+                entity.Property(e => e.Text)
                     .IsRequired()
-                    .HasMaxLength(100);
+                    .HasMaxLength(1000);
             });
 
-            modelBuilder.Entity<Raspuns>(entity =>
+            modelBuilder.Entity<Answer>(entity =>
             {
-                entity.HasKey(e => new { e.IdObservator, e.IdRaspunsDisponibil, e.IdSectieDeVotare })
-                    .HasName("PK_Raspuns_1");
+                entity.HasKey(e => new { IdObservator = e.IdObserver, IdRaspunsDisponibil = e.IdOptionToQuestion, IdSectieDeVotare = e.IdPollingStation })
+                    .HasName("PK_Answer");
 
-                entity.HasIndex(e => e.IdObservator)
-                    .HasName("IX_Raspuns_IdObservator");
+                entity.HasIndex(e => e.IdObserver)
+                    .HasName("IX_Answer_IdObserver");
 
-                entity.HasIndex(e => e.IdRaspunsDisponibil)
-                    .HasName("IX_Raspuns_IdRaspunsDisponibil");
+                entity.HasIndex(e => e.IdOptionToQuestion)
+                    .HasName("IX_Answer_IdOptionToQuestion");
 
-                entity.HasIndex(e => e.IdSectieDeVotare)
-                    .HasName("IX_Raspuns_IdSectieDeVotare");
+                entity.HasIndex(e => e.IdPollingStation)
+                    .HasName("IX_Answer_IdPollingStation");
 
-                entity.Property(e => e.DataUltimeiModificari)
+                entity.Property(e => e.LastModified)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
                 entity.Property(e => e.Value).HasMaxLength(1000);
 
-                entity.Property(e => e.CodJudet).HasMaxLength(2);
+                entity.Property(e => e.CountyCode).HasMaxLength(2);
 
-                entity.HasOne(d => d.IdObservatorNavigation)
-                    .WithMany(p => p.Raspuns)
-                    .HasForeignKey(d => d.IdObservator)
+                entity.HasOne(d => d.Observer)
+                    .WithMany(p => p.Answers)
+                    .HasForeignKey(d => d.IdObserver)
                     .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("FK_Raspuns_Observator");
+                    .HasConstraintName("FK_Answer_Observer");
 
-                entity.HasOne(d => d.IdRaspunsDisponibilNavigation)
-                    .WithMany(p => p.Raspuns)
-                    .HasForeignKey(d => d.IdRaspunsDisponibil)
+                entity.HasOne(d => d.OptionAnswered)
+                    .WithMany(p => p.Answers)
+                    .HasForeignKey(d => d.IdOptionToQuestion)
                     .OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasOne(d => d.IdSectieDeVotareNavigation)
-                    .WithMany(p => p.Raspuns)
-                    .HasForeignKey(d => d.IdSectieDeVotare)
+                entity.HasOne(d => d.PollingStation)
+                    .WithMany(p => p.Answers)
+                    .HasForeignKey(d => d.IdPollingStation)
                     .OnDelete(DeleteBehavior.Restrict);
             });
 
-            modelBuilder.Entity<RaspunsDisponibil>(entity =>
+            modelBuilder.Entity<OptionToQuestion>(entity =>
             {
-                entity.HasKey(e => e.IdRaspunsDisponibil)
-                    .HasName("IX_IdOptiune_IdIntrebare");
+                entity.HasKey(e => e.Id)
+                    .HasName("PK_OptionToQuestion");
 
-                entity.HasIndex(e => e.IdIntrebare)
-                    .HasName("IX_RaspunsDisponibil_IdIntrebare");
+                entity.HasIndex(e => e.IdQuestion)
+                    .HasName("IX_OptionToQuestion_Question");
 
-                entity.HasIndex(e => e.IdOptiune)
-                    .HasName("IX_RaspunsDisponibil_IdOptiune");
+                entity.HasIndex(e => e.IdOption)
+                    .HasName("IX_OptionToQuestion_Option");
 
-                entity.HasIndex(e => new { e.IdOptiune, e.IdIntrebare })
-                    .HasName("IX_RaspunsDisponibil")
+                entity.HasIndex(e => new { e.IdOption, e.IdQuestion })
+                    .HasName("IX_OptionToQuestion")
                     .IsUnique();
 
-                entity.Property(e => e.IdRaspunsDisponibil).ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.RaspunsCuFlag).HasDefaultValueSql("0");
+                entity.Property(e => e.Flagged).HasDefaultValueSql("0");
 
-                entity.HasOne(d => d.IdIntrebareNavigation)
-                    .WithMany(p => p.RaspunsDisponibil)
-                    .HasForeignKey(d => d.IdIntrebare)
+                entity.HasOne(d => d.Question)
+                    .WithMany(p => p.OptionsToQuestions)
+                    .HasForeignKey(d => d.IdQuestion)
                     .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("FK_RaspunsDisponibil_Intrebare");
+                    .HasConstraintName("FK_OptionToQuestion_Question");
 
-                entity.HasOne(d => d.IdOptiuneNavigation)
-                    .WithMany(p => p.RaspunsDisponibil)
-                    .HasForeignKey(d => d.IdOptiune)
+                entity.HasOne(d => d.Option)
+                    .WithMany(p => p.OptionsToQuestions)
+                    .HasForeignKey(d => d.IdOption)
                     .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("FK_RaspunsDisponibil_Optiune");
+                    .HasConstraintName("FK_OptionToQuestion_Option");
             });
 
-            modelBuilder.Entity<RaspunsFormular>(entity =>
+            modelBuilder.Entity<PollingStationInfo>(entity =>
             {
-                entity.HasKey(e => new { e.IdObservator, e.IdSectieDeVotare })
-                    .HasName("PK_RaspunsFormular_1");
+                entity.HasKey(e => new { e.IdObserver, e.IdPollingStation })
+                    .HasName("PK_PollingStationInfo");
 
-                entity.HasIndex(e => e.IdObservator)
-                    .HasName("IX_RaspunsFormular_IdObservator");
+                entity.HasIndex(e => e.IdObserver)
+                    .HasName("IX_PollingStationInfo_IdObserver");
 
-                entity.HasIndex(e => e.IdSectieDeVotare)
-                    .HasName("IX_RaspunsFormular_IdSectieDeVotare");
+                entity.HasIndex(e => e.IdPollingStation)
+                    .HasName("IX_PollingStationInfo_IdPollingStation");
 
-                entity.Property(e => e.DataUltimeiModificari)
+                entity.Property(e => e.LastModified)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
 
-                entity.Property(e => e.OraPlecarii).HasColumnType("datetime");
+                entity.Property(e => e.ObserverLeaveTime).HasColumnType("datetime");
 
-                entity.Property(e => e.OraSosirii).HasColumnType("datetime");
+                entity.Property(e => e.ObserverArrivalTime).HasColumnType("datetime");
 
-                entity.Property(e => e.PresedinteBesvesteFemeie).HasColumnName("PresedinteBESVEsteFemeie");
-
-                entity.HasOne(d => d.IdObservatorNavigation)
-                    .WithMany(p => p.RaspunsFormular)
-                    .HasForeignKey(d => d.IdObservator)
+                entity.HasOne(d => d.Observer)
+                    .WithMany(p => p.PollingStationInfos)
+                    .HasForeignKey(d => d.IdObserver)
                     .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("FK_RaspunsFormular_Observator");
+                    .HasConstraintName("FK_PollingStationInfo_Observer");
 
-                entity.HasOne(d => d.IdSectieDeVotareNavigation)
-                    .WithMany(p => p.RaspunsFormular)
-                    .HasForeignKey(d => d.IdSectieDeVotare)
+                entity.HasOne(d => d.PollingStation)
+                    .WithMany(p => p.PollingStationInfos)
+                    .HasForeignKey(d => d.IdPollingStation)
                     .OnDelete(DeleteBehavior.Restrict);
             });
 
-            modelBuilder.Entity<SectieDeVotare>(entity =>
+            modelBuilder.Entity<PollingStation>(entity =>
             {
-                entity.HasKey(e => e.IdSectieDeVotarre)
-                    .HasName("PK_SectieDeVotare");
+                entity.HasKey(e => e.Id)
+                    .HasName("PK_PollingStation");
 
-                entity.HasIndex(e => e.IdJudet)
-                    .HasName("IX_SectieDeVotare_IdJudet");
+                entity.HasIndex(e => e.IdCounty)
+                    .HasName("IX_PollingStation_IdCounty");
 
-                entity.HasIndex(e => new { e.IdJudet, e.IdSectieDeVotarre })
-                    .HasName("IX_Unique_IDJudet_NumarSectie")
+                entity.HasIndex(e => new { e.IdCounty, IdPollingStation = e.Id })
+                    .HasName("IX_Unique_IdCounty_IdPollingStation")
                     .IsUnique();
 
-                entity.Property(e => e.IdSectieDeVotarre).ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.AdresaSectie).HasMaxLength(500);
+                entity.Property(e => e.Address).HasMaxLength(500);
 
-                entity.Property(e => e.Coordonate).HasColumnType("varchar(200)");
+                entity.Property(e => e.Coordinates).HasColumnType("varchar(200)");
 
-                entity.Property(e => e.DenumireUat).HasMaxLength(100);
+                entity.Property(e => e.AdministrativeTerritoryCode).HasMaxLength(100);
 
-                entity.Property(e => e.LocalitateComponenta)
+                entity.Property(e => e.TerritoryCode)
                     .IsRequired()
                     .HasMaxLength(100);
 
-                entity.HasOne(d => d.IdJudetNavigation)
-                    .WithMany(p => p.SectieDeVotare)
-                    .HasForeignKey(d => d.IdJudet)
+                entity.HasOne(d => d.County)
+                    .WithMany(p => p.PollingStations)
+                    .HasForeignKey(d => d.IdCounty)
                     .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("FK_SectieDeVotare_Judet");
+                    .HasConstraintName("FK_PollingStation_County");
             });
 
-            modelBuilder.Entity<Sectiune>(entity =>
+            modelBuilder.Entity<FormSection>(entity =>
             {
-                entity.HasKey(e => e.IdSectiune)
-                    .HasName("PK_Sectiune");
+                entity.HasKey(e => e.Id)
+                    .HasName("PK_FormSection");
 
-                entity.Property(e => e.IdSectiune).ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.CodSectiune)
+                entity.Property(e => e.Code)
                     .IsRequired()
                     .HasMaxLength(4);
 
-                entity.Property(e => e.Descriere)
+                entity.Property(e => e.Description)
                     .IsRequired()
                     .HasMaxLength(200);
             });
 
-            modelBuilder.Entity<VersiuneFormular>(entity =>
+            modelBuilder.Entity<FormVersion>(entity =>
             {
-                entity.HasKey(e => e.CodFormular)
-                    .HasName("PK_VersiuneFormular");
+                entity.HasKey(e => e.Code)
+                    .HasName("PK_FormVersion");
 
-                entity.Property(e => e.CodFormular).HasMaxLength(2);
+                entity.Property(e => e.Code).HasMaxLength(2);
             });
         }
 
-        public virtual DbSet<AdminOng> AdminOng { get; set; }
-        public virtual DbSet<Intrebare> Intrebare { get; set; }
-        public virtual DbSet<Judet> Judet { get; set; }
-        public virtual DbSet<Nota> Nota { get; set; }
-        public virtual DbSet<Observator> Observator { get; set; }
-        public virtual DbSet<Ong> Ong { get; set; }
-        public virtual DbSet<Optiune> Optiune { get; set; }
-        public virtual DbSet<Raspuns> Raspuns { get; set; }
-        public virtual DbSet<RaspunsDisponibil> RaspunsDisponibil { get; set; }
-        public virtual DbSet<RaspunsFormular> RaspunsFormular { get; set; }
-        public virtual DbSet<SectieDeVotare> SectieDeVotare { get; set; }
-        public virtual DbSet<Sectiune> Sectiune { get; set; }
-        public virtual DbSet<VersiuneFormular> VersiuneFormular { get; set; }
+        public virtual DbSet<NgoAdmin> NgoAdmins { get; set; }
+        public virtual DbSet<Question> Questions { get; set; }
+        public virtual DbSet<County> Counties { get; set; }
+        public virtual DbSet<Note> Notes { get; set; }
+        public virtual DbSet<Observer> Observers { get; set; }
+        public virtual DbSet<Ngo> Ngos { get; set; }
+        public virtual DbSet<Option> Options { get; set; }
+        public virtual DbSet<Answer> Answers { get; set; }
+        public virtual DbSet<OptionToQuestion> OptionsToQuestions { get; set; }
+        public virtual DbSet<PollingStationInfo> PollingStationInfos { get; set; }
+        public virtual DbSet<PollingStation> PollingStations { get; set; }
+        public virtual DbSet<FormSection> FormSections { get; set; }
+        public virtual DbSet<FormVersion> FormVersions { get; set; }
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace VotingIrregularities.Api.Controllers
 {
+    /// <inheritdoc />
     /// <summary>
     /// Ruta Formular ofera suport pentru toate operatiile legate de formularele completate de observatori
     /// </summary>
@@ -30,7 +31,7 @@ namespace VotingIrregularities.Api.Controllers
         [HttpGet("versiune")]
         public async Task<ModelVersiune> Versiune()
         {
-            return new ModelVersiune { Versiune = await _mediator.Send(new ModelFormular.VersiuneQuery())};
+            return new ModelVersiune { Versiune = await _mediator.Send(new FormVersionQuery())};
         }
 
         /// <summary>
@@ -43,7 +44,7 @@ namespace VotingIrregularities.Api.Controllers
         [HttpGet]
         public async Task<IEnumerable<ModelSectiune>> Citeste(string idformular)
         {
-            var result = await _mediator.Send(new ModelFormular.IntrebariQuery {
+            var result = await _mediator.Send(new FormQuestionsQuery {
                 CodFormular = idformular,
                 CacheHours = _configuration.GetValue<int>("DefaultCacheHours"),
                 CacheMinutes = _configuration.GetValue<int>("DefaultCacheMinutes"),
