@@ -6,6 +6,7 @@ using VotingIrregularities.Api.Models;
 
 namespace VotingIrregularities.Api.Services
 {
+    /// <inheritdoc />
     public class HashService : IHashService
     {
         public HashService(IOptions<HashOptions> options)

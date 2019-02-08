@@ -11,11 +11,12 @@ using Newtonsoft.Json;
 using VotingIrregularities.Api.Models.AccountViewModels;
 using System.Linq;
 using MediatR;
-using VotingIrregularities.Api.Services;
 using VotingIrregularities.Domain.UserAggregate;
+using VotingIrregularities.Api.Options;
 
 namespace VotingIrregularities.Api.Controllers
 {
+    /// <inheritdoc />
     [Route("api/v1/access")]
     public class Authorization : Controller
     {
@@ -23,14 +24,17 @@ namespace VotingIrregularities.Api.Controllers
         private readonly ILogger _logger;
         private readonly IMediator _mediator;
         private readonly JsonSerializerSettings _serializerSettings;
+        private readonly MobileSecurityOptions _mobileSecurityOptions;
 
-        public Authorization(IOptions<JwtIssuerOptions> jwtOptions, ILogger logger, IMediator mediator)
+        /// <inheritdoc />
+        public Authorization(IOptions<JwtIssuerOptions> jwtOptions, ILogger logger, IMediator mediator, IOptions<MobileSecurityOptions> mobileSecurityOptions)
         {
             _jwtOptions = jwtOptions.Value;
             ThrowIfInvalidOptions(_jwtOptions);
 
             _logger = logger;
             _mediator = mediator;
+            _mobileSecurityOptions = mobileSecurityOptions.Value;
 
             _serializerSettings = new JsonSerializerSettings
             {
@@ -38,6 +42,11 @@ namespace VotingIrregularities.Api.Controllers
             };
         }
 
+        /// <summary>
+        /// Get the auth token to be passed to subsequent requests
+        /// </summary>
+        /// <param name="applicationUser"></param>
+        /// <returns></returns>
         [HttpPost("token")]
         [AllowAnonymous]
         public async Task<IActionResult> Get([FromBody] ApplicationUser applicationUser)
@@ -83,15 +92,18 @@ namespace VotingIrregularities.Api.Controllers
             var json = JsonConvert.SerializeObject(response, _serializerSettings);
             return new OkObjectResult(json);
         }
-
+        /// <summary>
+        /// Test action to get claims
+        /// </summary>
+        /// <returns></returns>
         [Authorize]
         [HttpPost("test")]
         public async Task<object> Test()
         {
             var claims = User.Claims.Select(c => new
             {
-                Type = c.Type,
-                Value = c.Value
+                c.Type,
+                c.Value
             });
 
             return await Task.FromResult(claims);
@@ -127,15 +139,15 @@ namespace VotingIrregularities.Api.Controllers
             // verific daca userul exista si daca nu are asociat un alt device, il returneaza din baza
             var userInfo = await _mediator.Send(user);
 
-            if (!userInfo.EsteAutentificat)
+            if (!userInfo.IsAuthenticated)
                 return await Task.FromResult<ClaimsIdentity>(null);
 
-            if (userInfo.PrimaAutentificare)
+            if (userInfo.FirstAuthentication && _mobileSecurityOptions.LockDevice)
                 await
-                    _mediator.Send(new InregistreazaDispozitivCommand
+                    _mediator.Send(new RegisterDeviceId
                     {
-                        IdDispozitivMobil = user.UDID,
-                        IdObservator = userInfo.IdObservator
+                        MobileDeviceId = user.UDID,
+                        ObserverId = userInfo.ObserverId
                     });
 
             return await Task.FromResult(new ClaimsIdentity(
@@ -143,7 +155,7 @@ namespace VotingIrregularities.Api.Controllers
                 new[]
                 {
                     new Claim("Observator", "ONG"),
-                    new Claim("IdObservator", userInfo.IdObservator.ToString())
+                    new Claim("ObserverId", userInfo.ObserverId.ToString())
                 }));
         }
     }

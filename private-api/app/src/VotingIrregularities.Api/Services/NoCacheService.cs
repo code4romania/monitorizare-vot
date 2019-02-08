@@ -17,15 +17,9 @@ namespace VotingIrregularities.Api.Services
             return await source();
         }
 
-        public async Task<T> GetObjectSafeAsync<T>(CacheObjectsName name)
-        {
-            throw new NotImplementedException();
-        }
+        public Task<T> GetObjectSafeAsync<T>(CacheObjectsName name) => throw new NotImplementedException();
 
-        public async Task SaveObjectSafeAsync(CacheObjectsName name, object value,
-            DistributedCacheEntryOptions options = null)
-        {
-            throw new NotImplementedException();
-        }
+        public Task SaveObjectSafeAsync(CacheObjectsName name, object value,
+            DistributedCacheEntryOptions options = null) => throw new NotImplementedException();
     }
 }

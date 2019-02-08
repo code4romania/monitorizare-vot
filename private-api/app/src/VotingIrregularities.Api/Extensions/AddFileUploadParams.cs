@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
-using Swashbuckle.Swagger.Model;
-using Swashbuckle.SwaggerGen.Generator;
+using Swashbuckle.AspNetCore.Swagger;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace VotingIrregularities.Api.Extensions
 {
+    /// <inheritdoc />
     public class AddFileUploadParams : IOperationFilter
     {
+        /// <inheritdoc />
         public void Apply(Operation operation, OperationFilterContext context)
         {
             if (!string.Equals(operation.OperationId, "ApiV1NoteAtaseazaPost", StringComparison.CurrentCultureIgnoreCase))

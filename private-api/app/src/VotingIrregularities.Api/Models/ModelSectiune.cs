@@ -16,17 +16,22 @@ namespace VotingIrregularities.Api.Models
     }
 
 
+    /// <inheritdoc />
     public class FormularProfile : Profile
     {
         public FormularProfile()
         {
-            CreateMap<Intrebare, ModelIntrebare>()
-                .ForMember(src => src.RaspunsuriDisponibile, c => c.MapFrom(dest => dest.RaspunsDisponibil));
+            CreateMap<Question, ModelIntrebare>()
+                .ForMember(dest => dest.RaspunsuriDisponibile, c => c.MapFrom(src => src.OptionsToQuestions))
+                .ForMember(dest => dest.IdIntrebare, c => c.MapFrom(src => src.Id))
+                .ForMember(dest => dest.TextIntrebare, c => c.MapFrom(src => src.Text))
+                .ForMember(dest => dest.IdTipIntrebare, c => c.MapFrom(src => (int)src.QuestionType))
+                .ForMember(dest => dest.CodIntrebare, c => c.MapFrom(src => src.Code));
 
-            CreateMap<RaspunsDisponibil, ModelRaspunsDisponibil>()
-                .ForMember(dest => dest.TextOptiune, c => c.MapFrom(src => src.IdOptiuneNavigation.TextOptiune))
-                .ForMember(dest => dest.SeIntroduceText, c => c.MapFrom(src => src.IdOptiuneNavigation.SeIntroduceText))
-                .ForMember(dest => dest.IdOptiune, c => c.MapFrom(src => src.IdRaspunsDisponibil));
+            CreateMap<OptionToQuestion, ModelRaspunsDisponibil>()
+                .ForMember(dest => dest.TextOptiune, c => c.MapFrom(src => src.Option.Text))
+                .ForMember(dest => dest.SeIntroduceText, c => c.MapFrom(src => src.Option.IsFreeText))
+                .ForMember(dest => dest.IdOptiune, c => c.MapFrom(src => src.Id));
         }
     }
 }
