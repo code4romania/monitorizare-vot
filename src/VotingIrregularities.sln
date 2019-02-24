@@ -3,16 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{8A09B442-FB79-4293-BF9B-E34DD3AE70F3}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "api", "api", "{8A09B442-FB79-4293-BF9B-E34DD3AE70F3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{388C55EB-26FF-46AB-9395-549E1A7A99AD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VotingIrregularities.Api", "src\VotingIrregularities.Api\VotingIrregularities.Api.csproj", "{C26FC8F5-B11B-4908-B67D-5AEEB915D002}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VotingIrregularities.Api", "api\VotingIrregularities.Api\VotingIrregularities.Api.csproj", "{C26FC8F5-B11B-4908-B67D-5AEEB915D002}"
 	ProjectSection(ProjectDependencies) = postProject
 		{73125CAC-66E8-40D7-81A7-6A847132C7B3} = {73125CAC-66E8-40D7-81A7-6A847132C7B3}
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VotingIrregularities.Domain", "src\VotingIrregularities.Domain\VotingIrregularities.Domain.csproj", "{73125CAC-66E8-40D7-81A7-6A847132C7B3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VotingIrregularities.Domain", "api\VotingIrregularities.Domain\VotingIrregularities.Domain.csproj", "{73125CAC-66E8-40D7-81A7-6A847132C7B3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VotingIrregularities.Domain.Tests", "test\VotingIrregularities.Domain.Tests\VotingIrregularities.Domain.Tests.csproj", "{4E70B88E-F43A-4546-955C-4A2139C1CC9C}"
 	ProjectSection(ProjectDependencies) = postProject
