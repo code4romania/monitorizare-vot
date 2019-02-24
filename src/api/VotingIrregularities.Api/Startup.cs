@@ -31,6 +31,7 @@ using Microsoft.IdentityModel.Tokens;
 using VotingIrregularities.Api.Models.AccountViewModels;
 using VotingIrregularities.Api.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
 using Serilog.Sinks.ApplicationInsights.Sinks.ApplicationInsights.TelemetryConverters;
 using SimpleInjector.Lifestyles;
 using Swashbuckle.AspNetCore.Swagger;
@@ -130,12 +131,13 @@ namespace VotingIrregularities.Api
             services.AddApplicationInsightsTelemetry(Configuration);
 
             services.AddMvc(config =>
-            {
-                var policy = new AuthorizationPolicyBuilder()
-                                 .RequireAuthenticatedUser()
-                                 .Build();
-                config.Filters.Add(new AuthorizeFilter(policy));
-            });
+                {
+                    var policy = new AuthorizationPolicyBuilder()
+                                     .RequireAuthenticatedUser()
+                                     .Build();
+                    config.Filters.Add(new AuthorizeFilter(policy));
+                })
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddSwaggerGen(options =>
             {
@@ -185,10 +187,6 @@ namespace VotingIrregularities.Api
         {
             app.UseStaticFiles();
 
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
-
-            loggerFactory.AddSerilog();
             Log.Logger = new LoggerConfiguration()
                 .WriteTo
                 .ApplicationInsights(Configuration["ApplicationInsights:InstrumentationKey"], new TraceTelemetryConverter())
