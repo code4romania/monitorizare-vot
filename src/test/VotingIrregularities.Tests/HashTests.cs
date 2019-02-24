@@ -24,7 +24,9 @@ namespace VotingIrregularities.Tests
         private IConfigurationRoot Configuration { get; set; }
 
      
+#pragma warning disable xUnit1004 // Test methods should not be skipped
         [Fact(Skip = "Used for generating the password files")]
+#pragma warning restore xUnit1004 // Test methods should not be skipped
         public void SetPasswords()
         {
             var hashOptions = new HashOptions();
