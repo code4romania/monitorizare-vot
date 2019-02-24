@@ -31,6 +31,7 @@ using Microsoft.IdentityModel.Tokens;
 using VotingIrregularities.Api.Models.AccountViewModels;
 using VotingIrregularities.Api.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Serilog.Sinks.ApplicationInsights.Sinks.ApplicationInsights.TelemetryConverters;
 using SimpleInjector.Lifestyles;
 using Swashbuckle.AspNetCore.Swagger;
 using VotingIrregularities.Api.Options;
@@ -190,9 +191,8 @@ namespace VotingIrregularities.Api
             loggerFactory.AddSerilog();
             Log.Logger = new LoggerConfiguration()
                 .WriteTo
-                .ApplicationInsightsTraces(Configuration["ApplicationInsights:InstrumentationKey"])
+                .ApplicationInsights(Configuration["ApplicationInsights:InstrumentationKey"], new TraceTelemetryConverter())
                 .CreateLogger();
-            // app.UseApplicationInsightsRequestTelemetry();
 
             appLifetime.ApplicationStopped.Register(Log.CloseAndFlush);
 
