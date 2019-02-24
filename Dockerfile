@@ -1,4 +1,4 @@
-FROM microsoft/dotnet:2.1-sdk AS build-env
+FROM microsoft/dotnet:2.2-sdk AS build-env
 WORKDIR /app
 
 # Copy sources
@@ -17,7 +17,7 @@ COPY /src/test/. .
 ENTRYPOINT ["dotnet", "test", "--logger:trx"]
 
 # Build runtime image
-FROM microsoft/dotnet:2.1-aspnetcore-runtime
+FROM microsoft/dotnet:2.2-aspnetcore-runtime
 WORKDIR /
 COPY --from=build-env /app/api/VotingIrregularities.Api/out/ .
 ENTRYPOINT ["dotnet", "VotingIrregularities.Api.dll"]
