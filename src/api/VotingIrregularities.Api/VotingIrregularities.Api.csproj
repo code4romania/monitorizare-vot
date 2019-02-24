@@ -8,7 +8,6 @@
     <OutputType>Exe</OutputType>
     <PackageId>VotingIrregularities.Api</PackageId>
     <UserSecretsId>TBRWithASecretkey</UserSecretsId>
-    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
