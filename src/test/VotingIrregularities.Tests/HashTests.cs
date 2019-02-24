@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
-using VotingIrregularities.Api.Models;
+using VotingIrregularities.Api.Options;
 using VotingIrregularities.Api.Services;
 using Xunit;
 

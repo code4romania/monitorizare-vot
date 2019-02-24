@@ -1,4 +1,4 @@
-﻿namespace VotingIrregularities.Api.Models
+﻿namespace VotingIrregularities.Api.Options
 {
     /// <summary>
     /// Manages the details about the blob storage being used

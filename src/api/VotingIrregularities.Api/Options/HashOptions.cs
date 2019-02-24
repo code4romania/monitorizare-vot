@@ -1,4 +1,4 @@
-﻿namespace VotingIrregularities.Api.Models
+﻿namespace VotingIrregularities.Api.Options
 {
     public class HashOptions
     {
