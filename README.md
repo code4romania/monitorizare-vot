@@ -16,7 +16,7 @@ The app also has a web version, available for every citizen who wants to report 
 
 ## Built With
 
- .Net Core 1.1
+ .Net Core 2.2
  
  Swagger docs for the API are available [here](https://mv-mobile-prod.azurewebsites.net/swagger/ui/index.html).
 
