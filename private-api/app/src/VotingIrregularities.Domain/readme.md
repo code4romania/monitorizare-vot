@@ -13,10 +13,14 @@ private-api\app\VotingIrregularities.Domain> dotnet run
 ```
 
 
-If you also want to seed some sample data please use the `-seed` argument:
+If you also want to seed some sample data:
+
+1. Uncomment this line from VotingIrregularities.Domain\Program.cs:
+//context.Database.Migrate();
+2. Run the app using the `-seed` argument:
 
 ```sh
-private-api\app\VotingIrregularities.Domain> dotnet run
+private-api\app\VotingIrregularities.Domain> dotnet run --seed
 ```
 
 Important este faptul ca actiunea de migrare va *sterge* datele din tabelele RaspunsDisponibil, Intrebare, Sectiune, Optiune.
