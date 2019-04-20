@@ -36,6 +36,7 @@ using Serilog.Sinks.ApplicationInsights.Sinks.ApplicationInsights.TelemetryConve
 using SimpleInjector.Lifestyles;
 using Swashbuckle.AspNetCore.Swagger;
 using VotingIrregularities.Api.Options;
+using Microsoft.ApplicationInsights.Extensibility;
 
 namespace VotingIrregularities.Api
 {
@@ -80,7 +81,7 @@ namespace VotingIrregularities.Api
             services.AddOptions();
 
             ConfigureCustomOptions(services);
-            
+
             var jwtAppSettingOptions = Configuration.GetSection(nameof(JwtIssuerOptions));
 
             _key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["SecretKey"]));
@@ -115,12 +116,12 @@ namespace VotingIrregularities.Api
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             })
                     .AddJwtBearer(options =>
-                     {
-                         options.Audience = jwtAppSettingOptions[nameof(JwtIssuerOptions.Audience)];
-                         options.RequireHttpsMetadata = false;
-                         options.ClaimsIssuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)];
-                         options.TokenValidationParameters = tokenValidationParameters;
-                     });
+                    {
+                        options.Audience = jwtAppSettingOptions[nameof(JwtIssuerOptions.Audience)];
+                        options.RequireHttpsMetadata = false;
+                        options.ClaimsIssuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)];
+                        options.TokenValidationParameters = tokenValidationParameters;
+                    });
 
             services.AddAuthorization(options =>
             {
@@ -189,7 +190,7 @@ namespace VotingIrregularities.Api
 
             Log.Logger = new LoggerConfiguration()
                 .WriteTo
-                .ApplicationInsights(Configuration["ApplicationInsights:InstrumentationKey"], new TraceTelemetryConverter())
+                .ApplicationInsights(TelemetryConfiguration.Active, TelemetryConverter.Traces)
                 .CreateLogger();
 
             appLifetime.ApplicationStopped.Register(Log.CloseAndFlush);
@@ -198,11 +199,11 @@ namespace VotingIrregularities.Api
                 builder =>
                 {
                     builder.Run(context =>
-                        {
-                            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                            context.Response.ContentType = "application/json";
-                            return Task.FromResult(0);
-                        }
+                    {
+                        context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                        context.Response.ContentType = "application/json";
+                        return Task.FromResult(0);
+                    }
                     );
                 }
             );
