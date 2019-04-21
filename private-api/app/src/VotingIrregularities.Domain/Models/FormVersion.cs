@@ -1,8 +1,17 @@
-﻿namespace VotingIrregularities.Domain.Models
+﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
+
+namespace VotingIrregularities.Domain.Models
 {
     public partial class FormVersion
     {
-        public string Code { get; set; }
+        [Key, Required, MaxLength(2)]
+        public string Id { get; set; }
+
+        [Required]
+        public string Description { get; set; }
+
+        [Required, JsonProperty(PropertyName = "ver")]
         public int CurrentVersion { get; set; }
     }
 }

@@ -20,7 +20,7 @@ namespace VotingIrregularities.Domain.Models
 
         public VotingContext CreateDbContext(string[] args)
         {
-            throw new NotImplementedException();
+            return Create(new DbContextFactoryOptions());
         }
     }
 }

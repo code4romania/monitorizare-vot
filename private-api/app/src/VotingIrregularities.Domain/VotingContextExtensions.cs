@@ -203,9 +203,9 @@ namespace VotingIrregularities.Domain
                 return;
 
             context.FormVersions.AddRange(
-                 new FormVersion { Code = "A", CurrentVersion = 1 },
-                 new FormVersion { Code = "B", CurrentVersion = 1 },
-                 new FormVersion { Code = "C", CurrentVersion = 1 }
+                 new FormVersion { Id = "A",Description="Description A", CurrentVersion = 1 },
+                 new FormVersion { Id = "B",Description="Description B", CurrentVersion = 1 },
+                 new FormVersion { Id = "C",Description="Description C", CurrentVersion = 1 }
              );
 
             context.SaveChanges();

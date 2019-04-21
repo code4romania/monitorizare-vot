@@ -1,9 +1,10 @@
 ﻿using MediatR;
 using System.Collections.Generic;
+using VotingIrregularities.Domain.Models;
 
 namespace VotingIrregularities.Api.Models
 {
-    public class FormVersionQuery : IRequest<Dictionary<string, int>>
+    public class FormVersionQuery : IRequest<List<FormVersion>>
     {
     }
 
