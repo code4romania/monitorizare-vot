@@ -13,3 +13,9 @@ https://support.microsoft.com/en-ie/help/4096875/fix-access-is-denied-error-when
 The backend initialization is pretty much straight-forward with no need to run any manual special dotnet scripts, it's handled in the Startup.cs of the webAPI.
 
 # Adjusting any new changes 
+After you make your changes you just have to go to Package Manager Console which can be found in Visual Studio (Ctrl+Q and search for it it), right there you'll just have to choose src\VotingIrregularities.Domain from the drop-down menu.
+Once you do that just write down 'Add-Migration  <migrationName>'.
+If you don't want it anymore just type 'Remove-Migration', this will remove the latest migration.
+If you want to rollback to a previous migration just use 'Update-Migration <migrationName>'
+
+# More info can be found here: https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/#revert-a-migration
