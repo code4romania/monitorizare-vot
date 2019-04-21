@@ -14,7 +14,6 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -37,6 +36,7 @@ using SimpleInjector.Lifestyles;
 using Swashbuckle.AspNetCore.Swagger;
 using VotingIrregularities.Api.Options;
 using Microsoft.ApplicationInsights.Extensibility;
+using VotingIrregularities.Domain;
 
 namespace VotingIrregularities.Api
 {
@@ -184,7 +184,7 @@ namespace VotingIrregularities.Api
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory,
-            IApplicationLifetime appLifetime, IDistributedCache cache)
+            IApplicationLifetime appLifetime)
         {
             app.UseStaticFiles();
 
@@ -220,13 +220,23 @@ namespace VotingIrregularities.Api
 
             InitializeContainer(app);
 
-            RegisterDbContext<VotingContext>(Configuration.GetConnectionString("DefaultConnection"));
+            //Registering dbContext
+            RegisterDbContext<VotingContext>(Configuration.GetConnectionString("DefaultConnection"), "VotingIrregularities.Domain");
 
             RegisterAutomapper();
-
             BuildMediator();
 
             _container.Verify();
+
+            using (AsyncScopedLifestyle.BeginScope(_container))
+            {
+                using (var votingDbContext = _container.GetInstance<VotingContext>())
+                {
+                    //Seeding
+                    if (env.IsDevelopment())
+                        InitializeDb(votingDbContext);
+                }
+            }
 
             // Enable middleware to serve generated Swagger as a JSON endpoint
             app.UseSwagger();
@@ -347,16 +357,16 @@ namespace VotingIrregularities.Api
             _container.RegisterInstance<IConfigurationRoot>(Configuration);
         }
 
-        private void RegisterDbContext<TDbContext>(string connectionString = null)
+        private void RegisterDbContext<TDbContext>(string connectionString = null, string migrationsAssembly = null)
             where TDbContext : DbContext
         {
             if (!string.IsNullOrEmpty(connectionString))
             {
                 var optionsBuilder = new DbContextOptionsBuilder<TDbContext>();
+
                 optionsBuilder.UseSqlServer(connectionString);
-
+                
                 _container.RegisterInstance(optionsBuilder.Options);
-
                 _container.Register<TDbContext>(Lifestyle.Scoped);
             }
             else
@@ -401,6 +411,19 @@ namespace VotingIrregularities.Api
             yield return typeof(Startup).GetTypeInfo().Assembly;
             yield return typeof(VotingContext).GetTypeInfo().Assembly;
             // just to identify VotingIrregularities.Domain assembly
+        }
+
+        /// <summary>
+        /// Initializing the DB migrations and seeding
+        /// </summary>
+        /// <param name="votingContext"></param>
+        private void InitializeDb(VotingContext votingContext)
+        {
+            // auto migration
+            votingContext.Database.Migrate();
+
+            // seed
+            VotingContextExtensions.EnsureSeedData(votingContext);
         }
     }
 }
