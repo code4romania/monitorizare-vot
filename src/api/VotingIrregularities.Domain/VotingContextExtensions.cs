@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -27,9 +28,22 @@ namespace VotingIrregularities.Domain
                 context.SeedQuestions('A');
                 context.SeedQuestions('B');
                 context.SeedQuestions('C');
+                context.SeedObservers();
 
                 tran.Commit();
             }
+        }
+
+        private static void SeedObservers(this VotingContext context)
+        {
+            if (context.Observers.Any())
+                return;
+
+            context.Observers.Add(
+                    new Observer() { Id = 0, FromTeam = false, IdNgo = 1, Phone = "0722222222", Name = "Test", Pin = "1234", MobileDeviceId = Guid.NewGuid().ToString(),DeviceRegisterDate = DateTime.Now }
+                );
+
+            context.SaveChanges();
         }
 
         private static void SeedCounties(this VotingContext context)
@@ -91,6 +105,7 @@ namespace VotingIrregularities.Domain
             context.Database.ExecuteSqlCommand("delete from FormSections");
             context.Database.ExecuteSqlCommand("delete from FormVersions");
             context.Database.ExecuteSqlCommand("delete from Counties");
+            context.Database.ExecuteSqlCommand("delete from Observers");
         }
 
         private static void SeedOptions(this VotingContext context)
