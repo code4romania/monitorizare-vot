@@ -222,7 +222,7 @@ namespace VotingIrregularities.Api
             InitializeContainer(app);
 
             //Registering dbContext
-            RegisterDbContext<VotingContext>(Configuration.GetConnectionString("DefaultConnection"), "VotingIrregularities.Domain");
+            RegisterDbContext<VotingContext>(Configuration.GetConnectionString("DefaultConnection"));
 
             RegisterAutomapper();
             BuildMediator();
@@ -358,7 +358,7 @@ namespace VotingIrregularities.Api
             _container.RegisterInstance<IConfigurationRoot>(Configuration);
         }
 
-        private void RegisterDbContext<TDbContext>(string connectionString = null, string migrationsAssembly = null)
+        private void RegisterDbContext<TDbContext>(string connectionString = null)
             where TDbContext : DbContext
         {
             if (!string.IsNullOrEmpty(connectionString))
