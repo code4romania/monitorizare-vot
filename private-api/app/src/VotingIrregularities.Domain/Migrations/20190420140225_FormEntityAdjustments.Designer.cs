@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VotingIrregularities.Domain.Models;
 
 namespace VotingIrregularities.Domain.Migrations
 {
     [DbContext(typeof(VotingContext))]
-    partial class VotingContextModelSnapshot : ModelSnapshot
+    [Migration("20190420140225_FormEntityAdjustments")]
+    partial class FormEntityAdjustments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
