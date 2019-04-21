@@ -322,10 +322,10 @@ namespace VotingIrregularities.Domain.Models
 
             modelBuilder.Entity<FormVersion>(entity =>
             {
-                entity.HasKey(e => e.Code)
+                entity.HasKey(e => e.Id)
                     .HasName("PK_FormVersion");
 
-                entity.Property(e => e.Code).HasMaxLength(2);
+                entity.Property(e => e.Id).HasMaxLength(2);
             });
         }
 
