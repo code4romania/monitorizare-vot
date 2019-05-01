@@ -9,14 +9,14 @@ Pentru acest lucru trebuie urmati pasii de mai jos:
 2. ruleaza din consola, in directorul VotingIrregularities.Domain:
 
 ```sh
-private-api\app\VotingIrregularities.Domain> dotnet run
+src\api\VotingIrregularities.Domain.Seed> dotnet run
 ```
 
 
 If you also want to seed some sample data please use the `-seed` argument:
 
 ```sh
-private-api\app\VotingIrregularities.Domain> dotnet run
+src\api\VotingIrregularities.Domain.Seed> dotnet run --seed
 ```
 
 Important este faptul ca actiunea de migrare va *sterge* datele din tabelele RaspunsDisponibil, Intrebare, Sectiune, Optiune.

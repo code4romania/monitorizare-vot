@@ -1,29 +1,23 @@
-FROM microsoft/dotnet:2.1-sdk AS build-env
+FROM microsoft/dotnet:2.2-sdk AS build-env
 WORKDIR /app
 
-COPY private-api/app/VotingIrregularities.sln ./
-COPY private-api/app/src/VotingIrregularities.Api/VotingIrregularities.Api.csproj src/VotingIrregularities.Api/
-COPY private-api/app/src/VotingIrregularities.Domain/VotingIrregularities.Domain.csproj src/VotingIrregularities.Domain/
-COPY private-api/app/test/VotingIrregularities.Domain.Tests/VotingIrregularities.Domain.Tests.csproj test/VotingIrregularities.Domain.Tests/
-COPY private-api/app/test/VotingIrregularities.Tests/VotingIrregularities.Tests.csproj test/VotingIrregularities.Tests/
+# Copy sources
+COPY /src/. ./
 
-# Copy all at once (big image probably?)
-#COPY private-api/app/. ./
-
+# Restore packages
 RUN dotnet restore
 
-# Copy everything else and build
-COPY private-api/app/. ./
+# Build and publish as `Release`
 RUN dotnet publish -c Release -o ./out
 
 # test application -- see: dotnet-docker-unit-testing.md
 FROM build-env AS testrunner
 WORKDIR /app/tests
-COPY private-api/app/test/. .
+COPY /src/test/. .
 ENTRYPOINT ["dotnet", "test", "--logger:trx"]
 
 # Build runtime image
-FROM microsoft/dotnet:2.1-aspnetcore-runtime
+FROM microsoft/dotnet:2.2-aspnetcore-runtime
 WORKDIR /
-COPY --from=build-env /app/src/VotingIrregularities.Api/out/ .
+COPY --from=build-env /app/api/VotingIrregularities.Api/out/ .
 ENTRYPOINT ["dotnet", "VotingIrregularities.Api.dll"]
