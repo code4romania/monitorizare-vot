@@ -5,7 +5,7 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using VotingIrregularities.Api.Models;
+using VotingIrregularities.Api.Options;
 
 namespace VotingIrregularities.Api.Services
 {

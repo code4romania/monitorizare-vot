@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "VotingIrregularities.Domain": {
+    "VotingIrregularities.Domain.Seed": {
       "commandName": "Project",
       "commandLineArgs": "-seed",
       "environmentVariables": {
