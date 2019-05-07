@@ -5,7 +5,7 @@ namespace VotingIrregularities.Domain.Models
 {
     public partial class FormVersion
     {
-        [Key, Required, MaxLength(2)]
+        [Key, Required, MaxLength(2), JsonProperty(PropertyName = "code")]
         public string Id { get; set; }
 
         [Required]
