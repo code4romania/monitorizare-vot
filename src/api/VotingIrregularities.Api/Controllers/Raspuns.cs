@@ -15,6 +15,7 @@ using Newtonsoft.Json;
 using VotingIrregularities.Api.Extensions;
 using VotingIrregularities.Api.Models;
 using VotingIrregularities.Domain.RaspunsAggregate.Commands;
+using VotingIrregularities.Api.Helpers;
 
 namespace VotingIrregularities.Api.Controllers
 {
@@ -56,7 +57,7 @@ namespace VotingIrregularities.Api.Controllers
             var command = await _mediator.Send(new RaspunsuriBulk(raspuns.Raspuns));
 
             // TODO[DH] get the actual IdObservator from token
-            command.IdObservator = int.Parse(User.Claims.First(c => c.Type == "IdObservator").Value);
+            command.IdObservator = int.Parse(User.Claims.First(c => c.Type == ClaimsHelper._observerIdProperty).Value);
 
             var result = await _mediator.Send(command);
 
