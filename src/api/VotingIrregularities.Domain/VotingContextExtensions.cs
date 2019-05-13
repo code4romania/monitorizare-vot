@@ -13,8 +13,8 @@ namespace VotingIrregularities.Domain
     {
         public static void EnsureSeedData(this VotingContext context)
         {
-            if (!context.AllMigrationsApplied())
-                return;
+            if (context.AllMigrationsApplied())
+               return;
 
             using (var tran = context.Database.BeginTransaction())
             {
