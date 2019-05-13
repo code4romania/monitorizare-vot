@@ -14,7 +14,6 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -36,6 +35,8 @@ using Serilog.Sinks.ApplicationInsights.Sinks.ApplicationInsights.TelemetryConve
 using SimpleInjector.Lifestyles;
 using Swashbuckle.AspNetCore.Swagger;
 using VotingIrregularities.Api.Options;
+using Microsoft.ApplicationInsights.Extensibility;
+using VotingIrregularities.Domain;
 
 namespace VotingIrregularities.Api
 {
@@ -80,7 +81,7 @@ namespace VotingIrregularities.Api
             services.AddOptions();
 
             ConfigureCustomOptions(services);
-            
+
             var jwtAppSettingOptions = Configuration.GetSection(nameof(JwtIssuerOptions));
 
             _key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["SecretKey"]));
@@ -115,12 +116,12 @@ namespace VotingIrregularities.Api
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             })
                     .AddJwtBearer(options =>
-                     {
-                         options.Audience = jwtAppSettingOptions[nameof(JwtIssuerOptions.Audience)];
-                         options.RequireHttpsMetadata = false;
-                         options.ClaimsIssuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)];
-                         options.TokenValidationParameters = tokenValidationParameters;
-                     });
+                    {
+                        options.Audience = jwtAppSettingOptions[nameof(JwtIssuerOptions.Audience)];
+                        options.RequireHttpsMetadata = false;
+                        options.ClaimsIssuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)];
+                        options.TokenValidationParameters = tokenValidationParameters;
+                    });
 
             services.AddAuthorization(options =>
             {
@@ -183,13 +184,13 @@ namespace VotingIrregularities.Api
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory,
-            IApplicationLifetime appLifetime, IDistributedCache cache)
+            IApplicationLifetime appLifetime)
         {
             app.UseStaticFiles();
 
             Log.Logger = new LoggerConfiguration()
                 .WriteTo
-                .ApplicationInsights(Configuration["ApplicationInsights:InstrumentationKey"], new TraceTelemetryConverter())
+                .ApplicationInsights(TelemetryConfiguration.Active, TelemetryConverter.Traces)
                 .CreateLogger();
 
             appLifetime.ApplicationStopped.Register(Log.CloseAndFlush);
@@ -198,11 +199,11 @@ namespace VotingIrregularities.Api
                 builder =>
                 {
                     builder.Run(context =>
-                        {
-                            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                            context.Response.ContentType = "application/json";
-                            return Task.FromResult(0);
-                        }
+                    {
+                        context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                        context.Response.ContentType = "application/json";
+                        return Task.FromResult(0);
+                    }
                     );
                 }
             );
@@ -219,13 +220,23 @@ namespace VotingIrregularities.Api
 
             InitializeContainer(app);
 
+            //Registering dbContext
             RegisterDbContext<VotingContext>(Configuration.GetConnectionString("DefaultConnection"));
 
             RegisterAutomapper();
-
             BuildMediator();
 
             _container.Verify();
+
+            using (AsyncScopedLifestyle.BeginScope(_container))
+            {
+                using (var votingDbContext = _container.GetInstance<VotingContext>())
+                {
+                    //Seeding
+                    if (env.IsDevelopment())
+                        InitializeDb(votingDbContext);
+                }
+            }
 
             // Enable middleware to serve generated Swagger as a JSON endpoint
             app.UseSwagger();
@@ -352,10 +363,10 @@ namespace VotingIrregularities.Api
             if (!string.IsNullOrEmpty(connectionString))
             {
                 var optionsBuilder = new DbContextOptionsBuilder<TDbContext>();
+
                 optionsBuilder.UseSqlServer(connectionString);
-
+                
                 _container.RegisterInstance(optionsBuilder.Options);
-
                 _container.Register<TDbContext>(Lifestyle.Scoped);
             }
             else
@@ -400,6 +411,19 @@ namespace VotingIrregularities.Api
             yield return typeof(Startup).GetTypeInfo().Assembly;
             yield return typeof(VotingContext).GetTypeInfo().Assembly;
             // just to identify VotingIrregularities.Domain assembly
+        }
+
+        /// <summary>
+        /// Initializing the DB migrations and seeding
+        /// </summary>
+        /// <param name="votingContext"></param>
+        private void InitializeDb(VotingContext votingContext)
+        {
+            // auto migration
+            votingContext.Database.Migrate();
+
+            // seed
+            VotingContextExtensions.EnsureSeedData(votingContext);
         }
     }
 }

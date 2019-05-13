@@ -29,10 +29,21 @@ namespace VotingIrregularities.Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("versiune")]
-        public async Task<ModelVersiune> Versiune()
+        public async Task<IActionResult> GetFormVersions()
         {
-            return new ModelVersiune { Versiune = await _mediator.Send(new FormVersionQuery())};
+            var formsAsDict = new Dictionary<string, int>();
+            (await _mediator.Send(new FormVersionQuery())).ForEach(form => formsAsDict.Add(form.Id, form.CurrentVersion));
+
+            return Ok(new { Versiune = formsAsDict });
         }
+
+        /// <summary>
+        /// Returns an array of forms
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> GetFormsAsync()
+            => Ok(new ModelVersiune { Formulare = await _mediator.Send(new FormVersionQuery()) });
 
         /// <summary>
         /// Se interogheaza ultima versiunea a formularului pentru observatori si se primeste definitia lui. 
@@ -41,8 +52,8 @@ namespace VotingIrregularities.Api.Controllers
         /// </summary>
         /// <param name="idformular">Id-ul formularului pentru care trebuie preluata definitia</param>
         /// <returns></returns>
-        [HttpGet]
-        public async Task<IEnumerable<ModelSectiune>> Citeste(string idformular)
+        [HttpGet("{idformular}")]
+        public async Task<IEnumerable<ModelSectiune>> GetFormAsync(string idformular)
         {
             var result = await _mediator.Send(new FormQuestionsQuery {
                 CodFormular = idformular,
