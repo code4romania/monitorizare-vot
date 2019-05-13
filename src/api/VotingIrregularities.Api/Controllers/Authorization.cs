@@ -90,8 +90,7 @@ namespace VotingIrregularities.Api.Controllers
                 expires_in = (int)_jwtOptions.ValidFor.TotalSeconds
             };
 
-            var json = JsonConvert.SerializeObject(response, _serializerSettings);
-            return new OkObjectResult(json);
+            return Ok(response);
         }
         /// <summary>
         /// Test action to get claims

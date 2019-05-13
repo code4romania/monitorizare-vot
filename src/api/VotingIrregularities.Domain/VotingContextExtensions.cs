@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -12,8 +13,8 @@ namespace VotingIrregularities.Domain
     {
         public static void EnsureSeedData(this VotingContext context)
         {
-            if (!context.AllMigrationsApplied())
-                return;
+            if (context.AllMigrationsApplied())
+               return;
 
             using (var tran = context.Database.BeginTransaction())
             {
@@ -27,9 +28,22 @@ namespace VotingIrregularities.Domain
                 context.SeedQuestions('A');
                 context.SeedQuestions('B');
                 context.SeedQuestions('C');
+                context.SeedObservers();
 
                 tran.Commit();
             }
+        }
+
+        private static void SeedObservers(this VotingContext context)
+        {
+            if (context.Observers.Any())
+                return;
+
+            context.Observers.Add(
+                    new Observer() { Id = 0, FromTeam = false, IdNgo = 1, Phone = "0722222222", Name = "Test", Pin = "1234", MobileDeviceId = Guid.NewGuid().ToString(),DeviceRegisterDate = DateTime.Now }
+                );
+
+            context.SaveChanges();
         }
 
         private static void SeedCounties(this VotingContext context)
@@ -91,6 +105,7 @@ namespace VotingIrregularities.Domain
             context.Database.ExecuteSqlCommand("delete from FormSections");
             context.Database.ExecuteSqlCommand("delete from FormVersions");
             context.Database.ExecuteSqlCommand("delete from Counties");
+            context.Database.ExecuteSqlCommand("delete from Observers");
         }
 
         private static void SeedOptions(this VotingContext context)
@@ -203,9 +218,9 @@ namespace VotingIrregularities.Domain
                 return;
 
             context.FormVersions.AddRange(
-                 new FormVersion { Code = "A", CurrentVersion = 1 },
-                 new FormVersion { Code = "B", CurrentVersion = 1 },
-                 new FormVersion { Code = "C", CurrentVersion = 1 }
+                 new FormVersion { Id = "A",Description="Description A", CurrentVersion = 1 },
+                 new FormVersion { Id = "B",Description="Description B", CurrentVersion = 1 },
+                 new FormVersion { Id = "C",Description="Description C", CurrentVersion = 1 }
              );
 
             context.SaveChanges();
