@@ -11,9 +11,11 @@ namespace VotingIrregularities.Domain
 {
     public static class VotingContextExtensions
     {
+        private static readonly string[] formsArray = new string[] { "A", "B", "C", "D", "E" };
+
         public static void EnsureSeedData(this VotingContext context)
         {
-            if (context.AllMigrationsApplied())
+            if (!context.AllMigrationsApplied())
                return;
 
             using (var tran = context.Database.BeginTransaction())
@@ -21,13 +23,14 @@ namespace VotingIrregularities.Domain
                 context.DataCleanUp();
 
                 context.SeedNGOs();
-                context.SeedVersions();
                 context.SeedCounties();
                 context.SeedFormSections();
                 context.SeedOptions();
-                context.SeedQuestions('A');
-                context.SeedQuestions('B');
-                context.SeedQuestions('C');
+                foreach (string form in formsArray)
+                {
+                    context.SeedVersions(form);
+                    context.SeedQuestions(form);
+                }
                 context.SeedObservers();
 
                 tran.Commit();
@@ -142,7 +145,7 @@ namespace VotingIrregularities.Domain
             context.SaveChanges();
         }
 
-        private static void SeedQuestions(this VotingContext context, char idFormular)
+        private static void SeedQuestions(this VotingContext context, string idFormular)
         {
             if (context.Questions.Any(a => a.FormCode == idFormular.ToString()))
                 return;
@@ -151,59 +154,59 @@ namespace VotingIrregularities.Domain
                 // primul formular
                 new Question
                 {
-                    Id = idFormular * 20 + 1,
-                    FormCode = idFormular.ToString(),
+                    Id = idFormular[0] * 20 + 1,
+                    FormCode = idFormular,
                     IdSection = 1, //B
                     QuestionType = QuestionType.SingleOption,
                     Text = $"{idFormular}: Iti place berea? (se alege o singura optiune selectabila)",
                     OptionsToQuestions = new List<OptionToQuestion>
                     {
-                        new OptionToQuestion {Id = idFormular * 20 + 1, IdOption = 1},
-                        new OptionToQuestion {Id = idFormular * 20 + 2, IdOption = 2, Flagged = true},
-                        new OptionToQuestion {Id = idFormular * 20 + 3, IdOption = 3}
+                        new OptionToQuestion {Id = idFormular[0] * 20 + 1, IdOption = 1},
+                        new OptionToQuestion {Id = idFormular[0] * 20 + 2, IdOption = 2, Flagged = true},
+                        new OptionToQuestion {Id = idFormular[0] * 20 + 3, IdOption = 3}
                     }
                 },
                  new Question
                  {
-                     Id = idFormular * 20 + 2,
-                                    FormCode = idFormular.ToString(),
-                                    IdSection = 1, //B
-                                    QuestionType = QuestionType.MultipleOption,
-                                    Text = $"{idFormular}: Ce tipuri de bere iti plac? (se pot alege optiuni multiple)",
-                                    OptionsToQuestions = new List<OptionToQuestion>
+                     Id = idFormular[0] * 20 + 2,
+                     FormCode = idFormular,
+                     IdSection = 1, //B
+                     QuestionType = QuestionType.MultipleOption,
+                     Text = $"{idFormular}: Ce tipuri de bere iti plac? (se pot alege optiuni multiple)",
+                     OptionsToQuestions = new List<OptionToQuestion>
                     {
-                        new OptionToQuestion {Id = idFormular * 20 + 4, IdOption = 4, Flagged = true},
-                        new OptionToQuestion {Id = idFormular * 20 + 5, IdOption = 5},
-                        new OptionToQuestion {Id = idFormular * 20 + 6, IdOption = 6}
+                        new OptionToQuestion {Id = idFormular[0] * 20 + 4, IdOption = 4, Flagged = true},
+                        new OptionToQuestion {Id = idFormular[0] * 20 + 5, IdOption = 5},
+                        new OptionToQuestion {Id = idFormular[0] * 20 + 6, IdOption = 6}
                     }
                  },
                  new Question
                  {
-                     Id = idFormular * 20 + 3,
-                     FormCode = idFormular.ToString(),
+                     Id = idFormular[0] * 20 + 3,
+                     FormCode = idFormular,
                      IdSection = 2, //C
                      QuestionType = QuestionType.SingleOptionWithText,
                      Text = $"{idFormular}: Ce tip de transmisie are masina ta? (se poate alege O singura optiune selectabila + text pe O singura optiune)",
                      OptionsToQuestions = new List<OptionToQuestion>
                     {
-                        new OptionToQuestion {Id = idFormular * 20 + 7, IdOption = 7, Flagged = true},
-                        new OptionToQuestion {Id = idFormular * 20 + 8, IdOption = 8},
-                        new OptionToQuestion {Id = idFormular * 20 + 9, IdOption = 9}
+                        new OptionToQuestion {Id = idFormular[0] * 20 + 7, IdOption = 7, Flagged = true},
+                        new OptionToQuestion {Id = idFormular[0] * 20 + 8, IdOption = 8},
+                        new OptionToQuestion {Id = idFormular[0] * 20 + 9, IdOption = 9}
                     }
                  },
                  new Question
                  {
-                     Id = idFormular * 20 + 4,
-                     FormCode = idFormular.ToString(),
+                     Id = idFormular[0] * 20 + 4,
+                     FormCode = idFormular,
                      IdSection = 2, //C
                      QuestionType = QuestionType.MultipleOptionWithText,
                      Text = $"{idFormular}: Ce mijloace de transport folosesti sa ajungi la birou? (se pot alege mai multe optiuni + text pe O singura optiune)",
                      OptionsToQuestions = new List<OptionToQuestion>
                     {
-                        new OptionToQuestion {Id = idFormular * 20 + 10, IdOption = 10, Flagged = true},
-                        new OptionToQuestion {Id = idFormular * 20 + 11, IdOption = 11},
-                        new OptionToQuestion {Id = idFormular * 20 + 12, IdOption = 12},
-                        new OptionToQuestion {Id = idFormular * 20 + 13, IdOption = 9}
+                        new OptionToQuestion {Id = idFormular[0] * 20 + 10, IdOption = 10, Flagged = true},
+                        new OptionToQuestion {Id = idFormular[0] * 20 + 11, IdOption = 11},
+                        new OptionToQuestion {Id = idFormular[0] * 20 + 12, IdOption = 12},
+                        new OptionToQuestion {Id = idFormular[0] * 20 + 13, IdOption = 9}
                     }
                  }
                 );
@@ -212,15 +215,13 @@ namespace VotingIrregularities.Domain
 
         }
 
-        private static void SeedVersions(this VotingContext context)
+        private static void SeedVersions(this VotingContext context, string idFormular)
         {
-            if (context.FormVersions.Any())
+            if (context.FormVersions.Any(f => f.Id == idFormular))
                 return;
 
             context.FormVersions.AddRange(
-                 new FormVersion { Id = "A",Description="Description A", CurrentVersion = 1 },
-                 new FormVersion { Id = "B",Description="Description B", CurrentVersion = 1 },
-                 new FormVersion { Id = "C",Description="Description C", CurrentVersion = 1 }
+                 new FormVersion { Id = idFormular, Description = "Description " + idFormular, CurrentVersion = 1 }
              );
 
             context.SaveChanges();
