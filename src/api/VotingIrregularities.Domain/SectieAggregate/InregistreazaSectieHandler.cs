@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
@@ -29,7 +28,7 @@ namespace VotingIrregularities.Domain.SectieAggregate
             try
             {
                 //TODO[DH] this can be moved to a previous step, before the command is executed
-                int idSectie = await _context.PollingStations
+                var idSectie = await _context.PollingStations
                     .Where(a =>
                         a.Number == message.NumarSectie &&
                         a.County.Code == message.CodJudet).Select(a => a.Id)

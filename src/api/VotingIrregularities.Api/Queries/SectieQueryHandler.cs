@@ -9,9 +9,9 @@ namespace VotingIrregularities.Api.Queries
     {
         private readonly IPollingStationService _pollingStationService;
 
-        public SectieQueryHandler(IPollingStationService svService)
+        public SectieQueryHandler(IPollingStationService pollingStationService)
         {
-            _pollingStationService = svService;
+            _pollingStationService = pollingStationService;
         }
 
         protected override async Task<int> HandleCore(ModelSectieQuery message)
