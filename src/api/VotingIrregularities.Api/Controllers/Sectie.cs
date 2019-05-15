@@ -5,10 +5,12 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using VotingIrregularities.Api.Extensions;
 using VotingIrregularities.Api.Models;
 using VotingIrregularities.Domain.SectieAggregate;
 using VotingIrregularities.Api.Helpers;
+using VotingIrregularities.Api.Queries;
 
 namespace VotingIrregularities.Api.Controllers
 {
@@ -74,6 +76,18 @@ namespace VotingIrregularities.Api.Controllers
             var result = await _mediator.Send(command);
 
             return this.ResultAsync(result < 0 ? HttpStatusCode.NotFound : HttpStatusCode.OK);
+        }
+
+        /// <summary>
+        /// Gets the polling stations' allocated per county
+        /// </summary>
+        /// <returns>{ "countyCode": "numberOfPollingStationsAssigned", ... }</returns>
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> PollingStationsLimits()
+        {
+            var result = await _mediator.Send(new PollingStationsAssignmentQuery());
+            return Ok(result);
         }
     }
 }
