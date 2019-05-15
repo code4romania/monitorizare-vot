@@ -82,7 +82,6 @@ namespace VotingIrregularities.Api.Controllers
         /// Gets the polling stations' allocated per county
         /// </summary>
         /// <returns>{ "countyCode": "numberOfPollingStationsAssigned", ... }</returns>
-        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> PollingStationsLimits()
         {
