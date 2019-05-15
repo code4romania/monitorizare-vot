@@ -9,6 +9,7 @@ namespace VotingIrregularities.Api.Models
 {
     public class ModelSectiune
     {
+        public string IdSectiune { get; set; }
         public string CodSectiune { get; set; }
         public string Descriere { get; set; }
 
