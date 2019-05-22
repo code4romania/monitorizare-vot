@@ -18,6 +18,10 @@ namespace VotingIrregularities.Domain
             if (!context.AllMigrationsApplied())
                return;
 
+            //means we have data
+            if (context.Counties.Count() > 0)
+                return;
+
             using (var tran = context.Database.BeginTransaction())
             {
                 context.DataCleanUp();
