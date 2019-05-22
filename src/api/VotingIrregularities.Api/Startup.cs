@@ -228,16 +228,6 @@ namespace VotingIrregularities.Api
 
             _container.Verify();
 
-            using (AsyncScopedLifestyle.BeginScope(_container))
-            {
-                using (var votingDbContext = _container.GetInstance<VotingContext>())
-                {
-                    //Seeding
-                    if (env.IsDevelopment())
-                        InitializeDb(votingDbContext);
-                }
-            }
-
             // Enable middleware to serve generated Swagger as a JSON endpoint
             app.UseSwagger();
 
