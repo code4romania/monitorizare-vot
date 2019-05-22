@@ -30,7 +30,7 @@ namespace VotingIrregularities.Domain
                 context.SeedCounties();
                 context.SeedFormSections();
                 context.SeedOptions();
-                foreach (string form in formsArray)
+                foreach (var form in formsArray)
                 {
                     context.SeedVersions(form);
                     context.SeedQuestions(form);

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VotingIrregularities.Domain.Models;
@@ -62,6 +63,11 @@ namespace VotingIrregularities.Api.Services
             }
 
             return -1;
+        }
+
+        public async Task<Dictionary<string, int>> GetPollingStationsAssignmentsForAllCounties()
+        {
+            return await _context.Counties.ToDictionaryAsync(c => c.Code, c => c.NumberOfPollingStations);
         }
     }
 }
