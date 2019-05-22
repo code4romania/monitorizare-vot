@@ -8,6 +8,7 @@ using VotingIrregularities.Api.Extensions;
 using VotingIrregularities.Api.Models;
 using AutoMapper;
 using VotingIrregularities.Domain.NotaAggregate;
+using VotingIrregularities.Api.Helpers;
 
 namespace VotingIrregularities.Api.Controllers
 {
@@ -52,7 +53,7 @@ namespace VotingIrregularities.Api.Controllers
             var fileAddress = await _mediator.Send(new ModelFile { File = file });
 
             // TODO[DH] get the actual IdObservator from token
-            command.IdObservator = int.Parse(User.Claims.First(c => c.Type == "IdObservator").Value);
+            command.IdObservator = int.Parse(User.Claims.First(c => c.Type == ClaimsHelper._observerIdProperty).Value);
             command.CaleFisierAtasat = fileAddress;
             command.IdSectieDeVotare = idSectie;
 
