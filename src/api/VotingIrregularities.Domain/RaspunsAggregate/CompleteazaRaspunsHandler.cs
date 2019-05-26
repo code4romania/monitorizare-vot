@@ -28,6 +28,7 @@ namespace VotingIrregularities.Domain.RaspunsAggregate
             _mapper = mapper;
             _logger = logger;
         }
+
         protected override async Task<int> HandleCore(CompleteazaRaspunsCommand message)
         {
             try
@@ -56,14 +57,15 @@ namespace VotingIrregularities.Domain.RaspunsAggregate
                                 //.Where(a => intrebari.Contains(a.OptionAnswered.IdQuestion))
                                 .WhereRaspunsContains(intrebari)
                             ;
-                            //.Delete();
+                        //.Delete();
                         _context.Answers.RemoveRange(todelete);
 
                         await _context.SaveChangesAsync();
                     }
+
                     _context.Answers.AddRange(raspunsuriNoi);
 
-                    var result =  await _context.SaveChangesAsync();
+                    var result = await _context.SaveChangesAsync();
 
                     tran.Commit();
 
@@ -82,24 +84,36 @@ namespace VotingIrregularities.Domain.RaspunsAggregate
         {
             var list = command.Raspunsuri.Select(a => new
                 {
-                    flat = a.Optiuni.GroupBy(k => k.IdOptiune, (g, o) => new Answer
+                    flat = a.Optiuni.Select(o => new Answer
                     {
                         IdObserver = command.IdObservator,
                         IdPollingStation = a.IdSectie,
-                        IdOptionToQuestion = g,
-                        Value = o.Last().Value,
+                        IdOptionToQuestion = o.IdOptiune,
+                        Value = o.Value,
                         CountyCode = a.CodJudet,
                         PollingStationNumber = a.NumarSectie,
                         LastModified = lastModified
                     })
-                }).SelectMany(a => a.flat)
+                })
+                .SelectMany(a => a.flat)
+                .GroupBy(k => k.IdOptionToQuestion,
+                    (g, o) => new Answer
+                    {
+                        IdObserver = command.IdObservator,
+                        IdPollingStation = o.Last().IdPollingStation,
+                        IdOptionToQuestion = g,
+                        Value = o.Last().Value,
+                        CountyCode = o.Last().CountyCode,
+                        PollingStationNumber = o.Last().PollingStationNumber,
+                        LastModified = lastModified
+                    })
                 .Distinct()
                 .ToList();
 
             return list;
         }
     }
-    
+
     public static class EfBuilderExtensions
     {
         /// <summary>
@@ -112,10 +126,10 @@ namespace VotingIrregularities.Domain.RaspunsAggregate
         public static IQueryable<Answer> WhereRaspunsContains(this IQueryable<Answer> source, IList<int> contains)
         {
             var ors = contains
-                .Aggregate<int, Expression<Func<Answer, bool>>>(null, (expression, id) => 
-                expression == null 
-                    ? (a => a.OptionAnswered.IdQuestion == id) 
-                    : expression.Or(a => a.OptionAnswered.IdQuestion == id));
+                .Aggregate<int, Expression<Func<Answer, bool>>>(null, (expression, id) =>
+                    expression == null
+                        ? (a => a.OptionAnswered.IdQuestion == id)
+                        : expression.Or(a => a.OptionAnswered.IdQuestion == id));
 
             return source.Where(ors);
         }
