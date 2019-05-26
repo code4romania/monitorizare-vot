@@ -34,9 +34,6 @@ namespace VotingIrregularities.Api.Services
             // Get a reference to the container.
             var container = _client.GetContainerReference(_storageOptions.Value.Container);
 
-            // Create the container if it doesn't already exist.
-            await container.CreateIfNotExistsAsync();
-
             // Retrieve reference to a blob.
             var blockBlob = container.GetBlockBlobReference(Guid.NewGuid().ToString("N") + extension);
 
@@ -47,6 +44,15 @@ namespace VotingIrregularities.Api.Services
             await blockBlob.SetPropertiesAsync();
 
             return blockBlob.Uri.ToString();
+        }
+
+        public async Task Initialize()
+        {
+            // Get a reference to the container.
+            var container = _client.GetContainerReference(_storageOptions.Value.Container);
+
+            // Create the container if it doesn't already exist.
+            await container.CreateIfNotExistsAsync();
         }
     }
 }
