@@ -45,7 +45,7 @@ namespace VotingIrregularities.Tests
                     new ModelOptiuniSelectate{IdOptiune = 11, Value = "varl234"},
                     new ModelOptiuniSelectate{IdOptiune = 11, Value = "varl234"},
                     new ModelOptiuniSelectate{IdOptiune = 11, Value = "ok"},
-                    new ModelOptiuniSelectate{IdOptiune = 12, Value = "ok"}
+                    new ModelOptiuniSelectate{IdOptiune = 21, Value = "1"}
                     
                 }
             });
@@ -68,11 +68,11 @@ namespace VotingIrregularities.Tests
 
             var reducedCollection = CompleteazaRaspunsHandler.GetFlatListOfAnswers(message, lastModified);
 
-            Assert.Equal(5, reducedCollection.Count);
+            Assert.Equal(4, reducedCollection.Count);
             Assert.Equal(3, reducedCollection.Count(c=>c.IdOptionToQuestion > 20));
-            Assert.Equal(2, reducedCollection.Count(c=>c.IdOptionToQuestion < 20));
+            Assert.Equal(1, reducedCollection.Count(c=>c.IdOptionToQuestion < 20));
             Assert.Equal("ok", reducedCollection.First(c=>c.IdOptionToQuestion == 11).Value);
-
+            Assert.Equal("ok", reducedCollection.First(c=>c.IdOptionToQuestion == 21).Value);
         }
     }
 }
