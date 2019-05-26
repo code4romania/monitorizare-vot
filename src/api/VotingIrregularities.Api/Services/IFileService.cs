@@ -16,5 +16,11 @@ namespace VotingIrregularities.Api.Services
         /// <param name="extension"></param>
         /// <returns>the reference to the resource just uploaded</returns>
         Task<string> UploadFromStreamAsync(Stream sourceStream, string mimeType, string extension);
+
+        /// <summary>
+        /// Initialize the file system before first usage
+        /// </summary>
+        /// <returns></returns>
+        Task Initialize();
     }
 }

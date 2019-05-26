@@ -228,6 +228,9 @@ namespace VotingIrregularities.Api
 
             _container.Verify();
 
+            var fileService = _container.GetInstance<IFileService>();
+            fileService.Initialize();
+
             // Enable middleware to serve generated Swagger as a JSON endpoint
             app.UseSwagger();
 
