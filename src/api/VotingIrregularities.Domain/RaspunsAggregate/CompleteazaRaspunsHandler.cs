@@ -58,7 +58,6 @@ namespace VotingIrregularities.Domain.RaspunsAggregate
                 {
                     foreach (var sectie in sectii)
                     {
-
                         var intrebari = message.Raspunsuri.Select(a => a.IdIntrebare).Distinct().ToList();
 
                         // delete existing answers for posted questions on this 'sectie'
@@ -70,6 +69,8 @@ namespace VotingIrregularities.Domain.RaspunsAggregate
                                     a.IdPollingStation == sectie)
                                    .WhereRaspunsContains(intrebari)
                             .Delete();
+
+                        await _context.SaveChangesAsync();
                     }
 
                     _context.Answers.AddRange(raspunsuriNoi);
