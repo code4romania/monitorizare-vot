@@ -35,21 +35,7 @@ namespace VotingIrregularities.Domain.RaspunsAggregate
                 //flat answers
                 var lastModified = DateTime.UtcNow;
 
-                var raspunsuriNoi = message.Raspunsuri.Select(a => new
-                {
-                    flat = a.Optiuni.Select(o => new Answer
-                    {
-                        IdObserver = message.IdObservator,
-                        IdPollingStation = a.IdSectie,
-                        IdOptionToQuestion = o.IdOptiune,
-                        Value = o.Value,
-                        CountyCode = a.CodJudet,
-                        PollingStationNumber = a.NumarSectie,
-                        LastModified = lastModified
-                    })
-                }).SelectMany(a => a.flat)
-                .Distinct()
-                .ToList();
+                var raspunsuriNoi = GetFlatListOfAnswers(message, lastModified);
 
                 // stergerea este pe fiecare sectie
                 var sectii = message.Raspunsuri.Select(a => a.IdSectie).Distinct().ToList();
@@ -91,8 +77,29 @@ namespace VotingIrregularities.Domain.RaspunsAggregate
 
             return await Task.FromResult(-1);
         }
-    }
 
+        public static List<Answer> GetFlatListOfAnswers(CompleteazaRaspunsCommand command, DateTime lastModified)
+        {
+            var list = command.Raspunsuri.Select(a => new
+                {
+                    flat = a.Optiuni.GroupBy(k => k.IdOptiune, (g, o) => new Answer
+                    {
+                        IdObserver = command.IdObservator,
+                        IdPollingStation = a.IdSectie,
+                        IdOptionToQuestion = g,
+                        Value = o.Last().Value,
+                        CountyCode = a.CodJudet,
+                        PollingStationNumber = a.NumarSectie,
+                        LastModified = lastModified
+                    })
+                }).SelectMany(a => a.flat)
+                .Distinct()
+                .ToList();
+
+            return list;
+        }
+    }
+    
     public static class EfBuilderExtensions
     {
         /// <summary>
