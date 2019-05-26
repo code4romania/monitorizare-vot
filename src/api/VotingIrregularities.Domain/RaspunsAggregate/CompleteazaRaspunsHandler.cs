@@ -61,18 +61,20 @@ namespace VotingIrregularities.Domain.RaspunsAggregate
                         var intrebari = message.Raspunsuri.Select(a => a.IdIntrebare).Distinct().ToList();
 
                         // delete existing answers for posted questions on this 'sectie'
-                        _context.Answers
-                            .Include(a => a.OptionAnswered)
-                            .Where(
-                                a =>
-                                    a.IdObserver == message.IdObservator &&
-                                    a.IdPollingStation == sectie)
-                                   .WhereRaspunsContains(intrebari)
-                            .Delete();
+                        var todelete = _context.Answers
+                                .Include(a => a.OptionAnswered)
+                                .Where(
+                                    a =>
+                                        a.IdObserver == message.IdObservator &&
+                                        a.IdPollingStation == sectie)
+                                //.Where(a => intrebari.Contains(a.OptionAnswered.IdQuestion))
+                                .WhereRaspunsContains(intrebari)
+                            ;
+                            //.Delete();
+                        _context.Answers.RemoveRange(todelete);
 
                         await _context.SaveChangesAsync();
                     }
-
                     _context.Answers.AddRange(raspunsuriNoi);
 
                     var result =  await _context.SaveChangesAsync();
