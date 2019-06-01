@@ -2,14 +2,15 @@
 using MediatR;
 using System.Threading.Tasks;
 using VotingIrregularities.Api.Services;
+using VotingIrregularities.Api.Models;
 
 namespace VotingIrregularities.Api.Queries
 {
-    public class PollingStationsAssignmentQuery : IRequest<Dictionary<string, int>>
+    public class PollingStationsAssignmentQuery : IRequest<IEnumerable<CountyPollingStationLimit>>
     {
     }
 
-    public class PollingStationAssignmentHandler : AsyncRequestHandler<PollingStationsAssignmentQuery, Dictionary<string, int>>
+    public class PollingStationAssignmentHandler : AsyncRequestHandler<PollingStationsAssignmentQuery, IEnumerable<CountyPollingStationLimit>>
     {
         private readonly IPollingStationService _pollingStationService;
 
@@ -18,7 +19,7 @@ namespace VotingIrregularities.Api.Queries
             _pollingStationService = pollingStationService;
         }
 
-        protected override async Task<Dictionary<string,int>> HandleCore(PollingStationsAssignmentQuery message)
+        protected override async Task<IEnumerable<CountyPollingStationLimit>> HandleCore(PollingStationsAssignmentQuery message)
         {
             return await _pollingStationService.GetPollingStationsAssignmentsForAllCounties();
         }
