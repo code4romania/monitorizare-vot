@@ -8,6 +8,7 @@ using VotingIrregularities.Domain.SectieAggregate;
 
 namespace VotingIrregularities.Api.Models
 {
+    [Obsolete("Use AddPollingStationInfo instead.")]
     public class ModelDateSectie
     {
         [Required(AllowEmptyStrings = false)]
