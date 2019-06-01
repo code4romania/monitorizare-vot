@@ -4,7 +4,8 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using VotingIrregularities.Api.Models;
 using Microsoft.Extensions.Configuration;
-using System;
+using VotingIrregularities.Domain.Models;
+using VotingIrregularities.Api.Models.Forms;
 
 namespace VotingIrregularities.Api.Controllers
 {
@@ -12,14 +13,14 @@ namespace VotingIrregularities.Api.Controllers
     /// <summary>
     /// Ruta Formular ofera suport pentru toate operatiile legate de formularele completate de observatori
     /// </summary>
-    [Route("api/v1/formular")]
-    [Obsolete]
-    public class Formular : Controller
+    
+    [Route("api/v1/form")]
+    public class FormController : Controller
     {
         private readonly IConfigurationRoot _configuration;
         private readonly IMediator _mediator;
 
-        public Formular(IMediator mediator, IConfigurationRoot configuration)
+        public FormController(IMediator mediator, IConfigurationRoot configuration)
         {
             _configuration = configuration;
             _mediator = mediator;
@@ -30,13 +31,14 @@ namespace VotingIrregularities.Api.Controllers
         /// Daca versiunea returnata difera de cea din aplicatie, atunci trebuie incarcat formularul din nou 
         /// </summary>
         /// <returns></returns>
-        [HttpGet("versiune")]
+        [HttpGet("versions")]
+        [Produces(typeof(Dictionary<string,int>))]
         public async Task<IActionResult> GetFormVersions()
         {
             var formsAsDict = new Dictionary<string, int>();
             (await _mediator.Send(new FormVersionQuery())).ForEach(form => formsAsDict.Add(form.Id, form.CurrentVersion));
 
-            return Ok(new { Versiune = formsAsDict });
+            return Ok(new { Versions = formsAsDict });
         }
 
         /// <summary>
@@ -45,20 +47,20 @@ namespace VotingIrregularities.Api.Controllers
         /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> GetFormsAsync()
-            => Ok(new ModelVersiune { Formulare = await _mediator.Send(new FormVersionQuery()) });
+            => Ok(new { FormVersions = await _mediator.Send(new FormVersionQuery()) });
 
         /// <summary>
         /// Se interogheaza ultima versiunea a formularului pentru observatori si se primeste definitia lui. 
         /// In definitia unui formular nu intra intrebarile standard (ora sosirii, etc). 
         /// Acestea se considera implicite pe fiecare formular.
         /// </summary>
-        /// <param name="idformular">Id-ul formularului pentru care trebuie preluata definitia</param>
+        /// <param name="formId">Id-ul formularului pentru care trebuie preluata definitia</param>
         /// <returns></returns>
-        [HttpGet("{idformular}")]
-        public async Task<IEnumerable<ModelSectiune>> GetFormAsync(string idformular)
+        [HttpGet("{formId}")]
+        public async Task<IEnumerable<FormSectionDTO>> GetFormAsync(string formId)
         {
-            var result = await _mediator.Send(new FormQuestionsQuery {
-                CodFormular = idformular,
+            var result = await _mediator.Send(new FormQuestionQuery {
+                FormCode = formId,
                 CacheHours = _configuration.GetValue<int>("DefaultCacheHours"),
                 CacheMinutes = _configuration.GetValue<int>("DefaultCacheMinutes"),
                 CacheSeconds = _configuration.GetValue<int>("DefaultCacheSeconds")

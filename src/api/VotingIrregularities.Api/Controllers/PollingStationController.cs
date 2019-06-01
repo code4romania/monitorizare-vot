@@ -11,41 +11,43 @@ using VotingIrregularities.Api.Models;
 using VotingIrregularities.Domain.SectieAggregate;
 using VotingIrregularities.Api.Helpers;
 using VotingIrregularities.Api.Queries;
+using VotingIrregularities.Domain.Models;
+using System.Collections.Generic;
+using VotingIrregularities.Api.Models.PollingStation;
 
 namespace VotingIrregularities.Api.Controllers
 {
     /// <summary>
     /// Controller responsible for interacting with the polling stations - PollingStationInfo 
     /// </summary>
-    [Route("api/v1/sectie")]
-    [Obsolete]
-    public class Sectie : Controller
+    [Route("api/v1/polling-station")]
+    public class PollingStationController : Controller
     {
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
 
-        public Sectie(IMediator mediator, IMapper mapper)
+        public PollingStationController(IMediator mediator, IMapper mapper)
         {
             _mapper = mapper;
             _mediator = mediator;
         }
 
         /// <summary>
-        /// Se apeleaza aceast metoda cand observatorul salveaza informatiile legate de ora sosirii. ora plecarii, zona urbana, info despre presedintele BESV.
-        /// Aceste informatii sunt insotite de id-ul sectiei de votare.
+        /// This method gets called when the observer saves the info regarding the arrival time, leave time, urban area, BESV president
+        /// These info come together with the polling station id.
         /// </summary>
-        /// <param name="dateSectie">Informatii despre sectia de votare si observatorul alocat ei</param>
+        /// <param name="pollingStationInfo">Info about the polling station and its' allocated observer</param>
         /// <returns></returns>
         [HttpPost()]
-        public async Task<IAsyncResult> Inregistreaza([FromBody] ModelDateSectie dateSectie)
+        public async Task<IAsyncResult> Register([FromBody] AddPollingStationInfo pollingStationInfo)
         {
             if (!ModelState.IsValid)
                 return this.ResultAsync(HttpStatusCode.BadRequest, ModelState);
 
-            var command = _mapper.Map<InregistreazaSectieCommand>(dateSectie);
+            var command = _mapper.Map<RegisterPollingStationCommand>(pollingStationInfo);
 
             // TODO[DH] get the actual IdObservator from token
-            command.IdObservator = int.Parse(User.Claims.First(c => c.Type == ClaimsHelper._observerIdProperty).Value);
+            command.IdObserver = int.Parse(User.Claims.First(c => c.Type == ClaimsHelper._observerIdProperty).Value);
 
             var result = await _mediator.Send(command);
 
@@ -53,26 +55,26 @@ namespace VotingIrregularities.Api.Controllers
         }
 
         /// <summary>
-        /// Se apeleaza aceasta metoda cand se actualizeaza informatiile legate de ora plecarii.
-        /// Aceste informatii sunt insotite de id-ul sectiei de votare.
+        /// This method gets called when updating information about the leave time.
+        /// These info come together with the polling station id.
         /// </summary>
-        /// <param name="dateSectie">Numar sectie de votare, cod judet, ora plecarii</param>
+        /// <param name="pollingStationInfo">Polling station id, county code, leave time</param>
         /// <returns></returns>
         [HttpPut]
-        public async Task<IAsyncResult> Actualizeaza([FromBody] ModelActualizareDateSectie dateSectie)
+        public async Task<IAsyncResult> Update([FromBody] UpdatePollingStationInfo pollingStationInfo)
         {
             if (!ModelState.IsValid)
                 return this.ResultAsync(HttpStatusCode.BadRequest, ModelState);
 
-            int idSectie = await _mediator.Send(_mapper.Map<ModelSectieQuery>(dateSectie));
+            int idSectie = await _mediator.Send(_mapper.Map<PollingStationQuery>(pollingStationInfo));
             if (idSectie < 0)
                 return this.ResultAsync(HttpStatusCode.NotFound);
 
-            var command = _mapper.Map<ActualizeazaSectieCommand>(dateSectie);
+            var command = _mapper.Map<UpdatePollingSectionCommand>(pollingStationInfo);
 
             // TODO get the actual IdObservator from token
-            command.IdObservator = int.Parse(User.Claims.First(c => c.Type == "IdObservator").Value);
-            command.IdSectieDeVotare = idSectie;
+            command.IdObserver = int.Parse(User.Claims.First(c => c.Type == "IdObservator").Value);
+            command.IdPollingStation = idSectie;
 
             var result = await _mediator.Send(command);
 
@@ -84,6 +86,7 @@ namespace VotingIrregularities.Api.Controllers
         /// </summary>
         /// <returns>{ "countyCode": "numberOfPollingStationsAssigned", ... }</returns>
         [HttpGet]
+        [Produces(typeof(IEnumerable<CountyPollingStationLimit>))]
         public async Task<IActionResult> PollingStationsLimits()
         {
             var result = await _mediator.Send(new PollingStationsAssignmentQuery());
