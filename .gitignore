@@ -254,3 +254,4 @@ ModelManifest.xml
 /src/api/modules/WebAPIContrib.Core/
 
 .vscode
+.idea
