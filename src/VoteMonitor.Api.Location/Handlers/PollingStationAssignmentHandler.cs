@@ -1,15 +1,12 @@
 ﻿using System.Collections.Generic;
-using MediatR;
 using System.Threading.Tasks;
-using VotingIrregularities.Api.Services;
-using VotingIrregularities.Api.Models;
+using MediatR;
+using VoteMonitor.Api.Location.Models;
+using VoteMonitor.Api.Location.Queries;
+using VoteMonitor.Api.Location.Services;
 
-namespace VotingIrregularities.Api.Queries
+namespace VoteMonitor.Api.Location.Handlers
 {
-    public class PollingStationsAssignmentQuery : IRequest<IEnumerable<CountyPollingStationLimit>>
-    {
-    }
-
     public class PollingStationAssignmentHandler : AsyncRequestHandler<PollingStationsAssignmentQuery, IEnumerable<CountyPollingStationLimit>>
     {
         private readonly IPollingStationService _pollingStationService;

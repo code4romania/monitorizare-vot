@@ -28,14 +28,15 @@ using ILogger = Microsoft.Extensions.Logging.ILogger;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using VotingIrregularities.Api.Models.AccountViewModels;
-using VotingIrregularities.Api.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
-using Serilog.Sinks.ApplicationInsights.Sinks.ApplicationInsights.TelemetryConverters;
 using SimpleInjector.Lifestyles;
 using Swashbuckle.AspNetCore.Swagger;
 using VotingIrregularities.Api.Options;
 using Microsoft.ApplicationInsights.Extensibility;
+using VoteMonitor.Api.Core;
+using VoteMonitor.Api.Location.Controllers;
+using VoteMonitor.Api.Location.Services;
 using VotingIrregularities.Domain;
 
 namespace VotingIrregularities.Api
@@ -135,9 +136,12 @@ namespace VotingIrregularities.Api
                 {
                     var policy = new AuthorizationPolicyBuilder()
                                      .RequireAuthenticatedUser()
+                                     .RequireClaim(ClaimsHelper.ObserverIdProperty)
                                      .Build();
                     config.Filters.Add(new AuthorizeFilter(policy));
                 })
+                .AddApplicationPart(typeof(PollingStationController).Assembly)
+                .AddControllersAsServices()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddSwaggerGen(options =>
@@ -370,7 +374,6 @@ namespace VotingIrregularities.Api
 
         private IMediator BuildMediator()
         {
-
             var assemblies = GetAssemblies().ToArray();
             _container.RegisterSingleton<IMediator, Mediator>();
             _container.Register(typeof(IRequestHandler<,>), assemblies);
@@ -403,6 +406,7 @@ namespace VotingIrregularities.Api
             yield return typeof(IMediator).GetTypeInfo().Assembly;
             yield return typeof(Startup).GetTypeInfo().Assembly;
             yield return typeof(VotingContext).GetTypeInfo().Assembly;
+            yield return typeof(PollingStationController).GetTypeInfo().Assembly;
             // just to identify VotingIrregularities.Domain assembly
         }
 

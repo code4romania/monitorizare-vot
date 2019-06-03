@@ -1,13 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using VotingIrregularities.Api.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using VoteMonitor.Api.Location.Models;
 using VotingIrregularities.Domain.Models;
 
-namespace VotingIrregularities.Api.Services
+namespace VoteMonitor.Api.Location.Services
 {
     public class PollingStationService : IPollingStationService
     {
@@ -43,11 +43,10 @@ namespace VotingIrregularities.Api.Services
             try
             {
                 var idSectie = await
-                _context.PollingStations
-                    .Where(a => a.IdCounty == countyId &&
-                                a.Number == pollingStationNumber)
-                    .Select(a => a.Id)
-                    .ToListAsync();
+                EntityFrameworkQueryableExtensions.ToListAsync<int>(_context.PollingStations
+                        .Where(a => a.IdCounty == countyId &&
+                                    a.Number == pollingStationNumber)
+                        .Select(a => a.Id));
 
                 if (idSectie.Count == 0)
                     throw new ArgumentException($"No Polling station found for: {new { countyId, pollingStationNumber }}");

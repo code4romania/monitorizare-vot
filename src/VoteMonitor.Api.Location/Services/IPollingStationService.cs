@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using VotingIrregularities.Api.Models;
+using VoteMonitor.Api.Location.Models;
 
-namespace VotingIrregularities.Api.Services
+namespace VoteMonitor.Api.Location.Services
 {
     public interface IPollingStationService
     {

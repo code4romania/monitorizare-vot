@@ -13,7 +13,7 @@ namespace VotingIrregularities.Api.Controllers
     /// Ruta Formular ofera suport pentru toate operatiile legate de formularele completate de observatori
     /// </summary>
     [Route("api/v1/formular")]
-    [Obsolete]
+    [Obsolete("use /form instead")]
     public class Formular : Controller
     {
         private readonly IConfigurationRoot _configuration;

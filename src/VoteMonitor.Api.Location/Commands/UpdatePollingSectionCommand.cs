@@ -1,7 +1,7 @@
-﻿using MediatR;
-using System;
+﻿using System;
+using MediatR;
 
-namespace VotingIrregularities.Domain.SectieAggregate
+namespace VoteMonitor.Api.Location.Commands
 {
     public class UpdatePollingSectionCommand : IRequest<int>
     {

@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using System.Collections.Generic;
 using VotingIrregularities.Api.Models.Forms;
-using VotingIrregularities.Domain.Models;
 
 namespace VotingIrregularities.Api.Models
 {
