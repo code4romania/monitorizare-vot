@@ -2,6 +2,8 @@
 
 [![GitHub contributors](https://img.shields.io/github/contributors/code4romania/monitorizare-vot.svg?style=for-the-badge)](https://github.com/code4romania/monitorizare-vot/graphs/contributors) [![GitHub last commit](https://img.shields.io/github/last-commit/code4romania/monitorizare-vot.svg?style=for-the-badge)](https://github.com/code4romania/monitorizare-vot/commits/master) [![License: MPL 2.0](https://img.shields.io/badge/license-MPL%202.0-brightgreen.svg?style=for-the-badge)](https://opensource.org/licenses/MPL-2.0)
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=code4romania_monitorizare-vot&metric=alert_status)](https://sonarcloud.io/dashboard?id=code4romania_monitorizare-vot)
+
 [See the project live](http://monitorizarevot.ro/)
 
 Monitorizare Vot is a mobile app for monitoring elections by authorized observers. They can use the app in order to offer a real-time snapshot on what is going on at polling stations and they can report on any noticeable irregularities. 
