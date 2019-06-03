@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using System.Threading.Tasks;
+using VoteMonitor.Api.Location.Services;
 using VotingIrregularities.Api.Models;
-using VotingIrregularities.Api.Services;
 
 namespace VotingIrregularities.Api.Queries
 {

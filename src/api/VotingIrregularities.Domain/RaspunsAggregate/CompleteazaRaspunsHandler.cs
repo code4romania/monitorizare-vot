@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using LinqKit;
@@ -12,7 +10,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using VotingIrregularities.Domain.Models;
 using VotingIrregularities.Domain.RaspunsAggregate.Commands;
-using Z.EntityFramework.Plus;
 
 namespace VotingIrregularities.Domain.RaspunsAggregate
 {

@@ -36,5 +36,6 @@ namespace VotingIrregularities.Api.Models.AccountViewModels
         public int ObserverId { get; set; }
 
         public bool FirstAuthentication { get; set; }
+        public int IdNgo { get; set; }
     }
 }

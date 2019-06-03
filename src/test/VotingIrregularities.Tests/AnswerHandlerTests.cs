@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using AutoMapper;
-using VotingIrregularities.Domain.Models;
 using VotingIrregularities.Domain.RaspunsAggregate;
 using VotingIrregularities.Domain.RaspunsAggregate.Commands;
 using Xunit;
 using System.Linq;
-using System.Linq.Expressions;
 
 namespace VotingIrregularities.Tests
 {

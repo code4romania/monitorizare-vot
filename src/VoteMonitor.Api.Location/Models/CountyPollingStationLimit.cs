@@ -1,4 +1,4 @@
-﻿namespace VotingIrregularities.Api.Models
+﻿namespace VoteMonitor.Api.Location.Models
 {
     public class CountyPollingStationLimit
     {

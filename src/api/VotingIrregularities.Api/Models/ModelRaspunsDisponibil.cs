@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace VotingIrregularities.Api.Models
+﻿namespace VotingIrregularities.Api.Models
 {
     public class ModelRaspunsDisponibil
     {

@@ -1,21 +1,17 @@
-﻿using AutoMapper;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using VotingIrregularities.Api.Extensions;
-using VotingIrregularities.Api.Models;
-using VotingIrregularities.Domain.SectieAggregate;
-using VotingIrregularities.Api.Helpers;
-using VotingIrregularities.Api.Queries;
-using VotingIrregularities.Domain.Models;
-using System.Collections.Generic;
-using VotingIrregularities.Api.Models.PollingStation;
+using AutoMapper;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using VoteMonitor.Api.Core;
+using VoteMonitor.Api.Location.Commands;
+using VoteMonitor.Api.Location.Models;
+using VoteMonitor.Api.Location.Queries;
 
-namespace VotingIrregularities.Api.Controllers
+namespace VoteMonitor.Api.Location.Controllers
 {
     /// <summary>
     /// Controller responsible for interacting with the polling stations - PollingStationInfo 
@@ -38,7 +34,7 @@ namespace VotingIrregularities.Api.Controllers
         /// </summary>
         /// <param name="pollingStationInfo">Info about the polling station and its' allocated observer</param>
         /// <returns></returns>
-        [HttpPost()]
+        [HttpPost]
         public async Task<IAsyncResult> Register([FromBody] AddPollingStationInfo pollingStationInfo)
         {
             if (!ModelState.IsValid)
@@ -47,7 +43,7 @@ namespace VotingIrregularities.Api.Controllers
             var command = _mapper.Map<RegisterPollingStationCommand>(pollingStationInfo);
 
             // TODO[DH] get the actual IdObservator from token
-            command.IdObserver = int.Parse(User.Claims.First(c => c.Type == ClaimsHelper._observerIdProperty).Value);
+            command.IdObserver = int.Parse(User.Claims.First(c => c.Type == ClaimsHelper.ObserverIdProperty).Value);
 
             var result = await _mediator.Send(command);
 

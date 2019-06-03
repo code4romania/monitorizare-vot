@@ -37,8 +37,9 @@ namespace VotingIrregularities.Api.Services
             return Task.FromResult(localFile);
         }
 
-        public async Task Initialize()
+        public Task Initialize()
         {
+            return null;
         }
     }
 }

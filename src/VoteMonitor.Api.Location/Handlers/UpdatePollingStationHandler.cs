@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Threading.Tasks;
-using MediatR;
-using VotingIrregularities.Domain.Models;
-using Microsoft.Extensions.Logging;
 using AutoMapper;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using VoteMonitor.Api.Location.Commands;
+using VotingIrregularities.Domain.Models;
+using VotingIrregularities.Domain.SectieAggregate;
 
-namespace VotingIrregularities.Domain.SectieAggregate
+namespace VoteMonitor.Api.Location.Handlers
 {
     public class UpdatePollingSectionHandler : AsyncRequestHandler<UpdatePollingSectionCommand, int>
     {

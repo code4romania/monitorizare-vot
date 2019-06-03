@@ -5,10 +5,10 @@ using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using VoteMonitor.Api.Location.Commands;
 using VotingIrregularities.Domain.Models;
 
-
-namespace VotingIrregularities.Domain.SectieAggregate
+namespace VoteMonitor.Api.Location.Handlers
 {
     public class RegisterPollingSectionHandler : AsyncRequestHandler<RegisterPollingStationCommand, int>
     {

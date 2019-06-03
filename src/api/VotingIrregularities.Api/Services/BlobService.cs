@@ -38,9 +38,11 @@ namespace VotingIrregularities.Api.Services
             var blockBlob = container.GetBlockBlobReference(Guid.NewGuid().ToString("N") + extension);
 
             // Create or overwrite the previous created blob with contents from stream.
-            await blockBlob.UploadFromStreamAsync(sourceStream);
-
             blockBlob.Properties.ContentType = mimeType;
+
+            await blockBlob.UploadFromStreamAsync(sourceStream, sourceStream.Length);
+
+            
             await blockBlob.SetPropertiesAsync();
 
             return blockBlob.Uri.ToString();
