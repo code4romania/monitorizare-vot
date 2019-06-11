@@ -24,6 +24,8 @@ The app also has a web version, available for every citizen who wants to report 
 
 ## Repos and projects
 
+![alt text](https://raw.githubusercontent.com/code4romania/monitorizare-vot/develop/MV%20solutions.png)
+
 Client apps:
 
 - android - https://github.com/code4romania/monitorizare-vot-android
