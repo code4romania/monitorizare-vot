@@ -14,8 +14,16 @@
     <NoWarn>1701;1702;1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Helpers\**" />
+    <Content Remove="Helpers\**" />
+    <EmbeddedResource Remove="Helpers\**" />
+    <None Remove="Helpers\**" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\VoteMonitor.Api.Core\VoteMonitor.Api.Core.csproj" />
+    <ProjectReference Include="..\VoteMonitor.Api.Form\VoteMonitor.Api.Form.csproj" />
     <ProjectReference Include="..\VoteMonitor.Api.Location\VoteMonitor.Api.Location.csproj" />
+    <ProjectReference Include="..\VoteMonitor.Api.Note\VoteMonitor.Api.Note.csproj" />
     <ProjectReference Include="..\VoteMonitor.Api.Observer\VoteMonitor.Api.Observer.csproj" />
     <ProjectReference Include="..\VotingIrregularities.Domain\VotingIrregularities.Domain.csproj" />
   </ItemGroup>
@@ -42,7 +50,6 @@
     <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Helpers\" />
     <Folder Include="Models\PollingStation\" />
   </ItemGroup>
 </Project>

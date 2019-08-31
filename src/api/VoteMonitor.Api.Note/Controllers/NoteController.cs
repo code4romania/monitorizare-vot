@@ -4,28 +4,33 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using VotingIrregularities.Api.Models;
 using AutoMapper;
 using VoteMonitor.Api.Core;
-using VotingIrregularities.Domain.NotaAggregate;
-using System;
+using VoteMonitor.Api.Note.Models;
+using VoteMonitor.Api.Location.Queries;
+using VoteMonitor.Api.Note.Commands;
+using System.Collections.Generic;
 
-namespace VotingIrregularities.Api.Controllers
+namespace VoteMonitor.Api.Note.Controllers
 {
-    [Route("api/v1/note")]
-    [Obsolete("use api/v2/note")]
-    
-    public class Nota : Controller
+    [Route("api/v2/note")]
+    public class NoteController : Controller
     {
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
 
-        public Nota(IMediator mediator, IMapper mapper)
+        public NoteController(IMediator mediator, IMapper mapper)
         {
             _mediator = mediator;
             _mapper = mapper;
         }
 
+
+        [HttpGet]
+        public async Task<List<NoteModel>> Get(NoteQuery filter)
+        {
+            return await _mediator.Send(filter);
+        }
         /// <summary>
         /// Aceasta ruta este folosita cand observatorul incarca o imagine sau un clip in cadrul unei note.
         /// Fisierului atasat i se da contenttype = Content-Type: multipart/form-data
@@ -37,33 +42,33 @@ namespace VotingIrregularities.Api.Controllers
         /// API-ul va returna adresa publica a fisierului unde este salvat si obiectul trimis prin formdata
         /// </summary>
         /// <param name="file"></param>
-        /// <param name="nota"></param>
+        /// <param name="note"></param>
         /// <returns></returns>
-        [HttpPost("ataseaza")]
-        public async Task<dynamic> Upload(IFormFile file, [FromForm]ModelNota nota)
+        [HttpPost("upload")]
+        public async Task<dynamic> Upload(IFormFile file, [FromForm]NoteModel note)
         {
             if (!ModelState.IsValid)
                 return this.ResultAsync(HttpStatusCode.BadRequest);
 
             // TODO[DH] use a pipeline instead of separate Send commands
             // daca nota este asociata sectiei
-            int idSectie = await _mediator.Send(_mapper.Map<ModelSectieQuery>(nota));
+            int idSectie = await _mediator.Send(_mapper.Map<PollingStationQuery>(note));
             if (idSectie < 0)
                 return this.ResultAsync(HttpStatusCode.NotFound);
 
-            var command = _mapper.Map<AdaugaNotaCommand>(nota);
-            var fileAddress = await _mediator.Send(new ModelFile { File = file });
+            var command = _mapper.Map<AddNoteCommand>(note);
+            var fileAddress = await _mediator.Send(new FileModel { File = file });
 
-            command.IdObservator = int.Parse(User.Claims.First(c => c.Type == ClaimsHelper.ObserverIdProperty).Value);
-            command.CaleFisierAtasat = fileAddress;
-            command.IdSectieDeVotare = idSectie;
+            command.IdObserver = int.Parse(User.Claims.First(c => c.Type == ClaimsHelper.ObserverIdProperty).Value);
+            command.AttachementPath = fileAddress;
+            command.IdPollingStation = idSectie;
 
             var result = await _mediator.Send(command);
 
             if (result < 0)
                 return this.ResultAsync(HttpStatusCode.NotFound);
 
-            return await Task.FromResult(new { FileAdress = fileAddress, nota = nota });
+            return await Task.FromResult(new { FileAdress = fileAddress, note });
         }
     }
 }

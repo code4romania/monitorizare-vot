@@ -5,6 +5,7 @@ using VotingIrregularities.Domain.Models;
 
 namespace VotingIrregularities.Domain.NotaAggregate
 {
+    [Obsolete("Use AddNoteCommand instead ")]
     public class AdaugaNotaCommand : IRequest<int>
     {
         public int IdObservator { get; set; }

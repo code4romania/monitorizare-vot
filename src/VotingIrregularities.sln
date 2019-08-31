@@ -27,7 +27,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoteMonitor.Api.Observer", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoteMonitor.Api.Location", "api\VoteMonitor.Api.Location\VoteMonitor.Api.Location.csproj", "{09E89763-37C4-4C21-8D2A-5ACAAC2BB0E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoteMonitor.Api.Core", "api\VoteMonitor.Api.Core\VoteMonitor.Api.Core.csproj", "{7EE053E7-C2E8-43E7-B103-1D224443A632}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoteMonitor.Api.Core", "api\VoteMonitor.Api.Core\VoteMonitor.Api.Core.csproj", "{7EE053E7-C2E8-43E7-B103-1D224443A632}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoteMonitor.Api.Note", "api\VoteMonitor.Api.Note\VoteMonitor.Api.Note.csproj", "{A2B9B61F-14DC-42AF-B872-93B341BDDCD3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoteMonitor.Api.Form", "api\VoteMonitor.Api.Form\VoteMonitor.Api.Form.csproj", "{476CC12D-74F8-4971-B5E2-FEA84DF52FE1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoteMonitor.Api", "api\VoteMonitor.Api\VoteMonitor.Api.csproj", "{1DD62490-D1CF-49C2-843C-2EEB6293E8E1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -67,6 +73,18 @@ Global
 		{7EE053E7-C2E8-43E7-B103-1D224443A632}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7EE053E7-C2E8-43E7-B103-1D224443A632}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7EE053E7-C2E8-43E7-B103-1D224443A632}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2B9B61F-14DC-42AF-B872-93B341BDDCD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2B9B61F-14DC-42AF-B872-93B341BDDCD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2B9B61F-14DC-42AF-B872-93B341BDDCD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2B9B61F-14DC-42AF-B872-93B341BDDCD3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{476CC12D-74F8-4971-B5E2-FEA84DF52FE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{476CC12D-74F8-4971-B5E2-FEA84DF52FE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{476CC12D-74F8-4971-B5E2-FEA84DF52FE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{476CC12D-74F8-4971-B5E2-FEA84DF52FE1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1DD62490-D1CF-49C2-843C-2EEB6293E8E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DD62490-D1CF-49C2-843C-2EEB6293E8E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DD62490-D1CF-49C2-843C-2EEB6293E8E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DD62490-D1CF-49C2-843C-2EEB6293E8E1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -80,6 +98,9 @@ Global
 		{B8004522-7E3D-41B0-B33E-86B2F090D3AA} = {8A09B442-FB79-4293-BF9B-E34DD3AE70F3}
 		{09E89763-37C4-4C21-8D2A-5ACAAC2BB0E4} = {8A09B442-FB79-4293-BF9B-E34DD3AE70F3}
 		{7EE053E7-C2E8-43E7-B103-1D224443A632} = {8A09B442-FB79-4293-BF9B-E34DD3AE70F3}
+		{A2B9B61F-14DC-42AF-B872-93B341BDDCD3} = {8A09B442-FB79-4293-BF9B-E34DD3AE70F3}
+		{476CC12D-74F8-4971-B5E2-FEA84DF52FE1} = {8A09B442-FB79-4293-BF9B-E34DD3AE70F3}
+		{1DD62490-D1CF-49C2-843C-2EEB6293E8E1} = {8A09B442-FB79-4293-BF9B-E34DD3AE70F3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AF1523BC-7F31-4564-8E1B-D2DB4552FFCB}
