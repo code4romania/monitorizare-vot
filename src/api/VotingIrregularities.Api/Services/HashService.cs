@@ -2,6 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.Options;
+using VoteMonitor.Api.Core.Services;
 using VotingIrregularities.Api.Options;
 
 namespace VotingIrregularities.Api.Services

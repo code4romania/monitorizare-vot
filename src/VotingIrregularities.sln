@@ -23,11 +23,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VotingIrregularities.Tests"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VotingIrregularities.Domain.Seed", "api\VotingIrregularities.Domain.Seed\VotingIrregularities.Domain.Seed.csproj", "{EBCE8818-41D9-4089-98F4-A03BAA909210}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoteMonitor.Api.Observer", "VoteMonitor.Api.Observer\VoteMonitor.Api.Observer.csproj", "{B8004522-7E3D-41B0-B33E-86B2F090D3AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoteMonitor.Api.Observer", "api\VoteMonitor.Api.Observer\VoteMonitor.Api.Observer.csproj", "{B8004522-7E3D-41B0-B33E-86B2F090D3AA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoteMonitor.Api.Location", "VoteMonitor.Api.Location\VoteMonitor.Api.Location.csproj", "{09E89763-37C4-4C21-8D2A-5ACAAC2BB0E4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoteMonitor.Api.Location", "api\VoteMonitor.Api.Location\VoteMonitor.Api.Location.csproj", "{09E89763-37C4-4C21-8D2A-5ACAAC2BB0E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoteMonitor.Api.Core", "VoteMonitor.Api.Core\VoteMonitor.Api.Core.csproj", "{7EE053E7-C2E8-43E7-B103-1D224443A632}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoteMonitor.Api.Core", "api\VoteMonitor.Api.Core\VoteMonitor.Api.Core.csproj", "{7EE053E7-C2E8-43E7-B103-1D224443A632}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

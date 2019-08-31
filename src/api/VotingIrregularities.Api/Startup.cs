@@ -38,6 +38,8 @@ using VoteMonitor.Api.Core;
 using VoteMonitor.Api.Location.Controllers;
 using VoteMonitor.Api.Location.Services;
 using VotingIrregularities.Domain;
+using VoteMonitor.Api.Observer.Controllers;
+using VoteMonitor.Api.Core.Services;
 
 namespace VotingIrregularities.Api
 {
@@ -141,6 +143,7 @@ namespace VotingIrregularities.Api
                     config.Filters.Add(new AuthorizeFilter(policy));
                 })
                 .AddApplicationPart(typeof(PollingStationController).Assembly)
+                .AddApplicationPart(typeof(ObserverController).Assembly)
                 .AddControllersAsServices()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
@@ -187,7 +190,7 @@ namespace VotingIrregularities.Api
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory,
+        public void Configure(IApplicationBuilder app,
             IApplicationLifetime appLifetime)
         {
             app.UseStaticFiles();
@@ -362,7 +365,7 @@ namespace VotingIrregularities.Api
                 var optionsBuilder = new DbContextOptionsBuilder<TDbContext>();
 
                 optionsBuilder.UseSqlServer(connectionString);
-                
+
                 _container.RegisterInstance(optionsBuilder.Options);
                 _container.Register<TDbContext>(Lifestyle.Scoped);
             }
@@ -407,6 +410,7 @@ namespace VotingIrregularities.Api
             yield return typeof(Startup).GetTypeInfo().Assembly;
             yield return typeof(VotingContext).GetTypeInfo().Assembly;
             yield return typeof(PollingStationController).GetTypeInfo().Assembly;
+            yield return typeof(ObserverController).GetTypeInfo().Assembly;
             // just to identify VotingIrregularities.Domain assembly
         }
 

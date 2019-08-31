@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System.Linq;
 using System.Threading.Tasks;
+using VoteMonitor.Api.Core.Services;
 using VotingIrregularities.Api.Models.AccountViewModels;
 using VotingIrregularities.Api.Options;
-using VotingIrregularities.Api.Services;
 using VotingIrregularities.Domain.Models;
 
 namespace VotingIrregularities.Api.Queries
