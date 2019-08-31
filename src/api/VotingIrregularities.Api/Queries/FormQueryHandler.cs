@@ -9,18 +9,18 @@ using Microsoft.Extensions.Caching.Distributed;
 using VotingIrregularities.Api.Models;
 using VotingIrregularities.Api.Models.Forms;
 using VotingIrregularities.Api.Services;
-using VotingIrregularities.Domain.Models;
+using VoteMonitor.Entities;
 
 namespace VotingIrregularities.Api.Queries
 {
     public class FormQueryHandler :
         AsyncRequestHandler<FormQuestionQuery, IEnumerable<FormSectionDTO>>
     {
-        private readonly VotingContext _context;
+        private readonly VoteMonitorContext _context;
         private readonly IMapper _mapper;
         private readonly ICacheService _cacheService;
 
-        public FormQueryHandler(VotingContext context, IMapper mapper, ICacheService cacheService)
+        public FormQueryHandler(VoteMonitorContext context, IMapper mapper, ICacheService cacheService)
         {
             _context = context;
             _mapper = mapper;

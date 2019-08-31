@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 
-namespace VotingIrregularities.Domain.Models
+namespace VoteMonitor.Entities
 {
     public partial class FormVersion
     {

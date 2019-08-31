@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using VoteMonitor.Api.Observer.Commands;
 using VoteMonitor.Api.Core.Services;
-using VotingIrregularities.Domain.Models;
+using VoteMonitor.Entities;
 using System.IO;
 using System.Threading.Tasks;
 using System.Linq;
@@ -14,11 +14,11 @@ namespace VoteMonitor.Api.Observer.Handlers
         IRequestHandler<ImportObserversRequest, int>,
         IRequestHandler<NewObserverRequest, int>
     {
-        private readonly VotingContext _context;
+        private readonly VoteMonitorContext _context;
         private readonly ILogger _logger;
         private IHashService _hashService;
 
-        public ObserverRequestsHandler(VotingContext context, ILogger logger, IHashService hashService)
+        public ObserverRequestsHandler(VoteMonitorContext context, ILogger logger, IHashService hashService)
         {
             _context = context;
             _logger = logger;
@@ -45,7 +45,7 @@ namespace VoteMonitor.Api.Observer.Handlers
                     var data = fileContent.Split('\t');
                     var hashed = _hashService.GetHash(data[1]);
 
-                    var observer = new VotingIrregularities.Domain.Models.Observer
+                    var observer = new Entities.Observer
                     {
                         Id = startId + counter,
                         IdNgo = message.IdOng,
@@ -65,7 +65,7 @@ namespace VoteMonitor.Api.Observer.Handlers
         public Task<int> Handle(NewObserverRequest message, CancellationToken token)
         {
             var id = GetMaxIdObserver();
-            var observer = new VotingIrregularities.Domain.Models.Observer
+            var observer = new Entities.Observer
             {
                 Id = id,
                 IdNgo = message.IdOng,

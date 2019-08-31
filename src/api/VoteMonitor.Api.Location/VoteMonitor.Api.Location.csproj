@@ -12,7 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\VoteMonitor.Api.Core\VoteMonitor.Api.Core.csproj" />
-    <ProjectReference Include="..\VotingIrregularities.Domain\VotingIrregularities.Domain.csproj" />
+    <ProjectReference Include="..\VoteMonitor.Entities\VoteMonitor.Entities.csproj" />
   </ItemGroup>
 
 </Project>

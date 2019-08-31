@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace VotingIrregularities.Domain.Models
+namespace VoteMonitor.Entities
 {
     public partial class Note
     {

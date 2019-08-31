@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using MediatR;
-using VotingIrregularities.Domain.Models;
+using VoteMonitor.Entities;
 using Microsoft.Extensions.Logging;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
@@ -10,11 +10,11 @@ namespace VotingIrregularities.Domain.SectieAggregate
 {
     public class ActualizeazaSectieHandler : AsyncRequestHandler<ActualizeazaSectieCommand, int>
     {
-        private readonly VotingContext _context;
+        private readonly VoteMonitorContext _context;
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
 
-        public ActualizeazaSectieHandler(VotingContext context, ILogger logger, IMapper mapper)
+        public ActualizeazaSectieHandler(VoteMonitorContext context, ILogger logger, IMapper mapper)
         {
             _context = context;
             _logger = logger;

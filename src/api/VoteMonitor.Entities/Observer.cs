@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace VotingIrregularities.Domain.Models
+namespace VoteMonitor.Entities
 {
     public partial class Observer
     {

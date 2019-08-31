@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using System;
-using VotingIrregularities.Domain.Models;
+using VoteMonitor.Entities;
 
 namespace VotingIrregularities.Domain.NotaAggregate
 {

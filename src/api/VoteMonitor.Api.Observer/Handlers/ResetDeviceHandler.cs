@@ -4,16 +4,16 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using VoteMonitor.Api.Observer.Commands;
-using VotingIrregularities.Domain.Models;
+using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Observer.Handlers
 {
     public class ResetDeviceHandler : AsyncRequestHandler<ResetDeviceCommand, int>
     {
-        private readonly VotingContext _voteMonitorContext;
+        private readonly VoteMonitorContext _voteMonitorContext;
         private readonly ILogger _logger;
 
-        public ResetDeviceHandler(VotingContext context, ILogger logger)
+        public ResetDeviceHandler(VoteMonitorContext context, ILogger logger)
         {
             _voteMonitorContext = context;
             _logger = logger;
@@ -23,7 +23,7 @@ namespace VoteMonitor.Api.Observer.Handlers
         {
             try
             {
-                VotingIrregularities.Domain.Models.Observer observer = _voteMonitorContext.Observers
+                VoteMonitor.Entities.Observer observer = _voteMonitorContext.Observers
                     .Where(o => o.Phone == request.PhoneNumber &&
                                 o.IdNgo == request.IdNgo)
                     .First();
