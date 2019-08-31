@@ -11,7 +11,7 @@ namespace VoteMonitor.Api.Observer.Models
     {
         public ObserverProfile()
         {
-            _ = CreateMap<VotingIrregularities.Domain.Models.Observer, GeneratedObserver>()
+            _ = CreateMap<VoteMonitor.Entities.Observer, GeneratedObserver>()
                 .ForMember(dest => dest.Id, c => c.MapFrom(src => src.Phone))
                 .ForMember(dest => dest.Pin, c => c.MapFrom(src => src.Pin));
         }

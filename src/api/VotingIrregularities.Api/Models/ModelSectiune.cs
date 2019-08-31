@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using AutoMapper;
-using VotingIrregularities.Domain.Models;
+using VoteMonitor.Entities;
 
 namespace VotingIrregularities.Api.Models
 {

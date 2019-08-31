@@ -6,17 +6,17 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using VoteMonitor.Api.Location.Commands;
-using VotingIrregularities.Domain.Models;
+using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Location.Handlers
 {
     public class RegisterPollingSectionHandler : AsyncRequestHandler<RegisterPollingStationCommand, int>
     {
-        private readonly VotingContext _context;
+        private readonly VoteMonitorContext _context;
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
 
-        public RegisterPollingSectionHandler(VotingContext context, ILogger logger, IMapper mapper)
+        public RegisterPollingSectionHandler(VoteMonitorContext context, ILogger logger, IMapper mapper)
         {
             _context = context;
             _logger = logger;

@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace VotingIrregularities.Domain.Models
+namespace VoteMonitor.Entities
 {
-    public partial class VotingContext : DbContext
+    public partial class VoteMonitorContext : DbContext
     {
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

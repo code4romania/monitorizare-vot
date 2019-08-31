@@ -23,7 +23,7 @@ using VotingIrregularities.Api.Extensions;
 using SimpleInjector;
 using SimpleInjector.Integration.AspNetCore.Mvc;
 using VotingIrregularities.Api.Services;
-using VotingIrregularities.Domain.Models;
+using VoteMonitor.Entities;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -230,7 +230,7 @@ namespace VotingIrregularities.Api
             InitializeContainer(app);
 
             //Registering dbContext
-            RegisterDbContext<VotingContext>(Configuration.GetConnectionString("DefaultConnection"));
+            RegisterDbContext<VoteMonitorContext>(Configuration.GetConnectionString("DefaultConnection"));
 
             RegisterAutomapper();
             BuildMediator();
@@ -410,7 +410,7 @@ namespace VotingIrregularities.Api
         {
             yield return typeof(IMediator).GetTypeInfo().Assembly;
             yield return typeof(Startup).GetTypeInfo().Assembly;
-            yield return typeof(VotingContext).GetTypeInfo().Assembly;
+            yield return typeof(VoteMonitorContext).GetTypeInfo().Assembly;
             yield return typeof(PollingStationController).GetTypeInfo().Assembly;
             yield return typeof(ObserverController).GetTypeInfo().Assembly;
             yield return typeof(NoteController).GetTypeInfo().Assembly;
@@ -421,7 +421,7 @@ namespace VotingIrregularities.Api
         /// Initializing the DB migrations and seeding
         /// </summary>
         /// <param name="votingContext"></param>
-        private void InitializeDb(VotingContext votingContext)
+        private void InitializeDb(VoteMonitorContext votingContext)
         {
             // auto migration
             votingContext.Database.Migrate();

@@ -1,7 +1,7 @@
 ﻿using System;
 using AutoMapper;
 using MediatR;
-using VotingIrregularities.Domain.Models;
+using VoteMonitor.Entities;
 
 namespace VotingIrregularities.Domain.SectieAggregate
 {

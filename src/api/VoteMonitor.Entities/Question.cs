@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using VotingIrregularities.Domain.ValueObjects;
 
-namespace VotingIrregularities.Domain.Models
+namespace VoteMonitor.Entities
 {
     public partial class Question
     {

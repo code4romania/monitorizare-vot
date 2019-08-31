@@ -8,18 +8,18 @@ using LinqKit;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using VotingIrregularities.Domain.Models;
+using VoteMonitor.Entities;
 using VotingIrregularities.Domain.RaspunsAggregate.Commands;
 
 namespace VotingIrregularities.Domain.RaspunsAggregate
 {
     public class CompleteazaRaspunsHandler : AsyncRequestHandler<CompleteazaRaspunsCommand, int>
     {
-        private readonly VotingContext _context;
+        private readonly VoteMonitorContext _context;
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
 
-        public CompleteazaRaspunsHandler(VotingContext context, IMapper mapper, ILogger logger)
+        public CompleteazaRaspunsHandler(VoteMonitorContext context, IMapper mapper, ILogger logger)
         {
             _context = context;
             _mapper = mapper;

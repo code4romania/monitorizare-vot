@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 using System.Linq;
-using VotingIrregularities.Domain.Models;
+using VoteMonitor.Entities;
 
 namespace VotingIrregularities.Domain.Seed
 {
@@ -27,7 +27,7 @@ namespace VotingIrregularities.Domain.Seed
 
             using (var serviceScope = provider.GetService<IServiceScopeFactory>().CreateScope())
             {
-                var context = serviceScope.ServiceProvider.GetService<VotingContext>();
+                var context = serviceScope.ServiceProvider.GetService<VoteMonitorContext>();
                 _logger.LogDebug("Initializing Database for VotingContext...");
                 context.Database.Migrate();
                 _logger.LogDebug("Database created");
@@ -61,7 +61,7 @@ namespace VotingIrregularities.Domain.Seed
 
             // DB Context
             var conn = _configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<VotingContext>(options => options.UseSqlServer(conn));
+            services.AddDbContext<VoteMonitorContext>(options => options.UseSqlServer(conn));
         }
     }
 }
