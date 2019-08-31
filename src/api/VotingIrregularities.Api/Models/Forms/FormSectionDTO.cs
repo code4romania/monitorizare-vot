@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using System.Collections.Generic;
-using VotingIrregularities.Domain.Models;
+using VoteMonitor.Entities;
 
 namespace VotingIrregularities.Api.Models.Forms {
     public class FormSectionDTO {

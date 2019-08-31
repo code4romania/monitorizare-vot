@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using MediatR;
-using VotingIrregularities.Domain.Models;
+using VoteMonitor.Entities;
 using Microsoft.Extensions.Logging;
 using AutoMapper;
 using System;
@@ -11,11 +11,11 @@ namespace VotingIrregularities.Domain.NotaAggregate
 {
     public class AdaugaNotaHandler : IRequestHandler<AdaugaNotaCommand, int>
     {
-        private readonly VotingContext _context;
+        private readonly VoteMonitorContext _context;
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
 
-        public AdaugaNotaHandler(VotingContext context, ILogger logger, IMapper mapper)
+        public AdaugaNotaHandler(VoteMonitorContext context, ILogger logger, IMapper mapper)
         {
             _context = context;
             _logger = logger;

@@ -1,7 +1,7 @@
 ﻿using System;
 using AutoMapper;
 using VoteMonitor.Api.Location.Commands;
-using VotingIrregularities.Domain.Models;
+using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Location.MappingProfile
 {

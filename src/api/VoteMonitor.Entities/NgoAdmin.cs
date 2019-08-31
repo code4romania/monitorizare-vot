@@ -1,4 +1,4 @@
-﻿namespace VotingIrregularities.Domain.Models
+﻿namespace VoteMonitor.Entities
 {
     public partial class NgoAdmin
     {
