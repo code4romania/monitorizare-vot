@@ -29,7 +29,6 @@ namespace VoteMonitor.Api.Observer.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         [Produces(type: typeof(List<ObserverModel>))]
         public async Task<List<ObserverModel>> GetObservers(ObserverListQuery query)
         {
