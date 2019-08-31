@@ -1,8 +1,8 @@
-﻿using MediatR;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using MediatR;
 using VoteMonitor.Api.Note.Models;
 
-namespace VoteMonitor.Api.Note.Commands
+namespace VoteMonitor.Api.Note.Queries
 {
     public class NoteQuery : IRequest<List<NoteModel>>
     {
