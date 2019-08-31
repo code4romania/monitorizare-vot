@@ -41,6 +41,7 @@ using VotingIrregularities.Domain;
 using VoteMonitor.Api.Observer.Controllers;
 using VoteMonitor.Api.Core.Services;
 using VoteMonitor.Api.Note.Controllers;
+using VoteMonitor.Api.Note.Services;
 
 namespace VotingIrregularities.Api
 {
