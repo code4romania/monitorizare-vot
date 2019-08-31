@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
+using System;
 using System.ComponentModel.DataAnnotations;
 using VotingIrregularities.Domain.NotaAggregate;
 
 namespace VotingIrregularities.Api.Models
 {
+    [Obsolete("use NoteModel")]
     public class ModelNota
     {
         [Required(AllowEmptyStrings = false)]
