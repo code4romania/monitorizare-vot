@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 
-namespace VotingIrregularities.Api.Services
+namespace VoteMonitor.Api.Core.Services
 {
     /// <summary>
     /// Interface for the file service to be used

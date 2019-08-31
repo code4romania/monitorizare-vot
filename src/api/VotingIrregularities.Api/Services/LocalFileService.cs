@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using VoteMonitor.Api.Core.Services;
 using VotingIrregularities.Api.Options;
 
 namespace VotingIrregularities.Api.Services

@@ -3,6 +3,7 @@ using MediatR;
 using VotingIrregularities.Api.Services;
 using VotingIrregularities.Api.Models;
 using System.Threading.Tasks;
+using VoteMonitor.Api.Core.Services;
 
 namespace VotingIrregularities.Api.Queries
 {
