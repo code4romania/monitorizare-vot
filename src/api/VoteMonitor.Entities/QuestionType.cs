@@ -1,4 +1,4 @@
-﻿namespace VotingIrregularities.Domain.ValueObjects
+﻿namespace VoteMonitor.Entities
 {
     public enum QuestionType
     {

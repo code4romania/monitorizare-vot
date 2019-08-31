@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using VotingIrregularities.Domain.Models;
+using VoteMonitor.Entities;
 
 namespace VotingIrregularities.Domain.Migrations
 {
-    [DbContext(typeof(VotingContext))]
+    [DbContext(typeof(VoteMonitorContext))]
     [Migration("20190420122541_InitialMigrationScript")]
     partial class InitialMigrationScript
     {

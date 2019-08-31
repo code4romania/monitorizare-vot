@@ -31,9 +31,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoteMonitor.Api.Core", "api
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoteMonitor.Api.Note", "api\VoteMonitor.Api.Note\VoteMonitor.Api.Note.csproj", "{A2B9B61F-14DC-42AF-B872-93B341BDDCD3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoteMonitor.Api.Form", "api\VoteMonitor.Api.Form\VoteMonitor.Api.Form.csproj", "{476CC12D-74F8-4971-B5E2-FEA84DF52FE1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoteMonitor.Api.Form", "api\VoteMonitor.Api.Form\VoteMonitor.Api.Form.csproj", "{476CC12D-74F8-4971-B5E2-FEA84DF52FE1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoteMonitor.Api", "api\VoteMonitor.Api\VoteMonitor.Api.csproj", "{1DD62490-D1CF-49C2-843C-2EEB6293E8E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoteMonitor.Api", "api\VoteMonitor.Api\VoteMonitor.Api.csproj", "{1DD62490-D1CF-49C2-843C-2EEB6293E8E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoteMonitor.Entities", "api\VoteMonitor.Entities\VoteMonitor.Entities.csproj", "{6210AEE2-2164-4DD9-822F-E370336168BB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -85,6 +87,10 @@ Global
 		{1DD62490-D1CF-49C2-843C-2EEB6293E8E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1DD62490-D1CF-49C2-843C-2EEB6293E8E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1DD62490-D1CF-49C2-843C-2EEB6293E8E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6210AEE2-2164-4DD9-822F-E370336168BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6210AEE2-2164-4DD9-822F-E370336168BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6210AEE2-2164-4DD9-822F-E370336168BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6210AEE2-2164-4DD9-822F-E370336168BB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -101,6 +107,7 @@ Global
 		{A2B9B61F-14DC-42AF-B872-93B341BDDCD3} = {8A09B442-FB79-4293-BF9B-E34DD3AE70F3}
 		{476CC12D-74F8-4971-B5E2-FEA84DF52FE1} = {8A09B442-FB79-4293-BF9B-E34DD3AE70F3}
 		{1DD62490-D1CF-49C2-843C-2EEB6293E8E1} = {8A09B442-FB79-4293-BF9B-E34DD3AE70F3}
+		{6210AEE2-2164-4DD9-822F-E370336168BB} = {8A09B442-FB79-4293-BF9B-E34DD3AE70F3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AF1523BC-7F31-4564-8E1B-D2DB4552FFCB}

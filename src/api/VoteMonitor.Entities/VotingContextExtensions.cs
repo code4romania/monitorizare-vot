@@ -4,16 +4,16 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
-using VotingIrregularities.Domain.Models;
-using VotingIrregularities.Domain.ValueObjects;
+using VoteMonitor.Entities;
 
-namespace VotingIrregularities.Domain
+
+namespace VoteMonitor.Entities
 {
     public static class VotingContextExtensions
     {
         private static readonly string[] formsArray = new string[] { "A", "B", "C", "D", "E" };
 
-        public static void EnsureSeedData(this VotingContext context)
+        public static void EnsureSeedData(this VoteMonitorContext context)
         {
             if (!context.AllMigrationsApplied())
                return;
@@ -41,7 +41,7 @@ namespace VotingIrregularities.Domain
             }
         }
 
-        private static void SeedObservers(this VotingContext context)
+        private static void SeedObservers(this VoteMonitorContext context)
         {
             if (context.Observers.Any())
                 return;
@@ -53,7 +53,7 @@ namespace VotingIrregularities.Domain
             context.SaveChanges();
         }
 
-        private static void SeedCounties(this VotingContext context)
+        private static void SeedCounties(this VoteMonitorContext context)
         {
             if (context.Counties.Any())
                 return;
@@ -105,7 +105,7 @@ namespace VotingIrregularities.Domain
                 );
         }
 
-        private static void DataCleanUp(this VotingContext context)
+        private static void DataCleanUp(this VoteMonitorContext context)
         {
             context.Database.ExecuteSqlCommand("delete from OptionsToQuestions");
             context.Database.ExecuteSqlCommand("delete from Questions");
@@ -115,7 +115,7 @@ namespace VotingIrregularities.Domain
             context.Database.ExecuteSqlCommand("delete from Observers");
         }
 
-        private static void SeedOptions(this VotingContext context)
+        private static void SeedOptions(this VoteMonitorContext context)
         {
             if (context.Options.Any())
                 return;
@@ -136,7 +136,7 @@ namespace VotingIrregularities.Domain
 
             context.SaveChanges();
         }
-        private static void SeedFormSections(this VotingContext context)
+        private static void SeedFormSections(this VoteMonitorContext context)
         {
             if (context.FormSections.Any())
                 return;
@@ -149,7 +149,7 @@ namespace VotingIrregularities.Domain
             context.SaveChanges();
         }
 
-        private static void SeedQuestions(this VotingContext context, string idFormular)
+        private static void SeedQuestions(this VoteMonitorContext context, string idFormular)
         {
             if (context.Questions.Any(a => a.FormCode == idFormular.ToString()))
                 return;
@@ -219,7 +219,7 @@ namespace VotingIrregularities.Domain
 
         }
 
-        private static void SeedVersions(this VotingContext context, string idFormular)
+        private static void SeedVersions(this VoteMonitorContext context, string idFormular)
         {
             if (context.FormVersions.Any(f => f.Id == idFormular))
                 return;
@@ -231,7 +231,7 @@ namespace VotingIrregularities.Domain
             context.SaveChanges();
         }
 
-        private static void SeedNGOs(this VotingContext context)
+        private static void SeedNGOs(this VoteMonitorContext context)
         {
             if(context.Ngos.Any())
                 return;

@@ -5,18 +5,18 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using VotingIrregularities.Api.Models;
 using VotingIrregularities.Api.Services;
-using VotingIrregularities.Domain.Models;
+using VoteMonitor.Entities;
 
 namespace VotingIrregularities.Api.Queries
 {
     public class FormVersionQueryHandler : AsyncRequestHandler<FormVersionQuery, List<FormVersion>>
     {
 
-        private readonly VotingContext _context;
+        private readonly VoteMonitorContext _context;
         private readonly IMapper _mapper;
         private readonly ICacheService _cacheService;
 
-        public FormVersionQueryHandler(VotingContext context, IMapper mapper, ICacheService cacheService)
+        public FormVersionQueryHandler(VoteMonitorContext context, IMapper mapper, ICacheService cacheService)
         {
             _context = context;
             _mapper = mapper;

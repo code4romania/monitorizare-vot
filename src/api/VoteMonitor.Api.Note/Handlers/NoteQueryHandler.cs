@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading;
 using Microsoft.EntityFrameworkCore;
 using VoteMonitor.Api.Note.Commands;
-using VotingIrregularities.Domain.Models;
+using VoteMonitor.Entities;
 using VoteMonitor.Api.Note.Models;
 
 namespace VoteMonitor.Api.Note.Handlers
@@ -15,10 +15,10 @@ namespace VoteMonitor.Api.Note.Handlers
         IRequestHandler<NoteQuery, List<NoteModel>>
     {
 
-        private readonly VotingContext _context;
+        private readonly VoteMonitorContext _context;
         private readonly IMapper _mapper;
 
-        public NoteQueryHandler(VotingContext context, IMapper mapper)
+        public NoteQueryHandler(VoteMonitorContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;

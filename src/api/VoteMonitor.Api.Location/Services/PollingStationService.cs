@@ -5,16 +5,16 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using VoteMonitor.Api.Location.Models;
-using VotingIrregularities.Domain.Models;
+using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Location.Services
 {
     public class PollingStationService : IPollingStationService
     {
-        private readonly VotingContext _context;
+        private readonly VoteMonitorContext _context;
         private readonly ILogger _logger;
 
-        public PollingStationService(VotingContext context, ILogger logger)
+        public PollingStationService(VoteMonitorContext context, ILogger logger)
         {
             _context = context;
             _logger = logger;
