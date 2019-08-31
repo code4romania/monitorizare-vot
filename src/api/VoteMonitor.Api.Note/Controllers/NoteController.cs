@@ -53,7 +53,7 @@ namespace VoteMonitor.Api.Note.Controllers
 
             // TODO[DH] use a pipeline instead of separate Send commands
             // daca nota este asociata sectiei
-            int idSectie = await _mediator.Send(_mapper.Map<PollingStationQuery>(note));
+            var idSectie = await _mediator.Send(_mapper.Map<PollingStationQuery>(note));
             if (idSectie < 0)
                 return this.ResultAsync(HttpStatusCode.NotFound);
 
