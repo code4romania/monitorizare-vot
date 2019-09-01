@@ -1,4 +1,4 @@
-﻿namespace VotingIrregularities.Api.Models
+﻿namespace VoteMonitor.Api.Form.Models
 {
     public class ModelRaspunsDisponibil
     {

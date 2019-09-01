@@ -1,10 +1,9 @@
 ﻿using MediatR;
 using System.Collections.Generic;
-using VoteMonitor.Entities;
 
-namespace VotingIrregularities.Api.Models
+namespace VoteMonitor.Api.Form.Models
 {
-    public class FormVersionQuery : IRequest<List<Form>>
+    public class FormVersionQuery : IRequest<List<VoteMonitor.Entities.Form>>
     {
     }
 

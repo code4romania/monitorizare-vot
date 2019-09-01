@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using VotingIrregularities.Api.Models;
 using Microsoft.Extensions.Configuration;
 using System;
+using VoteMonitor.Api.Form.Models;
 
 namespace VotingIrregularities.Api.Controllers
 {

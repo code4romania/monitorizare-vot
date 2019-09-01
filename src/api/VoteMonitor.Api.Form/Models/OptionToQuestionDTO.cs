@@ -1,4 +1,4 @@
-﻿namespace VotingIrregularities.Api.Models.Forms {
+﻿namespace VoteMonitor.Api.Models {
     public class OptionToQuestionDTO {
         public int IdOption { get; set; }
         public string Text { get; set; }

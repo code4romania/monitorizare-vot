@@ -2,17 +2,15 @@
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using VotingIrregularities.Api.Models;
 using Microsoft.Extensions.Configuration;
-using VotingIrregularities.Api.Models.Forms;
+using VoteMonitor.Api.Form.Models;
 
-namespace VotingIrregularities.Api.Controllers
-{
+namespace VoteMonitor.Api.Form.Controllers {
     /// <inheritdoc />
     /// <summary>
     /// Ruta Formular ofera suport pentru toate operatiile legate de formularele completate de observatori
     /// </summary>
-    
+
     [Route("api/v1/form")]
     public class FormController : Controller
     {

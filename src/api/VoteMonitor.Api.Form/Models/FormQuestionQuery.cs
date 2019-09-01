@@ -1,8 +1,7 @@
 ﻿using MediatR;
 using System.Collections.Generic;
-using VotingIrregularities.Api.Models.Forms;
 
-namespace VotingIrregularities.Api.Models
+namespace VoteMonitor.Api.Form.Models
 {
 
     public class FormQuestionQuery : IRequest<IEnumerable<FormSectionDTO>>

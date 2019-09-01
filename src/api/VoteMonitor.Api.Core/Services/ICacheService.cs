@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
 
-namespace VotingIrregularities.Api.Services
+namespace VoteMonitor.Api.Core.Services
 {
     /// <summary>
     /// Interface for the caching service to be used.

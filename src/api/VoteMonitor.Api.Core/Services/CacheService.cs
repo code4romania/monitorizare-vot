@@ -4,7 +4,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-namespace VotingIrregularities.Api.Services
+namespace VoteMonitor.Api.Core.Services
 {
     /// <inheritdoc />
     public class CacheService : ICacheService
