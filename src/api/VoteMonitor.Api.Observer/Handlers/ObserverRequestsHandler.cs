@@ -12,7 +12,7 @@ namespace VoteMonitor.Api.Observer.Handlers
 {
     public class ObserverRequestsHandler :
         IRequestHandler<ImportObserversRequest, int>,
-        IRequestHandler<NewObserverRequest, int>
+        IRequestHandler<NewObserverCommand, int>
     {
         private readonly VoteMonitorContext _context;
         private readonly ILogger _logger;
@@ -62,16 +62,16 @@ namespace VoteMonitor.Api.Observer.Handlers
             return Task.FromResult(counter);
         }
 
-        public Task<int> Handle(NewObserverRequest message, CancellationToken token)
+        public Task<int> Handle(NewObserverCommand message, CancellationToken token)
         {
             var id = GetMaxIdObserver();
             var observer = new Entities.Observer
             {
                 Id = id,
-                IdNgo = message.IdOng,
-                Phone = message.NumarTelefon,
-                Name = message.Nume,
-                Pin = _hashService.GetHash(message.PIN)
+                IdNgo = message.IdNgo,
+                Phone = message.Phone,
+                Name = message.Name,
+                Pin = _hashService.GetHash(message.Pin)
             };
             _context.Observers.Add(observer);
             return _context.SaveChangesAsync();

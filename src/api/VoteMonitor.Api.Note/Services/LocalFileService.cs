@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using VoteMonitor.Api.Core.Services;
 using VotingIrregularities.Api.Options;
 
-namespace VotingIrregularities.Api.Services
+namespace VoteMonitor.Api.Note.Services
 {
     /// <summary>
     /// This will be used just for development purposes
@@ -26,7 +26,7 @@ namespace VotingIrregularities.Api.Services
         {
             // set name
             var localFile = _localFileOptions.StoragePath + "\\" + Guid.NewGuid().ToString("N") + extension;
-            
+
             // save to local path
             using (var fileStream = File.Create(localFile))
             {

@@ -62,14 +62,13 @@ namespace VoteMonitor.Api.Location.Controllers
             if (!ModelState.IsValid)
                 return this.ResultAsync(HttpStatusCode.BadRequest, ModelState);
 
-            int idSectie = await _mediator.Send(_mapper.Map<PollingStationQuery>(pollingStationInfo));
+            var idSectie = await _mediator.Send(_mapper.Map<PollingStationQuery>(pollingStationInfo));
             if (idSectie < 0)
                 return this.ResultAsync(HttpStatusCode.NotFound);
 
             var command = _mapper.Map<UpdatePollingSectionCommand>(pollingStationInfo);
 
-            // TODO get the actual IdObservator from token
-            command.IdObserver = int.Parse(User.Claims.First(c => c.Type == "IdObservator").Value);
+            command.IdObserver = this.GetIdObserver();
             command.IdPollingStation = idSectie;
 
             var result = await _mediator.Send(command);

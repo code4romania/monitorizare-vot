@@ -47,14 +47,14 @@ namespace VotingIrregularities.Api.Controllers
 
             // TODO[DH] use a pipeline instead of separate Send commands
             // daca nota este asociata sectiei
-            int idSectie = await _mediator.Send(_mapper.Map<ModelSectieQuery>(nota));
+            var idSectie = await _mediator.Send(_mapper.Map<ModelSectieQuery>(nota));
             if (idSectie < 0)
                 return this.ResultAsync(HttpStatusCode.NotFound);
 
             var command = _mapper.Map<AdaugaNotaCommand>(nota);
             var fileAddress = await _mediator.Send(new ModelFile { File = file });
 
-            command.IdObservator = int.Parse(User.Claims.First(c => c.Type == ClaimsHelper.ObserverIdProperty).Value);
+            command.IdObservator = this.GetIdObserver();
             command.CaleFisierAtasat = fileAddress;
             command.IdSectieDeVotare = idSectie;
 

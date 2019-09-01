@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using System;
+using System.Collections.Generic;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,7 @@ using AutoMapper;
 using VoteMonitor.Api.Observer.Models;
 using VoteMonitor.Api.Observer.Commands;
 using Microsoft.AspNetCore.Http;
+using VoteMonitor.Api.Observer.Queries;
 
 namespace VoteMonitor.Api.Observer.Controllers
 {
@@ -26,13 +28,13 @@ namespace VoteMonitor.Api.Observer.Controllers
             _mapper = mapper;
         }
 
-
         [HttpGet]
-        public async Task<IAsyncResult> GetObservers(ObserverListFilter filter)
+        [Produces(type: typeof(List<ObserverModel>))]
+        public async Task<List<ObserverModel>> GetObservers(ObserverListQuery query)
         {
             // TODO check the auth ngo has access to the filter selected (ngoid)
-            var result = await _mediator.Send(filter);
-            return Task.FromResult(Ok(result));
+            var result = await _mediator.Send(query);
+            return result;
         }
 
         [HttpPost]
@@ -43,12 +45,12 @@ namespace VoteMonitor.Api.Observer.Controllers
         [Authorize]
         [HttpPost]
         [Route("")]
-        public async Task<dynamic> NewObserver(ObserverModel model)
+        public async Task<dynamic> NewObserver(NewObserverModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            await _mediator.Send(_mapper.Map<NewObserverRequest>(model));
+            await _mediator.Send(_mapper.Map<NewObserverCommand>(model));
 
             return Task.FromResult(new { });
         }
@@ -58,22 +60,22 @@ namespace VoteMonitor.Api.Observer.Controllers
         [Route("reset")]
         public async Task<IAsyncResult> Reset([FromForm] string action, [FromForm] string phoneNumber)
         {
-            if (String.IsNullOrEmpty(action) || String.IsNullOrEmpty(phoneNumber))
+            if (string.IsNullOrEmpty(action) || string.IsNullOrEmpty(phoneNumber))
                 return Task.FromResult(BadRequest());
 
-            if (String.Equals(action, ControllerExtensions.DEVICE_RESET))
+            if (string.Equals(action, ControllerExtensions.DEVICE_RESET))
             {
-                var result = await _mediator.Send(new ResetDeviceCommand(ControllerExtensions.GetIdOngOrDefault(this, 0), phoneNumber));
+                var result = await _mediator.Send(new ResetDeviceCommand(this.GetIdOngOrDefault(0), phoneNumber));
                 if (result == -1)
                     return Task.FromResult(NotFound(ControllerExtensions.RESET_ERROR_MESSAGE + phoneNumber));
                 else
                     return Task.FromResult(Ok(result));
             }
 
-            if (String.Equals(action, ControllerExtensions.PASSWORD_RESET))
+            if (string.Equals(action, ControllerExtensions.PASSWORD_RESET))
             {
-                var result = await _mediator.Send(new ResetPasswordCommand(ControllerExtensions.GetIdOngOrDefault(this, 0), phoneNumber));
-                if (String.IsNullOrEmpty(result))
+                var result = await _mediator.Send(new ResetPasswordCommand(this.GetIdOngOrDefault(0), phoneNumber));
+                if (string.IsNullOrEmpty(result))
                     return Task.FromResult(NotFound(ControllerExtensions.RESET_ERROR_MESSAGE + phoneNumber));
                 else
                     return Task.FromResult(Ok(result));

@@ -69,7 +69,7 @@ namespace VotingIrregularities.Api.Controllers
             var command = _mapper.Map<ActualizeazaSectieCommand>(dateSectie);
 
             // TODO get the actual IdObservator from token
-            command.IdObservator = int.Parse(User.Claims.First(c => c.Type == "IdObservator").Value);
+            command.IdObservator = this.GetIdObserver();
             command.IdSectieDeVotare = idSectie;
 
             var result = await _mediator.Send(command);
