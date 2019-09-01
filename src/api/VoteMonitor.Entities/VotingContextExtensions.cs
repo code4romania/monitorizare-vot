@@ -4,7 +4,6 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
-using VoteMonitor.Entities;
 
 
 namespace VoteMonitor.Entities
@@ -19,20 +18,21 @@ namespace VoteMonitor.Entities
                return;
 
             //means we have data
-            if (context.Counties.Count() > 0)
-                return;
+            //if (context.Counties.Count() > 0)
+            //    return;
 
             using (var tran = context.Database.BeginTransaction())
             {
-                context.DataCleanUp();
+                context.DataCleanUp(); // why cleanup if we return when we have data? y tho.
 
                 context.SeedNGOs();
                 context.SeedCounties();
-                context.SeedFormSections();
+                
                 context.SeedOptions();
                 foreach (var form in formsArray)
                 {
-                    context.SeedVersions(form);
+                    context.SeedForms(form);
+                    context.SeedFormSections(form);
                     context.SeedQuestions(form);
                 }
                 context.SeedObservers();
@@ -110,7 +110,7 @@ namespace VoteMonitor.Entities
             context.Database.ExecuteSqlCommand("delete from OptionsToQuestions");
             context.Database.ExecuteSqlCommand("delete from Questions");
             context.Database.ExecuteSqlCommand("delete from FormSections");
-            context.Database.ExecuteSqlCommand("delete from FormVersions");
+            context.Database.ExecuteSqlCommand("delete from Forms");
             context.Database.ExecuteSqlCommand("delete from Counties");
             context.Database.ExecuteSqlCommand("delete from Observers");
         }
@@ -120,97 +120,109 @@ namespace VoteMonitor.Entities
             if (context.Options.Any())
                 return;
             context.Options.AddRange(
-                new Option { Id = 1, Text = "Da", },
-                new Option { Id = 2, Text = "Nu", },
-                new Option { Id = 3, Text = "Nu stiu", },
-                new Option { Id = 4, Text = "Dark Island", },
-                new Option { Id = 5, Text = "London Pride", },
-                new Option { Id = 6, Text = "Zaganu", },
-                new Option { Id = 7, Text = "Transmisia manualã", },
-                new Option { Id = 8, Text = "Transmisia automatã", },
-                new Option { Id = 9, Text = "Altele (specificaţi)", IsFreeText = true },
-                new Option { Id = 10, Text = "Metrou" },
-                new Option { Id = 11, Text = "Tramvai" },
-                new Option { Id = 12, Text = "Autobuz" }
+                new Option { Text = "Da", },
+                new Option { Text = "Nu", },
+                new Option { Text = "Nu stiu", },
+                new Option { Text = "Dark Island", },
+                new Option { Text = "London Pride", },
+                new Option { Text = "Zaganu", },
+                new Option { Text = "Transmisia manualã", },
+                new Option { Text = "Transmisia automatã", },
+                new Option { Text = "Altele (specificaţi)", IsFreeText = true },
+                new Option { Text = "Metrou" },
+                new Option { Text = "Tramvai" },
+                new Option { Text = "Autobuz" }
             );
 
             context.SaveChanges();
         }
-        private static void SeedFormSections(this VoteMonitorContext context)
+        private static void SeedFormSections(this VoteMonitorContext context, string formCode)
         {
-            if (context.FormSections.Any())
+            var form = context.Forms.SingleOrDefault(f => f.Code == formCode);
+            if (form == null)
                 return;
 
             context.FormSections.AddRange(
-                new FormSection { Id = 1, Code = "B", Description = "Despre Bere" },
-                new FormSection { Id = 2, Code = "C", Description = "Description masini" }
+                new FormSection { Code = formCode + "B", Description = "Despre Bere", IdForm = form.Id },
+                new FormSection { Code = formCode + "C", Description = "Description masini", IdForm = form.Id }
                 );
 
             context.SaveChanges();
         }
 
-        private static void SeedQuestions(this VoteMonitorContext context, string idFormular)
+        private static void SeedQuestions(this VoteMonitorContext context, string formCode)
         {
-            if (context.Questions.Any(a => a.FormCode == idFormular.ToString()))
-                return;
+            var f = context.Forms.FirstOrDefault(ff => ff.Code == formCode);
+            if (f == null) {
+                f = new Form { Code = formCode };
+                context.Forms.Add(f);
+                context.SaveChanges();
+            }
 
+            var fsB = context.FormSections
+                .FirstOrDefault(ff => ff.IdForm == f.Id && ff.Code == $"{formCode}B");
+            var fsC = context.FormSections
+                .FirstOrDefault(ff => ff.IdForm == f.Id && ff.Code == $"{formCode}C");
+
+            if (fsB== null) {
+                fsB = new FormSection{ IdForm = f.Id, Code = $"{formCode}B", Description=$"section B of Form {f.Id}" };
+                context.FormSections.Add(fsB);
+                context.SaveChanges();
+            }
+            if (fsC == null) {
+                fsC = new FormSection { IdForm = f.Id, Code = $"{formCode}C", Description = $"section C of Form {f.Id}" };
+                context.FormSections.Add(fsC);
+                context.SaveChanges();
+            }
             context.Questions.AddRange(
                 // primul formular
                 new Question
                 {
-                    Id = idFormular[0] * 20 + 1,
-                    FormCode = idFormular,
-                    IdSection = 1, //B
+                    IdSection = fsB.Id, //B
                     QuestionType = QuestionType.SingleOption,
-                    Text = $"{idFormular}: Iti place berea? (se alege o singura optiune selectabila)",
+                    Text = $"{f.Id}: Iti place berea? (se alege o singura optiune selectabila)",
                     OptionsToQuestions = new List<OptionToQuestion>
                     {
-                        new OptionToQuestion {Id = idFormular[0] * 20 + 1, IdOption = 1},
-                        new OptionToQuestion {Id = idFormular[0] * 20 + 2, IdOption = 2, Flagged = true},
-                        new OptionToQuestion {Id = idFormular[0] * 20 + 3, IdOption = 3}
+                        new OptionToQuestion {IdOption = 1},
+                        new OptionToQuestion {IdOption = 2, Flagged = true},
+                        new OptionToQuestion {IdOption = 3}
                     }
                 },
                  new Question
                  {
-                     Id = idFormular[0] * 20 + 2,
-                     FormCode = idFormular,
-                     IdSection = 1, //B
+                     IdSection = fsB.Id, //B
                      QuestionType = QuestionType.MultipleOption,
-                     Text = $"{idFormular}: Ce tipuri de bere iti plac? (se pot alege optiuni multiple)",
+                     Text = $"{f.Id}: Ce tipuri de bere iti plac? (se pot alege optiuni multiple)",
                      OptionsToQuestions = new List<OptionToQuestion>
                     {
-                        new OptionToQuestion {Id = idFormular[0] * 20 + 4, IdOption = 4, Flagged = true},
-                        new OptionToQuestion {Id = idFormular[0] * 20 + 5, IdOption = 5},
-                        new OptionToQuestion {Id = idFormular[0] * 20 + 6, IdOption = 6}
+                        new OptionToQuestion { IdOption = 4, Flagged = true},
+                        new OptionToQuestion { IdOption = 5},
+                        new OptionToQuestion { IdOption = 6}
                     }
                  },
                  new Question
                  {
-                     Id = idFormular[0] * 20 + 3,
-                     FormCode = idFormular,
-                     IdSection = 2, //C
+                     IdSection = fsC.Id, //C
                      QuestionType = QuestionType.SingleOptionWithText,
-                     Text = $"{idFormular}: Ce tip de transmisie are masina ta? (se poate alege O singura optiune selectabila + text pe O singura optiune)",
+                     Text = $"{f.Id}: Ce tip de transmisie are masina ta? (se poate alege O singura optiune selectabila + text pe O singura optiune)",
                      OptionsToQuestions = new List<OptionToQuestion>
                     {
-                        new OptionToQuestion {Id = idFormular[0] * 20 + 7, IdOption = 7, Flagged = true},
-                        new OptionToQuestion {Id = idFormular[0] * 20 + 8, IdOption = 8},
-                        new OptionToQuestion {Id = idFormular[0] * 20 + 9, IdOption = 9}
+                        new OptionToQuestion { IdOption = 7, Flagged = true},
+                        new OptionToQuestion {IdOption = 8},
+                        new OptionToQuestion { IdOption = 9}
                     }
                  },
                  new Question
                  {
-                     Id = idFormular[0] * 20 + 4,
-                     FormCode = idFormular,
-                     IdSection = 2, //C
+                     IdSection = fsC.Id, //C
                      QuestionType = QuestionType.MultipleOptionWithText,
-                     Text = $"{idFormular}: Ce mijloace de transport folosesti sa ajungi la birou? (se pot alege mai multe optiuni + text pe O singura optiune)",
+                     Text = $"{f.Id}: Ce mijloace de transport folosesti sa ajungi la birou? (se pot alege mai multe optiuni + text pe O singura optiune)",
                      OptionsToQuestions = new List<OptionToQuestion>
                     {
-                        new OptionToQuestion {Id = idFormular[0] * 20 + 10, IdOption = 10, Flagged = true},
-                        new OptionToQuestion {Id = idFormular[0] * 20 + 11, IdOption = 11},
-                        new OptionToQuestion {Id = idFormular[0] * 20 + 12, IdOption = 12},
-                        new OptionToQuestion {Id = idFormular[0] * 20 + 13, IdOption = 9}
+                        new OptionToQuestion { IdOption = 10, Flagged = true},
+                        new OptionToQuestion { IdOption = 11},
+                        new OptionToQuestion { IdOption = 12},
+                        new OptionToQuestion { IdOption = 9}
                     }
                  }
                 );
@@ -219,13 +231,10 @@ namespace VoteMonitor.Entities
 
         }
 
-        private static void SeedVersions(this VoteMonitorContext context, string idFormular)
+        private static void SeedForms(this VoteMonitorContext context, string formCode)
         {
-            if (context.FormVersions.Any(f => f.Id == idFormular))
-                return;
-
-            context.FormVersions.AddRange(
-                 new FormVersion { Id = idFormular, Description = "Description " + idFormular, CurrentVersion = 1 }
+            context.Forms.Add(
+                 new Form { Code = formCode, Description = "Description " + formCode, CurrentVersion = 1 }
              );
 
             context.SaveChanges();

@@ -7,8 +7,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VoteMonitor.Entities;
 
-namespace VotingIrregularities.Domain.Migrations
-{
+namespace VoteMonitor.Entities { 
+
     [DbContext(typeof(VoteMonitorContext))]
     [Migration("20190420122541_InitialMigrationScript")]
     partial class InitialMigrationScript
