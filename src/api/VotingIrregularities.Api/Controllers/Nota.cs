@@ -9,6 +9,7 @@ using AutoMapper;
 using VoteMonitor.Api.Core;
 using VotingIrregularities.Domain.NotaAggregate;
 using System;
+using VoteMonitor.Api.Form.Models;
 
 namespace VotingIrregularities.Api.Controllers
 {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using VoteMonitor.Entities;
 
-namespace VotingIrregularities.Api.Models.Forms {
+namespace VoteMonitor.Api.Models {
     public class QuestionDTO {
         public QuestionDTO() { 
         OptionsToQuestions = new List<OptionToQuestionDTO>();

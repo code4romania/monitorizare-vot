@@ -2,7 +2,7 @@
 using AutoMapper;
 using VoteMonitor.Entities;
 
-namespace VotingIrregularities.Api.Models
+namespace VoteMonitor.Api.Form.Models
 {
     public class ModelSectiune
     {

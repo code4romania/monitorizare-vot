@@ -3,13 +3,13 @@ using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using VotingIrregularities.Api.Models;
-using VotingIrregularities.Api.Services;
+using VoteMonitor.Api.Core.Services;
+using VoteMonitor.Api.Form.Models;
 using VoteMonitor.Entities;
 
-namespace VotingIrregularities.Api.Queries
+namespace VoteMonitor.Api.Form.Queries
 {
-    public class FormVersionQueryHandler : AsyncRequestHandler<FormVersionQuery, List<Form>>
+    public class FormVersionQueryHandler : AsyncRequestHandler<FormVersionQuery, List<Entities.Form>>
     {
 
         private readonly VoteMonitorContext _context;
@@ -23,7 +23,7 @@ namespace VotingIrregularities.Api.Queries
             _cacheService = cacheService;
         }
       
-        protected override async Task<List<Form>> HandleCore(FormVersionQuery request)
+        protected override async Task<List<Entities.Form>> HandleCore(FormVersionQuery request)
         {
             var result = await _context.Forms
                 .AsNoTracking()

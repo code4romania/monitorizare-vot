@@ -6,12 +6,12 @@ using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
-using VotingIrregularities.Api.Models;
-using VotingIrregularities.Api.Services;
 using VoteMonitor.Entities;
+using VoteMonitor.Api.Form.Models;
+using VoteMonitor.Api.Core.Services;
 
-namespace VotingIrregularities.Api.Queries
-{
+namespace VotingIrregularities.Api.Queries {
+    [Obsolete]
     public class FormularQueryHandler :
         AsyncRequestHandler<FormQuestionsQuery, IEnumerable<ModelSectiune>>
     {

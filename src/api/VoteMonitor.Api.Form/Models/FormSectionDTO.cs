@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
 using System.Collections.Generic;
+using VoteMonitor.Api.Models;
 using VoteMonitor.Entities;
 
-namespace VotingIrregularities.Api.Models.Forms {
+namespace VoteMonitor.Api.Form.Models {
     public class FormSectionDTO {
         public FormSectionDTO() {
             Questions = new List<QuestionDTO>();
@@ -15,8 +16,8 @@ namespace VotingIrregularities.Api.Models.Forms {
         public List<QuestionDTO> Questions { get; set; }
     }
 
-    public class FormularProfile : Profile {
-        public FormularProfile() {
+    public class QuestionProfile : Profile {
+        public QuestionProfile() {
             CreateMap<Question, QuestionDTO>()
                 .ForMember(dest => dest.OptionsToQuestions, c => c.MapFrom(src => src.OptionsToQuestions))
                 .ForMember(dest => dest.Id, c => c.MapFrom(src => src.Id))
