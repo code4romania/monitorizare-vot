@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using VoteMonitor.Api.Core.Services;
 using VotingIrregularities.Api.Options;
 
-namespace VotingIrregularities.Api.Services
+namespace VoteMonitor.Api.Note.Services
 {
     /// <inheritdoc />
     public class BlobService : IFileService
@@ -43,7 +43,7 @@ namespace VotingIrregularities.Api.Services
 
             await blockBlob.UploadFromStreamAsync(sourceStream, sourceStream.Length);
 
-            
+
             await blockBlob.SetPropertiesAsync();
 
             return blockBlob.Uri.ToString();

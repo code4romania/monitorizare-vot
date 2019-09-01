@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using VoteMonitor.Api.Note.Commands;
 using VoteMonitor.Entities;
 using VoteMonitor.Api.Note.Models;
+using VoteMonitor.Api.Note.Queries;
 
 namespace VoteMonitor.Api.Note.Handlers
 {
@@ -35,7 +36,7 @@ namespace VoteMonitor.Api.Note.Handlers
                     FormCode = n.Question.FormSection.Form.Code,
                     QuestionId = n.Question.Id
                 })
-                .ToListAsync();
+                .ToListAsync(cancellationToken: token);
         }
     }
 }

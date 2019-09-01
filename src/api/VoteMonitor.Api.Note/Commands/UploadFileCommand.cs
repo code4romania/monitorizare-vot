@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 
-namespace VoteMonitor.Api.Note.Models
+namespace VoteMonitor.Api.Note.Commands
 {
-    public class FileModel : IRequest<string>
+    public class UploadFileCommand : IRequest<string>
     {
         public IFormFile File { get; set; }
     }

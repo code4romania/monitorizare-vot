@@ -23,17 +23,15 @@ namespace VoteMonitor.Api.Observer.Handlers
         {
             try
             {
-                VoteMonitor.Entities.Observer observer = _voteMonitorContext.Observers
-                    .Where(o => o.Phone == request.PhoneNumber &&
-                                o.IdNgo == request.IdNgo)
-                    .First();
+                var observer = _voteMonitorContext.Observers
+                    .First(o => o.Phone == request.PhoneNumber &&
+                                o.IdNgo == request.IdNgo);
 
                 if (observer == null)
                     return Task.FromResult(-1);
 
                 observer.DeviceRegisterDate = null;
                 observer.MobileDeviceId = null;
-                //observer.Pin = RandomNumberGenerator.Generate(6);
 
                 _voteMonitorContext.Update(observer);
                 return _voteMonitorContext.SaveChangesAsync();
