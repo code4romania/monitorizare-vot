@@ -39,7 +39,7 @@ namespace VotingIrregularities.Api.Queries
                         .Include(a => a.FormSection)
                         .Include(a => a.OptionsToQuestions)
                         .ThenInclude(a => a.Option)
-                        .Where(a => a.FormCode == message.FormCode)
+                        .Where(a => a.FormSection.Form.Code == message.FormCode) // todo: FormCode might not be unique anymore - maybe we should query by FormId?
                         .ToListAsync();
 
                     var sectiuni = r.Select(a => new { IdSectiune = a.IdSection, CodSectiune = a.FormSection.Code, Descriere = a.FormSection.Description }).Distinct();

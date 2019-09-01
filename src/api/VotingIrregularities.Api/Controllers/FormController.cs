@@ -35,7 +35,7 @@ namespace VotingIrregularities.Api.Controllers
         public async Task<IActionResult> GetFormVersions()
         {
             var formsAsDict = new Dictionary<string, int>();
-            (await _mediator.Send(new FormVersionQuery())).ForEach(form => formsAsDict.Add(form.Id, form.CurrentVersion));
+            (await _mediator.Send(new FormVersionQuery())).ForEach(form => formsAsDict.Add(form.Code, form.CurrentVersion));
 
             return Ok(new { Versions = formsAsDict });
         }

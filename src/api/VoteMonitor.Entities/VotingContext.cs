@@ -31,30 +31,6 @@ namespace VoteMonitor.Entities
                     .HasConstraintName("FK_NgoAdmin_Ngo");
             });
 
-            modelBuilder.Entity<Question>(entity =>
-            {
-                entity.HasKey(e => e.Id)
-                    .HasName("PK_Question");
-
-                entity.HasIndex(e => e.IdSection)
-                    .HasName("IX_Question_IdSection");
-
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
-                entity.Property(e => e.FormCode)
-                    .IsRequired()
-                    .HasMaxLength(2);
-
-                entity.Property(e => e.Text)
-                    .IsRequired()
-                    .HasMaxLength(200);
-
-                entity.HasOne(d => d.FormSection)
-                    .WithMany(p => p.Questions)
-                    .HasForeignKey(d => d.IdSection)
-                    .OnDelete(DeleteBehavior.Restrict);
-            });
-
             modelBuilder.Entity<County>(entity =>
             {
                 entity.HasKey(e => e.Id)
@@ -157,20 +133,6 @@ namespace VoteMonitor.Entities
                 entity.Property(e => e.Organizer).HasDefaultValueSql("0");
             });
 
-            modelBuilder.Entity<Option>(entity =>
-            {
-                entity.HasKey(e => e.Id)
-                    .HasName("PK_Option");
-
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
-                entity.Property(e => e.IsFreeText).HasDefaultValueSql("0");
-
-                entity.Property(e => e.Text)
-                    .IsRequired()
-                    .HasMaxLength(1000);
-            });
-
             modelBuilder.Entity<Answer>(entity =>
             {
                 entity.HasKey(e => new { IdObservator = e.IdObserver, IdRaspunsDisponibil = e.IdOptionToQuestion, IdSectieDeVotare = e.IdPollingStation })
@@ -210,38 +172,7 @@ namespace VoteMonitor.Entities
                     .OnDelete(DeleteBehavior.Restrict);
             });
 
-            modelBuilder.Entity<OptionToQuestion>(entity =>
-            {
-                entity.HasKey(e => e.Id)
-                    .HasName("PK_OptionToQuestion");
-
-                entity.HasIndex(e => e.IdQuestion)
-                    .HasName("IX_OptionToQuestion_Question");
-
-                entity.HasIndex(e => e.IdOption)
-                    .HasName("IX_OptionToQuestion_Option");
-
-                entity.HasIndex(e => new { e.IdOption, e.IdQuestion })
-                    .HasName("IX_OptionToQuestion")
-                    .IsUnique();
-
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
-                entity.Property(e => e.Flagged).HasDefaultValueSql("0");
-
-                entity.HasOne(d => d.Question)
-                    .WithMany(p => p.OptionsToQuestions)
-                    .HasForeignKey(d => d.IdQuestion)
-                    .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("FK_OptionToQuestion_Question");
-
-                entity.HasOne(d => d.Option)
-                    .WithMany(p => p.OptionsToQuestions)
-                    .HasForeignKey(d => d.IdOption)
-                    .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("FK_OptionToQuestion_Option");
-            });
-
+           
             modelBuilder.Entity<PollingStationInfo>(entity =>
             {
                 entity.HasKey(e => new { e.IdObserver, e.IdPollingStation })
@@ -304,12 +235,21 @@ namespace VoteMonitor.Entities
                     .HasConstraintName("FK_PollingStation_County");
             });
 
-            modelBuilder.Entity<FormSection>(entity =>
+
+            modelBuilder.Entity<Form>(entity =>
             {
+                entity.HasKey(e => e.Id)
+                    .HasName("PK_FormVersion");
+
+                entity.Property(e => e.Id).HasMaxLength(2);
+            });
+            modelBuilder.Entity<FormSection>(entity => {
                 entity.HasKey(e => e.Id)
                     .HasName("PK_FormSection");
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.HasOne(e => e.Form)
+                    .WithMany(e => e.FormSections)
+                    .HasForeignKey(fs => fs.IdForm);
 
                 entity.Property(e => e.Code)
                     .IsRequired()
@@ -319,13 +259,51 @@ namespace VoteMonitor.Entities
                     .IsRequired()
                     .HasMaxLength(200);
             });
-
-            modelBuilder.Entity<FormVersion>(entity =>
-            {
+            modelBuilder.Entity<Question>(entity => {
                 entity.HasKey(e => e.Id)
-                    .HasName("PK_FormVersion");
+                    .HasName("PK_Question");
 
-                entity.Property(e => e.Id).HasMaxLength(2);
+                entity.HasIndex(e => e.IdSection)
+                    .HasName("IX_Question_IdSection");
+
+                entity.HasOne(d => d.FormSection)
+                    .WithMany(p => p.Questions)
+                    .HasForeignKey(d => d.IdSection)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+            modelBuilder.Entity<OptionToQuestion>(entity => {
+                entity.HasKey(e => e.Id)
+                    .HasName("PK_OptionToQuestion");
+
+                entity.HasIndex(e => e.IdQuestion)
+                    .HasName("IX_OptionToQuestion_Question");
+
+                entity.HasIndex(e => e.IdOption)
+                    .HasName("IX_OptionToQuestion_Option");
+
+                entity.HasIndex(e => new { e.IdOption, e.IdQuestion })
+                    .HasName("IX_OptionToQuestion")
+                    .IsUnique();
+
+                entity.Property(e => e.Flagged).HasDefaultValueSql("0");
+
+                entity.HasOne(d => d.Question)
+                    .WithMany(p => p.OptionsToQuestions)
+                    .HasForeignKey(d => d.IdQuestion)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("FK_OptionToQuestion_Question");
+
+                entity.HasOne(d => d.Option)
+                    .WithMany(p => p.OptionsToQuestions)
+                    .HasForeignKey(d => d.IdOption)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("FK_OptionToQuestion_Option");
+            });
+            modelBuilder.Entity<Option>(entity => {
+                entity.HasKey(e => e.Id)
+                    .HasName("PK_Option");
+
+                entity.Property(e => e.IsFreeText).HasDefaultValueSql("0");
             });
         }
 
@@ -341,6 +319,6 @@ namespace VoteMonitor.Entities
         public virtual DbSet<PollingStationInfo> PollingStationInfos { get; set; }
         public virtual DbSet<PollingStation> PollingStations { get; set; }
         public virtual DbSet<FormSection> FormSections { get; set; }
-        public virtual DbSet<FormVersion> FormVersions { get; set; }
+        public virtual DbSet<Form> Forms { get; set; }
     }
 }

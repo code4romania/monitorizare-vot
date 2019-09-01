@@ -9,7 +9,7 @@ using VoteMonitor.Entities;
 
 namespace VotingIrregularities.Api.Queries
 {
-    public class FormVersionQueryHandler : AsyncRequestHandler<FormVersionQuery, List<FormVersion>>
+    public class FormVersionQueryHandler : AsyncRequestHandler<FormVersionQuery, List<Form>>
     {
 
         private readonly VoteMonitorContext _context;
@@ -23,9 +23,9 @@ namespace VotingIrregularities.Api.Queries
             _cacheService = cacheService;
         }
       
-        protected override async Task<List<FormVersion>> HandleCore(FormVersionQuery request)
+        protected override async Task<List<Form>> HandleCore(FormVersionQuery request)
         {
-            var result = await _context.FormVersions
+            var result = await _context.Forms
                 .AsNoTracking()
                 .ToListAsync();
 

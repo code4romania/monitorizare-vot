@@ -4,7 +4,7 @@ using VoteMonitor.Entities;
 
 namespace VotingIrregularities.Api.Models
 {
-    public class FormVersionQuery : IRequest<List<FormVersion>>
+    public class FormVersionQuery : IRequest<List<Form>>
     {
     }
 

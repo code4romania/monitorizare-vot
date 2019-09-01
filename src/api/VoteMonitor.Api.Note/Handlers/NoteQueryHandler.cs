@@ -32,7 +32,7 @@ namespace VoteMonitor.Api.Note.Handlers
                 {
                     AttachmentPath = n.AttachementPath,
                     Text = n.Text,
-                    FormCode = n.Question.FormCode,
+                    FormCode = n.Question.FormSection.Form.Code,
                     QuestionId = n.Question.Id
                 })
                 .ToListAsync();
