@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace VoteMonitor.Api.Note.Models
 {
@@ -10,7 +11,7 @@ namespace VoteMonitor.Api.Note.Models
         public int PollingStattionNumber { get; set; }
         public int? QuestionId { get; set; }
         public string Text { get; set; }
-        public string AttachmentPath { get; set; }
+        public List<string> NoteAttachments { get; set; }
         public string FormCode { get; set; }
     }
 }

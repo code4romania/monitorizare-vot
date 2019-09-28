@@ -5,7 +5,6 @@ using AutoMapper;
 using System.Linq;
 using System.Threading;
 using Microsoft.EntityFrameworkCore;
-using VoteMonitor.Api.Note.Commands;
 using VoteMonitor.Entities;
 using VoteMonitor.Api.Note.Models;
 using VoteMonitor.Api.Note.Queries;
@@ -31,7 +30,7 @@ namespace VoteMonitor.Api.Note.Handlers
                 .OrderBy(n => n.LastModified)
                 .Select(n => new NoteModel
                 {
-                    AttachmentPath = n.AttachementPath,
+                    NoteAttachments = n.NoteAttachments.Select(x => x.NotePath).ToList(),
                     Text = n.Text,
                     FormCode = n.Question.FormSection.Form.Code,
                     QuestionId = n.Question.Id

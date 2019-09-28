@@ -37,7 +37,6 @@ using Microsoft.ApplicationInsights.Extensibility;
 using VoteMonitor.Api.Core;
 using VoteMonitor.Api.Location.Controllers;
 using VoteMonitor.Api.Location.Services;
-using VotingIrregularities.Domain;
 using VoteMonitor.Api.Observer.Controllers;
 using VoteMonitor.Api.Core.Services;
 using VoteMonitor.Api.Note.Controllers;
@@ -138,19 +137,22 @@ namespace VotingIrregularities.Api
             services.AddApplicationInsightsTelemetry(Configuration);
 
             services.AddMvc(config =>
-                {
-                    var policy = new AuthorizationPolicyBuilder()
-                                     .RequireAuthenticatedUser()
-                                     .RequireClaim(ClaimsHelper.ObserverIdProperty)
-                                     .Build();
-                    config.Filters.Add(new AuthorizeFilter(policy));
-                })
+            {
+                var policy = new AuthorizationPolicyBuilder()
+                                 .RequireAuthenticatedUser()
+                                 .RequireClaim(ClaimsHelper.ObserverIdProperty)
+                                 .Build();
+                config.Filters.Add(new AuthorizeFilter(policy));
+            })
                 .AddApplicationPart(typeof(PollingStationController).Assembly)
                 .AddApplicationPart(typeof(ObserverController).Assembly)
                 .AddApplicationPart(typeof(NoteController).Assembly)
                 .AddApplicationPart(typeof(FormController).Assembly)
                 .AddControllersAsServices()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            //EF
+            services.AddDbContext<VoteMonitorContext>(x => x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddSwaggerGen(options =>
             {
@@ -190,7 +192,6 @@ namespace VotingIrregularities.Api
             services.UseSimpleInjectorAspNetRequestScoping(_container);
 
             ConfigureContainer(services);
-
             ConfigureCache(services);
         }
 
@@ -219,6 +220,8 @@ namespace VotingIrregularities.Api
                     );
                 }
             );
+            //Registering dbContext
+            RegisterDbContext<VoteMonitorContext>(Configuration.GetConnectionString("DefaultConnection"));
 
             app.UseAuthentication();
 
@@ -232,8 +235,7 @@ namespace VotingIrregularities.Api
 
             InitializeContainer(app);
 
-            //Registering dbContext
-            RegisterDbContext<VoteMonitorContext>(Configuration.GetConnectionString("DefaultConnection"));
+
 
             RegisterAutomapper();
             BuildMediator();
@@ -431,7 +433,7 @@ namespace VotingIrregularities.Api
             votingContext.Database.Migrate();
 
             // seed
-            VotingContextExtensions.EnsureSeedData(votingContext);
+            VoteMonitorContextExtensions.EnsureSeedData(votingContext);
         }
     }
 }

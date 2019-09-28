@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using System.Collections.Generic;
 
 namespace VoteMonitor.Api.Note.Commands
 {
@@ -8,6 +9,6 @@ namespace VoteMonitor.Api.Note.Commands
         public int IdPollingStation { get; set; }
         public int? IdQuestion { get; set; }
         public string Text { get; set; }
-        public string AttachementPath { get; set; }
+        public List<string> AttachementPaths { get; set; }
     }
 }

@@ -9,9 +9,14 @@ namespace VotingIrregularities.Api
     {
         public static void Main(string[] args)
         {
-            var host = new WebHostBuilder()
+            var host = CreateWebHostBuilder(args).Build();
+            host.Run();
+        }
+
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+           new WebHostBuilder()
                 .UseKestrel()
-                .UseContentRoot(Directory.GetCurrentDirectory())    
+                .UseContentRoot(Directory.GetCurrentDirectory())
                 .ConfigureLogging((hostingContext, logging) =>
                 {
                     logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
@@ -20,10 +25,6 @@ namespace VotingIrregularities.Api
                     logging.AddSerilog();
                 })
                 .UseIISIntegration()
-                .UseStartup<Startup>()
-                .Build();
-
-            host.Run();
-        }
+                .UseStartup<Startup>();
     }
 }

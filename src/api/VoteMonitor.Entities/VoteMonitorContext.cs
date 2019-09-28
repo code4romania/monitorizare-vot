@@ -2,8 +2,14 @@
 
 namespace VoteMonitor.Entities
 {
-    public partial class VoteMonitorContext : DbContext
+    public class VoteMonitorContext : DbContext
     {
+        public VoteMonitorContext(DbContextOptions<VoteMonitorContext> options)
+           : base(options)
+        {
+
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<NgoAdmin>(entity =>
@@ -61,8 +67,6 @@ namespace VoteMonitor.Entities
                 entity.HasIndex(e => e.IdPollingStation)
                     .HasName("IX_Note_IdPollingStation");
 
-                entity.Property(e => e.AttachementPath).HasMaxLength(1000);
-
                 entity.Property(e => e.LastModified).HasColumnType("datetime");
 
                 entity.HasOne(d => d.Question)
@@ -79,6 +83,13 @@ namespace VoteMonitor.Entities
                     .WithMany(p => p.Notes)
                     .HasForeignKey(d => d.IdPollingStation)
                     .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<NoteAttachment>(entity =>
+            {
+                entity.HasKey(e => e.Id)
+                    .HasName("PK_NoteAttachment");
+
             });
 
             modelBuilder.Entity<Observer>(entity =>
@@ -172,7 +183,7 @@ namespace VoteMonitor.Entities
                     .OnDelete(DeleteBehavior.Restrict);
             });
 
-           
+
             modelBuilder.Entity<PollingStationInfo>(entity =>
             {
                 entity.HasKey(e => new { e.IdObserver, e.IdPollingStation })
@@ -311,6 +322,7 @@ namespace VoteMonitor.Entities
         public virtual DbSet<Question> Questions { get; set; }
         public virtual DbSet<County> Counties { get; set; }
         public virtual DbSet<Note> Notes { get; set; }
+        public virtual DbSet<NoteAttachment> NoteAttachments { get; set; }
         public virtual DbSet<Observer> Observers { get; set; }
         public virtual DbSet<Ngo> Ngos { get; set; }
         public virtual DbSet<Option> Options { get; set; }

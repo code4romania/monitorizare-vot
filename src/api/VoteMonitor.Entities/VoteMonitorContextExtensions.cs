@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace VoteMonitor.Entities
 {
-    public static class VotingContextExtensions
+    public static class VoteMonitorContextExtensions
     {
         private static readonly string[] formsArray = new string[] { "A", "B", "C", "D", "E" };
 
