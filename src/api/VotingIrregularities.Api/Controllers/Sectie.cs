@@ -5,12 +5,10 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using VotingIrregularities.Api.Extensions;
+using VoteMonitor.Api.Core;
+using VoteMonitor.Api.Location.Queries;
 using VotingIrregularities.Api.Models;
 using VotingIrregularities.Domain.SectieAggregate;
-using VotingIrregularities.Api.Helpers;
-using VotingIrregularities.Api.Queries;
 
 namespace VotingIrregularities.Api.Controllers
 {
@@ -18,7 +16,7 @@ namespace VotingIrregularities.Api.Controllers
     /// Controller responsible for interacting with the polling stations - PollingStationInfo 
     /// </summary>
     [Route("api/v1/sectie")]
-    [Obsolete]
+    [Obsolete("use /polling-station instead")]
     public class Sectie : Controller
     {
         private readonly IMapper _mapper;
@@ -45,7 +43,7 @@ namespace VotingIrregularities.Api.Controllers
             var command = _mapper.Map<InregistreazaSectieCommand>(dateSectie);
 
             // TODO[DH] get the actual IdObservator from token
-            command.IdObservator = int.Parse(User.Claims.First(c => c.Type == ClaimsHelper._observerIdProperty).Value);
+            command.IdObservator = int.Parse(User.Claims.First(c => c.Type == ClaimsHelper.ObserverIdProperty).Value);
 
             var result = await _mediator.Send(command);
 
@@ -71,7 +69,7 @@ namespace VotingIrregularities.Api.Controllers
             var command = _mapper.Map<ActualizeazaSectieCommand>(dateSectie);
 
             // TODO get the actual IdObservator from token
-            command.IdObservator = int.Parse(User.Claims.First(c => c.Type == "IdObservator").Value);
+            command.IdObservator = this.GetIdObserver();
             command.IdSectieDeVotare = idSectie;
 
             var result = await _mediator.Send(command);

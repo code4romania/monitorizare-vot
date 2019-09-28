@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System.Linq;
 using System.Threading.Tasks;
+using VoteMonitor.Api.Core.Services;
 using VotingIrregularities.Api.Models.AccountViewModels;
 using VotingIrregularities.Api.Options;
-using VotingIrregularities.Api.Services;
-using VotingIrregularities.Domain.Models;
+using VoteMonitor.Entities;
 
 namespace VotingIrregularities.Api.Queries
 {
@@ -15,7 +15,7 @@ namespace VotingIrregularities.Api.Queries
     /// </summary>
     public class ObserverAuthenticationQueryHandler : AsyncRequestHandler<ApplicationUser, RegisteredObserverModel>
     {
-        private readonly VotingContext _context;
+        private readonly VoteMonitorContext _context;
         private readonly IHashService _hash;
         private readonly MobileSecurityOptions _mobileSecurityOptions;
 
@@ -25,7 +25,7 @@ namespace VotingIrregularities.Api.Queries
         /// <param name="context">The EntityFramework context</param>
         /// <param name="hash">Implementation of the IHashService to be used to generate the hashes. It can either be `HashService` or `ClearTextService`.</param>
         /// <param name="mobileSecurityOptions">Options for specifying the DeviceLock feature toggle. If MobileSecurity:LockDevice is enabled (set to `true` in settings), the first login of the observer will store the UniqueDeviceId and only that device will be allowed to login.</param>
-        public ObserverAuthenticationQueryHandler(VotingContext context, IHashService hash, IOptions<MobileSecurityOptions> mobileSecurityOptions)
+        public ObserverAuthenticationQueryHandler(VoteMonitorContext context, IHashService hash, IOptions<MobileSecurityOptions> mobileSecurityOptions)
         {
             _context = context;
             _hash = hash;

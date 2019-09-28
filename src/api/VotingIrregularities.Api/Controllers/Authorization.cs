@@ -11,9 +11,9 @@ using Newtonsoft.Json;
 using VotingIrregularities.Api.Models.AccountViewModels;
 using System.Linq;
 using MediatR;
+using VoteMonitor.Api.Core;
 using VotingIrregularities.Domain.UserAggregate;
 using VotingIrregularities.Api.Options;
-using VotingIrregularities.Api.Helpers;
 
 namespace VotingIrregularities.Api.Controllers
 {
@@ -69,7 +69,7 @@ namespace VotingIrregularities.Api.Controllers
         new Claim(JwtRegisteredClaimNames.Iat,
                   ToUnixEpochDate(_jwtOptions.IssuedAt).ToString(),
                   ClaimValueTypes.Integer64),
-        identity.FindFirst(ClaimsHelper._observerIdProperty)
+        identity.FindFirst(ClaimsHelper.ObserverIdProperty)
       };
 
             // Create the JWT security token and encode it.
@@ -151,11 +151,11 @@ namespace VotingIrregularities.Api.Controllers
                     });
 
             return await Task.FromResult(new ClaimsIdentity(
-                new GenericIdentity(user.Phone, ClaimsHelper._genericIdProvider),
+                new GenericIdentity(user.Phone, ClaimsHelper.GenericIdProvider),
                 new[]
                 {
-                    new Claim(ClaimsHelper._observerProperty, ClaimsHelper._observerDefault),
-                    new Claim(ClaimsHelper._observerIdProperty, userInfo.ObserverId.ToString())
+                    new Claim(ClaimsHelper.ObserverProperty, ClaimsHelper.ObserverDefault),
+                    new Claim(ClaimsHelper.ObserverIdProperty, userInfo.ObserverId.ToString())
                 }));
         }
     }

@@ -23,20 +23,26 @@ using VotingIrregularities.Api.Extensions;
 using SimpleInjector;
 using SimpleInjector.Integration.AspNetCore.Mvc;
 using VotingIrregularities.Api.Services;
-using VotingIrregularities.Domain.Models;
+using VoteMonitor.Entities;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using VotingIrregularities.Api.Models.AccountViewModels;
-using VotingIrregularities.Api.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
-using Serilog.Sinks.ApplicationInsights.Sinks.ApplicationInsights.TelemetryConverters;
 using SimpleInjector.Lifestyles;
 using Swashbuckle.AspNetCore.Swagger;
 using VotingIrregularities.Api.Options;
 using Microsoft.ApplicationInsights.Extensibility;
+using VoteMonitor.Api.Core;
+using VoteMonitor.Api.Location.Controllers;
+using VoteMonitor.Api.Location.Services;
 using VotingIrregularities.Domain;
+using VoteMonitor.Api.Observer.Controllers;
+using VoteMonitor.Api.Core.Services;
+using VoteMonitor.Api.Note.Controllers;
+using VoteMonitor.Api.Note.Services;
+using VoteMonitor.Api.Form.Controllers;
 
 namespace VotingIrregularities.Api
 {
@@ -135,9 +141,15 @@ namespace VotingIrregularities.Api
                 {
                     var policy = new AuthorizationPolicyBuilder()
                                      .RequireAuthenticatedUser()
+                                     .RequireClaim(ClaimsHelper.ObserverIdProperty)
                                      .Build();
                     config.Filters.Add(new AuthorizeFilter(policy));
                 })
+                .AddApplicationPart(typeof(PollingStationController).Assembly)
+                .AddApplicationPart(typeof(ObserverController).Assembly)
+                .AddApplicationPart(typeof(NoteController).Assembly)
+                .AddApplicationPart(typeof(FormController).Assembly)
+                .AddControllersAsServices()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddSwaggerGen(options =>
@@ -183,7 +195,7 @@ namespace VotingIrregularities.Api
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory,
+        public void Configure(IApplicationBuilder app,
             IApplicationLifetime appLifetime)
         {
             app.UseStaticFiles();
@@ -221,7 +233,7 @@ namespace VotingIrregularities.Api
             InitializeContainer(app);
 
             //Registering dbContext
-            RegisterDbContext<VotingContext>(Configuration.GetConnectionString("DefaultConnection"));
+            RegisterDbContext<VoteMonitorContext>(Configuration.GetConnectionString("DefaultConnection"));
 
             RegisterAutomapper();
             BuildMediator();
@@ -358,7 +370,7 @@ namespace VotingIrregularities.Api
                 var optionsBuilder = new DbContextOptionsBuilder<TDbContext>();
 
                 optionsBuilder.UseSqlServer(connectionString);
-                
+
                 _container.RegisterInstance(optionsBuilder.Options);
                 _container.Register<TDbContext>(Lifestyle.Scoped);
             }
@@ -370,7 +382,6 @@ namespace VotingIrregularities.Api
 
         private IMediator BuildMediator()
         {
-
             var assemblies = GetAssemblies().ToArray();
             _container.RegisterSingleton<IMediator, Mediator>();
             _container.Register(typeof(IRequestHandler<,>), assemblies);
@@ -402,7 +413,11 @@ namespace VotingIrregularities.Api
         {
             yield return typeof(IMediator).GetTypeInfo().Assembly;
             yield return typeof(Startup).GetTypeInfo().Assembly;
-            yield return typeof(VotingContext).GetTypeInfo().Assembly;
+            yield return typeof(VoteMonitorContext).GetTypeInfo().Assembly;
+            yield return typeof(PollingStationController).GetTypeInfo().Assembly;
+            yield return typeof(ObserverController).GetTypeInfo().Assembly;
+            yield return typeof(NoteController).GetTypeInfo().Assembly;
+            yield return typeof(FormController).GetTypeInfo().Assembly;
             // just to identify VotingIrregularities.Domain assembly
         }
 
@@ -410,7 +425,7 @@ namespace VotingIrregularities.Api
         /// Initializing the DB migrations and seeding
         /// </summary>
         /// <param name="votingContext"></param>
-        private void InitializeDb(VotingContext votingContext)
+        private void InitializeDb(VoteMonitorContext votingContext)
         {
             // auto migration
             votingContext.Database.Migrate();

@@ -6,20 +6,20 @@ using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
-using VotingIrregularities.Api.Models;
-using VotingIrregularities.Api.Services;
-using VotingIrregularities.Domain.Models;
+using VoteMonitor.Entities;
+using VoteMonitor.Api.Form.Models;
+using VoteMonitor.Api.Core.Services;
 
-namespace VotingIrregularities.Api.Queries
-{
+namespace VotingIrregularities.Api.Queries {
+    [Obsolete]
     public class FormularQueryHandler :
         AsyncRequestHandler<FormQuestionsQuery, IEnumerable<ModelSectiune>>
     {
-        private readonly VotingContext _context;
+        private readonly VoteMonitorContext _context;
         private readonly IMapper _mapper;
         private readonly ICacheService _cacheService;
 
-        public FormularQueryHandler(VotingContext context, IMapper mapper, ICacheService cacheService)
+        public FormularQueryHandler(VoteMonitorContext context, IMapper mapper, ICacheService cacheService)
         {
             _context = context;
             _mapper = mapper;
@@ -38,7 +38,7 @@ namespace VotingIrregularities.Api.Queries
                         .Include(a => a.FormSection)
                         .Include(a => a.OptionsToQuestions)
                         .ThenInclude(a => a.Option)
-                        .Where(a => a.FormCode == message.CodFormular)
+                        .Where(a => a.FormSection.Form.Code == message.CodFormular) // todo: maybe we should query by FormId, since Form Code might not be unique if we have verions of the same form
                         .ToListAsync();
 
                     var sectiuni = r.Select(a => new { IdSectiune = a.IdSection, CodSectiune = a.FormSection.Code, Descriere = a.FormSection.Description }).Distinct();

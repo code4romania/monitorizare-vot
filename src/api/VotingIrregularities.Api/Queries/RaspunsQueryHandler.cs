@@ -1,9 +1,8 @@
 ﻿using MediatR;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using VoteMonitor.Api.Location.Services;
 using VotingIrregularities.Api.Models;
-using VotingIrregularities.Api.Services;
 using VotingIrregularities.Domain.RaspunsAggregate.Commands;
 
 namespace VotingIrregularities.Api.Queries

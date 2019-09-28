@@ -5,18 +5,18 @@ using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using VotingIrregularities.Domain.Models;
+using VoteMonitor.Entities;
 
 
 namespace VotingIrregularities.Domain.SectieAggregate
 {
     public class InregistreazaSectieHandler : AsyncRequestHandler<InregistreazaSectieCommand, int>
     {
-        private readonly VotingContext _context;
+        private readonly VoteMonitorContext _context;
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
 
-        public InregistreazaSectieHandler(VotingContext context, ILogger logger, IMapper mapper)
+        public InregistreazaSectieHandler(VoteMonitorContext context, ILogger logger, IMapper mapper)
         {
             _context = context;
             _logger = logger;

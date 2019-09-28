@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using VotingIrregularities.Api.Models;
 using Microsoft.Extensions.Configuration;
 using System;
+using VoteMonitor.Api.Form.Models;
 
 namespace VotingIrregularities.Api.Controllers
 {
@@ -13,7 +14,7 @@ namespace VotingIrregularities.Api.Controllers
     /// Ruta Formular ofera suport pentru toate operatiile legate de formularele completate de observatori
     /// </summary>
     [Route("api/v1/formular")]
-    [Obsolete]
+    [Obsolete("use /form instead")]
     public class Formular : Controller
     {
         private readonly IConfigurationRoot _configuration;
@@ -34,7 +35,7 @@ namespace VotingIrregularities.Api.Controllers
         public async Task<IActionResult> GetFormVersions()
         {
             var formsAsDict = new Dictionary<string, int>();
-            (await _mediator.Send(new FormVersionQuery())).ForEach(form => formsAsDict.Add(form.Id, form.CurrentVersion));
+            (await _mediator.Send(new FormVersionQuery())).ForEach(form => formsAsDict.Add(form.Code, form.CurrentVersion));
 
             return Ok(new { Versiune = formsAsDict });
         }
