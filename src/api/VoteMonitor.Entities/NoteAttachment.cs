@@ -1,9 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 
 namespace VoteMonitor.Entities
 {
     public class NoteAttachment
     {
+        public NoteAttachment(string notePath)
+            => NotePath = notePath;
+
         [Key, Required]
         public int Id { get; set; }
 
@@ -11,6 +15,8 @@ namespace VoteMonitor.Entities
         public string NotePath { get; set; }
 
         public int NoteId { get; set; }
+
+        [JsonIgnore]
         public Note Note { get; set; }
     }
 }

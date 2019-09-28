@@ -1,21 +1,21 @@
-﻿using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
-using VoteMonitor.Api.Core;
 using VoteMonitor.Api.Note.Models;
-using VoteMonitor.Api.Location.Queries;
 using VoteMonitor.Api.Note.Commands;
 using System.Collections.Generic;
 using VoteMonitor.Api.Note.Queries;
-using Microsoft.AspNetCore.Authorization;
+using VoteMonitor.Api.Core.Models;
+using System;
+using VoteMonitor.Api.Location.Queries;
+using System.Linq;
+using VoteMonitor.Api.Core;
 
 namespace VoteMonitor.Api.Note.Controllers
 {
-    [Route("api/v2/note"), AllowAnonymous]
+    [Route("api/v2/note")]
     public class NoteController : Controller
     {
         private readonly IMapper _mapper;
@@ -59,16 +59,23 @@ namespace VoteMonitor.Api.Note.Controllers
             var command = _mapper.Map<AddNoteCommand>(note);
             var fileAddresses = await _mediator.Send(new UploadFileCommand { Files = files });
 
-            command.IdObserver = int.Parse(User.Claims.First(c => c.Type == ClaimsHelper.ObserverIdProperty).Value);
+            command.IdObserver = int.Parse(User.Claims.First(c => c.Type == ClaimsHelper.ObserverIdProperty).Value); ;
             command.AttachementPaths = fileAddresses;
             command.IdPollingStation = idSectie;
 
-            var result = await _mediator.Send(command);
-
-            if (result < 0)
+            try
+            {
+                var result = await _mediator.Send(command);
+                return Ok(result);
+            }
+            catch (EntityNotFoundException)
+            {
                 return NotFound();
-
-            return Ok(new { fileAddresses, note });
+            }
+            catch(Exception)
+            {
+                return BadRequest();
+            }
         }
     }
 }
