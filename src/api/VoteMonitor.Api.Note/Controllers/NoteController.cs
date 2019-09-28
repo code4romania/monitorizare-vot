@@ -11,10 +11,11 @@ using VoteMonitor.Api.Location.Queries;
 using VoteMonitor.Api.Note.Commands;
 using System.Collections.Generic;
 using VoteMonitor.Api.Note.Queries;
+using Microsoft.AspNetCore.Authorization;
 
 namespace VoteMonitor.Api.Note.Controllers
 {
-    [Route("api/v2/note")]
+    [Route("api/v2/note"), AllowAnonymous]
     public class NoteController : Controller
     {
         private readonly IMapper _mapper;
