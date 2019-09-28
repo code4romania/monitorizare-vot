@@ -6,7 +6,7 @@ namespace VotingIrregularities.Api.Models.AccountViewModels
     /// <summary>
     /// Model received from client applications in order to perform the authentication
     /// </summary>
-    public class ApplicationUser : IRequest<RegisteredObserverModel>
+    public class ObserverApplicationUser : IRequest<RegisteredObserverModel>
     {
         /// <summary>
         /// User's phone number
