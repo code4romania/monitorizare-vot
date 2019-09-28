@@ -50,7 +50,7 @@ namespace VotingIrregularities.Api.Controllers
         /// <returns></returns>
         [HttpPost("token")]
         [AllowAnonymous]
-        public async Task<IActionResult> Get([FromBody] ApplicationUser applicationUser)
+        public async Task<IActionResult> Get([FromBody] ObserverApplicationUser applicationUser)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -134,7 +134,7 @@ namespace VotingIrregularities.Api.Controllers
                                new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero))
                               .TotalSeconds);
 
-        private async Task<ClaimsIdentity> GetClaimsIdentity(ApplicationUser user)
+        private async Task<ClaimsIdentity> GetClaimsIdentity(ObserverApplicationUser user)
         {
             // verific daca userul exista si daca nu are asociat un alt device, il returneaza din baza
             var userInfo = await _mediator.Send(user);
