@@ -36,6 +36,7 @@ namespace VotingIrregularities.Api.Controllers
         /// optiunea <code>SeIntroduceText = true</code></param>
         /// <returns></returns>
         [HttpPost]
+        [Obsolete("use /answers instead")]
         public async Task<IAsyncResult> CompleteazaRaspuns([FromBody] ModelRaspunsWrapper raspuns)
         {
 

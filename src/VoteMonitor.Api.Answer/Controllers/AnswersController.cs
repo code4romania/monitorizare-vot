@@ -6,6 +6,9 @@ using MediatR;
 using VoteMonitor.Api.Core;
 using VoteMonitor.Api.Answer.Models;
 using VoteMonitor.Api.Answer.Queries;
+using System.Net;
+using System;
+using System.Linq;
 
 namespace MonitorizareVot.Ong.Api.Controllers {
     [Route("api/v1/answers")]
@@ -26,7 +29,7 @@ namespace MonitorizareVot.Ong.Api.Controllers {
         /// Urgent (valoarea campului RaspunsFlag)
         /// </param>
         [HttpGet]
-        public async Task<ApiListResponse<AnswerDTO>> Get(SectionAnswersRequest model) {
+        public async Task<ApiListResponse<AnswerQueryDTO>> Get(SectionAnswersRequest model) {
             var organizator = this.GetOrganizatorOrDefault(_configuration.GetValue<bool>("DefaultOrganizator"));
             var idOng = this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
 
@@ -69,6 +72,32 @@ namespace MonitorizareVot.Ong.Api.Controllers {
                 ObserverId = model.ObserverId,
                 PollingStationId = model.PollingStationNumber
             });
+        }
+
+
+        /// <summary>
+        /// Aici se inregistreaza raspunsul dat de observator la una sau mai multe intrebari, pentru o sectie de votare.
+        /// Raspunsul (ModelOptiuniSelectate) poate avea mai multe optiuni (IdOptiune) si potential un text (Value).
+        /// </summary>
+        /// <param name="raspuns">Sectia de votare, lista de optiuni si textul asociat unei optiuni care se completeaza cand 
+        /// optiunea <code>SeIntroduceText = true</code></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IAsyncResult> PostAnswer([FromBody] AnswerModelWrapper raspuns) {
+
+            if (!ModelState.IsValid) {
+                return this.ResultAsync(HttpStatusCode.BadRequest, ModelState);
+            }
+
+            // TODO[DH] use a pipeline instead of separate Send commands
+            var command = await _mediator.Send(new BulkAnswers(raspuns.Answers));
+
+            // TODO[DH] get the actual IdObservator from token
+            command.ObserverId = int.Parse(User.Claims.First(c => c.Type == ClaimsHelper.ObserverIdProperty).Value);
+
+            var result = await _mediator.Send(command);
+
+            return this.ResultAsync(result < 0 ? HttpStatusCode.NotFound : HttpStatusCode.OK);
         }
     }
 }
