@@ -1,13 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace VoteMonitor.Entities
 {
-    public partial class VoteMonitorContext : DbContext
-    {
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<NgoAdmin>(entity =>
-            {
+    public partial class VoteMonitorContext : DbContext {
+        protected override void OnModelCreating(ModelBuilder modelBuilder) {
+            modelBuilder.Entity<NgoAdmin>(entity => {
                 entity.HasKey(e => e.Id)
                     .HasName("PK_NgoAdminId");
 
@@ -31,8 +30,7 @@ namespace VoteMonitor.Entities
                     .HasConstraintName("FK_NgoAdmin_Ngo");
             });
 
-            modelBuilder.Entity<County>(entity =>
-            {
+            modelBuilder.Entity<County>(entity => {
                 entity.HasKey(e => e.Id)
                     .HasName("PK_County");
 
@@ -47,8 +45,7 @@ namespace VoteMonitor.Entities
                     .HasMaxLength(100);
             });
 
-            modelBuilder.Entity<Note>(entity =>
-            {
+            modelBuilder.Entity<Note>(entity => {
                 entity.HasKey(e => e.Id)
                     .HasName("PK_Note");
 
@@ -81,8 +78,7 @@ namespace VoteMonitor.Entities
                     .OnDelete(DeleteBehavior.Restrict);
             });
 
-            modelBuilder.Entity<Observer>(entity =>
-            {
+            modelBuilder.Entity<Observer>(entity => {
                 entity.HasKey(e => e.Id)
                     .HasName("PK_Observer");
 
@@ -115,8 +111,7 @@ namespace VoteMonitor.Entities
                     .OnDelete(DeleteBehavior.Restrict);
             });
 
-            modelBuilder.Entity<Ngo>(entity =>
-            {
+            modelBuilder.Entity<Ngo>(entity => {
                 entity.HasKey(e => e.Id)
                     .HasName("PK_NGO");
 
@@ -133,8 +128,7 @@ namespace VoteMonitor.Entities
                 entity.Property(e => e.Organizer).HasDefaultValueSql("0");
             });
 
-            modelBuilder.Entity<Answer>(entity =>
-            {
+            modelBuilder.Entity<Answer>(entity => {
                 entity.HasKey(e => new { IdObservator = e.IdObserver, IdRaspunsDisponibil = e.IdOptionToQuestion, IdSectieDeVotare = e.IdPollingStation })
                     .HasName("PK_Answer");
 
@@ -172,9 +166,8 @@ namespace VoteMonitor.Entities
                     .OnDelete(DeleteBehavior.Restrict);
             });
 
-           
-            modelBuilder.Entity<PollingStationInfo>(entity =>
-            {
+
+            modelBuilder.Entity<PollingStationInfo>(entity => {
                 entity.HasKey(e => new { e.IdObserver, e.IdPollingStation })
                     .HasName("PK_PollingStationInfo");
 
@@ -204,8 +197,7 @@ namespace VoteMonitor.Entities
                     .OnDelete(DeleteBehavior.Restrict);
             });
 
-            modelBuilder.Entity<PollingStation>(entity =>
-            {
+            modelBuilder.Entity<PollingStation>(entity => {
                 entity.HasKey(e => e.Id)
                     .HasName("PK_PollingStation");
 
@@ -236,12 +228,16 @@ namespace VoteMonitor.Entities
             });
 
 
-            modelBuilder.Entity<Form>(entity =>
-            {
+            modelBuilder.Entity<Form>(entity => {
                 entity.HasKey(e => e.Id)
                     .HasName("PK_FormVersion");
 
                 entity.Property(e => e.Id).HasMaxLength(2);
+            });
+
+            modelBuilder.Entity<AnswerQueryInfo>(entity => {
+                entity.HasKey(e => new { e.IdObserver, e.IdPollingStation})
+                    .HasName("PK_AnswerQueryInfo");
             });
             modelBuilder.Entity<FormSection>(entity => {
                 entity.HasKey(e => e.Id)
@@ -320,5 +316,14 @@ namespace VoteMonitor.Entities
         public virtual DbSet<PollingStation> PollingStations { get; set; }
         public virtual DbSet<FormSection> FormSections { get; set; }
         public virtual DbSet<Form> Forms { get; set; }
+        public virtual DbSet<AnswerQueryInfo> AnswerQueryInfos{ get;set; }
+
+        public class AnswerQueryInfo {
+            public int IdPollingStation { get; set; }
+            public int IdObserver { get; set; }
+            public string ObserverName { get; set; }
+            public string PollingStation { get; set; }
+            public DateTime LastModified {get;set;}
     }
+}
 }

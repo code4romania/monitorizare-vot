@@ -43,6 +43,7 @@ using VoteMonitor.Api.Core.Services;
 using VoteMonitor.Api.Note.Controllers;
 using VoteMonitor.Api.Note.Services;
 using VoteMonitor.Api.Form.Controllers;
+using MonitorizareVot.Ong.Api.Controllers;
 
 namespace VotingIrregularities.Api
 {
@@ -149,6 +150,7 @@ namespace VotingIrregularities.Api
                 .AddApplicationPart(typeof(ObserverController).Assembly)
                 .AddApplicationPart(typeof(NoteController).Assembly)
                 .AddApplicationPart(typeof(FormController).Assembly)
+                .AddApplicationPart(typeof(AnswersController).Assembly)
                 .AddControllersAsServices()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
@@ -418,6 +420,7 @@ namespace VotingIrregularities.Api
             yield return typeof(ObserverController).GetTypeInfo().Assembly;
             yield return typeof(NoteController).GetTypeInfo().Assembly;
             yield return typeof(FormController).GetTypeInfo().Assembly;
+            yield return typeof(AnswersController).GetTypeInfo().Assembly;
             // just to identify VotingIrregularities.Domain assembly
         }
 
