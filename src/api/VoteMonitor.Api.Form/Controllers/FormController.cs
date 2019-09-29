@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using VoteMonitor.Api.Form.Models;
+using VoteMonitor.Api.Form.Queries;
 
 namespace VoteMonitor.Api.Form.Controllers {
     /// <inheritdoc />
@@ -23,6 +24,11 @@ namespace VoteMonitor.Api.Form.Controllers {
             _mediator = mediator;
         }
 
+        [HttpPost]
+        public async Task<int> AddForm([FromBody]FormDTO newForm) {
+            FormDTO result = await _mediator.Send(new AddFormQuery { Form = newForm });
+            return result.Id;
+        }
         /// <summary>
         /// Returneaza versiunea tuturor formularelor sub forma unui array. 
         /// Daca versiunea returnata difera de cea din aplicatie, atunci trebuie incarcat formularul din nou 
