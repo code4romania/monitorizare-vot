@@ -12,7 +12,7 @@ using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Answer.Queries {
     public class AnswersQueryHandler :
-    IRequestHandler<AnswersQuery, ApiListResponse<AnswerDTO>>,
+    IRequestHandler<AnswersQuery, ApiListResponse<AnswerQueryDTO>>,
     IRequestHandler<FilledInAnswersQuery, List<QuestionDTO<FilledInAnswerDTO>>>,
     IRequestHandler<FormAnswersQuery, PollingStationInfosDTO> {
         private readonly VoteMonitorContext _context;
@@ -23,7 +23,7 @@ namespace VoteMonitor.Api.Answer.Queries {
             _mapper = mapper;
         }
 
-        public async Task<ApiListResponse<AnswerDTO>> Handle(AnswersQuery message, CancellationToken cancellationToken) {
+        public async Task<ApiListResponse<AnswerQueryDTO>> Handle(AnswersQuery message, CancellationToken cancellationToken) {
             //var query = from a in _context.Answers
             //            join o in _context.Observers on a.IdObserver equals o.Id
             //            join oq in _context.OptionsToQuestions on o.Id equals oq.IdQuestion
@@ -72,8 +72,8 @@ namespace VoteMonitor.Api.Answer.Queries {
                 .FromSql(queryUnPaged)
                 .CountAsync(cancellationToken: cancellationToken);
 
-            return new ApiListResponse<AnswerDTO> {
-                Data = sectiiCuObservatoriPaginat.Select(x => _mapper.Map<AnswerDTO>(x)).ToList(),
+            return new ApiListResponse<AnswerQueryDTO> {
+                Data = sectiiCuObservatoriPaginat.Select(x => _mapper.Map<AnswerQueryDTO>(x)).ToList(),
                 Page = message.Page,
                 PageSize = message.PageSize,
                 TotalItems = count
