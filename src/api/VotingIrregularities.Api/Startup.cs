@@ -118,33 +118,36 @@ namespace VotingIrregularities.Api
                 ClockSkew = TimeSpan.Zero
             };
 
-            services.AddAuthentication(options =>
-            {
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-                    .AddJwtBearer(options =>
-                    {
-                        options.Audience = jwtAppSettingOptions[nameof(JwtIssuerOptions.Audience)];
-                        options.RequireHttpsMetadata = false;
-                        options.ClaimsIssuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)];
-                        options.TokenValidationParameters = tokenValidationParameters;
-                    });
+            // TODO: add auth back
+            // services.AddAuthentication(options =>
+            // {
+            //     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            // })
+            //         .AddJwtBearer(options =>
+            //         {
+            //             options.Audience = jwtAppSettingOptions[nameof(JwtIssuerOptions.Audience)];
+            //             options.RequireHttpsMetadata = false;
+            //             options.ClaimsIssuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)];
+            //             options.TokenValidationParameters = tokenValidationParameters;
+            //         });
 
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("AppUser",
-                                  policy => policy.RequireClaim("Organizatie", "Ong"));
-            });
+            // TODO: add auth back
+            // services.AddAuthorization(options =>
+            // {
+            //     options.AddPolicy("AppUser",
+            //                       policy => policy.RequireClaim("Organizatie", "Ong"));
+            // });
 
             services.AddApplicationInsightsTelemetry(Configuration);
 
             services.AddMvc(config =>
                 {
-                    var policy = new AuthorizationPolicyBuilder()
-                                     .RequireAuthenticatedUser()
-                                     .RequireClaim(ClaimsHelper.ObserverIdProperty)
-                                     .Build();
-                    config.Filters.Add(new AuthorizeFilter(policy));
+                    // TODO: add auth back
+                    // var policy = new AuthorizationPolicyBuilder()
+                    //                  .RequireAuthenticatedUser()
+                    //                  .RequireClaim(ClaimsHelper.ObserverIdProperty)
+                    //                  .Build();
+                    // config.Filters.Add(new AuthorizeFilter(policy));
                 })
                 .AddApplicationPart(typeof(PollingStationController).Assembly)
                 .AddApplicationPart(typeof(ObserverController).Assembly)
@@ -209,20 +212,21 @@ namespace VotingIrregularities.Api
 
             appLifetime.ApplicationStopped.Register(Log.CloseAndFlush);
 
-            app.UseExceptionHandler(
-                builder =>
-                {
-                    builder.Run(context =>
-                    {
-                        context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                        context.Response.ContentType = "application/json";
-                        return Task.FromResult(0);
-                    }
-                    );
-                }
-            );
+            // app.UseExceptionHandler(
+            //     builder =>
+            //     {
+            //         builder.Run(context =>
+            //         {
+            //             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            //             context.Response.ContentType = "application/json";
+            //             return Task.FromResult(0);
+            //         }
+            //         );
+            //     }
+            // );
 
-            app.UseAuthentication();
+            // TODO: add auth back
+            //app.UseAuthentication();
 
             _container.RegisterSingleton(() => app.ApplicationServices.GetService<IOptions<MobileSecurityOptions>>());
 
