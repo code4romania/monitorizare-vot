@@ -37,7 +37,6 @@ using Microsoft.ApplicationInsights.Extensibility;
 using VoteMonitor.Api.Core;
 using VoteMonitor.Api.Location.Controllers;
 using VoteMonitor.Api.Location.Services;
-using VotingIrregularities.Domain;
 using VoteMonitor.Api.Observer.Controllers;
 using VoteMonitor.Api.Core.Services;
 using VoteMonitor.Api.Note.Controllers;
@@ -72,8 +71,9 @@ namespace VotingIrregularities.Api
             Configuration = builder.Build();
         }
 
-        public IConfigurationRoot Configuration { get; }
-        public void ConfigureCustomOptions(IServiceCollection services)
+        private IConfigurationRoot Configuration { get; }
+
+        private void ConfigureCustomOptions(IServiceCollection services)
         {
             services.Configure<BlobStorageOptions>(Configuration.GetSection("BlobStorageOptions"));
             services.Configure<HashOptions>(Configuration.GetSection("HashOptions"));
@@ -118,36 +118,34 @@ namespace VotingIrregularities.Api
                 ClockSkew = TimeSpan.Zero
             };
 
-            // TODO: add auth back
-            // services.AddAuthentication(options =>
-            // {
-            //     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            // })
-            //         .AddJwtBearer(options =>
-            //         {
-            //             options.Audience = jwtAppSettingOptions[nameof(JwtIssuerOptions.Audience)];
-            //             options.RequireHttpsMetadata = false;
-            //             options.ClaimsIssuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)];
-            //             options.TokenValidationParameters = tokenValidationParameters;
-            //         });
+            services.AddAuthentication(options =>
+                    {
+                        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                    })
+                    .AddJwtBearer(options =>
+                    {
+                        options.Audience = jwtAppSettingOptions[nameof(JwtIssuerOptions.Audience)];
+                        options.RequireHttpsMetadata = false;
+                        options.ClaimsIssuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)];
+                        options.TokenValidationParameters = tokenValidationParameters;
+                    });
 
-            // TODO: add auth back
-            // services.AddAuthorization(options =>
-            // {
-            //     options.AddPolicy("AppUser",
-            //                       policy => policy.RequireClaim("Organizatie", "Ong"));
-            // });
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("NgoAdmin", policy => policy.RequireClaim(ClaimsHelper.UserType, UserType.NgoAdmin.ToString()));
+                options.AddPolicy("Observer", policy => policy.RequireClaim(ClaimsHelper.UserType, UserType.Observer.ToString()).RequireClaim(ClaimsHelper.ObserverIdProperty));
+                options.AddPolicy("Organizer", policy => policy.RequireClaim(ClaimsHelper.Organizer, ClaimsHelper.ORGANIZER_VALUE));
+            });
 
             services.AddApplicationInsightsTelemetry(Configuration);
 
             services.AddMvc(config =>
                 {
-                    // TODO: add auth back
-                    // var policy = new AuthorizationPolicyBuilder()
-                    //                  .RequireAuthenticatedUser()
-                    //                  .RequireClaim(ClaimsHelper.ObserverIdProperty)
-                    //                  .Build();
-                    // config.Filters.Add(new AuthorizeFilter(policy));
+                    var policy = new AuthorizationPolicyBuilder()
+                                     .RequireAuthenticatedUser()
+                                     .RequireClaim(ClaimsHelper.IdNgo)
+                                     .Build();
+                    config.Filters.Add(new AuthorizeFilter(policy));
                 })
                 .AddApplicationPart(typeof(PollingStationController).Assembly)
                 .AddApplicationPart(typeof(ObserverController).Assembly)
@@ -162,8 +160,8 @@ namespace VotingIrregularities.Api
                 options.SwaggerDoc("v1", new Info
                 {
                     Version = "v1",
-                    Title = "Monitorizare Vot - API privat",
-                    Description = "API care ofera suport aplicatiilor folosite de observatori.",
+                    Title = "VoteMonitor ",
+                    Description = "API specs for NGO Admin and Observer operations.",
                     TermsOfService = "TBD",
                     Contact =
                         new Contact
@@ -212,21 +210,21 @@ namespace VotingIrregularities.Api
 
             appLifetime.ApplicationStopped.Register(Log.CloseAndFlush);
 
-            // app.UseExceptionHandler(
-            //     builder =>
-            //     {
-            //         builder.Run(context =>
-            //         {
-            //             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-            //             context.Response.ContentType = "application/json";
-            //             return Task.FromResult(0);
-            //         }
-            //         );
-            //     }
-            // );
+            app.UseExceptionHandler(
+                builder =>
+                {
+                    builder.Run(context =>
+                    {
+                        context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                        context.Response.ContentType = "application/json";
+                        return Task.FromResult(0);
+                    }
+                    );
+                }
+            );
 
-            // TODO: add auth back
-            //app.UseAuthentication();
+
+            app.UseAuthentication();
 
             _container.RegisterSingleton(() => app.ApplicationServices.GetService<IOptions<MobileSecurityOptions>>());
 

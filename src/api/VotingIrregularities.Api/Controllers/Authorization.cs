@@ -56,6 +56,7 @@ namespace VotingIrregularities.Api.Controllers
                 return BadRequest(ModelState);
 
             var identity = await GetClaimsIdentity(applicationUser);
+
             if (identity == null)
             {
                 _logger.LogInformation($"Invalid Phone ({applicationUser.Phone}) or password ({applicationUser.Pin})");
@@ -92,6 +93,30 @@ namespace VotingIrregularities.Api.Controllers
 
             return Ok(response);
         }
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> Login([FromBody] NgoAdminApplicationUser ngoAdminApplicationUser)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            //await _mediator.Send(new ImportObserversRequest {FilePath = "d:\\mv-name-rest.11.15.txt", IdNgo = 3, NameIndexInFile = 2}); // mv
+            //await _mediator.Send(new ImportObserversRequest { FilePath = "d:\\dv-rest7.txt", IdNgo = 2, NameIndexInFile = 0 }); // usr
+
+            var identity = await GetClaimsIdentity(ngoAdminApplicationUser);
+            if (identity == null)
+            {
+                _logger.LogInformation(
+                    $"Invalid username ({ngoAdminApplicationUser.UserName}) or password ({ngoAdminApplicationUser.Password})");
+                return BadRequest("Invalid credentials");
+            }
+            var json = await GenerateToken(ngoAdminApplicationUser.UserName,
+                int.Parse(identity.Claims.FirstOrDefault(c => c.Type == ClaimsHelper.ID_NGO_VALUE)?.Value),
+                bool.Parse(identity.Claims.FirstOrDefault(c => c.Type == ClaimsHelper.ORGANIZER_VALUE)?.Value));
+
+            return new OkObjectResult(json);
+        }
+
         /// <summary>
         /// Test action to get claims
         /// </summary>
@@ -133,7 +158,40 @@ namespace VotingIrregularities.Api.Controllers
           => (long)Math.Round((date.ToUniversalTime() -
                                new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero))
                               .TotalSeconds);
+        private async Task<string> GenerateToken(string userName, int idOng = 0, bool organizator = false)
+        {
+            var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, userName),
+                new Claim(JwtRegisteredClaimNames.Jti, await _jwtOptions.JtiGenerator()),
+                new Claim(JwtRegisteredClaimNames.Iat,
+                    ToUnixEpochDate(_jwtOptions.IssuedAt).ToString(),
+                    ClaimValueTypes.Integer64),
+                new Claim(ClaimsHelper.ID_NGO_VALUE, idOng.ToString()),
+                new Claim(ClaimsHelper.AUTH_HEADER_VALUE, organizator.ToString())
+            };
 
+            // Create the JWT security token and encode it.
+            var jwt = new JwtSecurityToken(
+                issuer: _jwtOptions.Issuer,
+                audience: _jwtOptions.Audience,
+                claims: claims,
+                notBefore: _jwtOptions.NotBefore,
+                expires: _jwtOptions.Expiration,
+                signingCredentials: _jwtOptions.SigningCredentials);
+
+            var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
+
+            // Serialize and return the response
+            //var response = new
+            //{
+            //    token = encodedJwt,
+            //    expires_in = (int)_jwtOptions.ValidFor.TotalSeconds
+            //};
+
+            //var json = JsonConvert.SerializeObject(response, _serializerSettings);
+            return encodedJwt;
+        }
         private async Task<ClaimsIdentity> GetClaimsIdentity(ObserverApplicationUser user)
         {
             // verific daca userul exista si daca nu are asociat un alt device, il returneaza din baza
@@ -156,6 +214,20 @@ namespace VotingIrregularities.Api.Controllers
                 {
                     new Claim(ClaimsHelper.ObserverProperty, ClaimsHelper.ObserverDefault),
                     new Claim(ClaimsHelper.ObserverIdProperty, userInfo.ObserverId.ToString())
+                }));
+        }
+        private async Task<ClaimsIdentity> GetClaimsIdentity(NgoAdminApplicationUser user)
+        {
+            var userInfo = await _mediator.Send(user);
+
+            if (userInfo == null)
+                return await Task.FromResult<ClaimsIdentity>(null);
+
+            return await Task.FromResult(new ClaimsIdentity(
+                new GenericIdentity(user.UserName, ClaimsHelper.TOKEN_VALUE), new[]
+                {
+                    new Claim(ClaimsHelper.ID_NGO_VALUE, userInfo.IdNgo.ToString()),
+                    new Claim(ClaimsHelper.ORGANIZER_VALUE, userInfo.Organizer.ToString(), typeof(bool).ToString())
                 }));
         }
     }
