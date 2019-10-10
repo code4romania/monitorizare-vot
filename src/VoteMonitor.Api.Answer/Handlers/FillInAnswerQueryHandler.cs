@@ -1,14 +1,15 @@
-﻿using AutoMapper;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using VoteMonitor.Api.Answer.Commands;
 using VoteMonitor.Entities;
 
-namespace VoteMonitor.Api.Answer.Models {
+namespace VoteMonitor.Api.Answer.Handlers {
     public class FillInAnswerQueryHandler : AsyncRequestHandler<CompleteazaRaspunsCommand, int> {
         private readonly VoteMonitorContext _context;
         private readonly IMapper _mapper;

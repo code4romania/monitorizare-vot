@@ -34,6 +34,7 @@ using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using VoteMonitor.Api.Answer.Controllers;
 using VoteMonitor.Api.Location.Controllers;
 using VoteMonitor.Api.Location.Services;
 using VoteMonitor.Api.Observer.Controllers;
@@ -41,7 +42,6 @@ using VoteMonitor.Api.Core.Services;
 using VoteMonitor.Api.Note.Controllers;
 using VoteMonitor.Api.Note.Services;
 using VoteMonitor.Api.Form.Controllers;
-using MonitorizareVot.Ong.Api.Controllers;
 using VoteMonitor.Api.Core;
 
 namespace VotingIrregularities.Api

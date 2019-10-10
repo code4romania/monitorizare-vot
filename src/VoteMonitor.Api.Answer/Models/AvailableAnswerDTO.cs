@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using System.Linq;
 using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Answer.Models { 
