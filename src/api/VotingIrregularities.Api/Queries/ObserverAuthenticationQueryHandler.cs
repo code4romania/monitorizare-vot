@@ -54,6 +54,7 @@ namespace VotingIrregularities.Api.Queries
             return new RegisteredObserverModel
             {
                 ObserverId = userinfo.Id,
+                IdNgo = userinfo.IdNgo,
                 IsAuthenticated = true,
                 FirstAuthentication = string.IsNullOrWhiteSpace(userinfo.MobileDeviceId) && _mobileSecurityOptions.LockDevice
             };
