@@ -7,10 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.EntityFrameworkCore;
@@ -28,13 +26,14 @@ using ILogger = Microsoft.Extensions.Logging.ILogger;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using VotingIrregularities.Api.Models.AccountViewModels;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using SimpleInjector.Lifestyles;
 using Swashbuckle.AspNetCore.Swagger;
 using VotingIrregularities.Api.Options;
 using Microsoft.ApplicationInsights.Extensibility;
-using VoteMonitor.Api.Core;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using VoteMonitor.Api.Location.Controllers;
 using VoteMonitor.Api.Location.Services;
 using VoteMonitor.Api.Observer.Controllers;
@@ -43,6 +42,7 @@ using VoteMonitor.Api.Note.Controllers;
 using VoteMonitor.Api.Note.Services;
 using VoteMonitor.Api.Form.Controllers;
 using MonitorizareVot.Ong.Api.Controllers;
+using VoteMonitor.Api.Core;
 
 namespace VotingIrregularities.Api
 {
@@ -79,8 +79,8 @@ namespace VotingIrregularities.Api
             services.Configure<HashOptions>(Configuration.GetSection("HashOptions"));
             services.Configure<MobileSecurityOptions>(Configuration.GetSection("MobileSecurity"));
             services.Configure<FileServiceOptions>(Configuration.GetSection(nameof(FileServiceOptions)));
-
         }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -134,7 +134,7 @@ namespace VotingIrregularities.Api
             {
                 options.AddPolicy("NgoAdmin", policy => policy.RequireClaim(ClaimsHelper.UserType, UserType.NgoAdmin.ToString()));
                 options.AddPolicy("Observer", policy => policy.RequireClaim(ClaimsHelper.UserType, UserType.Observer.ToString()).RequireClaim(ClaimsHelper.ObserverIdProperty));
-                options.AddPolicy("Organizer", policy => policy.RequireClaim(ClaimsHelper.Organizer, ClaimsHelper.ORGANIZER_VALUE));
+                options.AddPolicy("Organizer", policy => policy.RequireClaim(ClaimsHelper.Organizer, "1"));
             });
 
             services.AddApplicationInsightsTelemetry(Configuration);
