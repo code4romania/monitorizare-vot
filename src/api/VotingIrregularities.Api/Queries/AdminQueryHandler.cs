@@ -11,7 +11,7 @@ using VoteMonitor.Api.Core.Services;
 
 namespace MonitorizareVot.Ong.Api.Queries
 {
-    public class AdminQueryHandler : IRequestHandler<ApplicationUser, UserInfo>
+    public class AdminQueryHandler : IRequestHandler<NgoAdminApplicationUser, UserInfo>
     {
         private readonly VoteMonitorContext _context;
         private readonly IHashService _hash;
@@ -22,7 +22,7 @@ namespace MonitorizareVot.Ong.Api.Queries
             _hash = hash;
         }
 
-        public async Task<UserInfo> Handle(ApplicationUser message, CancellationToken token)
+        public async Task<UserInfo> Handle(NgoAdminApplicationUser message, CancellationToken token)
         {
             var hashValue = _hash.GetHash(message.Password);
 
