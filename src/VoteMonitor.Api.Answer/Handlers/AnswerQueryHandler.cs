@@ -1,11 +1,12 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using VoteMonitor.Api.Answer.Commands;
+using VoteMonitor.Api.Answer.Models;
 using VoteMonitor.Entities;
 
-namespace VoteMonitor.Api.Answer.Models {
+namespace VoteMonitor.Api.Answer.Handlers {
     public class AnswerQueryHandler :
         AsyncRequestHandler<BulkAnswers, CompleteazaRaspunsCommand> {
         private readonly VoteMonitorContext _context;
