@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using VoteMonitor.Api.Form.Models;
@@ -13,6 +15,7 @@ namespace VoteMonitor.Api.Form.Controllers {
     /// </summary>
 
     [Route("api/v1/form")]
+    [Authorize(Policy = "Observer")]
     public class FormController : Controller
     {
         private readonly IConfigurationRoot _configuration;
@@ -35,13 +38,14 @@ namespace VoteMonitor.Api.Form.Controllers {
         /// </summary>
         /// <returns></returns>
         [HttpGet("versions")]
-        [Produces(typeof(Dictionary<string,int>))]
+        [Produces(typeof(List<FormDTO>))]
         public async Task<IActionResult> GetFormVersions()
         {
-            var formsAsDict = new Dictionary<string, int>();
-            (await _mediator.Send(new FormVersionQuery())).ForEach(form => formsAsDict.Add(form.Code, form.CurrentVersion));
+            //var formsAsDict = new Dictionary<string, int>();
+            var forms = (await _mediator.Send(new FormVersionQuery()))
+                .Select(f => new { FormId = f.Id, Version = f.CurrentVersion, FormCode = f.Code });
 
-            return Ok(new { Versions = formsAsDict });
+            return Ok(new { Versions = forms });
         }
 
         /// <summary>
@@ -60,10 +64,10 @@ namespace VoteMonitor.Api.Form.Controllers {
         /// <param name="formId">Id-ul formularului pentru care trebuie preluata definitia</param>
         /// <returns></returns>
         [HttpGet("{formId}")]
-        public async Task<IEnumerable<FormSectionDTO>> GetFormAsync(string formId)
+        public async Task<IEnumerable<FormSectionDTO>> GetFormAsync(int formId)
         {
             var result = await _mediator.Send(new FormQuestionQuery {
-                FormCode = formId,
+                FormId = formId,
                 CacheHours = _configuration.GetValue<int>("DefaultCacheHours"),
                 CacheMinutes = _configuration.GetValue<int>("DefaultCacheMinutes"),
                 CacheSeconds = _configuration.GetValue<int>("DefaultCacheSeconds")
