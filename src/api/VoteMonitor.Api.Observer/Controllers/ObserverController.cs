@@ -47,18 +47,16 @@ namespace VoteMonitor.Api.Observer.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns>Boolean indicating whether or not the observer was added successfully.</returns>
-        [Authorize]
         [HttpPost]
-        [Route("")]
         [Produces(type: typeof(bool))]
-        public async Task<bool> NewObserver(NewObserverModel model)
+        public async Task<IActionResult> NewObserver(NewObserverModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var saved = await _mediator.Send(_mapper.Map<NewObserverCommand>(model));
+            var newId = await _mediator.Send(_mapper.Map<NewObserverCommand>(model));
 
-            return Ok(saved > 0);
+            return Ok(newId);
         }
 
         /// <summary>
@@ -66,11 +64,9 @@ namespace VoteMonitor.Api.Observer.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns>Boolean indicating whether or not the observer was changed successfully</returns>
-        [Authorize]
         [HttpPut]
-        [Route("")]
         [Produces(type: typeof(bool))]
-        public async Task<dynamic> EditObserver([FromBody]EditObserverModel model) {
+        public async Task<IActionResult> EditObserver([FromBody]EditObserverModel model) {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -84,11 +80,9 @@ namespace VoteMonitor.Api.Observer.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns>Boolean indicating whether or not the observer was deleted successfully</returns>
-        [Authorize]
         [HttpDelete]
-        [Route("")]
         [Produces(type: typeof(bool))]
-        public async Task<dynamic> DeleteObserver(int id) {
+        public async Task<IActionResult> DeleteObserver(int id) {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -97,7 +91,7 @@ namespace VoteMonitor.Api.Observer.Controllers
             return Ok(result);
         }
 
-        [Authorize]
+
         [HttpPost]
         [Route("reset")]
         public async Task<IAsyncResult> Reset([FromForm] string action, [FromForm] string phoneNumber)
@@ -126,7 +120,6 @@ namespace VoteMonitor.Api.Observer.Controllers
             return Task.FromResult(UnprocessableEntity());
         }
 
-        [Authorize]
         [HttpPost]
         [Route("generate")]
         public async Task<IAsyncResult> GenerateObservers([FromForm] int count)
