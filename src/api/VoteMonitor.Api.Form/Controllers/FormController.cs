@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using VoteMonitor.Api.Form.Models;
@@ -25,6 +26,7 @@ namespace VoteMonitor.Api.Form.Controllers {
         }
 
         [HttpPost]
+        [Authorize("NgoAdmin")]
         public async Task<int> AddForm([FromBody]FormDTO newForm) {
             FormDTO result = await _mediator.Send(new AddFormQuery { Form = newForm });
             return result.Id;

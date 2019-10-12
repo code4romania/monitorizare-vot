@@ -14,6 +14,7 @@ using MediatR;
 using VoteMonitor.Api.Core;
 using VotingIrregularities.Domain.UserAggregate;
 using VotingIrregularities.Api.Options;
+using VotingIrregularities.Api.Models;
 
 namespace VotingIrregularities.Api.Controllers
 {
@@ -50,6 +51,7 @@ namespace VotingIrregularities.Api.Controllers
         /// <returns></returns>
         [HttpPost("token")]
         [AllowAnonymous]
+        [Obsolete("Use /access/authorize instead")]
         public async Task<IActionResult> Observer([FromBody] ObserverApplicationUser applicationUser)
         {
             if (!ModelState.IsValid)
@@ -76,6 +78,7 @@ namespace VotingIrregularities.Api.Controllers
         }
         [HttpPost]
         [AllowAnonymous]
+        [Obsolete("Use /access/authorize instead")]
         public async Task<IActionResult> NgoAdmin([FromBody] NgoAdminApplicationUser ngoAdminApplicationUser)
         {
             if (!ModelState.IsValid)
@@ -94,6 +97,37 @@ namespace VotingIrregularities.Api.Controllers
 
             var json = GetTokenFromIdentity(identity);
             return new OkObjectResult(json);
+        }
+
+        [HttpPost("authorize")]
+        [AllowAnonymous]
+        public async Task<IActionResult> AuthenticateUser([FromBody] AuthenticateUserRequest request) {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            string token;
+            if (string.IsNullOrEmpty(request.UniqueId)) {
+                var identity = await GetClaimsIdentity(request);
+                if (identity == null) {
+                    _logger.LogInformation(
+                        $"Invalid username ({request.User}) or password ({request.Password})");
+                    return BadRequest("Invalid credentials");
+                }
+
+                token = GetTokenFromIdentity(identity);
+            }
+            else {
+                var identity = await GetClaimsIdentity(request);
+
+                if (identity == null) {
+                    _logger.LogInformation($"Invalid Phone ({request.User}) or password ({request.Password})");
+                    return BadRequest("{ \"error\": \"A aparut o eroare la logarea in aplicatie. Va rugam sa verificati ca ati introdus corect numarul de telefon si codul de acces, iar daca eroarea persista va rugam contactati serviciul de suport la numarul 0757652712.\" }");
+                }
+
+                token = GetTokenFromIdentity(identity);
+            }
+
+            return Ok(token);
         }
 
         /// <summary>
@@ -172,6 +206,52 @@ namespace VotingIrregularities.Api.Controllers
                 {
                     new Claim(ClaimsHelper.Organizer, userInfo.Organizer.ToString(), ClaimValueTypes.Boolean),
                 });
+        }
+
+        private async Task<ClaimsIdentity> GetClaimsIdentity(AuthenticateUserRequest request) {
+            if (string.IsNullOrEmpty(request.UniqueId)) {
+                var userInfo = await _mediator.Send(new NgoAdminApplicationUser {
+                    Password = request.Password,
+                    UserName = request.User,
+                    UserType = UserType.NgoAdmin
+                });
+
+                if (userInfo == null)
+                    return null;
+
+                // Get the generic claims + the user specific one (the organizer flag)
+                return new ClaimsIdentity(await GetGenericIdentity(request.User, userInfo.IdNgo.ToString(), UserType.NgoAdmin.ToString()),
+                    new[]
+                    {
+                    new Claim(ClaimsHelper.Organizer, userInfo.Organizer.ToString(), ClaimValueTypes.Boolean)
+                    });
+            }
+            else {
+                // verific daca userul exista si daca nu are asociat un alt device, il returneaza din baza
+                var userInfo = await _mediator.Send(new ObserverApplicationUser {
+                    Phone = request.User,
+                    Pin = request.Password,
+                    UDID = request.UniqueId
+                });
+
+                if (!userInfo.IsAuthenticated)
+                    return await Task.FromResult<ClaimsIdentity>(null);
+
+                if (userInfo.FirstAuthentication && _mobileSecurityOptions.LockDevice)
+                    await
+                        _mediator.Send(new RegisterDeviceId {
+                            MobileDeviceId = request.UniqueId,
+                            ObserverId = userInfo.ObserverId
+                        });
+
+                // Get the generic claims + the user specific one (the organizer flag)
+                return new ClaimsIdentity(await GetGenericIdentity(request.User, userInfo.IdNgo.ToString(), UserType.Observer.ToString()),
+                    new[]
+                    {
+                    new Claim(ClaimsHelper.ObserverIdProperty, userInfo.ObserverId.ToString(), ClaimValueTypes.Boolean)
+                    });
+            }
+
         }
         private string GetTokenFromIdentity(ClaimsIdentity identity)
         {
