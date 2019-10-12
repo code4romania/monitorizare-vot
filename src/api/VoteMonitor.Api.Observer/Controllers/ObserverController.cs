@@ -42,17 +42,59 @@ namespace VoteMonitor.Api.Observer.Controllers
         public void Import(IFormFile file, [FromForm] object a)
         { }
 
+        /// <summary>
+        ///  Adds an observer.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Boolean indicating whether or not the observer was added successfully.</returns>
         [Authorize]
         [HttpPost]
         [Route("")]
+        [Produces(type: typeof(bool))]
         public async Task<dynamic> NewObserver(NewObserverModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            await _mediator.Send(_mapper.Map<NewObserverCommand>(model));
+            var saved = await _mediator.Send(_mapper.Map<NewObserverCommand>(model));
 
-            return Task.FromResult(new { });
+            return Ok(saved > 0);
+        }
+
+        /// <summary>
+        /// Edits Observer information.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Boolean indicating whether or not the observer was changed successfully</returns>
+        [Authorize]
+        [HttpPut]
+        [Route("")]
+        [Produces(type: typeof(bool))]
+        public async Task<dynamic> EditObserver([FromBody]EditObserverModel model) {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var id = await _mediator.Send(_mapper.Map<EditObserverCommand>(model));
+
+            return Ok(id > 0);
+        }
+
+        /// <summary>
+        /// Deletes an observer.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Boolean indicating whether or not the observer was deleted successfully</returns>
+        [Authorize]
+        [HttpDelete]
+        [Route("")]
+        [Produces(type: typeof(bool))]
+        public async Task<dynamic> DeleteObserver(int id) {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _mediator.Send(_mapper.Map<DeleteObserverCommand>(new DeleteObserverModel { IdObserver = id }));
+
+            return Ok(result);
         }
 
         [Authorize]
