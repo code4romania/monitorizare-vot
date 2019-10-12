@@ -64,7 +64,7 @@ namespace VoteMonitor.Api.Observer.Handlers
             return Task.FromResult(counter);
         }
 
-        public Task<int> Handle(NewObserverCommand message, CancellationToken token)
+        public async Task<int> Handle(NewObserverCommand message, CancellationToken token)
         {
             var id = GetMaxIdObserver();
             var observer = new Entities.Observer
@@ -76,7 +76,8 @@ namespace VoteMonitor.Api.Observer.Handlers
                 Pin = _hashService.GetHash(message.Pin)
             };
             _context.Observers.Add(observer);
-            return _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
+            return observer.Id;
         }
 
         public async Task<int> Handle(EditObserverCommand request, CancellationToken cancellationToken) {
