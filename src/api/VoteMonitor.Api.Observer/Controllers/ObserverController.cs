@@ -51,7 +51,7 @@ namespace VoteMonitor.Api.Observer.Controllers
         [HttpPost]
         [Route("")]
         [Produces(type: typeof(bool))]
-        public async Task<dynamic> NewObserver(NewObserverModel model)
+        public async Task<bool> NewObserver(NewObserverModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
