@@ -14,7 +14,7 @@ namespace VoteMonitor.Api.Core
         public static readonly string RESET_ERROR_MESSAGE = "Internal server error, please verify that provided id is correct ";
         public static readonly string DEVICE_RESET = "device";
         public static readonly string PASSWORD_RESET = "password";
-
+        
         public static int GetIdOngOrDefault(this Controller controller, int defaultIdOng)
         {
             return int.TryParse(controller.User.Claims.FirstOrDefault(a => a.Type == ClaimsHelper.IdNgo)?.Value, out var result)

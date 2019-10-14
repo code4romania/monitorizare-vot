@@ -11,6 +11,8 @@ using VoteMonitor.Api.Observer.Models;
 using VoteMonitor.Api.Observer.Commands;
 using Microsoft.AspNetCore.Http;
 using VoteMonitor.Api.Observer.Queries;
+using System.Linq;
+using Microsoft.Extensions.Configuration;
 
 namespace VoteMonitor.Api.Observer.Controllers
 {
@@ -20,12 +22,14 @@ namespace VoteMonitor.Api.Observer.Controllers
         private readonly IMediator _mediator;
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
+        private readonly IConfiguration _configuration;
 
-        public ObserverController(IMediator mediator, ILogger logger, IMapper mapper)
+        public ObserverController(IMediator mediator, ILogger logger, IMapper mapper, IConfigurationRoot configuration)
         {
             _mediator = mediator;
             _logger = logger;
             _mapper = mapper;
+            _configuration = configuration;
         }
 
         [HttpGet]
@@ -42,20 +46,58 @@ namespace VoteMonitor.Api.Observer.Controllers
         public void Import(IFormFile file, [FromForm] object a)
         { }
 
-        [Authorize]
+        /// <summary>
+        ///  Adds an observer.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Boolean indicating whether or not the observer was added successfully.</returns>
         [HttpPost]
-        [Route("")]
-        public async Task<dynamic> NewObserver(NewObserverModel model)
+        [Produces(type: typeof(bool))]
+        public async Task<IActionResult> NewObserver(NewObserverModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            await _mediator.Send(_mapper.Map<NewObserverCommand>(model));
+            var newObsCommand = _mapper.Map<NewObserverCommand>(model);
+            newObsCommand.IdNgo = this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
+            var newId = await _mediator.Send(newObsCommand);
 
-            return Task.FromResult(new { });
+            return Ok(newId);
         }
 
-        [Authorize]
+        /// <summary>
+        /// Edits Observer information.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Boolean indicating whether or not the observer was changed successfully</returns>
+        [HttpPut]
+        [Produces(type: typeof(bool))]
+        public async Task<IActionResult> EditObserver([FromBody]EditObserverModel model) {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var id = await _mediator.Send(_mapper.Map<EditObserverCommand>(model));
+
+            return Ok(id > 0);
+        }
+
+        /// <summary>
+        /// Deletes an observer.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Boolean indicating whether or not the observer was deleted successfully</returns>
+        [HttpDelete]
+        [Produces(type: typeof(bool))]
+        public async Task<IActionResult> DeleteObserver(int id) {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _mediator.Send(_mapper.Map<DeleteObserverCommand>(new DeleteObserverModel { IdObserver = id }));
+
+            return Ok(result);
+        }
+
+
         [HttpPost]
         [Route("reset")]
         public async Task<IAsyncResult> Reset([FromForm] string action, [FromForm] string phoneNumber)
@@ -84,7 +126,6 @@ namespace VoteMonitor.Api.Observer.Controllers
             return Task.FromResult(UnprocessableEntity());
         }
 
-        [Authorize]
         [HttpPost]
         [Route("generate")]
         public async Task<IAsyncResult> GenerateObservers([FromForm] int count)

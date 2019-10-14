@@ -13,7 +13,7 @@ namespace VotingIrregularities.Api.Queries
     /// <summary>
     /// Handles the query regarding the authentication of the observer - checks the phone number and hashed pin against the database
     /// </summary>
-    public class ObserverAuthenticationQueryHandler : AsyncRequestHandler<ApplicationUser, RegisteredObserverModel>
+    public class ObserverAuthenticationQueryHandler : AsyncRequestHandler<ObserverApplicationUser, RegisteredObserverModel>
     {
         private readonly VoteMonitorContext _context;
         private readonly IHashService _hash;
@@ -32,7 +32,7 @@ namespace VotingIrregularities.Api.Queries
             _mobileSecurityOptions = mobileSecurityOptions.Value;
         }
 
-        protected override async Task<RegisteredObserverModel> HandleCore(ApplicationUser message)
+        protected override async Task<RegisteredObserverModel> HandleCore(ObserverApplicationUser message)
         {
             var hashValue = _hash.GetHash(message.Pin);
 
@@ -54,6 +54,7 @@ namespace VotingIrregularities.Api.Queries
             return new RegisteredObserverModel
             {
                 ObserverId = userinfo.Id,
+                IdNgo = userinfo.IdNgo,
                 IsAuthenticated = true,
                 FirstAuthentication = string.IsNullOrWhiteSpace(userinfo.MobileDeviceId) && _mobileSecurityOptions.LockDevice
             };

@@ -7,10 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.EntityFrameworkCore;
@@ -28,13 +26,15 @@ using ILogger = Microsoft.Extensions.Logging.ILogger;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using VotingIrregularities.Api.Models.AccountViewModels;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using SimpleInjector.Lifestyles;
 using Swashbuckle.AspNetCore.Swagger;
 using VotingIrregularities.Api.Options;
 using Microsoft.ApplicationInsights.Extensibility;
-using VoteMonitor.Api.Core;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
+using VoteMonitor.Api.Answer.Controllers;
 using VoteMonitor.Api.Location.Controllers;
 using VoteMonitor.Api.Location.Services;
 using VoteMonitor.Api.Observer.Controllers;
@@ -42,6 +42,7 @@ using VoteMonitor.Api.Core.Services;
 using VoteMonitor.Api.Note.Controllers;
 using VoteMonitor.Api.Note.Services;
 using VoteMonitor.Api.Form.Controllers;
+using VoteMonitor.Api.Core;
 
 namespace VotingIrregularities.Api
 {
@@ -70,15 +71,16 @@ namespace VotingIrregularities.Api
             Configuration = builder.Build();
         }
 
-        public IConfigurationRoot Configuration { get; }
-        public void ConfigureCustomOptions(IServiceCollection services)
+        private IConfigurationRoot Configuration { get; }
+
+        private void ConfigureCustomOptions(IServiceCollection services)
         {
             services.Configure<BlobStorageOptions>(Configuration.GetSection("BlobStorageOptions"));
             services.Configure<HashOptions>(Configuration.GetSection("HashOptions"));
             services.Configure<MobileSecurityOptions>(Configuration.GetSection("MobileSecurity"));
             services.Configure<FileServiceOptions>(Configuration.GetSection(nameof(FileServiceOptions)));
-
         }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -117,9 +119,9 @@ namespace VotingIrregularities.Api
             };
 
             services.AddAuthentication(options =>
-            {
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
+                    {
+                        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                    })
                     .AddJwtBearer(options =>
                     {
                         options.Audience = jwtAppSettingOptions[nameof(JwtIssuerOptions.Audience)];
@@ -130,24 +132,26 @@ namespace VotingIrregularities.Api
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("AppUser",
-                                  policy => policy.RequireClaim("Organizatie", "Ong"));
+                options.AddPolicy("NgoAdmin", policy => policy.RequireClaim(ClaimsHelper.UserType, UserType.NgoAdmin.ToString()));
+                options.AddPolicy("Observer", policy => policy.RequireClaim(ClaimsHelper.UserType, UserType.Observer.ToString()).RequireClaim(ClaimsHelper.ObserverIdProperty));
+                options.AddPolicy("Organizer", policy => policy.RequireClaim(ClaimsHelper.Organizer, "1"));
             });
 
             services.AddApplicationInsightsTelemetry(Configuration);
 
             services.AddMvc(config =>
-            {
-                var policy = new AuthorizationPolicyBuilder()
-                                 .RequireAuthenticatedUser()
-                                 .RequireClaim(ClaimsHelper.ObserverIdProperty)
-                                 .Build();
-                config.Filters.Add(new AuthorizeFilter(policy));
-            })
+                {
+                    var policy = new AuthorizationPolicyBuilder()
+                                     .RequireAuthenticatedUser()
+                                     .RequireClaim(ClaimsHelper.IdNgo)
+                                     .Build();
+                    config.Filters.Add(new AuthorizeFilter(policy));
+                })
                 .AddApplicationPart(typeof(PollingStationController).Assembly)
                 .AddApplicationPart(typeof(ObserverController).Assembly)
                 .AddApplicationPart(typeof(NoteController).Assembly)
                 .AddApplicationPart(typeof(FormController).Assembly)
+                .AddApplicationPart(typeof(AnswersController).Assembly)
                 .AddControllersAsServices()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
@@ -159,8 +163,8 @@ namespace VotingIrregularities.Api
                 options.SwaggerDoc("v1", new Info
                 {
                     Version = "v1",
-                    Title = "Monitorizare Vot - API privat",
-                    Description = "API care ofera suport aplicatiilor folosite de observatori.",
+                    Title = "VoteMonitor ",
+                    Description = "API specs for NGO Admin and Observer operations.",
                     TermsOfService = "TBD",
                     Contact =
                         new Contact
@@ -222,6 +226,7 @@ namespace VotingIrregularities.Api
             );
             //Registering dbContext
             RegisterDbContext<VoteMonitorContext>(Configuration.GetConnectionString("DefaultConnection"));
+
 
             app.UseAuthentication();
 
@@ -420,6 +425,7 @@ namespace VotingIrregularities.Api
             yield return typeof(ObserverController).GetTypeInfo().Assembly;
             yield return typeof(NoteController).GetTypeInfo().Assembly;
             yield return typeof(FormController).GetTypeInfo().Assembly;
+            yield return typeof(AnswersController).GetTypeInfo().Assembly;
             // just to identify VotingIrregularities.Domain assembly
         }
 
