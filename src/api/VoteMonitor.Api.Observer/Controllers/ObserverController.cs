@@ -11,11 +11,10 @@ using VoteMonitor.Api.Observer.Models;
 using VoteMonitor.Api.Observer.Commands;
 using Microsoft.AspNetCore.Http;
 using VoteMonitor.Api.Observer.Queries;
-using System.Linq;
 using Microsoft.Extensions.Configuration;
+using VoteMonitor.Api.Core.Commands;
 
-namespace VoteMonitor.Api.Observer.Controllers
-{
+namespace VoteMonitor.Api.Observer.Controllers {
     [Route("api/v1/observer")]
     public class ObserverController : Controller
     {
@@ -43,8 +42,26 @@ namespace VoteMonitor.Api.Observer.Controllers
 
         [HttpPost]
         [Route("import")]
-        public void Import(IFormFile file, [FromForm] object a)
-        { }
+        [AllowAnonymous]
+        public async Task<int> Import(IFormFile file, [FromForm] int ongId)
+        {
+            if (ongId <= 0) {
+                ongId = this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
+            }
+
+            var fileAddress = await _mediator.Send(
+                new UploadFileCommand { 
+                    File = file, 
+                    UploadType = UploadType.Observers 
+                });
+            
+            var counter = await _mediator.Send(new ImportObserversRequest { 
+                FilePath = fileAddress,
+                IdOng = ongId
+            });
+
+            return counter;
+        }
 
         /// <summary>
         ///  Adds an observer.

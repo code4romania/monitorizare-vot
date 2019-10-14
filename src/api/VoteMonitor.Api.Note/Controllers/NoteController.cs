@@ -11,6 +11,7 @@ using VoteMonitor.Api.Location.Queries;
 using VoteMonitor.Api.Note.Commands;
 using System.Collections.Generic;
 using VoteMonitor.Api.Note.Queries;
+using VoteMonitor.Api.Core.Commands;
 
 namespace VoteMonitor.Api.Note.Controllers
 {
@@ -58,7 +59,7 @@ namespace VoteMonitor.Api.Note.Controllers
                 return this.ResultAsync(HttpStatusCode.NotFound);
 
             var command = _mapper.Map<AddNoteCommand>(note);
-            var fileAddress = await _mediator.Send(new UploadFileCommand { File = file });
+            var fileAddress = await _mediator.Send(new UploadFileCommand { File = file, UploadType = UploadType.Notes });
 
             command.IdObserver = int.Parse(User.Claims.First(c => c.Type == ClaimsHelper.ObserverIdProperty).Value);
             command.AttachementPath = fileAddress;
