@@ -11,6 +11,8 @@ using VoteMonitor.Api.Observer.Models;
 using VoteMonitor.Api.Observer.Commands;
 using Microsoft.AspNetCore.Http;
 using VoteMonitor.Api.Observer.Queries;
+using System.Linq;
+using Microsoft.Extensions.Configuration;
 
 namespace VoteMonitor.Api.Observer.Controllers
 {
@@ -20,12 +22,14 @@ namespace VoteMonitor.Api.Observer.Controllers
         private readonly IMediator _mediator;
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
+        private readonly IConfiguration _configuration;
 
-        public ObserverController(IMediator mediator, ILogger logger, IMapper mapper)
+        public ObserverController(IMediator mediator, ILogger logger, IMapper mapper, IConfigurationRoot configuration)
         {
             _mediator = mediator;
             _logger = logger;
             _mapper = mapper;
+            _configuration = configuration;
         }
 
         [HttpGet]
@@ -54,7 +58,9 @@ namespace VoteMonitor.Api.Observer.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var newId = await _mediator.Send(_mapper.Map<NewObserverCommand>(model));
+            var newObsCommand = _mapper.Map<NewObserverCommand>(model);
+            newObsCommand.IdNgo = this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
+            var newId = await _mediator.Send(newObsCommand);
 
             return Ok(newId);
         }
