@@ -43,6 +43,7 @@ using VoteMonitor.Api.Note.Controllers;
 using VoteMonitor.Api.Note.Services;
 using VoteMonitor.Api.Form.Controllers;
 using VoteMonitor.Api.Core;
+using MonitorizareVot.Api.Location.Services;
 
 namespace VotingIrregularities.Api
 {
@@ -195,6 +196,7 @@ namespace VotingIrregularities.Api
             ConfigureContainer(services);
 
             ConfigureCache(services);
+            ConfigureFileLoader(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -292,6 +294,12 @@ namespace VotingIrregularities.Api
                         break;
                     }
             }
+        }
+
+        private void ConfigureFileLoader(IServiceCollection services)
+        {
+            _container.RegisterSingleton<IFileLoader, XlsxFileLoader>();
+            return ;
         }
 
         private void ConfigureFileService(IApplicationBuilder app)

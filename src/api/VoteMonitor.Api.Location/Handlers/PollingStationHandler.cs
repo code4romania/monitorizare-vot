@@ -43,21 +43,30 @@ namespace MonitorizareVot.Api.Location.Handlers
                     {
                         PollingStation pollingStation = _mapper.Map<PollingStation>(record);
                         pollingStation.Id = id++;
-                        pollingStation.IdCounty = _context.Counties
-                                            .Where(c => c.Code == record.CodJudet)
-                                            .First()
-                                            .Id;
-                        pollingStation.Coordinates = null;
-                        pollingStation.County = _context.Counties
+                        County county = _context.Counties
                                             .Where(c => c.Code == record.CodJudet)
                                             .First();
+                        pollingStation.IdCounty = county.Id;
+                        pollingStation.Coordinates = null;
+                        pollingStation.County = county;
                         pollingStation.TerritoryCode = random.Next(10000).ToString();
                         _context.PollingStations.Add(pollingStation);
                     }
 
                     var result = await _context.SaveChangesAsync();
-                    transaction.Commit();
 
+                    foreach(var county in _context.Counties)
+                    {
+                        var maxPollingStation = _context.PollingStations
+                            .Where(p => p.IdCounty == county.Id)
+                            .Max(p => p.Number);
+                        county.NumberOfPollingStations = maxPollingStation;
+                        _context.Counties.Update(county);
+                    }
+
+                    result = await _context.SaveChangesAsync();
+                    
+                    transaction.Commit();
                     return result;
                 }
             } catch(Exception ex)
