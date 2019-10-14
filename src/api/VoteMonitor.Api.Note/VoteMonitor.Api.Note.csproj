@@ -15,4 +15,7 @@
     <ProjectReference Include="..\VoteMonitor.Api.Location\VoteMonitor.Api.Location.csproj" />
     <ProjectReference Include="..\VotingIrregularities.Domain\VotingIrregularities.Domain.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Services\" />
+  </ItemGroup>
 </Project>

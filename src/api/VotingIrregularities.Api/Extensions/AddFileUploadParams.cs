@@ -10,21 +10,10 @@ namespace VotingIrregularities.Api.Extensions
         /// <inheritdoc />
         public void Apply(Operation operation, OperationFilterContext context)
         {
-            if (!string.Equals(operation.OperationId, "ApiV1NoteAtaseazaPost", StringComparison.CurrentCultureIgnoreCase))
-                return;
-
-            operation.Consumes.Add("application/form-data");
-            operation.Parameters = new IParameter[]
-            {
-                new NonBodyParameter
-                {
-
-                    Name = "file",
-                    In = "formData",
-                    Required = true,
-                    Type = "file"
-                }
-            };
+            if (operation.Tags[0] == "Observer" && operation.OperationId == "Import" ||
+                operation.Tags[0] == "Note" && operation.OperationId == "Upload") {
+                operation.Consumes.Add("application/form-data");
+            }
         }
     }
 }

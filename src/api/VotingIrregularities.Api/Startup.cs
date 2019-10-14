@@ -43,6 +43,7 @@ using VoteMonitor.Api.Note.Controllers;
 using VoteMonitor.Api.Note.Services;
 using VoteMonitor.Api.Form.Controllers;
 using VoteMonitor.Api.Core;
+using VoteMonitor.Api.Core.Handlers;
 
 namespace VotingIrregularities.Api
 {
@@ -423,6 +424,7 @@ namespace VotingIrregularities.Api
             yield return typeof(NoteController).GetTypeInfo().Assembly;
             yield return typeof(FormController).GetTypeInfo().Assembly;
             yield return typeof(AnswersController).GetTypeInfo().Assembly;
+            yield return typeof(UploadFileHandler).GetTypeInfo().Assembly;
             // just to identify VotingIrregularities.Domain assembly
         }
 
