@@ -42,7 +42,6 @@ namespace VoteMonitor.Api.Observer.Controllers {
 
         [HttpPost]
         [Route("import")]
-        [AllowAnonymous]
         public async Task<int> Import(IFormFile file, [FromForm] int ongId)
         {
             if (ongId <= 0) {
