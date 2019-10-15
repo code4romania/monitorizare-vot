@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Http;
 using MonitorizareVot.Api.Location.Models;
 using OfficeOpenXml;
 
-namespace MonitorizareVot.Api.Location.Services
+namespace VoteMonitor.Api.Location.Services
 {
     public class XlsxFileLoader : IFileLoader
     {

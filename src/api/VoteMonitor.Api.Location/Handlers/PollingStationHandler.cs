@@ -1,15 +1,13 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using MonitorizareVot.Api.Location.Commands;
+using VoteMonitor.Api.Location.Commands;
 using VoteMonitor.Entities;
 
-namespace MonitorizareVot.Api.Location.Handlers
+namespace VoteMonitor.Api.Location.Handlers
 {
     public class PollingStationHandler : AsyncRequestHandler<PollingStationCommand, int>
     {
@@ -30,11 +28,6 @@ namespace MonitorizareVot.Api.Location.Handlers
             Random random = new Random();
             try
             {
-                //remove all previous entries in the db set
-                foreach(var pollingStation in _context.PollingStations)
-                    _context.PollingStations.Remove(pollingStation);
-                _context.SaveChanges();
-
                 //import the new entities
                 using(var transaction = await _context.Database.BeginTransactionAsync())
                 {
