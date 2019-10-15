@@ -55,7 +55,7 @@ namespace VoteMonitor.Api.Observer.Controllers {
                 });
             
             var counter = await _mediator.Send(new ImportObserversRequest { 
-                FilePath = fileAddress,
+                File = file,
                 IdOng = ongId
             });
 
