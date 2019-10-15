@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using VoteMonitor.Api.Core;
 using VoteMonitor.Api.Core.Services;
 using VotingIrregularities.Api.Options;
 
@@ -22,10 +23,10 @@ namespace VoteMonitor.Api.Note.Services
         {
             _localFileOptions = options.Value;
         }
-        public Task<string> UploadFromStreamAsync(Stream sourceStream, string mimeType, string extension)
+        public Task<string> UploadFromStreamAsync(Stream sourceStream, string mimeType, string extension, UploadType uploadType)
         {
             // set name
-            var localFile = _localFileOptions.StoragePath + "\\" + Guid.NewGuid().ToString("N") + extension;
+            var localFile = _localFileOptions.StoragePaths[uploadType.ToString()] + "\\" + Guid.NewGuid().ToString("N") + extension;
 
             // save to local path
             using (var fileStream = File.Create(localFile))
