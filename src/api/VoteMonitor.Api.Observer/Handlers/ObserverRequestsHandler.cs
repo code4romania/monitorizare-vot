@@ -29,7 +29,10 @@ namespace VoteMonitor.Api.Observer.Handlers
 
         private int GetMaxIdObserver()
         {
-            return _context.Observers.Max(o => o.Id) + 1;
+            if(_context.Observers.Any())
+                return _context.Observers.Max(o => o.Id) + 1;
+
+            return 1;
         }
 
         public async Task<int> Handle(ImportObserversRequest message, CancellationToken token)
