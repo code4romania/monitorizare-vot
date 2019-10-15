@@ -1,11 +1,10 @@
 ﻿using MediatR;
-using System.Collections.Generic;
-using VoteMonitor.Api.Observer.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace VoteMonitor.Api.Observer.Commands
 {
     public class ImportObserversRequest : IRequest<int> {
         public int IdOng { get; set; }
-        public string FilePath { get;set;}
+        public IFormFile File { get;set;}
     }
 }
