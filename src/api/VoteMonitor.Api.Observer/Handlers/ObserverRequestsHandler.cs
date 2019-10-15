@@ -29,19 +29,22 @@ namespace VoteMonitor.Api.Observer.Handlers
 
         private int GetMaxIdObserver()
         {
-            return _context.Observers.Max(o => o.Id) + 1;
+            if(_context.Observers.Any())
+                return _context.Observers.Max(o => o.Id) + 1;
+
+            return 1;
         }
 
-        public Task<int> Handle(ImportObserversRequest message, CancellationToken token)
+        public async Task<int> Handle(ImportObserversRequest message, CancellationToken token)
         {
-            var pathToFile = message.FilePath;
+           var pathToFile = message.FilePath;
             var counter = 0;
             var startId = GetMaxIdObserver();
 
-            using (var reader = File.OpenText(pathToFile))
+           using (var reader = File.OpenText(pathToFile))
             {
-                while (reader.Peek() >= 0)
-                {
+                 while (reader.Peek() >= 0) { 
+                
                     var fileContent = reader.ReadLine();
 
                     var data = fileContent.Split('\t');
@@ -52,16 +55,16 @@ namespace VoteMonitor.Api.Observer.Handlers
                         Id = startId + counter,
                         IdNgo = message.IdOng,
                         Phone = data[0],
-                        Name = data[message.NameIndexInFile],
+                        Name = data[2],
                         Pin = hashed
                     };
                     _context.Observers.Add(observer);
                     counter++;
                 }
-                _context.SaveChanges();
-            }
+                await _context.SaveChangesAsync();
+             }
 
-            return Task.FromResult(counter);
+            return counter;
         }
 
         public async Task<int> Handle(NewObserverCommand message, CancellationToken token)
