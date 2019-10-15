@@ -1,4 +1,6 @@
-﻿namespace VotingIrregularities.Api.Options
+﻿using System.Collections.Generic;
+
+namespace VotingIrregularities.Api.Options
 {
     /// <summary>
     /// Options for defining the FileService implementation
@@ -14,6 +16,6 @@
         /// Only relevand when `Type`=`LocalFileService`.
         /// This will be a relative path (`\notes`). Make sure you configure your container persistent storage on this path
         /// </summary>
-        public string StoragePath { get; set; }
+        public Dictionary<string,string> StoragePaths { get; set; }
     }
 }
