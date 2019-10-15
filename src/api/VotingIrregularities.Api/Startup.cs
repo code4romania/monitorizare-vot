@@ -43,7 +43,6 @@ using VoteMonitor.Api.Note.Controllers;
 using VoteMonitor.Api.Note.Services;
 using VoteMonitor.Api.Form.Controllers;
 using VoteMonitor.Api.Core;
-using MonitorizareVot.Api.Location.Services;
 using VoteMonitor.Api.Core.Handlers;
 
 namespace VotingIrregularities.Api
