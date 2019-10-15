@@ -37,16 +37,13 @@ namespace VoteMonitor.Api.Observer.Handlers
 
         public async Task<int> Handle(ImportObserversRequest message, CancellationToken token)
         {
-           var pathToFile = message.FilePath;
             var counter = 0;
             var startId = GetMaxIdObserver();
 
-           using (var reader = File.OpenText(pathToFile))
+           using (var reader = new StreamReader(message.File.OpenReadStream()))
             {
                  while (reader.Peek() >= 0) { 
-                
                     var fileContent = reader.ReadLine();
-
                     var data = fileContent.Split('\t');
                     var hashed = _hashService.GetHash(data[1]);
 
