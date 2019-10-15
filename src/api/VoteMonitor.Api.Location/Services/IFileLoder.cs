@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using MonitorizareVot.Api.Location.Models;
 
-namespace MonitorizareVot.Api.Location.Services
+namespace VoteMonitor.Api.Location.Services
 {
     public interface IFileLoader
     {

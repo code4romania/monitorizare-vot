@@ -2,20 +2,18 @@ using System.Collections.Generic;
 using MediatR;
 using MonitorizareVot.Api.Location.Models;
 
-namespace MonitorizareVot.Api.Location.Commands
+namespace VoteMonitor.Api.Location.Commands
 {
     public class PollingStationCommand : IRequest<int>
     {
-        private readonly List<PollingStationDTO> pollingStationsDTOs;
+        public readonly List<PollingStationDTO> PollingStationsDTOs;
         public PollingStationCommand(List<PollingStationDTO> list)
         {
-            pollingStationsDTOs = new List<PollingStationDTO>();
+            PollingStationsDTOs = new List<PollingStationDTO>();
             foreach(PollingStationDTO element in list)
             {
-                this.pollingStationsDTOs.Add(element);
+                this.PollingStationsDTOs.Add(element);
             }
         }
-
-        public List<PollingStationDTO> PollingStationsDTOs => pollingStationsDTOs;
     }
 } 
