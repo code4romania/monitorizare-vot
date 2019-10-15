@@ -7,12 +7,11 @@ using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MonitorizareVot.Api.Location.Commands;
-using MonitorizareVot.Api.Location.Services;
-using VoteMonitor.Api.Core;
 using VoteMonitor.Api.Location.Commands;
+using VoteMonitor.Api.Core;
 using VoteMonitor.Api.Location.Models;
 using VoteMonitor.Api.Location.Queries;
+using VoteMonitor.Api.Location.Services;
 
 namespace VoteMonitor.Api.Location.Controllers
 {
