@@ -44,6 +44,8 @@ using VoteMonitor.Api.Note.Controllers;
 using VoteMonitor.Api.Note.Services;
 using VoteMonitor.Api.Form.Controllers;
 using MonitorizareVot.Ong.Api.Controllers;
+using VoteMonitor.Api.Notification.Controllers;
+using VoteMonitor.Api.Core.Services.Impl;
 
 namespace VotingIrregularities.Api
 {
@@ -148,6 +150,7 @@ namespace VotingIrregularities.Api
                 })
                 .AddApplicationPart(typeof(PollingStationController).Assembly)
                 .AddApplicationPart(typeof(ObserverController).Assembly)
+                .AddApplicationPart(typeof(NotificationController).Assembly)
                 .AddApplicationPart(typeof(NoteController).Assembly)
                 .AddApplicationPart(typeof(FormController).Assembly)
                 .AddApplicationPart(typeof(AnswersController).Assembly)
@@ -268,6 +271,8 @@ namespace VotingIrregularities.Api
 
 
             _container.RegisterSingleton<ICacheService, CacheService>();
+
+            _container.RegisterSingleton<IFirebaseService, FirebaseService>();
 
             switch (cacheProvider)
             {
