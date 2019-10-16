@@ -1,16 +1,17 @@
-﻿using AutoMapper;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoMapper;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
 using VoteMonitor.Api.Answer.Models;
+using VoteMonitor.Api.Answer.Queries;
 using VoteMonitor.Api.Core;
 using VoteMonitor.Entities;
 
-namespace VoteMonitor.Api.Answer.Queries {
+namespace VoteMonitor.Api.Answer.Handlers {
     public class AnswersQueryHandler :
     IRequestHandler<AnswersQuery, ApiListResponse<AnswerQueryDTO>>,
     IRequestHandler<FilledInAnswersQuery, List<QuestionDTO<FilledInAnswerDTO>>>,
@@ -88,7 +89,7 @@ namespace VoteMonitor.Api.Answer.Queries {
                 .Include(r => r.OptionAnswered)
                     .ThenInclude(rd => rd.Option)
                 .Where(r => r.IdObserver == message.ObserverId && r.IdPollingStation == message.PollingStationId)
-                .ToListAsync();
+                .ToListAsync(cancellationToken: cancellationToken);
 
             var intrebari = raspunsuri
                 .Select(r => r.OptionAnswered.Question)
@@ -100,7 +101,7 @@ namespace VoteMonitor.Api.Answer.Queries {
         public async Task<PollingStationInfosDTO> Handle(FormAnswersQuery message, CancellationToken cancellationToken) {
             var raspunsuriFormular = await _context.PollingStationInfos
                 .FirstOrDefaultAsync(rd => rd.IdObserver == message.ObserverId 
-                && rd.IdPollingStation == message.PollingStationId);
+                && rd.IdPollingStation == message.PollingStationId, cancellationToken: cancellationToken);
 
             return _mapper.Map<PollingStationInfosDTO>(raspunsuriFormular);
         }
