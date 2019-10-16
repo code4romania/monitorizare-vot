@@ -42,7 +42,6 @@ namespace VoteMonitor.Api.Observer.Controllers
         public void Import(IFormFile file, [FromForm] object a)
         { }
 
-        [Authorize]
         [HttpPost]
         [Route("")]
         public async Task<dynamic> NewObserver(NewObserverModel model)

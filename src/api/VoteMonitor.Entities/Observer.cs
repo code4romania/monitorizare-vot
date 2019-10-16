@@ -16,6 +16,7 @@ namespace VoteMonitor.Entities
         public bool FromTeam { get; set; }
         public int IdNgo { get; set; }
         public string Phone { get; set; }
+        public string NotificationToken { get; set; }
         public string Name { get; set; }
         public string Pin { get; set; }
         public string MobileDeviceId { get; set; }
