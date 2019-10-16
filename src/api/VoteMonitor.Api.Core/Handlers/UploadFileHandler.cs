@@ -2,9 +2,9 @@
 using System.Threading.Tasks;
 using MediatR;
 using VoteMonitor.Api.Core.Services;
-using VoteMonitor.Api.Note.Commands;
+using VoteMonitor.Api.Core.Commands;
 
-namespace VoteMonitor.Api.Note.Handlers
+namespace VoteMonitor.Api.Core.Handlers
 {
     public class UploadFileHandler : AsyncRequestHandler<UploadFileCommand, string>
     {
@@ -24,7 +24,8 @@ namespace VoteMonitor.Api.Note.Handlers
             if (message.File != null)
                 return await _fileService.UploadFromStreamAsync(message.File.OpenReadStream(),
                     message.File.ContentType,
-                    Path.GetExtension(message.File.FileName));
+                    Path.GetExtension(message.File.FileName),
+                    message.UploadType);
 
             return string.Empty;
         }

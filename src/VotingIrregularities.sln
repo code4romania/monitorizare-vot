@@ -37,7 +37,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoteMonitor.Api", "api\Vote
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoteMonitor.Entities", "api\VoteMonitor.Entities\VoteMonitor.Entities.csproj", "{6210AEE2-2164-4DD9-822F-E370336168BB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoteMonitor.Api.Answer", "VoteMonitor.Api.Answer\VoteMonitor.Api.Answer.csproj", "{271F09F9-3068-4FB9-A17C-A6105BC7EFD2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoteMonitor.Api.Answer", "api\VoteMonitor.Api.Answer\VoteMonitor.Api.Answer.csproj", "{271F09F9-3068-4FB9-A17C-A6105BC7EFD2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoteMonitor.Api.Notification", "api\VoteMonitor.Api.Notification\VoteMonitor.Api.Notification.csproj", "{4C638FB0-96F1-4AC9-8765-8A6BB322C015}"
 EndProject

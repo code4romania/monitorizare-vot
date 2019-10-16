@@ -5,6 +5,7 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using VoteMonitor.Api.Core;
 using VoteMonitor.Api.Core.Services;
 using VotingIrregularities.Api.Options;
 
@@ -30,7 +31,7 @@ namespace VoteMonitor.Api.Note.Services
         /// <summary>
         /// Uploads a file from a stream in azure blob storage
         /// </summary>
-        public async Task<string> UploadFromStreamAsync(Stream sourceStream, string mimeType, string extension)
+        public async Task<string> UploadFromStreamAsync(Stream sourceStream, string mimeType, string extension, UploadType uploadType)
         {
             // Get a reference to the container.
             var container = _client.GetContainerReference(_storageOptions.Value.Container);

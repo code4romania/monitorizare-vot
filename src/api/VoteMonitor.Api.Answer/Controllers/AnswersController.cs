@@ -1,16 +1,17 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using System;
 using System.Collections.Generic;
-using Microsoft.Extensions.Configuration;
+using System.Net;
+using System.Threading.Tasks;
 using MediatR;
-using VoteMonitor.Api.Core;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using VoteMonitor.Api.Answer.Commands;
 using VoteMonitor.Api.Answer.Models;
 using VoteMonitor.Api.Answer.Queries;
-using System.Net;
-using System;
-using System.Linq;
+using VoteMonitor.Api.Core;
 
-namespace MonitorizareVot.Ong.Api.Controllers {
+namespace VoteMonitor.Api.Answer.Controllers {
     [Route("api/v1/answers")]
     public class AnswersController : Controller {
         private readonly IMediator _mediator;
@@ -83,17 +84,16 @@ namespace MonitorizareVot.Ong.Api.Controllers {
         /// optiunea <code>SeIntroduceText = true</code></param>
         /// <returns></returns>
         [HttpPost]
+        [Authorize("Observer")]
         public async Task<IAsyncResult> PostAnswer([FromBody] AnswerModelWrapper raspuns) {
 
-            if (!ModelState.IsValid) {
+            if (!ModelState.IsValid) 
                 return this.ResultAsync(HttpStatusCode.BadRequest, ModelState);
-            }
 
             // TODO[DH] use a pipeline instead of separate Send commands
             var command = await _mediator.Send(new BulkAnswers(raspuns.Answers));
 
-            // TODO[DH] get the actual IdObservator from token
-            command.ObserverId = int.Parse(User.Claims.First(c => c.Type == ClaimsHelper.ObserverIdProperty).Value);
+            command.ObserverId = this.GetIdObserver();
 
             var result = await _mediator.Send(command);
 

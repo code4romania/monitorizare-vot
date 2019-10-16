@@ -5,11 +5,13 @@ using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using VoteMonitor.Api.Core;
 using VoteMonitor.Api.Location.Commands;
+using VoteMonitor.Api.Core;
 using VoteMonitor.Api.Location.Models;
 using VoteMonitor.Api.Location.Queries;
+using VoteMonitor.Api.Location.Services;
 
 namespace VoteMonitor.Api.Location.Controllers
 {
@@ -21,11 +23,13 @@ namespace VoteMonitor.Api.Location.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
+        private readonly IFileLoader _fileLoader;
 
-        public PollingStationController(IMediator mediator, IMapper mapper)
+        public PollingStationController(IMediator mediator, IMapper mapper, IFileLoader loader)
         {
             _mapper = mapper;
             _mediator = mediator;
+            _fileLoader = loader;
         }
 
         /// <summary>
@@ -86,6 +90,21 @@ namespace VoteMonitor.Api.Location.Controllers
         {
             var result = await _mediator.Send(new PollingStationsAssignmentQuery());
             return Ok(result);
+        }
+
+        [HttpPost("import")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> ImportFormatFile(IFormFile file)
+        {
+            if(!_fileLoader.ValidateFile(file))
+                return UnprocessableEntity();
+
+            var result = await _mediator.Send(new PollingStationCommand(_fileLoader.ImportFileAsync(file).Result));
+
+            if(result == -1)
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+
+            return Ok();
         }
     }
 }
