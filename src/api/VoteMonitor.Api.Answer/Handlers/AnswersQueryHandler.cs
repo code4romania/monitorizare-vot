@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -25,53 +25,41 @@ namespace VoteMonitor.Api.Answer.Handlers {
         }
 
         public async Task<ApiListResponse<AnswerQueryDTO>> Handle(AnswersQuery message, CancellationToken cancellationToken) {
-            //var query = from a in _context.Answers
-            //            join o in _context.Observers on a.IdObserver equals o.Id
-            //            join oq in _context.OptionsToQuestions on o.Id equals oq.IdQuestion
-            //            group a by new { a.IdPollingStation, a.CountyCode, a.IdObserver } into g
-            //            where oq.Flagged == message.Urgent
-            //            && o.IdNgo == message.Organizer ? message.IdONG : o.IdNgo
-            //            && a.CountyCode == string.IsNullOrEmpty(message.County) ? a.CountyCode : message.County
-            //            && a.PollingStationNumber == message.PollingStationNumber > 0 ? message.PollingStationNumber : a.PollingStationNumber
-            //            && a.IdObserver == message.ObserverId > 0 ? message.ObserverId : a.IdObserver
-
-            //            select g.Key
-
-            //            ;
-            
-            var queryUnPaged = $@"SELECT IdPollingStation, A.IdObserver, O.Name as ObserverName, CONCAT(CountyCode, ' ', PollingStationNumber) AS PollingStation, MAX(LastModified) AS LastModified
-                FROM Answers A
-                INNER JOIN Observers O ON O.Id = A.IdObserver
-                INNER JOIN OptionsToQuestions OQ ON OQ.Id = A.IdOptionToQuestion
-                WHERE OQ.Flagged = {Convert.ToInt32(message.Urgent)}";
+            var query = _context.Answers.Where(a => a.OptionAnswered.Flagged == message.Urgent);
 
             // Filter by the organizer flag if specified
             if (!message.Organizer)
-                queryUnPaged = $"{queryUnPaged} AND O.IdNgo = {message.IdONG}";
+                query = query.Where(a => a.Observer.IdNgo == message.IdONG);
 
             // Filter by county if specified
             if (!string.IsNullOrEmpty(message.County))
-                queryUnPaged = $"{queryUnPaged} AND A.CountyCode = '{message.County}'";
+                query = query.Where(a => a.CountyCode == message.County);
 
             // Filter by polling station if specified
             if (message.PollingStationNumber > 0)
-                queryUnPaged = $"{queryUnPaged} AND A.PollingStationNumber = {message.PollingStationNumber}";
+                query = query.Where(a => a.PollingStationNumber == message.PollingStationNumber);
 
             // Filter by polling station if specified
             if (message.ObserverId > 0)
-                queryUnPaged = $"{queryUnPaged} AND A.IdObserver = {message.ObserverId}";
+                query = query.Where(a => a.IdObserver == message.ObserverId);
 
-            queryUnPaged = $"{queryUnPaged} GROUP BY IdPollingStation, CountyCode, PollingStationNumber, A.IdObserver, O.Name, CountyCode";
+            var answerQueryInfosQuery = query.GroupBy(a => new {a.IdPollingStation, a.CountyCode, a.PollingStationNumber, a.IdObserver, ObserverName = a.Observer.Name})
+                .Select(x => new VoteMonitorContext.AnswerQueryInfo
+                {
+                    IdObserver = x.Key.IdObserver,
+                    IdPollingStation = x.Key.IdPollingStation,
+                    PollingStation = $"{x.Key.CountyCode} {x.Key.PollingStationNumber}",
+                    ObserverName = x.Key.ObserverName,
+                    LastModified = x.Max(a => a.LastModified)
+                });
 
-            var queryPaged = $@"{queryUnPaged} ORDER BY MAX(LastModified) DESC OFFSET {(message.Page - 1) * message.PageSize} ROWS FETCH NEXT {message.PageSize} ROWS ONLY";
+            var count = await answerQueryInfosQuery.CountAsync(cancellationToken: cancellationToken);
 
-            var sectiiCuObservatoriPaginat = await _context.AnswerQueryInfos
-                .FromSql(queryPaged)
+            var sectiiCuObservatoriPaginat = await answerQueryInfosQuery
+                .OrderByDescending(aqi => aqi.LastModified)
+                .Skip((message.Page - 1) * message.PageSize)
+                .Take(message.PageSize)
                 .ToListAsync(cancellationToken: cancellationToken);
-
-            var count = await _context.AnswerQueryInfos
-                .FromSql(queryUnPaged)
-                .CountAsync(cancellationToken: cancellationToken);
 
             return new ApiListResponse<AnswerQueryDTO> {
                 Data = sectiiCuObservatoriPaginat.Select(x => _mapper.Map<AnswerQueryDTO>(x)).ToList(),
