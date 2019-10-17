@@ -19,8 +19,6 @@ namespace VoteMonitor.Api.Answer.Models {
         [Required(AllowEmptyStrings = false)]
         public int PollingStationNumber { get; set; }
 
-        //[Required(AllowEmptyStrings = false)]
-        public int FormId { get; set; }
         public List<SelectedOptionModel> Options { get; set; }
     }
 }

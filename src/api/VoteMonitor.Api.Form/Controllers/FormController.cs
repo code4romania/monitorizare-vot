@@ -62,10 +62,10 @@ namespace VoteMonitor.Api.Form.Controllers {
         /// <param name="formId">Id-ul formularului pentru care trebuie preluata definitia</param>
         /// <returns></returns>
         [HttpGet("{formId}")]
-        public async Task<IEnumerable<FormSectionDTO>> GetFormAsync(string formId)
+        public async Task<IEnumerable<FormSectionDTO>> GetFormAsync(int formId)
         {
             var result = await _mediator.Send(new FormQuestionQuery {
-                FormCode = formId,
+                FormId = formId,
                 CacheHours = _configuration.GetValue<int>("DefaultCacheHours"),
                 CacheMinutes = _configuration.GetValue<int>("DefaultCacheMinutes"),
                 CacheSeconds = _configuration.GetValue<int>("DefaultCacheSeconds")
