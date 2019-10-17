@@ -47,7 +47,7 @@ namespace VoteMonitor.Api.Note.Controllers
         /// <param name="note"></param>
         /// <returns></returns>
         [HttpPost("upload")]
-        public async Task<dynamic> Upload(IFormFile file, [FromForm]NoteModel note)
+        public async Task<dynamic> Upload(IFormFile file, [FromForm]UploadNoteModel note)
         {
             if (!ModelState.IsValid)
                 return this.ResultAsync(HttpStatusCode.BadRequest);
