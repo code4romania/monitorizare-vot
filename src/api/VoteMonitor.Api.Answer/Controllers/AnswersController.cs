@@ -85,10 +85,9 @@ namespace VoteMonitor.Api.Answer.Controllers {
         /// <returns></returns>
         [HttpPost]
         [Authorize("Observer")]
-        public async Task<IAsyncResult> PostAnswer([FromBody] AnswerModelWrapper raspuns) {
-
+        public async Task<IActionResult> PostAnswer([FromBody] AnswerModelWrapper raspuns) {
             if (!ModelState.IsValid) 
-                return this.ResultAsync(HttpStatusCode.BadRequest, ModelState);
+                return BadRequest(ModelState);
 
             // TODO[DH] use a pipeline instead of separate Send commands
             var command = await _mediator.Send(new BulkAnswers(raspuns.Answers));
@@ -97,7 +96,9 @@ namespace VoteMonitor.Api.Answer.Controllers {
 
             var result = await _mediator.Send(command);
 
-            return this.ResultAsync(result < 0 ? HttpStatusCode.NotFound : HttpStatusCode.OK);
+            if (result < 0) return NotFound();
+
+            return Ok();
         }
     }
 }
