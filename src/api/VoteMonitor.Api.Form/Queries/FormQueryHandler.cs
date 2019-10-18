@@ -30,7 +30,11 @@ namespace VoteMonitor.Api.Form.Queries
         protected override async Task<IEnumerable<FormSectionDTO>> HandleCore(FormQuestionQuery message)
         {
             CacheObjectsName formular;
-            Enum.TryParse("Formular" + message.FormCode, out formular);
+            var form = _context.Forms.FirstOrDefault(f => f.Id == message.FormId);
+            if (form == null)
+                return null;
+
+            Enum.TryParse("Formular" + form.Code, out formular);
 
             return await _cacheService.GetOrSaveDataInCacheAsync<IEnumerable<FormSectionDTO>>(formular,
                 async () =>
@@ -39,13 +43,13 @@ namespace VoteMonitor.Api.Form.Queries
                         .Include(a => a.FormSection)
                         .Include(a => a.OptionsToQuestions)
                         .ThenInclude(a => a.Option)
-                        .Where(a => a.FormSection.Form.Code == message.FormCode) // todo: FormCode might not be unique anymore - maybe we should query by FormId?
+                        .Where(a => a.FormSection.Form.Id == message.FormId) // todo: FormCode might not be unique anymore - maybe we should query by FormId?
                         .ToListAsync();
 
                     var sectiuni = r.Select(a => new { IdSectiune = a.IdSection, CodSectiune = a.FormSection.Code, Descriere = a.FormSection.Description }).Distinct();
 
                     var result = sectiuni.Select(i => new FormSectionDTO {
-                        UniqueId = message.FormCode + i.CodSectiune + i.IdSectiune ,
+                        UniqueId = form.Code + i.CodSectiune + i.IdSectiune ,
                         Code = i.CodSectiune,
                         Description = i.Descriere,
                         Questions = r.Where(a => a.IdSection == i.IdSectiune)

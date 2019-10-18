@@ -35,7 +35,6 @@ namespace VoteMonitor.Api.Answer.Handlers {
                 command.Answers.AddRange(message.Answers
                     .Where(a => a.PollingStationNumber == sectie.PollingStationNumber && a.CountyCode == sectie.CountyCode)
                     .Select(a => new AnswerDTO {
-                        FormId = a.FormId,
                         QuestionId = a.QuestionId,
                         PollingSectionId = idSectie,
                         Options = a.Options,
