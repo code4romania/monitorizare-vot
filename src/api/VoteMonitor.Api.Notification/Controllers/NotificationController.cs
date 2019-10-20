@@ -46,11 +46,11 @@ namespace VoteMonitor.Api.Notification.Controllers
 
         [HttpPost]
         [Route("send")]
-        public async Task<dynamic> send(NotificationNewModel newNotificationModel)
+        public async Task<dynamic> send([FromBody]NotificationNewModel newNotificationModel)
         {
-            await _mediator.Send(_mapper.Map<NewNotificationCommand>(newNotificationModel));
+            var result = await _mediator.Send(_mapper.Map<NewNotificationCommand>(newNotificationModel));
 
-            return Task.FromResult(new { });
+            return Task.FromResult(result);
         }
     }
 }

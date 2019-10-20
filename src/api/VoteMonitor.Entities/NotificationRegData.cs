@@ -7,9 +7,7 @@ namespace VoteMonitor.Entities
 {
     public partial class NotificationRegData
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
-        public int ObeserverId { get; set; }
+        public int ObserverId { get; set; }
         public string ChannelName { get; set; }
         public string Token { get; set; }
 
