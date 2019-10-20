@@ -50,11 +50,14 @@ namespace VoteMonitor.Api.Location.Handlers
 
                     foreach(var county in _context.Counties)
                     {
-                        var maxPollingStation = _context.PollingStations
-                            .Where(p => p.IdCounty == county.Id)
-                            .Max(p => p.Number);
-                        county.NumberOfPollingStations = maxPollingStation;
-                        _context.Counties.Update(county);
+                        if(_context.PollingStations.Any(p => p.IdCounty == county.Id))
+                        {
+                            var maxPollingStation = _context.PollingStations
+                                    .Where(p => p.IdCounty == county.Id)
+                                    .Max(p => p.Number);
+                            county.NumberOfPollingStations = maxPollingStation;
+                            _context.Counties.Update(county);
+                        }
                     }
 
                     result = await _context.SaveChangesAsync();
