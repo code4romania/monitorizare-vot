@@ -301,6 +301,28 @@ namespace VoteMonitor.Entities
 
                 entity.Property(e => e.IsFreeText).HasDefaultValueSql("0");
             });
+
+            modelBuilder.Entity<NotificationRegData>(entity => {
+                entity.HasKey(e => new { e.ObserverId, e.ChannelName })
+                    .HasName("PK_NotificationRegData");
+
+                entity.HasIndex(e => new { e.ObserverId, e.ChannelName })
+                    .HasName("IX_NotificationRegData_ObserverId_ChannelName");
+
+                entity.HasIndex(e => new { e.ObserverId })
+                    .HasName("IX_NotificationRegData_IdObserver");
+
+                entity.Property(e => e.ObserverId)
+                    .IsRequired();
+
+                entity.Property(e => e.ChannelName)
+                    .IsRequired()
+                    .HasMaxLength(256);
+
+                entity.Property(e => e.Token)
+                    .IsRequired()
+                    .HasMaxLength(512);
+            });
         }
 
         public virtual DbSet<NgoAdmin> NgoAdmins { get; set; }
@@ -308,6 +330,7 @@ namespace VoteMonitor.Entities
         public virtual DbSet<County> Counties { get; set; }
         public virtual DbSet<Note> Notes { get; set; }
         public virtual DbSet<Observer> Observers { get; set; }
+        public virtual DbSet<NotificationRegData> NotificationRegData { get; set; }
         public virtual DbSet<Ngo> Ngos { get; set; }
         public virtual DbSet<Option> Options { get; set; }
         public virtual DbSet<Answer> Answers { get; set; }

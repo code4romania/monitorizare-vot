@@ -44,6 +44,9 @@ using VoteMonitor.Api.Note.Services;
 using VoteMonitor.Api.Form.Controllers;
 using VoteMonitor.Api.Core;
 using VoteMonitor.Api.Core.Handlers;
+using VoteMonitor.Api.Core.Services.Impl;
+using VoteMonitor.Api.Notification.Controllers;
+using System.IO;
 
 namespace VotingIrregularities.Api
 {
@@ -80,6 +83,7 @@ namespace VotingIrregularities.Api
             services.Configure<HashOptions>(Configuration.GetSection("HashOptions"));
             services.Configure<MobileSecurityOptions>(Configuration.GetSection("MobileSecurity"));
             services.Configure<FileServiceOptions>(Configuration.GetSection(nameof(FileServiceOptions)));
+            services.Configure<FirebaseServiceOptions>(Configuration.GetSection(nameof(FirebaseServiceOptions)));
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -89,6 +93,11 @@ namespace VotingIrregularities.Api
             services.AddOptions();
 
             ConfigureCustomOptions(services);
+
+            var firebaseOptions = Configuration.GetSection(nameof(FirebaseServiceOptions));
+            var privateKeyPath = firebaseOptions[nameof(FirebaseServiceOptions.ServerKey)];
+
+            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", Path.GetFullPath(privateKeyPath));
 
             var jwtAppSettingOptions = Configuration.GetSection(nameof(JwtIssuerOptions));
 
@@ -150,6 +159,7 @@ namespace VotingIrregularities.Api
                 })
                 .AddApplicationPart(typeof(PollingStationController).Assembly)
                 .AddApplicationPart(typeof(ObserverController).Assembly)
+                .AddApplicationPart(typeof(NotificationController).Assembly)
                 .AddApplicationPart(typeof(NoteController).Assembly)
                 .AddApplicationPart(typeof(FormController).Assembly)
                 .AddApplicationPart(typeof(AnswersController).Assembly)
@@ -348,6 +358,7 @@ namespace VotingIrregularities.Api
         {
             _container.Register<IPollingStationService, PollingStationService>(Lifestyle.Scoped);
             _container.RegisterSingleton(() => app.ApplicationServices.GetService<IOptions<JwtIssuerOptions>>());
+            _container.RegisterSingleton<IFirebaseService, FirebaseService>();
         }
 
         private void InitializeContainer(IApplicationBuilder app)
@@ -432,6 +443,7 @@ namespace VotingIrregularities.Api
             yield return typeof(FormController).GetTypeInfo().Assembly;
             yield return typeof(AnswersController).GetTypeInfo().Assembly;
             yield return typeof(UploadFileHandler).GetTypeInfo().Assembly;
+            yield return typeof(NotificationController).GetTypeInfo().Assembly;
             // just to identify VotingIrregularities.Domain assembly
         }
 
