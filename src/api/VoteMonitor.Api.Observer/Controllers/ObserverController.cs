@@ -33,10 +33,14 @@ namespace VoteMonitor.Api.Observer.Controllers {
 
         [HttpGet]
         [Produces(type: typeof(List<ObserverModel>))]
-        public async Task<List<ObserverModel>> GetObservers(ObserverListQuery query)
+        public async Task<ApiListResponse<ObserverModel>> GetObservers(ObserverListQuery query)
         {
-            // TODO check the auth ngo has access to the filter selected (ngoid)
-            var result = await _mediator.Send(query);
+            var ongId = this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
+            
+            var command = _mapper.Map<ObserverListCommand>(query);
+            command.IdNgo = ongId;
+            
+            var result = await _mediator.Send(command);
             return result;
         }
 
