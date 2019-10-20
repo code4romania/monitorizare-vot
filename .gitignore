@@ -255,3 +255,4 @@ ModelManifest.xml
 
 .vscode
 .idea
+/src/api/VotingIrregularities.Api/etc

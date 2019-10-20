@@ -7,6 +7,9 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Threading;
+using System.Collections;
+using System.Collections.Generic;
+using System;
 
 namespace VoteMonitor.Api.Observer.Handlers
 {
@@ -29,27 +32,36 @@ namespace VoteMonitor.Api.Observer.Handlers
 
         public Task<int> Handle(NotificationRegDataCommand request, CancellationToken cancellationToken)
         {
-            var notificationRegData = _context.NotificationsRegData.AsQueryable();
-
-            notificationRegData = notificationRegData.Where(regData => regData.ObeserverId == request.ObserverId)
-                .Where(regData => regData.ChannelName == request.ChannelName);
-
             NotificationRegData notificationReg = new NotificationRegData();
 
-            notificationReg.ObeserverId = request.ObserverId;
+            notificationReg.ObserverId = request.ObserverId;
             notificationReg.ChannelName = request.ChannelName;
             notificationReg.Token = request.Token;
 
-            _context.NotificationsRegData.Add(notificationReg);
+            _context.NotificationRegData.Add(notificationReg);
 
             return _context.SaveChangesAsync();
         }
 
         public Task<int> Handle(NewNotificationCommand request, CancellationToken cancellationToken)
         {
-            _firebaseService.send(request.Message, request.recipients);
+            List<string> targetFCMTokens = new List<string>();
 
-            return Task.FromResult(0);
+            foreach (string observer in request.Recipients)
+            {
+                var regDataResult = _context.NotificationRegData.AsQueryable().Where(regData => regData.ObserverId == Int32.Parse(observer))
+               .Where(regData => regData.ChannelName == request.Channel).First();
+                targetFCMTokens.Add(regDataResult.Token);
+            }
+
+            int response = 0;
+
+            if(targetFCMTokens.Count > 0)
+            {
+                response = _firebaseService.SendAsync(request.From, request.Title, request.Message, targetFCMTokens);
+            }            
+
+            return Task.FromResult(response);
         }
     }
 }

@@ -279,6 +279,34 @@ namespace VoteMonitor.Entities {
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.CreateTable(
+                    name: "NotificationRegData",
+                    columns: table => new {
+                        ObserverId = table.Column<int>(nullable: false),
+                        ChannelName = table.Column<string>(maxLength: 256, nullable: false),
+                        Token = table.Column<string>(maxLength: 512, nullable: false)
+                    },
+                    constraints: table => {
+                        table.PrimaryKey("PK_NotificationRegData", x => new { x.ObserverId, x.ChannelName});
+                        table.ForeignKey(
+                            name: "FK_NotificationRegData_Observer",
+                            column: x => x.ObserverId,
+                            principalTable: "Observers",
+                            principalColumn: "Id",
+                            onDelete: ReferentialAction.Restrict);
+                    });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_NotificationRegData_ObserverId_ChannelName",
+                table: "NotificationRegData",
+                columns: new String[] { "ObserverId", "ChannelName" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_NotificationRegData_IdObserver",
+                table: "NotificationRegData",
+                column: "ObserverId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_Answer_IdObserver",
                 table: "Answers",
@@ -401,6 +429,9 @@ namespace VoteMonitor.Entities {
 
             migrationBuilder.DropTable(
                 name: "FormSections");
+
+            migrationBuilder.DropTable(
+                name: "NotificationRegData");
         }
     }
 }
