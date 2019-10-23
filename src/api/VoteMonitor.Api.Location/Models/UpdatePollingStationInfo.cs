@@ -11,6 +11,6 @@ namespace VoteMonitor.Api.Location.Models
         public int IdPollingStation { get; set; }
 
         [Required(AllowEmptyStrings = false)]
-        public DateTime? LeaveTime { get; set; }
+        public DateTime? ObserverLeaveTime { get; set; }
     }
 }
