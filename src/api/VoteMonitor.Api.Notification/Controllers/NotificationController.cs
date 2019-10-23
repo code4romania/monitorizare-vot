@@ -39,6 +39,11 @@ namespace VoteMonitor.Api.Notification.Controllers
         [Route("register")]
         public async Task<dynamic> registerTokenAsync(NotificationRegDataModel tokenRegistrationModel)
         {
+            if(!tokenRegistrationModel.ObserverId.HasValue)
+            {
+                tokenRegistrationModel.ObserverId = this.GetIdObserver();
+            }
+
             await _mediator.Send(_mapper.Map<NotificationRegDataCommand>(tokenRegistrationModel));
 
             return Task.FromResult(new {});
