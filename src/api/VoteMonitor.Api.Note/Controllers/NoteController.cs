@@ -31,6 +31,9 @@ namespace VoteMonitor.Api.Note.Controllers
         [HttpGet]
         public async Task<List<NoteModel>> Get(NoteQuery filter)
         {
+            if (!filter.IdObserver.HasValue)
+                filter.IdObserver = this.GetIdObserver();
+
             return await _mediator.Send(filter);
         }
         /// <summary>
