@@ -10,7 +10,9 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using VotingIrregularities.Api.Models.AccountViewModels;
 using System.Linq;
+using System.Net;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using VoteMonitor.Api.Core;
 using VotingIrregularities.Domain.UserAggregate;
 using VotingIrregularities.Api.Options;
@@ -101,6 +103,9 @@ namespace VotingIrregularities.Api.Controllers
 
         [HttpPost("authorize")]
         [AllowAnonymous]
+        [ProducesResponseType(typeof(AuthenticationResponseModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> AuthenticateUser([FromBody] AuthenticateUserRequest request) {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -109,8 +114,7 @@ namespace VotingIrregularities.Api.Controllers
             if (string.IsNullOrEmpty(request.UniqueId)) {
                 var identity = await GetClaimsIdentity(request);
                 if (identity == null) {
-                    _logger.LogInformation(
-                        $"Invalid username ({request.User}) or password ({request.Password})");
+                    _logger.LogInformation($"Invalid username ({request.User}) or password ({request.Password})");
                     return BadRequest("Invalid credentials");
                 }
 
@@ -127,7 +131,14 @@ namespace VotingIrregularities.Api.Controllers
                 token = GetTokenFromIdentity(identity);
             }
 
-            return Ok(token);
+            // Serialize and return the response
+            var response = new AuthenticationResponseModel
+			{
+	            access_token = token,
+	            expires_in = (int)_jwtOptions.ValidFor.TotalSeconds
+            };
+
+			return Ok(response);
         }
 
         /// <summary>
