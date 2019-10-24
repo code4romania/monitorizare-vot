@@ -1,9 +1,7 @@
-﻿using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using MediatR;
 
-namespace VoteMonitor.Api.Observer.Commands
+namespace VoteMonitor.Api.Notification.Commands
 {
     public class NewNotificationCommand : IRequest<int>
     {

@@ -1,17 +1,13 @@
 using System.Threading.Tasks;
-using System;
-using System.Collections.Generic;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using VoteMonitor.Api.Core;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using VoteMonitor.Api.Notification.Models;
-using VoteMonitor.Api.Observer.Commands;
 using VotingIrregularities.Api.Options;
 using Microsoft.Extensions.Configuration;
+using VoteMonitor.Api.Notification.Commands;
 
 namespace VoteMonitor.Api.Notification.Controllers
 {
@@ -21,8 +17,6 @@ namespace VoteMonitor.Api.Notification.Controllers
         private readonly IMediator _mediator;
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
-        private readonly FirebaseServiceOptions _firebaseOptions;
-        private readonly IConfigurationRoot _configuration;
 
         public NotificationController(IMediator mediator, ILogger logger, IMapper mapper, IConfigurationRoot configuration)
         {
@@ -30,14 +24,13 @@ namespace VoteMonitor.Api.Notification.Controllers
             _logger = logger;
             _mapper = mapper;
 
-            _configuration = configuration;
-            _firebaseOptions = new FirebaseServiceOptions();
-            _configuration.GetSection(nameof(FirebaseServiceOptions)).Bind(_firebaseOptions);
+            var firebaseOptions = new FirebaseServiceOptions();
+            configuration.GetSection(nameof(FirebaseServiceOptions)).Bind(firebaseOptions);
         }
 
         [HttpPost]
         [Route("register")]
-        public async Task<dynamic> registerTokenAsync(NotificationRegDataModel tokenRegistrationModel)
+        public async Task<dynamic> RegisterTokenAsync(NotificationRegDataModel tokenRegistrationModel)
         {
             if(!tokenRegistrationModel.ObserverId.HasValue)
             {
@@ -51,7 +44,7 @@ namespace VoteMonitor.Api.Notification.Controllers
 
         [HttpPost]
         [Route("send")]
-        public async Task<dynamic> send([FromBody]NotificationNewModel newNotificationModel)
+        public async Task<dynamic> Send([FromBody]NotificationNewModel newNotificationModel)
         {
             var result = await _mediator.Send(_mapper.Map<NewNotificationCommand>(newNotificationModel));
 
