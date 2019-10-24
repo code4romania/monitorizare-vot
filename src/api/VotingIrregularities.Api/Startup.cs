@@ -217,7 +217,7 @@ namespace VotingIrregularities.Api
 
             Log.Logger = new LoggerConfiguration()
                 .WriteTo
-                .ApplicationInsights(TelemetryConfiguration.Active, TelemetryConverter.Traces)
+                .ApplicationInsights(TelemetryConfiguration.CreateDefault(), TelemetryConverter.Traces)
                 .CreateLogger();
 
             appLifetime.ApplicationStopped.Register(Log.CloseAndFlush);
@@ -445,19 +445,6 @@ namespace VotingIrregularities.Api
             yield return typeof(UploadFileHandler).GetTypeInfo().Assembly;
             yield return typeof(NotificationController).GetTypeInfo().Assembly;
             // just to identify VotingIrregularities.Domain assembly
-        }
-
-        /// <summary>
-        /// Initializing the DB migrations and seeding
-        /// </summary>
-        /// <param name="votingContext"></param>
-        private void InitializeDb(VoteMonitorContext votingContext)
-        {
-            // auto migration
-            votingContext.Database.Migrate();
-
-            // seed
-            VotingContextExtensions.EnsureSeedData(votingContext);
         }
     }
 }
