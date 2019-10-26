@@ -302,7 +302,7 @@ namespace VoteMonitor.Entities
                 entity.Property(e => e.IsFreeText).HasDefaultValueSql("0");
             });
 
-            modelBuilder.Entity<NotificationRegData>(entity => {
+            modelBuilder.Entity<NotificationRegistrationData>(entity => {
                 entity.HasKey(e => new { e.ObserverId, e.ChannelName })
                     .HasName("PK_NotificationRegData");
 
@@ -330,7 +330,7 @@ namespace VoteMonitor.Entities
         public virtual DbSet<County> Counties { get; set; }
         public virtual DbSet<Note> Notes { get; set; }
         public virtual DbSet<Observer> Observers { get; set; }
-        public virtual DbSet<NotificationRegData> NotificationRegData { get; set; }
+        public virtual DbSet<NotificationRegistrationData> NotificationRegData { get; set; }
         public virtual DbSet<Ngo> Ngos { get; set; }
         public virtual DbSet<Option> Options { get; set; }
         public virtual DbSet<Answer> Answers { get; set; }

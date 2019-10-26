@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VoteMonitor.Entities
 {
-    public partial class NotificationRegData
+    public partial class NotificationRegistrationData
     {
         public int ObserverId { get; set; }
         public string ChannelName { get; set; }
