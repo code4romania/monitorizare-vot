@@ -14,12 +14,16 @@
     <NoWarn>1701;1702;1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="api-docs\**" />
     <Compile Remove="Helpers\**" />
     <Compile Remove="Models\PollingStation\**" />
+    <Content Remove="api-docs\**" />
     <Content Remove="Helpers\**" />
     <Content Remove="Models\PollingStation\**" />
+    <EmbeddedResource Remove="api-docs\**" />
     <EmbeddedResource Remove="Helpers\**" />
     <EmbeddedResource Remove="Models\PollingStation\**" />
+    <None Remove="api-docs\**" />
     <None Remove="Helpers\**" />
     <None Remove="Models\PollingStation\**" />
   </ItemGroup>
@@ -64,28 +68,5 @@
     <PackageReference Include="FluentValidation" Version="7.6.105" />
     <PackageReference Include="System.Collections.Immutable" Version="1.5.0" />
     <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="api-docs\VoteMonitor.Api.Answer.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="api-docs\VoteMonitor.Api.Form.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="api-docs\VoteMonitor.Api.Location.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="api-docs\VoteMonitor.Api.Note.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="api-docs\VoteMonitor.Api.Notification.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="api-docs\VoteMonitor.Api.Observer.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="api-docs\VoteMonitor.Api.Statistics.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 </Project>
