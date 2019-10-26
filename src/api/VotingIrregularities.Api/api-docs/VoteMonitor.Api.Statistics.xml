@@ -1,0 +1,117 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>VoteMonitor.Api.Statistics</name>
+    </assembly>
+    <members>
+        <member name="T:VoteMonitor.Api.Statistics.Controllers.StatisticsController">
+            <inheritdoc />
+        </member>
+        <member name="M:VoteMonitor.Api.Statistics.Controllers.StatisticsController.NumarObservatori(VoteMonitor.Api.Core.PagingModel)">
+            <summary>
+            Returns top counties by observer number
+            </summary>
+            <param name="model">Pagination details</param>
+            <returns></returns>
+        </member>
+        <member name="M:VoteMonitor.Api.Statistics.Controllers.StatisticsController.Irregularities(VoteMonitor.Api.Statistics.Models.SimpleStatisticsFilter)">
+            <summary>
+            Returns top counties or polling stations by number of irregularities
+            </summary>
+            <param name="model">  Pagination details (default Page=1, PageSize=20)
+            Grouping (0 - County | 1 - PollingStation)
+            FormCode (formeCode for which you want to retrieve statistics, use empty string "" for all forms)
+            </param>
+            <returns></returns>
+        </member>
+        <member name="M:VoteMonitor.Api.Statistics.Controllers.StatisticsController.CountiesIrregularities(VoteMonitor.Api.Core.PagingModel)">
+            <summary>
+            Returns a top of counties ordered by the number of irregularities
+            </summary>
+            <param name="model">Pagination details (default Page=1, PageSize=20)</param>
+            <returns></returns>
+        </member>
+        <member name="M:VoteMonitor.Api.Statistics.Controllers.StatisticsController.PollingStationIrregularities(VoteMonitor.Api.Core.PagingModel)">
+            <summary>
+            Returns a top of polling stations ordered by the number of irregularities
+            </summary>
+            <param name="model">Pagination details (default Page=1, PageSize=20)</param>
+            <returns></returns>
+        </member>
+        <member name="M:VoteMonitor.Api.Statistics.Controllers.StatisticsController.CountiesOpeningIrregularities(VoteMonitor.Api.Core.PagingModel)">
+            <summary>   
+            Returns top of counties by number of irregularities on polling station opening
+            </summary>
+            <param name="model">Pagination details (default Page=1, PageSize=20)</param>
+            <returns></returns>
+        </member>
+        <member name="M:VoteMonitor.Api.Statistics.Controllers.StatisticsController.PollingStationOpeningIrregularities(VoteMonitor.Api.Core.PagingModel)">
+            <summary>
+            Returns top of polling stations by the number of irregularities on polling station opening
+            </summary>
+            <param name="model">Pagination details (default Page=1, PageSize=20)</param>
+            <returns></returns>
+        </member>
+        <member name="M:VoteMonitor.Api.Statistics.Controllers.StatisticsController.CountiesByCountingIrregularities(VoteMonitor.Api.Core.PagingModel)">
+            <summary>
+            Returns the top of counties ordered by counting irregularities
+            </summary>
+            <param name="model">Pagination details (default Page=1, PageSize=20)</param>
+            <returns></returns>
+        </member>
+        <member name="M:VoteMonitor.Api.Statistics.Controllers.StatisticsController.PollingStationsByCountingIrregularities(VoteMonitor.Api.Core.PagingModel)">
+            <summary>
+            Returns the top of polling stations ordered by counting irregularities
+            </summary>
+            <param name="model">Pagination details (default Page=1, PageSize=20)</param>
+            <returns></returns>
+        </member>
+        <member name="M:VoteMonitor.Api.Statistics.Controllers.StatisticsController.CountAnswersForQuestion(VoteMonitor.Api.Statistics.Models.OptionsFilterModel)">
+            <summary>
+            Returns the number of answers given by the observers
+            Grouped by the options of the given question
+            </summary>
+            <param name="model">Id - the questionId to retrieve statistics for</param>
+            <returns></returns>
+        </member>
+        <member name="P:VoteMonitor.Api.Statistics.Handlers.StatisticsQueryBuilder.Query">
+            <summary>
+            The SQL query string that is executed in the db
+            </summary>
+        </member>
+        <member name="P:VoteMonitor.Api.Statistics.Handlers.StatisticsQueryBuilder.CacheKey">
+            <summary>
+            The cache key for the query
+            </summary>
+        </member>
+        <member name="M:VoteMonitor.Api.Statistics.Handlers.StatisticsQueryBuilder.Append(System.String)">
+            <summary>
+            Appends a statement to the sql query string
+            </summary>
+            <param name="statement"></param>
+        </member>
+        <member name="M:VoteMonitor.Api.Statistics.Handlers.StatisticsQueryBuilder.AndFormularFilter(System.String)">
+            <summary>
+            Adds an AND condition to the WHERE clause
+            Filters statistics by FormCode
+            </summary>
+        </member>
+        <member name="M:VoteMonitor.Api.Statistics.Handlers.StatisticsQueryBuilder.AndOngFilter(System.Boolean,System.Int32)">
+            <summary>
+            Adds an AND condition to the WHERE clause
+            Filters statistics by IdNgo if the ong is admin
+            </summary>
+        </member>
+        <member name="M:VoteMonitor.Api.Statistics.Handlers.StatisticsQueryBuilder.WhereOngFilter(System.Boolean,System.Int32)">
+            <summary>
+            Adds a WHERE clause
+            Filters statistics by IdNgo if the ong is admin
+            </summary>
+        </member>
+        <member name="M:VoteMonitor.Api.Statistics.Handlers.StatisticsQueryBuilder.GetPaginatedQuery(System.Int32,System.Int32)">
+            <summary>
+            Returns a query with ORDER BY, OFFSET and FETCH clauses
+            </summary>
+        </member>
+    </members>
+</doc>

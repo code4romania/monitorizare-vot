@@ -29,9 +29,9 @@ namespace VotingIrregularities.Api.Queries {
         protected override async Task<IEnumerable<ModelSectiune>> HandleCore(FormQuestionsQuery message)
         {
             CacheObjectsName formular;
-            Enum.TryParse("Formular" + message.CodFormular, out formular);
+            var cacheKey = $"Formular{message.CodFormular}";
 
-            return await _cacheService.GetOrSaveDataInCacheAsync<IEnumerable<ModelSectiune>>(formular,
+            return await _cacheService.GetOrSaveDataInCacheAsync<IEnumerable<ModelSectiune>>(cacheKey,
                 async () =>
                 {
                     var r = await _context.Questions

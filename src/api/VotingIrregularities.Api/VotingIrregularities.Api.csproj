@@ -37,6 +37,7 @@
     <ProjectReference Include="..\VoteMonitor.Api.Note\VoteMonitor.Api.Note.csproj" />
     <ProjectReference Include="..\VoteMonitor.Api.Notification\VoteMonitor.Api.Notification.csproj" />
     <ProjectReference Include="..\VoteMonitor.Api.Observer\VoteMonitor.Api.Observer.csproj" />
+    <ProjectReference Include="..\VoteMonitor.Api.Statistics\VoteMonitor.Api.Statistics.csproj" />
     <ProjectReference Include="..\VotingIrregularities.Domain\VotingIrregularities.Domain.csproj" />
   </ItemGroup>
   <ItemGroup>
@@ -63,5 +64,28 @@
     <PackageReference Include="FluentValidation" Version="7.6.105" />
     <PackageReference Include="System.Collections.Immutable" Version="1.5.0" />
     <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="api-docs\VoteMonitor.Api.Answer.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="api-docs\VoteMonitor.Api.Form.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="api-docs\VoteMonitor.Api.Location.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="api-docs\VoteMonitor.Api.Note.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="api-docs\VoteMonitor.Api.Notification.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="api-docs\VoteMonitor.Api.Observer.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="api-docs\VoteMonitor.Api.Statistics.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

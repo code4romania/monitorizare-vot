@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>VoteMonitor.Api.Answer</name>
+    </assembly>
+    <members>
+        <member name="M:VoteMonitor.Api.Answer.Controllers.AnswersController.Get(VoteMonitor.Api.Answer.Models.SectionAnswersRequest)">
+            <summary>
+            Returns a list of polling stations where observers from the given NGO have submitted answers
+            to the questions marked as Flagged=Urgent, ordered by ModifiedDate descending
+            </summary>
+            <param name="model"> Pagination details(default Page=1, PageSize=20)
+            Urgent (Flagged)
+            </param>
+        </member>
+        <member name="M:VoteMonitor.Api.Answer.Controllers.AnswersController.Get(VoteMonitor.Api.Answer.Models.ObserverAnswersRequest)">
+            <summary>
+            Returns answers given by the specified observer at the specified polling station
+            </summary>
+        </member>
+        <member name="M:VoteMonitor.Api.Answer.Controllers.AnswersController.GetRaspunsuriFormular(VoteMonitor.Api.Answer.Models.ObserverAnswersRequest)">
+            <summary>
+            Returns the polling station information filled in by the given observer at the given polling station
+            </summary>
+            <param name="model"> "IdSectieDeVotare" - Id-ul sectiei unde s-au completat raspunsurile
+            "IdObservator" - Id-ul observatorului care a dat raspunsurile
+            </param>
+        </member>
+        <member name="M:VoteMonitor.Api.Answer.Controllers.AnswersController.PostAnswer(VoteMonitor.Api.Answer.Models.AnswerModelWrapper)">
+            <summary>
+            Saves the answers to one or more questions, at a given polling station
+            An answer can have multiple options (OptionId) and potentially a free text (Value).
+            </summary>
+            <param name="answerModel">Polling station, list of options and the associated text of an option when
+            <code>IsFreeText = true</code></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

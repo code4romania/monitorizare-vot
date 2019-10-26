@@ -5,16 +5,18 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>$(SolutionDir)\api\VotingIrregularities.Api\api-docs\VoteMonitor.Api.Notification.xml</DocumentationFile>
+    <DocumentationFile>$(SolutionDir)\api\VotingIrregularities.Api\api-docs\VoteMonitor.Api.Statistics.xml</DocumentationFile>
   </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="7.0.1" />
     <PackageReference Include="MediatR" Version="4.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.2.0" />
   </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\VoteMonitor.Api.Core\VoteMonitor.Api.Core.csproj" />
-    <ProjectReference Include="..\VoteMonitor.Api.Observer\VoteMonitor.Api.Observer.csproj" />
     <ProjectReference Include="..\VoteMonitor.Entities\VoteMonitor.Entities.csproj" />
   </ItemGroup>
+
 </Project>
