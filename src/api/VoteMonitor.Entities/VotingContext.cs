@@ -323,6 +323,21 @@ namespace VoteMonitor.Entities
                     .IsRequired()
                     .HasMaxLength(512);
             });
+
+            modelBuilder.Entity<SimpleStatistics>(entity => {
+                entity.HasKey(e => e.Label)
+                    .HasName("PK_Statistici");
+            });
+
+            modelBuilder.Entity<ComposedStatistics>(entity => {
+                entity.HasKey(e => new { e.Label, e.Code })
+                    .HasName("PK_StatisticiCompuse");
+            });
+
+            modelBuilder.Entity<OptionsStatistics>(entity => {
+                entity.HasKey(e => e.Label)
+                    .HasName("PK_StatisticiOptiuni");
+            });
         }
 
         public virtual DbSet<NgoAdmin> NgoAdmins { get; set; }
@@ -340,6 +355,11 @@ namespace VoteMonitor.Entities
         public virtual DbSet<FormSection> FormSections { get; set; }
         public virtual DbSet<Form> Forms { get; set; }
         public virtual DbSet<AnswerQueryInfo> AnswerQueryInfos{ get;set; }
+
+        // Entities used for GROUP BY results
+        public virtual DbSet<SimpleStatistics> SimpleStatistics { get; set; }
+        public virtual DbSet<ComposedStatistics> ComposedStatistics { get; set; }
+        public virtual DbSet<OptionsStatistics> OptionsStatistics { get; set; }
 
         public class AnswerQueryInfo {
             public int IdPollingStation { get; set; }

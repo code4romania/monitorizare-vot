@@ -34,9 +34,9 @@ namespace VoteMonitor.Api.Form.Queries
             if (form == null)
                 return null;
 
-            Enum.TryParse("Formular" + form.Code, out formular);
+            var cacheKey = $"Formular{form.Code}";
 
-            return await _cacheService.GetOrSaveDataInCacheAsync<IEnumerable<FormSectionDTO>>(formular,
+            return await _cacheService.GetOrSaveDataInCacheAsync<IEnumerable<FormSectionDTO>>(cacheKey,
                 async () =>
                 {
                     var r = await _context.Questions

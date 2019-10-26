@@ -26,8 +26,8 @@ namespace VoteMonitor.Api.Answer.Controllers {
         /// Returns a list of polling stations where observers from the given NGO have submitted answers
         /// to the questions marked as Flagged=Urgent, ordered by ModifiedDate descending
         /// </summary>
-        /// <param name="model"> Detaliile de paginare (default Page=1, PageSize=20)
-        /// Urgent (valoarea campului RaspunsFlag)
+        /// <param name="model"> Pagination details(default Page=1, PageSize=20)
+        /// Urgent (Flagged)
         /// </param>
         [HttpGet]
         public async Task<ApiListResponse<AnswerQueryDTO>> Get(SectionAnswersRequest model) {
@@ -49,10 +49,6 @@ namespace VoteMonitor.Api.Answer.Controllers {
         /// <summary>
         /// Returns answers given by the specified observer at the specified polling station
         /// </summary>
-        /// <param name="model">
-        /// "IdSectieDeVotare" - Id-ul sectiei unde s-au completat raspunsurile
-        /// "IdObservator" - Id-ul observatorului care a dat raspunsurile
-        /// </param>
         [HttpGet("filledIn")]
         public async Task<List<QuestionDTO<FilledInAnswerDTO>>> Get(ObserverAnswersRequest model) {
             return await _mediator.Send(new FilledInAnswersQuery {
@@ -77,20 +73,20 @@ namespace VoteMonitor.Api.Answer.Controllers {
 
 
         /// <summary>
-        /// Aici se inregistreaza raspunsul dat de observator la una sau mai multe intrebari, pentru o sectie de votare.
-        /// Raspunsul (ModelOptiuniSelectate) poate avea mai multe optiuni (IdOptiune) si potential un text (Value).
+        /// Saves the answers to one or more questions, at a given polling station
+        /// An answer can have multiple options (OptionId) and potentially a free text (Value).
         /// </summary>
-        /// <param name="raspuns">Sectia de votare, lista de optiuni si textul asociat unei optiuni care se completeaza cand 
-        /// optiunea <code>SeIntroduceText = true</code></param>
+        /// <param name="answerModel">Polling station, list of options and the associated text of an option when
+        /// <code>IsFreeText = true</code></param>
         /// <returns></returns>
         [HttpPost]
         [Authorize("Observer")]
-        public async Task<IActionResult> PostAnswer([FromBody] AnswerModelWrapper raspuns) {
+        public async Task<IActionResult> PostAnswer([FromBody] AnswerModelWrapper answerModel) {
             if (!ModelState.IsValid) 
                 return BadRequest(ModelState);
 
             // TODO[DH] use a pipeline instead of separate Send commands
-            var command = await _mediator.Send(new BulkAnswers(raspuns.Answers));
+            var command = await _mediator.Send(new BulkAnswers(answerModel.Answers));
 
             command.ObserverId = this.GetIdObserver();
 
