@@ -23,7 +23,7 @@ namespace VoteMonitor.Api.Notification.Handlers
 
         public Task<int> Handle(NotificationRegDataCommand request, CancellationToken cancellationToken)
         {
-            var notificationReg = new NotificationRegData
+            var notificationReg = new NotificationRegistrationData
             {
                 ObserverId = request.ObserverId, ChannelName = request.ChannelName, Token = request.Token
             };
