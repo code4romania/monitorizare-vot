@@ -2,7 +2,7 @@
 
 namespace VoteMonitor.Api.Notification.Commands
 {
-    public class NotificationRegDataCommand : IRequest<int>
+    public class NotificationRegistrationDataCommand : IRequest<int>
     {
         public int ObserverId { get; set; }
         public string ChannelName { get; set; }

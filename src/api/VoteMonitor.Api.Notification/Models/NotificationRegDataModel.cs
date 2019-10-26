@@ -1,6 +1,6 @@
 namespace VoteMonitor.Api.Notification.Models
 {
-    public class NotificationRegDataModel
+    public class NotificationRegistrationDataModel
     {       
         public int? ObserverId { get; set; }
         public string ChannelName { get; set; }

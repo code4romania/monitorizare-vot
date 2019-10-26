@@ -304,13 +304,13 @@ namespace VoteMonitor.Entities
 
             modelBuilder.Entity<NotificationRegistrationData>(entity => {
                 entity.HasKey(e => new { e.ObserverId, e.ChannelName })
-                    .HasName("PK_NotificationRegData");
+                    .HasName("PK_NotificationRegistrationData");
 
                 entity.HasIndex(e => new { e.ObserverId, e.ChannelName })
-                    .HasName("IX_NotificationRegData_ObserverId_ChannelName");
+                    .HasName("IX_NotificationRegistrationData_ObserverId_ChannelName");
 
                 entity.HasIndex(e => new { e.ObserverId })
-                    .HasName("IX_NotificationRegData_IdObserver");
+                    .HasName("IX_NotificationRegistrationData_IdObserver");
 
                 entity.Property(e => e.ObserverId)
                     .IsRequired();
@@ -330,7 +330,7 @@ namespace VoteMonitor.Entities
         public virtual DbSet<County> Counties { get; set; }
         public virtual DbSet<Note> Notes { get; set; }
         public virtual DbSet<Observer> Observers { get; set; }
-        public virtual DbSet<NotificationRegistrationData> NotificationRegData { get; set; }
+        public virtual DbSet<NotificationRegistrationData> NotificationRegistrationData { get; set; }
         public virtual DbSet<Ngo> Ngos { get; set; }
         public virtual DbSet<Option> Options { get; set; }
         public virtual DbSet<Answer> Answers { get; set; }
