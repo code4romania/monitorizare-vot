@@ -47,6 +47,7 @@ using VoteMonitor.Api.Core.Handlers;
 using VoteMonitor.Api.Core.Services.Impl;
 using VoteMonitor.Api.Notification.Controllers;
 using System.IO;
+using VoteMonitor.Api.Statistics.Controllers;
 
 namespace VotingIrregularities.Api
 {
@@ -163,6 +164,7 @@ namespace VotingIrregularities.Api
                 .AddApplicationPart(typeof(NoteController).Assembly)
                 .AddApplicationPart(typeof(FormController).Assembly)
                 .AddApplicationPart(typeof(AnswersController).Assembly)
+                .AddApplicationPart(typeof(StatisticsController).Assembly)
                 .AddControllersAsServices()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
@@ -194,11 +196,11 @@ namespace VotingIrregularities.Api
 
                 options.OperationFilter<AddFileUploadParams>();
 
-                var path = PlatformServices.Default.Application.ApplicationBasePath +
-                           System.IO.Path.DirectorySeparatorChar + "VotingIrregularities.Api.xml";
-
-                if (System.IO.File.Exists(path))
-                    options.IncludeXmlComments(path);
+                var baseDocPath = PlatformServices.Default.Application.ApplicationBasePath;
+                
+                foreach (string api in Directory.GetFiles(baseDocPath, "*.xml")) {
+                        options.IncludeXmlComments(api);
+                }
             });
 
             services.UseSimpleInjectorAspNetRequestScoping(_container);
@@ -444,6 +446,7 @@ namespace VotingIrregularities.Api
             yield return typeof(AnswersController).GetTypeInfo().Assembly;
             yield return typeof(UploadFileHandler).GetTypeInfo().Assembly;
             yield return typeof(NotificationController).GetTypeInfo().Assembly;
+            yield return typeof(StatisticsController).GetTypeInfo().Assembly;
             // just to identify VotingIrregularities.Domain assembly
         }
     }
