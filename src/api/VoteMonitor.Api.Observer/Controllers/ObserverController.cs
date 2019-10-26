@@ -43,6 +43,19 @@ namespace VoteMonitor.Api.Observer.Controllers {
             var result = await _mediator.Send(command);
             return result;
         }
+        [HttpGet]
+        [Produces(type: typeof(List<ObserverModel>))]
+        [Route("active")]
+        public async Task<List<ObserverModel>> GetActiveObservers(ActiveObserverFilter query)
+        {
+            var ongId = this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
+
+            var command = _mapper.Map<ActiveObserversQuery>(query);
+            command.IdNgo = ongId;
+
+            var result = await _mediator.Send(command);
+            return result;
+        }
 
         [HttpPost]
         [Route("import")]
