@@ -29,7 +29,6 @@ namespace VoteMonitor.Api.Form.Queries
 
         protected override async Task<IEnumerable<FormSectionDTO>> HandleCore(FormQuestionQuery message)
         {
-            CacheObjectsName formular;
             var form = _context.Forms.FirstOrDefault(f => f.Id == message.FormId);
             if (form == null)
                 return null;

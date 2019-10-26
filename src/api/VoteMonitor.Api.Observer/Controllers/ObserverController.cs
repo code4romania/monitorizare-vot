@@ -19,14 +19,12 @@ namespace VoteMonitor.Api.Observer.Controllers {
     public class ObserverController : Controller
     {
         private readonly IMediator _mediator;
-        private readonly ILogger _logger;
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
 
-        public ObserverController(IMediator mediator, ILogger logger, IMapper mapper, IConfigurationRoot configuration)
+        public ObserverController(IMediator mediator, IMapper mapper, IConfigurationRoot configuration)
         {
             _mediator = mediator;
-            _logger = logger;
             _mapper = mapper;
             _configuration = configuration;
         }
@@ -52,7 +50,7 @@ namespace VoteMonitor.Api.Observer.Controllers {
                 ongId = this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
             }
 
-            var fileAddress = await _mediator.Send(
+            await _mediator.Send(
                 new UploadFileCommand { 
                     File = file, 
                     UploadType = UploadType.Observers 
@@ -104,7 +102,7 @@ namespace VoteMonitor.Api.Observer.Controllers {
         /// <summary>
         /// Deletes an observer.
         /// </summary>
-        /// <param name="model"></param>
+        /// <param name="id">The Observer id</param>
         /// <returns>Boolean indicating whether or not the observer was deleted successfully</returns>
         [HttpDelete]
         [Produces(type: typeof(bool))]
