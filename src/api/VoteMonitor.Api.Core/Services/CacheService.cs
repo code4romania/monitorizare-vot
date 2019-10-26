@@ -18,7 +18,7 @@ namespace VoteMonitor.Api.Core.Services
             _logger = logger;
         }
 
-        public async Task<T> GetOrSaveDataInCacheAsync<T>(CacheObjectsName name, Func<Task<T>> source, DistributedCacheEntryOptions options = null)
+        public async Task<T> GetOrSaveDataInCacheAsync<T>(string name, Func<Task<T>> source, DistributedCacheEntryOptions options = null)
         {
             var obj = await GetObjectSafeAsync<T>(name);
 
@@ -32,7 +32,7 @@ namespace VoteMonitor.Api.Core.Services
             return result;
         }
 
-        public async Task<T> GetObjectSafeAsync<T>(CacheObjectsName name)
+        public async Task<T> GetObjectSafeAsync<T>(string name)
         {
             var result = default(T);
 
@@ -59,7 +59,7 @@ namespace VoteMonitor.Api.Core.Services
             return result;
         }
 
-        public async Task SaveObjectSafeAsync(CacheObjectsName name, object value, DistributedCacheEntryOptions options = null)
+        public async Task SaveObjectSafeAsync(string name, object value, DistributedCacheEntryOptions options = null)
         {
             try
             {

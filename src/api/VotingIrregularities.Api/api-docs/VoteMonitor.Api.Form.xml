@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>VoteMonitor.Api.Form</name>
+    </assembly>
+    <members>
+        <member name="T:VoteMonitor.Api.Form.Controllers.FormController">
+            <inheritdoc />
+            <summary>
+            Ruta Formular ofera suport pentru toate operatiile legate de formularele completate de observatori
+            </summary>
+        </member>
+        <member name="M:VoteMonitor.Api.Form.Controllers.FormController.GetFormVersions">
+            <summary>
+            Returneaza versiunea tuturor formularelor sub forma unui array. 
+            Daca versiunea returnata difera de cea din aplicatie, atunci trebuie incarcat formularul din nou 
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:VoteMonitor.Api.Form.Controllers.FormController.GetFormsAsync">
+            <summary>
+            Returns an array of forms
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:VoteMonitor.Api.Form.Controllers.FormController.GetFormAsync(System.Int32)">
+            <summary>
+            Se interogheaza ultima versiunea a formularului pentru observatori si se primeste definitia lui. 
+            In definitia unui formular nu intra intrebarile standard (ora sosirii, etc). 
+            Acestea se considera implicite pe fiecare formular.
+            </summary>
+            <param name="formId">Id-ul formularului pentru care trebuie preluata definitia</param>
+            <returns></returns>
+        </member>
+        <member name="T:VoteMonitor.Api.Form.Controllers.QuestionController">
+            <inheritdoc />
+            <summary>
+            CRUD operations on Questions
+            </summary>
+        </member>
+        <member name="T:VoteMonitor.Api.Form.Models.FormularProfile">
+            <inheritdoc />
+        </member>
+        <member name="P:VoteMonitor.Api.Form.Models.ModelVersiune.Formulare">
+            <summary>
+            Collection of <see cref="!:FormVersion"/>
+            </summary>
+        </member>
+    </members>
+</doc>
