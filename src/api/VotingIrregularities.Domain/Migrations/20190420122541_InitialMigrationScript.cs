@@ -280,16 +280,16 @@ namespace VoteMonitor.Entities {
                 });
 
             migrationBuilder.CreateTable(
-                    name: "NotificationRegData",
+                    name: "NotificationRegistrationData",
                     columns: table => new {
                         ObserverId = table.Column<int>(nullable: false),
                         ChannelName = table.Column<string>(maxLength: 256, nullable: false),
                         Token = table.Column<string>(maxLength: 512, nullable: false)
                     },
                     constraints: table => {
-                        table.PrimaryKey("PK_NotificationRegData", x => new { x.ObserverId, x.ChannelName});
+                        table.PrimaryKey("PK_NotificationRegistrationData", x => new { x.ObserverId, x.ChannelName});
                         table.ForeignKey(
-                            name: "FK_NotificationRegData_Observer",
+                            name: "FK_NotificationRegistrationData_Observer",
                             column: x => x.ObserverId,
                             principalTable: "Observers",
                             principalColumn: "Id",
@@ -297,14 +297,14 @@ namespace VoteMonitor.Entities {
                     });
 
             migrationBuilder.CreateIndex(
-                name: "IX_NotificationRegData_ObserverId_ChannelName",
-                table: "NotificationRegData",
+                name: "IX_NotificationRegistrationData_ObserverId_ChannelName",
+                table: "NotificationRegistrationData",
                 columns: new String[] { "ObserverId", "ChannelName" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_NotificationRegData_IdObserver",
-                table: "NotificationRegData",
+                name: "IX_NotificationRegistrationData_IdObserver",
+                table: "NotificationRegistrationData",
                 column: "ObserverId");
 
             migrationBuilder.CreateIndex(
@@ -431,7 +431,7 @@ namespace VoteMonitor.Entities {
                 name: "FormSections");
 
             migrationBuilder.DropTable(
-                name: "NotificationRegData");
+                name: "NotificationRegistrationData");
         }
     }
 }
