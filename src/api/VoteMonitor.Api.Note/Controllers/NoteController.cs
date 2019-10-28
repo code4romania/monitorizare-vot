@@ -29,8 +29,13 @@ namespace VoteMonitor.Api.Note.Controllers
 
 
         [HttpGet]
-        public async Task<List<NoteModel>> Get(NoteQuery filter) => await _mediator.Send(filter);
+        public async Task<List<NoteModel>> Get(NoteQuery filter)
+        {
+            if (!filter.IdObserver.HasValue)
+                filter.IdObserver = this.GetIdObserver();
 
+            return await _mediator.Send(filter);
+        }
         /// <summary>
         /// Aceasta ruta este folosita cand observatorul incarca o imagine sau un clip in cadrul unei note.
         /// Fisierului atasat i se da contenttype = Content-Type: multipart/form-data
@@ -57,7 +62,7 @@ namespace VoteMonitor.Api.Note.Controllers
                 return NotFound();
 
             var command = _mapper.Map<AddNoteCommand>(note);
-            var fileAddresses = await _mediator.Send(new UploadFileCommand { Files = files });
+            var fileAddresses = await _mediator.Send(new UploadFileCommand { Files = files, UploadType = UploadType.Notes });
 
             command.IdObserver = int.Parse(User.Claims.First(c => c.Type == ClaimsHelper.ObserverIdProperty).Value); ;
             command.AttachementPaths = fileAddresses;

@@ -14,14 +14,24 @@
     <NoWarn>1701;1702;1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="api-docs\**" />
     <Compile Remove="Helpers\**" />
     <Compile Remove="Models\PollingStation\**" />
+    <Content Remove="api-docs\**" />
     <Content Remove="Helpers\**" />
     <Content Remove="Models\PollingStation\**" />
+    <EmbeddedResource Remove="api-docs\**" />
     <EmbeddedResource Remove="Helpers\**" />
     <EmbeddedResource Remove="Models\PollingStation\**" />
+    <None Remove="api-docs\**" />
     <None Remove="Helpers\**" />
     <None Remove="Models\PollingStation\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Remove="etc\FireBaseCredentials.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="etc\FireBaseCredentials.json" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VoteMonitor.Api.Answer\VoteMonitor.Api.Answer.csproj" />
@@ -29,7 +39,9 @@
     <ProjectReference Include="..\VoteMonitor.Api.Form\VoteMonitor.Api.Form.csproj" />
     <ProjectReference Include="..\VoteMonitor.Api.Location\VoteMonitor.Api.Location.csproj" />
     <ProjectReference Include="..\VoteMonitor.Api.Note\VoteMonitor.Api.Note.csproj" />
+    <ProjectReference Include="..\VoteMonitor.Api.Notification\VoteMonitor.Api.Notification.csproj" />
     <ProjectReference Include="..\VoteMonitor.Api.Observer\VoteMonitor.Api.Observer.csproj" />
+    <ProjectReference Include="..\VoteMonitor.Api.Statistics\VoteMonitor.Api.Statistics.csproj" />
     <ProjectReference Include="..\VotingIrregularities.Domain\VotingIrregularities.Domain.csproj" />
   </ItemGroup>
   <ItemGroup>
@@ -46,7 +58,7 @@
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="4.0.1" />
     <PackageReference Include="System.Linq.Queryable" Version="4.3.0" />
     <PackageReference Include="AutoMapper" Version="7.0.1" />
-    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.6.1" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.8.2" />
     <PackageReference Include="StackExchange.Redis" Version="1.2.6" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="2.0.2" />
     <PackageReference Include="SimpleInjector" Version="4.3.0" />

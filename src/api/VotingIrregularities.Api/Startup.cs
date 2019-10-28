@@ -43,6 +43,11 @@ using VoteMonitor.Api.Note.Controllers;
 using VoteMonitor.Api.Note.Services;
 using VoteMonitor.Api.Form.Controllers;
 using VoteMonitor.Api.Core;
+using VoteMonitor.Api.Core.Handlers;
+using VoteMonitor.Api.Core.Services.Impl;
+using VoteMonitor.Api.Notification.Controllers;
+using System.IO;
+using VoteMonitor.Api.Statistics.Controllers;
 
 namespace VotingIrregularities.Api
 {
@@ -79,6 +84,7 @@ namespace VotingIrregularities.Api
             services.Configure<HashOptions>(Configuration.GetSection("HashOptions"));
             services.Configure<MobileSecurityOptions>(Configuration.GetSection("MobileSecurity"));
             services.Configure<FileServiceOptions>(Configuration.GetSection(nameof(FileServiceOptions)));
+            services.Configure<FirebaseServiceOptions>(Configuration.GetSection(nameof(FirebaseServiceOptions)));
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -88,6 +94,11 @@ namespace VotingIrregularities.Api
             services.AddOptions();
 
             ConfigureCustomOptions(services);
+
+            var firebaseOptions = Configuration.GetSection(nameof(FirebaseServiceOptions));
+            var privateKeyPath = firebaseOptions[nameof(FirebaseServiceOptions.ServerKey)];
+
+            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", Path.GetFullPath(privateKeyPath));
 
             var jwtAppSettingOptions = Configuration.GetSection(nameof(JwtIssuerOptions));
 
@@ -149,9 +160,11 @@ namespace VotingIrregularities.Api
                 })
                 .AddApplicationPart(typeof(PollingStationController).Assembly)
                 .AddApplicationPart(typeof(ObserverController).Assembly)
+                .AddApplicationPart(typeof(NotificationController).Assembly)
                 .AddApplicationPart(typeof(NoteController).Assembly)
                 .AddApplicationPart(typeof(FormController).Assembly)
                 .AddApplicationPart(typeof(AnswersController).Assembly)
+                .AddApplicationPart(typeof(StatisticsController).Assembly)
                 .AddControllersAsServices()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
@@ -186,17 +199,18 @@ namespace VotingIrregularities.Api
 
                 options.OperationFilter<AddFileUploadParams>();
 
-                var path = PlatformServices.Default.Application.ApplicationBasePath +
-                           System.IO.Path.DirectorySeparatorChar + "VotingIrregularities.Api.xml";
-
-                if (System.IO.File.Exists(path))
-                    options.IncludeXmlComments(path);
+                var baseDocPath = PlatformServices.Default.Application.ApplicationBasePath;
+                
+                foreach (string api in Directory.GetFiles(baseDocPath, "*.xml")) {
+                        options.IncludeXmlComments(api);
+                }
             });
 
             services.UseSimpleInjectorAspNetRequestScoping(_container);
 
             ConfigureContainer(services);
             ConfigureCache(services);
+            ConfigureFileLoader(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -207,7 +221,7 @@ namespace VotingIrregularities.Api
 
             Log.Logger = new LoggerConfiguration()
                 .WriteTo
-                .ApplicationInsights(TelemetryConfiguration.Active, TelemetryConverter.Traces)
+                .ApplicationInsights(TelemetryConfiguration.CreateDefault(), TelemetryConverter.Traces)
                 .CreateLogger();
 
             appLifetime.ApplicationStopped.Register(Log.CloseAndFlush);
@@ -297,6 +311,12 @@ namespace VotingIrregularities.Api
             }
         }
 
+        private void ConfigureFileLoader(IServiceCollection services)
+        {
+            _container.RegisterSingleton<IFileLoader, XlsxFileLoader>();
+            return ;
+        }
+
         private void ConfigureFileService(IApplicationBuilder app)
         {
             var fileServiceOptions = new FileServiceOptions();
@@ -343,6 +363,7 @@ namespace VotingIrregularities.Api
         {
             _container.Register<IPollingStationService, PollingStationService>(Lifestyle.Scoped);
             _container.RegisterSingleton(() => app.ApplicationServices.GetService<IOptions<JwtIssuerOptions>>());
+            _container.RegisterSingleton<IFirebaseService, FirebaseService>();
         }
 
         private void InitializeContainer(IApplicationBuilder app)
@@ -426,6 +447,9 @@ namespace VotingIrregularities.Api
             yield return typeof(NoteController).GetTypeInfo().Assembly;
             yield return typeof(FormController).GetTypeInfo().Assembly;
             yield return typeof(AnswersController).GetTypeInfo().Assembly;
+            yield return typeof(UploadFileHandler).GetTypeInfo().Assembly;
+            yield return typeof(NotificationController).GetTypeInfo().Assembly;
+            yield return typeof(StatisticsController).GetTypeInfo().Assembly;
             // just to identify VotingIrregularities.Domain assembly
         }
 

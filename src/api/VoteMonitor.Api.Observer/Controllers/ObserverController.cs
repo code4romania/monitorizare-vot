@@ -11,40 +11,71 @@ using VoteMonitor.Api.Observer.Models;
 using VoteMonitor.Api.Observer.Commands;
 using Microsoft.AspNetCore.Http;
 using VoteMonitor.Api.Observer.Queries;
-using System.Linq;
 using Microsoft.Extensions.Configuration;
+using VoteMonitor.Api.Core.Commands;
 
-namespace VoteMonitor.Api.Observer.Controllers
-{
+namespace VoteMonitor.Api.Observer.Controllers {
     [Route("api/v1/observer")]
     public class ObserverController : Controller
     {
         private readonly IMediator _mediator;
-        private readonly ILogger _logger;
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
 
-        public ObserverController(IMediator mediator, ILogger logger, IMapper mapper, IConfigurationRoot configuration)
+        public ObserverController(IMediator mediator, IMapper mapper, IConfigurationRoot configuration)
         {
             _mediator = mediator;
-            _logger = logger;
             _mapper = mapper;
             _configuration = configuration;
         }
 
         [HttpGet]
         [Produces(type: typeof(List<ObserverModel>))]
-        public async Task<List<ObserverModel>> GetObservers(ObserverListQuery query)
+        public async Task<ApiListResponse<ObserverModel>> GetObservers(ObserverListQuery query)
         {
-            // TODO check the auth ngo has access to the filter selected (ngoid)
-            var result = await _mediator.Send(query);
+            var ongId = this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
+            
+            var command = _mapper.Map<ObserverListCommand>(query);
+            command.IdNgo = ongId;
+            
+            var result = await _mediator.Send(command);
+            return result;
+        }
+        [HttpGet]
+        [Produces(type: typeof(List<ObserverModel>))]
+        [Route("active")]
+        public async Task<List<ObserverModel>> GetActiveObservers(ActiveObserverFilter query)
+        {
+            var ongId = this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
+
+            var command = _mapper.Map<ActiveObserversQuery>(query);
+            command.IdNgo = ongId;
+
+            var result = await _mediator.Send(command);
             return result;
         }
 
         [HttpPost]
         [Route("import")]
-        public void Import(IFormFile file, [FromForm] object a)
-        { }
+        public async Task<int> Import(IFormFile file, [FromForm] int ongId)
+        {
+            if (ongId <= 0) {
+                ongId = this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
+            }
+
+            await _mediator.Send(
+                new UploadFileCommand { 
+                    File = file, 
+                    UploadType = UploadType.Observers 
+                });
+            
+            var counter = await _mediator.Send(new ImportObserversRequest { 
+                File = file,
+                IdOng = ongId
+            });
+
+            return counter;
+        }
 
         /// <summary>
         ///  Adds an observer.
@@ -84,7 +115,7 @@ namespace VoteMonitor.Api.Observer.Controllers
         /// <summary>
         /// Deletes an observer.
         /// </summary>
-        /// <param name="model"></param>
+        /// <param name="id">The Observer id</param>
         /// <returns>Boolean indicating whether or not the observer was deleted successfully</returns>
         [HttpDelete]
         [Produces(type: typeof(bool))]

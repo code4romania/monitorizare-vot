@@ -1,11 +1,12 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
-using System.Collections.Generic;
+using VoteMonitor.Api.Core;
 
-namespace VoteMonitor.Api.Note.Commands
+namespace VoteMonitor.Api.Core.Commands
 {
     public class UploadFileCommand : IRequest<List<string>>
     {
         public List<IFormFile> Files { get; set; }
+        public UploadType UploadType { get; set; }
     }
 }

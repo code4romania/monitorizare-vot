@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Distributed;
-using VoteMonitor.Api.Core.Services;
 using VoteMonitor.Api.Form.Models;
-using VoteMonitor.Api.Models;
 using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Form.Queries
@@ -18,7 +13,6 @@ namespace VoteMonitor.Api.Form.Queries
     {
         private readonly VoteMonitorContext _context;
         private readonly IMapper _mapper;
-        private readonly ICacheService _cacheService;
 
         public AddFormQueryHandler(VoteMonitorContext context, IMapper mapper)
         {
@@ -27,16 +21,19 @@ namespace VoteMonitor.Api.Form.Queries
         }
 
         protected override async Task<FormDTO> HandleCore(AddFormQuery message) {
-            var newForm = new Entities.Form {
+            var newForm = new Entities.Form
+            {
                 Code = message.Form.Code,
                 CurrentVersion = message.Form.CurrentVersion,
-                Description = message.Form.Description
+                Description = message.Form.Description,
+                FormSections = new List<FormSection>()
             };
 
-            newForm.FormSections = new List<FormSection>();
             foreach (var fs in message.Form.FormSections) {
-                var formSection = new FormSection { Code = fs.Code, Description = fs.Description };
-                formSection.Questions = new List<Question>();
+                var formSection = new FormSection
+                {
+                    Code = fs.Code, Description = fs.Description, Questions = new List<Question>()
+                };
                 foreach (var q in fs.Questions) {
                     var question = new Question{ QuestionType = q.QuestionType, Hint = q.Hint, Text = q.Text };
                     var optionsForQuestion = new List<OptionToQuestion>();

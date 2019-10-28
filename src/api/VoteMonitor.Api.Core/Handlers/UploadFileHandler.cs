@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using VoteMonitor.Api.Core.Services;
-using VoteMonitor.Api.Note.Commands;
+using VoteMonitor.Api.Core.Commands;
 
-namespace VoteMonitor.Api.Note.Handlers
+namespace VoteMonitor.Api.Core.Handlers
 {
     public class UploadFileHandler : AsyncRequestHandler<UploadFileCommand, List<string>>
     {
