@@ -130,16 +130,16 @@ namespace VotingIrregularities.Api
             };
 
             services.AddAuthentication(options =>
-                    {
-                        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                    })
-                    .AddJwtBearer(options =>
-                    {
-                        options.Audience = jwtAppSettingOptions[nameof(JwtIssuerOptions.Audience)];
-                        options.RequireHttpsMetadata = false;
-                        options.ClaimsIssuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)];
-                        options.TokenValidationParameters = tokenValidationParameters;
-                    });
+            {
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.Audience = jwtAppSettingOptions[nameof(JwtIssuerOptions.Audience)];
+                options.RequireHttpsMetadata = false;
+                options.ClaimsIssuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)];
+                options.TokenValidationParameters = tokenValidationParameters;
+            });
 
             services.AddAuthorization(options =>
             {
@@ -214,7 +214,7 @@ namespace VotingIrregularities.Api
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IApplicationLifetime appLifetime)
+        public void Configure(IApplicationBuilder app, IApplicationLifetime appLifetime, IHostingEnvironment env)
         {
             app.UseStaticFiles();
 
@@ -259,6 +259,14 @@ namespace VotingIrregularities.Api
 
             var fileService = _container.GetInstance<IFileService>();
             fileService.Initialize();
+
+            // Seeding only on DevMode ? Should we have some custom TSQL scripts for Prod ? / other SeedData ?
+            if(env.IsDevelopment())
+                using (AsyncScopedLifestyle.BeginScope(_container))
+                {
+                    var c = _container.GetInstance<VoteMonitorContext>();
+                    InitializeDb(c);
+                }
 
             // Enable middleware to serve generated Swagger as a JSON endpoint
             app.UseSwagger();
