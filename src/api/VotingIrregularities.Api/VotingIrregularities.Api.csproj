@@ -15,23 +15,21 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="api-docs\**" />
+    <Compile Remove="etc\**" />
     <Compile Remove="Helpers\**" />
     <Compile Remove="Models\PollingStation\**" />
     <Content Remove="api-docs\**" />
+    <Content Remove="etc\**" />
     <Content Remove="Helpers\**" />
     <Content Remove="Models\PollingStation\**" />
     <EmbeddedResource Remove="api-docs\**" />
+    <EmbeddedResource Remove="etc\**" />
     <EmbeddedResource Remove="Helpers\**" />
     <EmbeddedResource Remove="Models\PollingStation\**" />
     <None Remove="api-docs\**" />
+    <None Remove="etc\**" />
     <None Remove="Helpers\**" />
     <None Remove="Models\PollingStation\**" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Remove="etc\FireBaseCredentials.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="etc\FireBaseCredentials.json" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VoteMonitor.Api.Answer\VoteMonitor.Api.Answer.csproj" />
