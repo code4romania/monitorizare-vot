@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\VoteMonitor.Api.Core\VoteMonitor.Api.Core.csproj" />
     <ProjectReference Include="..\VoteMonitor.Entities\VoteMonitor.Entities.csproj" />
+    <ProjectReference Include="..\VotingIrregularities.Domain\VotingIrregularities.Domain.csproj" />
   </ItemGroup>
 
 </Project>

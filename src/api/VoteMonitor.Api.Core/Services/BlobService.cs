@@ -41,9 +41,7 @@ namespace VoteMonitor.Api.Note.Services
 
             // Create or overwrite the previous created blob with contents from stream.
             blockBlob.Properties.ContentType = mimeType;
-
             await blockBlob.UploadFromStreamAsync(sourceStream, sourceStream.Length);
-
 
             await blockBlob.SetPropertiesAsync();
 

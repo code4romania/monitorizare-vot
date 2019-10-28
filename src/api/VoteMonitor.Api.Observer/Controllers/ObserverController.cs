@@ -1,10 +1,7 @@
 ﻿using System.Threading.Tasks;
 using System;
-using System.Collections.Generic;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using VoteMonitor.Api.Core;
 using AutoMapper;
 using VoteMonitor.Api.Observer.Models;
@@ -13,8 +10,10 @@ using Microsoft.AspNetCore.Http;
 using VoteMonitor.Api.Observer.Queries;
 using Microsoft.Extensions.Configuration;
 using VoteMonitor.Api.Core.Commands;
+using System.Collections.Generic;
 
-namespace VoteMonitor.Api.Observer.Controllers {
+namespace VoteMonitor.Api.Observer.Controllers
+{
     [Route("api/v1/observer")]
     public class ObserverController : Controller
     {
@@ -34,10 +33,10 @@ namespace VoteMonitor.Api.Observer.Controllers {
         public async Task<ApiListResponse<ObserverModel>> GetObservers(ObserverListQuery query)
         {
             var ongId = this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
-            
+
             var command = _mapper.Map<ObserverListCommand>(query);
             command.IdNgo = ongId;
-            
+
             var result = await _mediator.Send(command);
             return result;
         }
@@ -65,7 +64,7 @@ namespace VoteMonitor.Api.Observer.Controllers {
 
             await _mediator.Send(
                 new UploadFileCommand { 
-                    File = file, 
+                    Files = new List<IFormFile>() { file }, 
                     UploadType = UploadType.Observers 
                 });
             

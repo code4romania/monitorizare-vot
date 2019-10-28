@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
-using VoteMonitor.Api.Core;
+using System.Collections.Generic;
 
 namespace VoteMonitor.Api.Core.Commands
 {

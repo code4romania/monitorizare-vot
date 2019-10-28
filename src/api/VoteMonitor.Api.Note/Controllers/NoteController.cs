@@ -12,6 +12,7 @@ using System;
 using VoteMonitor.Api.Location.Queries;
 using System.Linq;
 using VoteMonitor.Api.Core;
+using VoteMonitor.Api.Core.Commands;
 
 namespace VoteMonitor.Api.Note.Controllers
 {

@@ -25,14 +25,14 @@ namespace VoteMonitor.Api.Core.Handlers
             var blobUrisTasks = new List<Task<string>>();
             if (message.Files?.Any() == true)
             {
-                message.Files.ForEach(file => blobUrisTasks.Add(UploadFileToAzureBlob(file)));
+                message.Files.ForEach(file => blobUrisTasks.Add(UploadFileToAzureBlob(file, message.UploadType)));
                 return (await Task.WhenAll(blobUrisTasks)).ToList();
             }
 
             return null;
         }
 
-        private async Task<string> UploadFileToAzureBlob(IFormFile file)
-           => await _fileService.UploadFromStreamAsync(file.OpenReadStream(), file.ContentType, Path.GetExtension(file.FileName));
+        private async Task<string> UploadFileToAzureBlob(IFormFile file, UploadType uploadType)
+           => await _fileService.UploadFromStreamAsync(file.OpenReadStream(), file.ContentType, Path.GetExtension(file.FileName), uploadType);
     }
 }

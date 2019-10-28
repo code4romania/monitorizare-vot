@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using VoteMonitor.Api.Answer.Commands;
 using VoteMonitor.Entities;
+using VotingIrregularities.Domain.RaspunsAggregate;
 
 namespace VoteMonitor.Api.Answer.Handlers {
     public class FillInAnswerQueryHandler : AsyncRequestHandler<CompleteazaRaspunsCommand, int> {

@@ -15,7 +15,7 @@ namespace VoteMonitor.Api.Note.Handlers
 {
 	public class NoteQueriesHandler :
 		IRequestHandler<NoteQuery, List<NoteModel>>,
-		IRequestHandler<AddNoteCommand, int>
+		IRequestHandler<AddNoteCommand, Entities.Note>
 	{
 
 		private readonly VoteMonitorContext _context;
@@ -33,7 +33,7 @@ namespace VoteMonitor.Api.Note.Handlers
 				.OrderBy(n => n.LastModified)
 				.Select(n => new NoteModel
 				{
-					AttachmentPath = n.AttachementPath,
+                    NoteAttachments = n.NoteAttachments.Select(x => x.NotePath).ToList(),
 					Text = n.Text,
 					FormCode = n.Question.FormSection.Form.Code,
 					QuestionId = n.Question.Id
@@ -41,15 +41,16 @@ namespace VoteMonitor.Api.Note.Handlers
 				.ToListAsync(cancellationToken: token);
 		}
 
-		public async Task<int> Handle(AddNoteCommand request, CancellationToken cancellationToken)
+		public async Task<Entities.Note> Handle(AddNoteCommand request, CancellationToken cancellationToken)
 		{
 			try
 			{
 				var noteEntity = _mapper.Map<Entities.Note>(request);
-
 				_context.Notes.Add(noteEntity);
 
-				return await _context.SaveChangesAsync(cancellationToken);
+				 await _context.SaveChangesAsync(cancellationToken);
+
+                return noteEntity;
 			}
 			catch (Exception e)
 			{

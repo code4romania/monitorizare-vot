@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Linq;
 using AutoMapper;
 using VoteMonitor.Api.Location.Queries;
 using VoteMonitor.Api.Note.Commands;
 using VoteMonitor.Api.Note.Models;
+using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Note.Mapping
 {
@@ -20,7 +22,7 @@ namespace VoteMonitor.Api.Note.Mapping
 
 
 			CreateMap<AddNoteCommand, Entities.Note>(MemberList.Destination)
-				.ForMember(dest => dest.AttachementPath, c => c.MapFrom(src => src.AttachementPath))
+				.ForMember(dest => dest.NoteAttachments, c => c.MapFrom(src => src.AttachementPaths.Select(y => new NoteAttachment(y))))
 				.ForMember(dest => dest.IdQuestion, c => c.MapFrom(src => src.IdQuestion))
 				.ForMember(dest => dest.IdObserver, c => c.MapFrom(src => src.IdObserver))
 				.ForMember(dest => dest.IdPollingStation, c => c.MapFrom(src => src.IdPollingStation))
