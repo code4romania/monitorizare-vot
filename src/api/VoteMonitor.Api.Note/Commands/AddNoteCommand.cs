@@ -1,9 +1,10 @@
 ﻿using MediatR;
 using System.Collections.Generic;
+using VoteMonitor.Api.Note.Models;
 
 namespace VoteMonitor.Api.Note.Commands
 {
-    public class AddNoteCommand : IRequest<Entities.Note>
+    public class AddNoteCommand : IRequest<NoteModel>
     {
         public int IdObserver { get; set; }
         public int IdPollingStation { get; set; }

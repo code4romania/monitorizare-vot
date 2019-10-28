@@ -1,11 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace VoteMonitor.Entities
 {
-    public partial class VoteMonitorContext : DbContext
+    public class VoteMonitorContext : DbContext
     {
+        public VoteMonitorContext(DbContextOptions<VoteMonitorContext> dbContextOptions) : base(dbContextOptions)
+        {
+
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<NgoAdmin>(entity =>

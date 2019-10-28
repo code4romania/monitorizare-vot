@@ -200,12 +200,12 @@ namespace VotingIrregularities.Api
                 options.OperationFilter<AddFileUploadParams>();
 
                 var baseDocPath = PlatformServices.Default.Application.ApplicationBasePath;
-                
-                foreach (string api in Directory.GetFiles(baseDocPath, "*.xml")) {
-                        options.IncludeXmlComments(api);
-                }
+
+                foreach (string api in Directory.GetFiles(baseDocPath, "*.xml"))
+                    options.IncludeXmlComments(api);
             });
 
+            services.EnableSimpleInjectorCrossWiring(_container);
             services.UseSimpleInjectorAspNetRequestScoping(_container);
 
             ConfigureContainer(services);
@@ -214,8 +214,7 @@ namespace VotingIrregularities.Api
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app,
-            IApplicationLifetime appLifetime)
+        public void Configure(IApplicationBuilder app, IApplicationLifetime appLifetime)
         {
             app.UseStaticFiles();
 
@@ -238,12 +237,11 @@ namespace VotingIrregularities.Api
                     );
                 }
             );
-            //Registering dbContext
-            RegisterDbContext<VoteMonitorContext>(Configuration.GetConnectionString("DefaultConnection"));
 
+            //Auto-wiring any previous registrations made with IServiceCollection
+            _container.AutoCrossWireAspNetComponents(app);
 
             app.UseAuthentication();
-
             _container.RegisterSingleton(() => app.ApplicationServices.GetService<IOptions<MobileSecurityOptions>>());
 
             RegisterServices(app);
@@ -253,8 +251,6 @@ namespace VotingIrregularities.Api
             ConfigureHash(app);
 
             InitializeContainer(app);
-
-
 
             RegisterAutomapper();
             BuildMediator();
@@ -314,7 +310,7 @@ namespace VotingIrregularities.Api
         private void ConfigureFileLoader(IServiceCollection services)
         {
             _container.RegisterSingleton<IFileLoader, XlsxFileLoader>();
-            return ;
+            return;
         }
 
         private void ConfigureFileService(IApplicationBuilder app)
@@ -386,26 +382,7 @@ namespace VotingIrregularities.Api
 
             // NOTE: Prevent cross-wired instances as much as possible.
             // See: https://simpleinjector.org/blog/2016/07/
-
-            _container.RegisterInstance<IConfigurationRoot>(Configuration);
-        }
-
-        private void RegisterDbContext<TDbContext>(string connectionString = null)
-            where TDbContext : DbContext
-        {
-            if (!string.IsNullOrEmpty(connectionString))
-            {
-                var optionsBuilder = new DbContextOptionsBuilder<TDbContext>();
-
-                optionsBuilder.UseSqlServer(connectionString);
-
-                _container.RegisterInstance(optionsBuilder.Options);
-                _container.Register<TDbContext>(Lifestyle.Scoped);
-            }
-            else
-            {
-                _container.Register<TDbContext>(Lifestyle.Scoped);
-            }
+            _container.RegisterInstance(Configuration);
         }
 
         private IMediator BuildMediator()

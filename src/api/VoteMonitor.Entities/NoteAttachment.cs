@@ -14,10 +14,7 @@ namespace VoteMonitor.Entities
         [Required, MaxLength(1000)]
         public string NotePath { get; set; }
 
-        [JsonIgnore]
         public int NoteId { get; set; }
-
-        [JsonIgnore]
         public Note Note { get; set; }
     }
 }

@@ -7,11 +7,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using VoteMonitor.Api.Core.Models;
 using VoteMonitor.Api.Note.Commands;
+using VoteMonitor.Api.Note.Models;
 using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Note.Handlers
 {
-    public class AddNoteCommandHandler : IRequestHandler<AddNoteCommand, Entities.Note>
+    public class AddNoteCommandHandler : IRequestHandler<AddNoteCommand, NoteModel>
     {
         private readonly VoteMonitorContext _context;
         private readonly ILogger _logger;
@@ -24,7 +25,7 @@ namespace VoteMonitor.Api.Note.Handlers
             _mapper = mapper;
         }
 
-        public async Task<Entities.Note> Handle(AddNoteCommand request, CancellationToken cancellationToken)
+        public async Task<NoteModel> Handle(AddNoteCommand request, CancellationToken cancellationToken)
         {
             try
             {
@@ -40,7 +41,7 @@ namespace VoteMonitor.Api.Note.Handlers
                 await _context.AddAsync(nota);
 
                 await _context.SaveChangesAsync(cancellationToken);
-                return nota;
+                return _mapper.Map<NoteModel>(nota);
             }
             catch (Exception ex)
             {
