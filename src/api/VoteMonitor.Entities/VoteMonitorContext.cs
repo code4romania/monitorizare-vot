@@ -385,6 +385,7 @@ namespace VoteMonitor.Entities
         public virtual DbSet<FormSection> FormSections { get; set; }
         public virtual DbSet<Form> Forms { get; set; }
         public virtual DbSet<AnswerQueryInfo> AnswerQueryInfos { get; set; }
+        public virtual DbSet<NoteAttachment> NoteAttachments { get; set; }
 
         // Entities used for GROUP BY results
         public virtual DbSet<SimpleStatistics> SimpleStatistics { get; set; }

@@ -9,6 +9,34 @@ namespace VoteMonitor.Entities.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "AnswerQueryInfos",
+                columns: table => new
+                {
+                    IdPollingStation = table.Column<int>(nullable: false),
+                    IdObserver = table.Column<int>(nullable: false),
+                    ObserverName = table.Column<string>(nullable: true),
+                    PollingStation = table.Column<string>(nullable: true),
+                    LastModified = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AnswerQueryInfo", x => new { x.IdObserver, x.IdPollingStation });
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ComposedStatistics",
+                columns: table => new
+                {
+                    Label = table.Column<string>(nullable: false),
+                    Code = table.Column<int>(nullable: false),
+                    Value = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StatisticiCompuse", x => new { x.Label, x.Code });
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Counties",
                 columns: table => new
                 {
@@ -64,6 +92,32 @@ namespace VoteMonitor.Entities.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Option", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OptionsStatistics",
+                columns: table => new
+                {
+                    Label = table.Column<string>(nullable: false),
+                    Value = table.Column<int>(nullable: false),
+                    Code = table.Column<int>(nullable: false),
+                    Flagged = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StatisticiOptiuni", x => x.Label);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SimpleStatistics",
+                columns: table => new
+                {
+                    Label = table.Column<string>(nullable: false),
+                    Value = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Statistici", x => x.Label);
                 });
 
             migrationBuilder.CreateTable(
@@ -175,6 +229,25 @@ namespace VoteMonitor.Entities.Migrations
                         principalTable: "FormSections",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "NotificationRegistrationData",
+                columns: table => new
+                {
+                    ObserverId = table.Column<int>(nullable: false),
+                    ChannelName = table.Column<string>(maxLength: 256, nullable: false),
+                    Token = table.Column<string>(maxLength: 512, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_NotificationRegistrationData", x => new { x.ObserverId, x.ChannelName });
+                    table.ForeignKey(
+                        name: "FK_NotificationRegistrationData_Observers_ObserverId",
+                        column: x => x.ObserverId,
+                        principalTable: "Observers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -369,6 +442,16 @@ namespace VoteMonitor.Entities.Migrations
                 column: "IdQuestion");
 
             migrationBuilder.CreateIndex(
+                name: "IX_NotificationRegistrationData_IdObserver",
+                table: "NotificationRegistrationData",
+                column: "ObserverId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_NotificationRegistrationData_ObserverId_ChannelName",
+                table: "NotificationRegistrationData",
+                columns: new[] { "ObserverId", "ChannelName" });
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Observer_IdNgo",
                 table: "Observers",
                 column: "IdNgo");
@@ -419,7 +502,13 @@ namespace VoteMonitor.Entities.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "AnswerQueryInfos");
+
+            migrationBuilder.DropTable(
                 name: "Answers");
+
+            migrationBuilder.DropTable(
+                name: "ComposedStatistics");
 
             migrationBuilder.DropTable(
                 name: "NgoAdmin");
@@ -428,7 +517,16 @@ namespace VoteMonitor.Entities.Migrations
                 name: "NoteAttachments");
 
             migrationBuilder.DropTable(
+                name: "NotificationRegistrationData");
+
+            migrationBuilder.DropTable(
+                name: "OptionsStatistics");
+
+            migrationBuilder.DropTable(
                 name: "PollingStationInfos");
+
+            migrationBuilder.DropTable(
+                name: "SimpleStatistics");
 
             migrationBuilder.DropTable(
                 name: "OptionsToQuestions");

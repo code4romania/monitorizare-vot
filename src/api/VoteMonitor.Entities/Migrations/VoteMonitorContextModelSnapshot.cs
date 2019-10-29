@@ -55,6 +55,20 @@ namespace VoteMonitor.Entities.Migrations
                     b.ToTable("Answers");
                 });
 
+            modelBuilder.Entity("VoteMonitor.Entities.ComposedStatistics", b =>
+                {
+                    b.Property<string>("Label");
+
+                    b.Property<int>("Code");
+
+                    b.Property<int>("Value");
+
+                    b.HasKey("Label", "Code")
+                        .HasName("PK_StatisticiCompuse");
+
+                    b.ToTable("ComposedStatistics");
+                });
+
             modelBuilder.Entity("VoteMonitor.Entities.County", b =>
                 {
                     b.Property<int>("Id");
@@ -217,6 +231,29 @@ namespace VoteMonitor.Entities.Migrations
                     b.ToTable("NoteAttachments");
                 });
 
+            modelBuilder.Entity("VoteMonitor.Entities.NotificationRegistrationData", b =>
+                {
+                    b.Property<int>("ObserverId");
+
+                    b.Property<string>("ChannelName")
+                        .HasMaxLength(256);
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasMaxLength(512);
+
+                    b.HasKey("ObserverId", "ChannelName")
+                        .HasName("PK_NotificationRegistrationData");
+
+                    b.HasIndex("ObserverId")
+                        .HasName("IX_NotificationRegistrationData_IdObserver");
+
+                    b.HasIndex("ObserverId", "ChannelName")
+                        .HasName("IX_NotificationRegistrationData_ObserverId_ChannelName");
+
+                    b.ToTable("NotificationRegistrationData");
+                });
+
             modelBuilder.Entity("VoteMonitor.Entities.Observer", b =>
                 {
                     b.Property<int>("Id");
@@ -304,6 +341,23 @@ namespace VoteMonitor.Entities.Migrations
                         .HasName("IX_OptionToQuestion");
 
                     b.ToTable("OptionsToQuestions");
+                });
+
+            modelBuilder.Entity("VoteMonitor.Entities.OptionsStatistics", b =>
+                {
+                    b.Property<string>("Label")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("Code");
+
+                    b.Property<bool>("Flagged");
+
+                    b.Property<int>("Value");
+
+                    b.HasKey("Label")
+                        .HasName("PK_StatisticiOptiuni");
+
+                    b.ToTable("OptionsStatistics");
                 });
 
             modelBuilder.Entity("VoteMonitor.Entities.PollingStation", b =>
@@ -400,6 +454,37 @@ namespace VoteMonitor.Entities.Migrations
                     b.ToTable("Questions");
                 });
 
+            modelBuilder.Entity("VoteMonitor.Entities.SimpleStatistics", b =>
+                {
+                    b.Property<string>("Label")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("Value");
+
+                    b.HasKey("Label")
+                        .HasName("PK_Statistici");
+
+                    b.ToTable("SimpleStatistics");
+                });
+
+            modelBuilder.Entity("VoteMonitor.Entities.VoteMonitorContext+AnswerQueryInfo", b =>
+                {
+                    b.Property<int>("IdObserver");
+
+                    b.Property<int>("IdPollingStation");
+
+                    b.Property<DateTime>("LastModified");
+
+                    b.Property<string>("ObserverName");
+
+                    b.Property<string>("PollingStation");
+
+                    b.HasKey("IdObserver", "IdPollingStation")
+                        .HasName("PK_AnswerQueryInfo");
+
+                    b.ToTable("AnswerQueryInfos");
+                });
+
             modelBuilder.Entity("VoteMonitor.Entities.Answer", b =>
                 {
                     b.HasOne("VoteMonitor.Entities.Observer", "Observer")
@@ -459,6 +544,14 @@ namespace VoteMonitor.Entities.Migrations
                     b.HasOne("VoteMonitor.Entities.Note", "Note")
                         .WithMany("NoteAttachments")
                         .HasForeignKey("NoteId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("VoteMonitor.Entities.NotificationRegistrationData", b =>
+                {
+                    b.HasOne("VoteMonitor.Entities.Observer", "Observer")
+                        .WithMany()
+                        .HasForeignKey("ObserverId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

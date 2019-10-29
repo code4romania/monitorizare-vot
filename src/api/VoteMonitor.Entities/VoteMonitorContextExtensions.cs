@@ -107,6 +107,8 @@ namespace VoteMonitor.Entities
 
         private static void DataCleanUp(this VoteMonitorContext context)
         {
+            context.Database.ExecuteSqlCommand("delete from Notes");
+            context.Database.ExecuteSqlCommand("delete from PollingStations");
             context.Database.ExecuteSqlCommand("delete from OptionsToQuestions");
             context.Database.ExecuteSqlCommand("delete from Questions");
             context.Database.ExecuteSqlCommand("delete from FormSections");
