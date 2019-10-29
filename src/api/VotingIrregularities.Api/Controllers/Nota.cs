@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Net;
+﻿using System.Net;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -10,12 +9,15 @@ using VoteMonitor.Api.Core;
 using VotingIrregularities.Domain.NotaAggregate;
 using System;
 using VoteMonitor.Api.Form.Models;
+using VoteMonitor.Api.Core.Commands;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace VotingIrregularities.Api.Controllers
 {
     [Route("api/v1/note")]
     [Obsolete("use api/v2/note")]
-    
+
     public class Nota : Controller
     {
         private readonly IMapper _mapper;
@@ -53,10 +55,11 @@ namespace VotingIrregularities.Api.Controllers
                 return this.ResultAsync(HttpStatusCode.NotFound);
 
             var command = _mapper.Map<AdaugaNotaCommand>(nota);
-            var fileAddress = await _mediator.Send(new ModelFile { File = file });
+            var uploadCommand = new UploadFileCommand() { Files = new List<IFormFile>() { file }, UploadType = UploadType.Notes };
+            var fileAddress = await _mediator.Send(uploadCommand);
 
             command.IdObservator = this.GetIdObserver();
-            command.CaleFisierAtasat = fileAddress;
+            command.CaleFisierAtasat = fileAddress.First();
             command.IdSectieDeVotare = idSectie;
 
             var result = await _mediator.Send(command);
@@ -64,7 +67,7 @@ namespace VotingIrregularities.Api.Controllers
             if (result < 0)
                 return this.ResultAsync(HttpStatusCode.NotFound);
 
-            return await Task.FromResult(new { FileAdress = fileAddress, nota = nota });
+            return await Task.FromResult(new { FileAdress = fileAddress, nota });
         }
     }
 }
