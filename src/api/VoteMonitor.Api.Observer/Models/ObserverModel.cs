@@ -22,8 +22,7 @@ namespace VoteMonitor.Api.Observer.Models
             CreateMap<Entities.Observer, ObserverModel>()
                 .ForMember(dest=>dest.Ngo, c=>c.MapFrom(src=> src.Ngo.Name))
                 .ForMember(dest=>dest.NumberOfNotes, c=>c.MapFrom(src=> src.Notes.Count))
-                .ForMember(dest=>dest.NumberOfPollingStations, c=>c.MapFrom(src=> src.PollingStationInfos.Count))
-                ;
+                .ForMember(dest=>dest.NumberOfPollingStations, c=>c.MapFrom(src=> src.PollingStationInfos.Count));
         }
     }
 }
