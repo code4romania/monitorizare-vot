@@ -32,17 +32,5 @@ namespace VoteMonitor.Api.Observer.Handlers
 
             return await observers.CountAsync(cancellationToken);
         }
-
-		private static IQueryable<Entities.Observer> GetPagedQuery(IQueryable<Entities.Observer> observers, int page, int pageSize)
-		{
-			if (pageSize > 0)
-			{
-				return observers
-					.Skip(pageSize * (page - 1))
-					.Take(pageSize);
-			}
-
-			return observers;
-		}
-	}
+    }
 }
