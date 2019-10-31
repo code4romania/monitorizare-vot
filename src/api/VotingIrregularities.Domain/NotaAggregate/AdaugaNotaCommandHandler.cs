@@ -9,13 +9,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace VotingIrregularities.Domain.NotaAggregate
 {
-    public class AdaugaNotaHandler : IRequestHandler<AdaugaNotaCommand, int>
+    public class AdaugaNotaCommandHandler : IRequestHandler<AdaugaNotaCommand, int>
     {
         private readonly VoteMonitorContext _context;
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
 
-        public AdaugaNotaHandler(VoteMonitorContext context, ILogger logger, IMapper mapper)
+        public AdaugaNotaCommandHandler(VoteMonitorContext context, ILogger logger, IMapper mapper)
         {
             _context = context;
             _logger = logger;

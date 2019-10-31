@@ -48,6 +48,7 @@ using VoteMonitor.Api.Core.Services.Impl;
 using VoteMonitor.Api.Notification.Controllers;
 using System.IO;
 using VoteMonitor.Api.Statistics.Controllers;
+using VotingIrregularities.Domain.NotaAggregate;
 
 namespace VotingIrregularities.Api
 {
@@ -435,7 +436,9 @@ namespace VotingIrregularities.Api
             yield return typeof(UploadFileHandler).GetTypeInfo().Assembly;
             yield return typeof(NotificationController).GetTypeInfo().Assembly;
             yield return typeof(StatisticsController).GetTypeInfo().Assembly;
-            // just to identify VotingIrregularities.Domain assembly
+
+            // just to identify VotingIrregularities.Domain assembly.....
+            yield return typeof(AdaugaNotaCommand).GetTypeInfo().Assembly;
         }
 
         /// <summary>
