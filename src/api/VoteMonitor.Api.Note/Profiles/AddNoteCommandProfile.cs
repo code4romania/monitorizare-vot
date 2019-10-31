@@ -19,12 +19,12 @@ namespace VoteMonitor.Api.Note.Profiles
             CreateMap<AddNoteCommand, Entities.Note>()
                 .ForMember(dest => dest.IdQuestion, c => c.MapFrom(src =>
                     !src.IdQuestion.HasValue || src.IdQuestion.Value <= 0 ? null : src.IdQuestion)
-                    )   
+                    )
                 .ForMember(dest => dest.LastModified, c => c.MapFrom(src => DateTime.UtcNow))
-                .ForMember(dest => dest.NoteAttachments , c => c.MapFrom(src => src.AttachementPaths.Select(blobUrl => new NoteAttachment(blobUrl))))
+                .ForMember(dest => dest.NoteAttachments, c => c.MapFrom(src => src.AttachementPaths.Select(blobUrl => new NoteAttachment(blobUrl))))
                 .ForMember(dest => dest.IdObserver, c => c.MapFrom(src => src.IdObserver))
                 .ForMember(dest => dest.IdPollingStation, c => c.MapFrom(src => src.IdPollingStation))
-                .ForMember(dest => dest.Text, c => c.MapFrom(src => src.Text)); ;
+                .ForMember(dest => dest.Text, c => c.MapFrom(src => src.Text));
         }
     }
 }

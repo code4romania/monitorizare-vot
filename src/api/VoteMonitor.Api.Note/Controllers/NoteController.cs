@@ -47,7 +47,7 @@ namespace VoteMonitor.Api.Note.Controllers
         /// TextNota: "asdfasdasdasdas"
         /// API-ul va returna adresa publica a fisierului unde este salvat si obiectul trimis prin formdata
         /// </summary>
-        /// <param name="file"></param>
+        /// <param name="files"></param>
         /// <param name="note"></param>
         /// <returns></returns>
         [HttpPost("upload")]

@@ -11,5 +11,6 @@ namespace VoteMonitor.Api.Note.Commands
         public int? IdQuestion { get; set; }
         public string Text { get; set; }
         public List<string> AttachementPaths { get; set; }
+        public string CountyCode { get; set; }
     }
 }

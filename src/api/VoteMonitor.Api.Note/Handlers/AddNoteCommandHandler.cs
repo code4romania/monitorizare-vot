@@ -41,7 +41,11 @@ namespace VoteMonitor.Api.Note.Handlers
                 await _context.AddAsync(nota);
 
                 await _context.SaveChangesAsync(cancellationToken);
-                return _mapper.Map<NoteModel>(nota);
+                return _mapper.Map<Entities.Note, NoteModel>
+                    (
+                        nota,
+                        opt => opt.AfterMap((src, dest) => dest.CountyCode = request.CountyCode)
+                    );
             }
             catch (Exception ex)
             {
