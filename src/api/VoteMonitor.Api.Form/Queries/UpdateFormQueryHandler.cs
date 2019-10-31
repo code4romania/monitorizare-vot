@@ -9,37 +9,34 @@ using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Form.Queries
 {
-    public class AddFormQueryHandler :
-        AsyncRequestHandler<AddFormQuery, FormDTO>
+    public class UpdateFormQueryHandler :
+        AsyncRequestHandler<UpdateFormQuery, FormDTO>
     {
         private readonly VoteMonitorContext _context;
         private readonly IMapper _mapper;
 
-        public AddFormQueryHandler(VoteMonitorContext context, IMapper mapper)
+        public UpdateFormQueryHandler(VoteMonitorContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
         }
 
-        protected override async Task<FormDTO> HandleCore(AddFormQuery message) {
-            var newForm = new Entities.Form
-            {
-                Code = message.Form.Code,
-                CurrentVersion = message.Form.CurrentVersion,
-                Description = message.Form.Description,
-                FormSections = new List<FormSection>()
-            };
+        protected override async Task<FormDTO> HandleCore(UpdateFormQuery message)
+        {
+            var form = _context.Forms.Find(message.Id);
+
+            form.Code = message.Form.Code;
+            form.CurrentVersion = message.Form.CurrentVersion;
+            form.Description = message.Form.Description;
+            form.FormSections = new List<FormSection>();
 
             foreach (var fs in message.Form.FormSections)
             {
                 var formSection = MapFormSection(fs);
-                newForm.FormSections.Add(formSection);
+                form.FormSections.Add(formSection);
             }
 
-            _context.Forms.Add(newForm);
-
             await _context.SaveChangesAsync();
-            message.Form.Id = newForm.Id;
             return message.Form;
         }
 
@@ -47,7 +44,9 @@ namespace VoteMonitor.Api.Form.Queries
         {
             var formSection = new FormSection
             {
-                Code = formSectionDto.Code, Description = formSectionDto.Description, Questions = new List<Question>()
+                Code = formSectionDto.Code,
+                Description = formSectionDto.Description,
+                Questions = new List<Question>()
             };
             foreach (var q in formSectionDto.Questions)
             {
@@ -60,13 +59,13 @@ namespace VoteMonitor.Api.Form.Queries
 
         private Question MapQuestion(QuestionDTO questionDto)
         {
-            var question = new Question {QuestionType = questionDto.QuestionType, Hint = questionDto.Hint, Text = questionDto.Text};
+            var question = new Question { QuestionType = questionDto.QuestionType, Hint = questionDto.Hint, Text = questionDto.Text };
             var optionsForQuestion = new List<OptionToQuestion>();
             foreach (var o in questionDto.OptionsToQuestions)
                 if (o.IdOption > 0)
                 {
                     var existingOption = _context.Options.FirstOrDefault(option => option.Id == o.IdOption);
-                    optionsForQuestion.Add(new OptionToQuestion {Option = existingOption});
+                    optionsForQuestion.Add(new OptionToQuestion { Option = existingOption });
                 }
                 else
                 {

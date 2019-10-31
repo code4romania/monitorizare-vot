@@ -27,9 +27,17 @@ namespace VoteMonitor.Api.Form.Controllers {
 
         [HttpPost]
         [Authorize("NgoAdmin")]
-        public async Task<int> AddForm([FromBody]FormDTO newForm) {
+        public async Task<int> AddForm([FromBody]FormDTO newForm)
+        {
             FormDTO result = await _mediator.Send(new AddFormQuery { Form = newForm });
             return result.Id;
+        }
+
+        [HttpPut("{formId}")]
+        [Authorize("NgoAdmin")]
+        public async Task UpdateForm(int formId, [FromBody]FormDTO newForm)
+        {
+            FormDTO result = await _mediator.Send(new UpdateFormQuery { Id = formId, Form = newForm });
         }
         /// <summary>
         /// Returneaza versiunea tuturor formularelor sub forma unui array. 
