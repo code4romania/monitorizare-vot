@@ -1,13 +1,10 @@
 ﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using VoteMonitor.Api.Core;
 using VoteMonitor.Api.Observer.Commands;
-using VoteMonitor.Api.Observer.Models;
 using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Observer.Handlers
