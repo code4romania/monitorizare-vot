@@ -12,6 +12,7 @@ using VoteMonitor.Api.Form.Models;
 using VoteMonitor.Api.Core.Commands;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 
 namespace VotingIrregularities.Api.Controllers
 {
@@ -42,7 +43,7 @@ namespace VotingIrregularities.Api.Controllers
         /// <param name="file"></param>
         /// <param name="nota"></param>
         /// <returns></returns>
-        [HttpPost("ataseaza"),]
+        [HttpPost("ataseaza")]
         public async Task<dynamic> Upload(IFormFile file, [FromForm]ModelNota nota)
         {
             if (!ModelState.IsValid)
@@ -67,7 +68,7 @@ namespace VotingIrregularities.Api.Controllers
             if (result < 0)
                 return this.ResultAsync(HttpStatusCode.NotFound);
 
-            return await Task.FromResult(new { FileAdress = fileAddress, nota });
+            return await Task.FromResult(new { FileAdress = fileAddress.First(), nota });
         }
     }
 }
