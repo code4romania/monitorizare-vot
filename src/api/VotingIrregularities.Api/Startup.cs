@@ -170,7 +170,9 @@ namespace VotingIrregularities.Api
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             //EF
-            services.AddDbContext<VoteMonitorContext>(x => x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<VoteMonitorContext>(
+                x => x.UseLazyLoadingProxies() 
+                      .UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddSwaggerGen(options =>
             {

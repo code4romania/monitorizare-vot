@@ -10,6 +10,7 @@ namespace VoteMonitor.Entities
 
         }
 
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<NgoAdmin>(entity =>
