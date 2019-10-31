@@ -15,6 +15,6 @@ namespace VoteMonitor.Entities
         public string NotePath { get; set; }
 
         public int NoteId { get; set; }
-        public Note Note { get; set; }
+        public virtual Note Note { get; set; }
     }
 }

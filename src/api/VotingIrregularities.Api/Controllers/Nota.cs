@@ -42,7 +42,7 @@ namespace VotingIrregularities.Api.Controllers
         /// <param name="file"></param>
         /// <param name="nota"></param>
         /// <returns></returns>
-        [HttpPost("ataseaza")]
+        [HttpPost("ataseaza"),]
         public async Task<dynamic> Upload(IFormFile file, [FromForm]ModelNota nota)
         {
             if (!ModelState.IsValid)
@@ -58,7 +58,7 @@ namespace VotingIrregularities.Api.Controllers
             var uploadCommand = new UploadFileCommand() { Files = new List<IFormFile>() { file }, UploadType = UploadType.Notes };
             var fileAddress = await _mediator.Send(uploadCommand);
 
-            command.IdObservator = this.GetIdObserver();
+            //command.IdObservator = this.GetIdObserver();
             command.CaleFisierAtasat = fileAddress.First();
             command.IdSectieDeVotare = idSectie;
 
