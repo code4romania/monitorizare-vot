@@ -50,11 +50,11 @@ namespace VoteMonitor.Api.Answer.Controllers {
         /// Returns answers given by the specified observer at the specified polling station
         /// </summary>
         [HttpGet("filledIn")]
-        public async Task<List<QuestionDTO<FilledInAnswerDTO>>> Get(ObserverAnswersRequest model) {
+        public async Task<List<QuestionDTO<FilledInAnswerDTO>>> Get(int idPollingStation, int idObserver) {
             return await _mediator.Send(new FilledInAnswersQuery {
-                ObserverId = model.ObserverId,
-                PollingStationId = model.PollingStationNumber
-            });
+                ObserverId = idObserver,
+                PollingStationId = idPollingStation
+			});
         }
 
         /// <summary>
