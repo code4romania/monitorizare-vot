@@ -55,7 +55,7 @@ namespace VoteMonitor.Api.Observer.Controllers {
             return result;
         }
         [HttpGet]
-        [Produces(type: typeof(count))]
+        [Produces(type: typeof(int))]
         [Route("count")]
         public async Task<int> GetTotalObserverCount()
         {
