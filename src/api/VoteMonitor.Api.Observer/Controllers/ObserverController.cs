@@ -30,7 +30,7 @@ namespace VoteMonitor.Api.Observer.Controllers {
         }
 
         [HttpGet]
-        [Produces(type: typeof(List<ObserverModel>))]
+        [Produces(type: typeof(int))]
         public async Task<ApiListResponse<ObserverModel>> GetObservers(ObserverListQuery query)
         {
             var ongId = this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
