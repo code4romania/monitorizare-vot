@@ -54,6 +54,16 @@ namespace VoteMonitor.Api.Observer.Controllers {
             var result = await _mediator.Send(command);
             return result;
         }
+        [HttpGet]
+        [Produces(type: typeof(int))]
+        [Route("count")]
+        public async Task<int> GetTotalObserverCount()
+        {
+            var ongId = this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
+
+            var result = await _mediator.Send(new ObserverCountCommand{IdNgo = ongId});
+            return result;
+        }
 
         [HttpPost]
         [Route("import")]
