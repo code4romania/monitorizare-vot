@@ -48,17 +48,24 @@ using VoteMonitor.Api.Core.Services.Impl;
 using VoteMonitor.Api.Notification.Controllers;
 using System.IO;
 using VoteMonitor.Api.Statistics.Controllers;
+using VotingIrregularities.Api.Extensions.Startup;
 
 namespace VotingIrregularities.Api
 {
     public class Startup
     {
-        private readonly Container _container = new Container() { Options = { DefaultLifestyle = Lifestyle.Scoped, DefaultScopedLifestyle = new AsyncScopedLifestyle() } };
+        private readonly Container _container = new Container { Options = { DefaultLifestyle = Lifestyle.Scoped, DefaultScopedLifestyle = new AsyncScopedLifestyle() } };
         private SymmetricSecurityKey _key;
 
+        //private IConfiguration _configuration;
+
+        //public Startup(IConfiguration configuration)
+        //{
+        //    _configuration = configuration;
+        //}
         public Startup(IHostingEnvironment env)
         {
-            var builder = new ConfigurationBuilder()
+            var builder = new ConfigurationBuilder() 
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
@@ -67,37 +74,26 @@ namespace VotingIrregularities.Api
             {
                 // For more details on using the user secret store see http://go.microsoft.com/fwlink/?LinkID=532709
                 builder.AddUserSecrets<Startup>();
-
-                // This will push telemetry data through Application Insights pipeline faster, allowing you to view results immediately.
-                builder.AddApplicationInsightsSettings(developerMode: true);
             }
+
+            // This will push telemetry data through Application Insights pipeline faster, allowing you to view results immediately.
+            builder.AddApplicationInsightsSettings(developerMode: true);
 
             builder.AddEnvironmentVariables();
             Configuration = builder.Build();
         }
 
         private IConfigurationRoot Configuration { get; }
-
-        private void ConfigureCustomOptions(IServiceCollection services)
-        {
-            services.Configure<BlobStorageOptions>(Configuration.GetSection("BlobStorageOptions"));
-            services.Configure<HashOptions>(Configuration.GetSection("HashOptions"));
-            services.Configure<MobileSecurityOptions>(Configuration.GetSection("MobileSecurity"));
-            services.Configure<FileServiceOptions>(Configuration.GetSection(nameof(FileServiceOptions)));
-            services.Configure<FirebaseServiceOptions>(Configuration.GetSection(nameof(FirebaseServiceOptions)));
-        }
-
+        
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             // Get options from app settings
             services.AddOptions();
-
-            ConfigureCustomOptions(services);
-
+            services.ConfigureCustomOptions(Configuration);
+            
             var firebaseOptions = Configuration.GetSection(nameof(FirebaseServiceOptions));
             var privateKeyPath = firebaseOptions[nameof(FirebaseServiceOptions.ServerKey)];
-
             Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", Path.GetFullPath(privateKeyPath));
 
             var jwtAppSettingOptions = Configuration.GetSection(nameof(JwtIssuerOptions));
@@ -185,7 +181,7 @@ namespace VotingIrregularities.Api
                         },
                 });
 
-                options.AddSecurityDefinition("bearer", new ApiKeyScheme()
+                options.AddSecurityDefinition("bearer", new ApiKeyScheme
                 {
                     Name = "Authorization",
                     In = "header",
@@ -197,9 +193,10 @@ namespace VotingIrregularities.Api
                 options.OperationFilter<AddFileUploadParams>();
 
                 var baseDocPath = PlatformServices.Default.Application.ApplicationBasePath;
-                
-                foreach (string api in Directory.GetFiles(baseDocPath, "*.xml")) {
-                        options.IncludeXmlComments(api);
+
+                foreach (var api in Directory.GetFiles(baseDocPath, "*.xml"))
+                {
+                    options.IncludeXmlComments(api);
                 }
             });
 
@@ -208,7 +205,7 @@ namespace VotingIrregularities.Api
             ConfigureContainer(services);
 
             ConfigureCache(services);
-            ConfigureFileLoader(services);
+            ConfigureFileLoader();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -308,10 +305,10 @@ namespace VotingIrregularities.Api
             }
         }
 
-        private void ConfigureFileLoader(IServiceCollection services)
+        private void ConfigureFileLoader()
         {
             _container.RegisterSingleton<IFileLoader, XlsxFileLoader>();
-            return ;
+            return;
         }
 
         private void ConfigureFileService(IApplicationBuilder app)
