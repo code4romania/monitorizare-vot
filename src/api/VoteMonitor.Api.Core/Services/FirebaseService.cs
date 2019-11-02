@@ -29,6 +29,11 @@ namespace VoteMonitor.Api.Core.Services.Impl
                     { "title", title },
                     { "body", message },
                 },
+                Notification = new Notification
+                {
+                    Title = title,
+                    Body = message
+                },
             };
 
             var response = FirebaseMessaging.DefaultInstance.SendMulticastAsync(message2);
