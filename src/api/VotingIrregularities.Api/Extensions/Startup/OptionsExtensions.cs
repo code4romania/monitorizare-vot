@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using VoteMonitor.Api.Core.Options;
 using VotingIrregularities.Api.Options;
 
 namespace VotingIrregularities.Api.Extensions.Startup
@@ -15,6 +16,7 @@ namespace VotingIrregularities.Api.Extensions.Startup
             services.Configure<MobileSecurityOptions>(configuration.GetSection(nameof(MobileSecurityOptions)));
             services.Configure<FileServiceOptions>(configuration.GetSection(nameof(FileServiceOptions)));
             services.Configure<FirebaseServiceOptions>(configuration.GetSection(nameof(FirebaseServiceOptions)));
+            services.Configure<DefaultNgoOptions>(configuration.GetSection(nameof(DefaultNgoOptions)));
             return services;
         }
 
