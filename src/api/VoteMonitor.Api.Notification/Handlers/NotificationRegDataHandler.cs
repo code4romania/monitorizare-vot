@@ -23,12 +23,23 @@ namespace VoteMonitor.Api.Notification.Handlers
 
         public Task<int> Handle(NotificationRegistrationDataCommand request, CancellationToken cancellationToken)
         {
-            var notificationReg = new NotificationRegistrationData
-            {
-                ObserverId = request.ObserverId, ChannelName = request.ChannelName, Token = request.Token
-            };
+            var existingRegistration = 
+                _context.NotificationRegistrationData
+                .FirstOrDefault(data => data.ObserverId == request.ObserverId && data.ChannelName == request.ChannelName);
 
-            _context.NotificationRegistrationData.Add(notificationReg);
+            if (existingRegistration != null) {
+                existingRegistration.Token = request.Token;
+            }
+            else {
+
+                var notificationReg = new NotificationRegistrationData {
+                    ObserverId = request.ObserverId,
+                    ChannelName = request.ChannelName,
+                    Token = request.Token
+                };
+
+                _context.NotificationRegistrationData.Add(notificationReg);
+            }
 
             return _context.SaveChangesAsync(cancellationToken);
         }
