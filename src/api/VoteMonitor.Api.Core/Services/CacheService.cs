@@ -18,7 +18,8 @@ namespace VoteMonitor.Api.Core.Services
             _logger = logger;
         }
 
-        public async Task<T> GetOrSaveDataInCacheAsync<T>(string name, Func<Task<T>> source, DistributedCacheEntryOptions options = null)
+        public async Task<T> GetOrSaveDataInCacheAsync<T>(string name, Func<Task<T>> source,
+            DistributedCacheEntryOptions options = null)
         {
             var obj = await GetObjectSafeAsync<T>(name);
 
@@ -53,7 +54,7 @@ namespace VoteMonitor.Api.Core.Services
             }
             catch (Exception exception)
             {
-                _logger.LogError(GetHashCode(),exception,exception.Message);
+                _logger.LogError(GetHashCode(), exception, exception.Message);
             }
 
             return result;
@@ -83,6 +84,7 @@ namespace VoteMonitor.Api.Core.Services
             System.Buffer.BlockCopy(str.ToCharArray(), 0, bytes, 0, bytes.Length);
             return bytes;
         }
+
         private static string GetString(byte[] bytes)
         {
             var chars = new char[bytes.Length / sizeof(char)];
@@ -90,23 +92,5 @@ namespace VoteMonitor.Api.Core.Services
             return new string(chars);
         }
 
-    }
-    /// <summary>
-    /// Enum for forms' names in cache
-    /// </summary>
-    public enum CacheObjectsName
-    {
-        /// <summary>
-        /// First form
-        /// </summary>
-        FormularA,
-        /// <summary>
-        /// Second form
-        /// </summary>
-        FormularB,
-        /// <summary>
-        /// this is becoming redundant
-        /// </summary>
-        FormularC
     }
 }

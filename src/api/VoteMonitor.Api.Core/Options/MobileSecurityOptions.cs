@@ -1,4 +1,4 @@
-﻿namespace VotingIrregularities.Api.Options
+﻿namespace VoteMonitor.Api.Core.Options
 {
     public class MobileSecurityOptions
     {

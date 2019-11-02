@@ -14,6 +14,7 @@ using System.Net;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using VoteMonitor.Api.Core;
+using VoteMonitor.Api.Core.Options;
 using VotingIrregularities.Domain.UserAggregate;
 using VotingIrregularities.Api.Options;
 using VotingIrregularities.Api.Models;

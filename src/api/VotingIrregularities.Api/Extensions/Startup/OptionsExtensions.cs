@@ -8,6 +8,13 @@ namespace VotingIrregularities.Api.Extensions.Startup
 {
     public static class OptionsExtensions
     {
+        /// <summary>
+        /// At this point this is (I guess) useles;
+        /// We use the SimpleInjector's container and registering these services in the default container does not benefit us quite a lot..
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="configuration"></param>
+        /// <returns></returns>
         public static IServiceCollection ConfigureCustomOptions(this IServiceCollection services,
             IConfigurationRoot configuration)
         {
@@ -17,13 +24,7 @@ namespace VotingIrregularities.Api.Extensions.Startup
             services.Configure<FileServiceOptions>(configuration.GetSection(nameof(FileServiceOptions)));
             services.Configure<FirebaseServiceOptions>(configuration.GetSection(nameof(FirebaseServiceOptions)));
             services.Configure<DefaultNgoOptions>(configuration.GetSection(nameof(DefaultNgoOptions)));
-            return services;
-        }
-
-        public static IServiceCollection ConfigureFirebase(this IServiceCollection services,
-            IConfigurationRoot configuration)
-        {
-
+            services.Configure<DefaultNgoOptions>(configuration.GetSection(nameof(ApplicationCacheOptions)));
             return services;
         }
     }
