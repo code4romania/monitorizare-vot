@@ -2,10 +2,9 @@
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.Options;
-using VoteMonitor.Api.Core.Services;
-using VotingIrregularities.Api.Options;
+using VoteMonitor.Api.Core.Options;
 
-namespace VotingIrregularities.Api.Services
+namespace VoteMonitor.Api.Core.Services
 {
     /// <inheritdoc />
     public class HashService : IHashService

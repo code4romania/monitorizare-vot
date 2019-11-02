@@ -5,8 +5,6 @@ using Microsoft.Extensions.Logging;
 using VoteMonitor.Api.Core;
 using AutoMapper;
 using VoteMonitor.Api.Notification.Models;
-using VotingIrregularities.Api.Options;
-using Microsoft.Extensions.Configuration;
 using VoteMonitor.Api.Notification.Commands;
 
 namespace VoteMonitor.Api.Notification.Controllers
@@ -18,14 +16,11 @@ namespace VoteMonitor.Api.Notification.Controllers
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
 
-        public NotificationController(IMediator mediator, ILogger logger, IMapper mapper, IConfigurationRoot configuration)
+        public NotificationController(IMediator mediator, ILogger logger, IMapper mapper)
         {
             _mediator = mediator;
             _logger = logger;
             _mapper = mapper;
-
-            var firebaseOptions = new FirebaseServiceOptions();
-            configuration.GetSection(nameof(FirebaseServiceOptions)).Bind(firebaseOptions);
         }
 
         [HttpPost]
@@ -33,9 +28,7 @@ namespace VoteMonitor.Api.Notification.Controllers
         public async Task<dynamic> RegisterTokenAsync(NotificationRegistrationDataModel tokenRegistrationModel)
         {
             if(!tokenRegistrationModel.ObserverId.HasValue)
-            {
                 tokenRegistrationModel.ObserverId = this.GetIdObserver();
-            }
 
             await _mediator.Send(_mapper.Map<NotificationRegistrationDataCommand>(tokenRegistrationModel));
 
