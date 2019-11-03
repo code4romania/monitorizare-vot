@@ -25,5 +25,6 @@ namespace VoteMonitor.Entities
         public virtual ICollection<Answer> Answers { get; set; }
         public virtual ICollection<PollingStationInfo> PollingStationInfos { get; set; }
         public virtual Ngo Ngo { get; set; }
+        public virtual ICollection<NotificationRecipient> Notifications { get; set; }
     }
 }
