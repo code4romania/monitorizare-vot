@@ -22,59 +22,16 @@ namespace VoteMonitor.Api.Form.Queries
         }
 
         protected override async Task<FormDTO> HandleCore(AddFormQuery message) {
-            var newForm = new Entities.Form
-            {
-                Code = message.Form.Code,
-                CurrentVersion = message.Form.CurrentVersion,
-                Description = message.Form.Description,
-                FormSections = new List<FormSection>()
-            };
+            var newForm = new Entities.Form();
 
-            foreach (var fs in message.Form.FormSections)
-            {
-                var formSection = MapFormSection(fs);
-                newForm.FormSections.Add(formSection);
-            }
+            var formMapper = new FormDbMapper(_context, _mapper);
 
+            formMapper.Map(ref newForm, message.Form);
             _context.Forms.Add(newForm);
 
             await _context.SaveChangesAsync();
             message.Form.Id = newForm.Id;
             return message.Form;
-        }
-
-        private FormSection MapFormSection(FormSectionDTO formSectionDto)
-        {
-            var formSection = new FormSection
-            {
-                Code = formSectionDto.Code, Description = formSectionDto.Description, Questions = new List<Question>()
-            };
-            foreach (var q in formSectionDto.Questions)
-            {
-                var question = MapQuestion(q);
-                formSection.Questions.Add(question);
-            }
-
-            return formSection;
-        }
-
-        private Question MapQuestion(QuestionDTO questionDto)
-        {
-            var question = new Question {QuestionType = questionDto.QuestionType, Hint = questionDto.Hint, Text = questionDto.Text};
-            var optionsForQuestion = new List<OptionToQuestion>();
-            foreach (var o in questionDto.OptionsToQuestions)
-                if (o.IdOption > 0)
-                {
-                    var existingOption = _context.Options.FirstOrDefault(option => option.Id == o.IdOption);
-                    optionsForQuestion.Add(new OptionToQuestion {Option = existingOption});
-                }
-                else
-                {
-                    optionsForQuestion.Add(_mapper.Map<OptionToQuestion>(o));
-                }
-
-            question.OptionsToQuestions = optionsForQuestion;
-            return question;
         }
     }
 }
