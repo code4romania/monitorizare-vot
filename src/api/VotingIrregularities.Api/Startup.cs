@@ -105,6 +105,9 @@ namespace VotingIrregularities.Api
                 .AddApplicationPart(typeof(StatisticsController).Assembly)
                 .AddControllersAsServices()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.AddDbContext<VoteMonitorContext>(x => x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new Info
