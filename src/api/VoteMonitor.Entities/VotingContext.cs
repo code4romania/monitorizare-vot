@@ -338,6 +338,21 @@ namespace VoteMonitor.Entities
                 entity.HasKey(e => e.Label)
                     .HasName("PK_StatisticiOptiuni");
             });
+
+            modelBuilder.Entity<NotificationRecipient>(entity => {
+                entity.HasKey(e => new { e.ObserverId, e.NotificationId });
+
+                entity.HasOne(d => d.Notification)
+                    .WithMany(p => p.NotificationRecipients)
+                    .HasForeignKey(d => d.NotificationId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(d => d.Observer)
+                    .WithMany(p => p.Notifications)
+                    .HasForeignKey(d => d.ObserverId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
         }
 
         public virtual DbSet<NgoAdmin> NgoAdmins { get; set; }
@@ -355,6 +370,8 @@ namespace VoteMonitor.Entities
         public virtual DbSet<FormSection> FormSections { get; set; }
         public virtual DbSet<Form> Forms { get; set; }
         public virtual DbSet<AnswerQueryInfo> AnswerQueryInfos{ get;set; }
+        public virtual DbSet<Notification> Notifications { get; set; }
+        public virtual DbSet<NotificationRecipient> NotificationRecipients { get; set; }
 
         // Entities used for GROUP BY results
         public virtual DbSet<SimpleStatistics> SimpleStatistics { get; set; }

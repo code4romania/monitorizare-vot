@@ -1,6 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoMapper;
 using MediatR;
 using VoteMonitor.Api.Core.Services;
 using VoteMonitor.Api.Notification.Commands;
@@ -14,11 +17,13 @@ namespace VoteMonitor.Api.Notification.Handlers
     {
         private readonly VoteMonitorContext _context;
         private readonly IFirebaseService _firebaseService;
+        private readonly IMapper _mapper;
 
-        public NotificationRegistrationDataHandler(VoteMonitorContext context, IFirebaseService firebaseService)
+        public NotificationRegistrationDataHandler(VoteMonitorContext context, IFirebaseService firebaseService, IMapper mapper)
         {
             _context = context;
             _firebaseService = firebaseService;
+            _mapper = mapper;
         }
 
         public Task<int> Handle(NotificationRegistrationDataCommand request, CancellationToken cancellationToken)
@@ -44,7 +49,7 @@ namespace VoteMonitor.Api.Notification.Handlers
             return _context.SaveChangesAsync(cancellationToken);
         }
 
-        public Task<int> Handle(NewNotificationCommand request, CancellationToken cancellationToken)
+        public async Task<int> Handle(NewNotificationCommand request, CancellationToken cancellationToken)
         {
             var targetFcmTokens = request.Recipients
                     .Select(observer => _context.NotificationRegistrationData.AsQueryable()
@@ -55,10 +60,15 @@ namespace VoteMonitor.Api.Notification.Handlers
 
             var response = 0;
 
-            if(targetFcmTokens.Count > 0)
+            if (targetFcmTokens.Count > 0)
                 response = _firebaseService.SendAsync(request.From, request.Title, request.Message, targetFcmTokens);
 
-            return Task.FromResult(response);
+            var notification = _mapper.Map<Entities.Notification>(request);
+           
+            _context.Notifications.AddRange(notification);
+            await _context.SaveChangesAsync();
+
+            return response;
         }
     }
 }
