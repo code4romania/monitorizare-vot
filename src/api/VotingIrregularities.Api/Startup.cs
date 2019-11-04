@@ -189,9 +189,10 @@ namespace VotingIrregularities.Api
             RegisterDbContext<VoteMonitorContext>(Configuration.GetConnectionString("DefaultConnection"));
 
             RegisterAutomapper();
-            BuildMediator();
 
             app.AddFirebase(Configuration, _container);
+
+            BuildMediator();
 
             _container.Verify();
 
