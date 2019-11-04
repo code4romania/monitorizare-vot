@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -6,6 +7,7 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using VoteMonitor.Api.Location.Commands;
 using VoteMonitor.Entities;
+using EFCore.BulkExtensions;
 
 namespace VoteMonitor.Api.Location.Handlers
 {
@@ -24,48 +26,49 @@ namespace VoteMonitor.Api.Location.Handlers
 
         protected override async Task<int> HandleCore(PollingStationCommand request)
         {
-            var records = request.PollingStationsDTOs;
-            Random random = new Random();
+            var random = new Random();
+
             try
             {
                 //import the new entities
-                using(var transaction = await _context.Database.BeginTransactionAsync())
+                using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
-                    int id = 0;
-                    foreach(var record in records)
+                    var id = 100;
+                    var newPollingStations = new List<PollingStation>();
+                    var counties = _context.Counties.ToDictionary(c => c.Code, c => c.Id);
+
+                    foreach (var record in request.PollingStationsDTOs)
                     {
-                        PollingStation pollingStation = _mapper.Map<PollingStation>(record);
+                        var pollingStation = _mapper.Map<PollingStation>(record);
                         pollingStation.Id = id++;
-                        County county = _context.Counties
-                                            .Where(c => c.Code == record.CodJudet)
-                                            .First();
-                        pollingStation.IdCounty = county.Id;
+                        pollingStation.IdCounty = counties[record.CodJudet];//county.Id;
                         pollingStation.Coordinates = null;
-                        pollingStation.County = county;
                         pollingStation.TerritoryCode = random.Next(10000).ToString();
-                        _context.PollingStations.Add(pollingStation);
+
+                        newPollingStations.Add(pollingStation);
+                    }
+
+                    _context.BulkInsert(newPollingStations);
+
+                    foreach (var county in _context.Counties)
+                    {
+                        if (!_context.PollingStations.Any(p => p.IdCounty == county.Id))
+                            continue;
+
+                        var maxPollingStation = _context.PollingStations
+                            .Where(p => p.IdCounty == county.Id)
+                            .Max(p => p.Number);
+                        county.NumberOfPollingStations = maxPollingStation;
+                        _context.Counties.Update(county);
                     }
 
                     var result = await _context.SaveChangesAsync();
 
-                    foreach(var county in _context.Counties)
-                    {
-                        if(_context.PollingStations.Any(p => p.IdCounty == county.Id))
-                        {
-                            var maxPollingStation = _context.PollingStations
-                                    .Where(p => p.IdCounty == county.Id)
-                                    .Max(p => p.Number);
-                            county.NumberOfPollingStations = maxPollingStation;
-                            _context.Counties.Update(county);
-                        }
-                    }
-
-                    result = await _context.SaveChangesAsync();
-                    
                     transaction.Commit();
                     return result;
                 }
-            } catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 _logger.LogError("Error while importing polling station information ", ex);
             }
