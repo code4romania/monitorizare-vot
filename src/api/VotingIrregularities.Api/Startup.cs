@@ -209,10 +209,18 @@ namespace VotingIrregularities.Api
 
             ConfigureCache(services);
             ConfigureFileLoader(services);
-        }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app,
+            services.AddCors(options => options.AddPolicy("Permissive", builder =>
+            {
+	            builder.AllowAnyOrigin()
+		            .AllowAnyMethod()
+		            .AllowAnyHeader();
+            }));
+
+		}
+
+		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+		public void Configure(IApplicationBuilder app,
             IApplicationLifetime appLifetime)
         {
             app.UseStaticFiles();
@@ -266,8 +274,8 @@ namespace VotingIrregularities.Api
 
             // Enable middleware to serve swagger-ui assets (HTML, JS, CSS etc.)
             app.UseSwaggerUI(o => o.SwaggerEndpoint("/swagger/v1/swagger.json", "MV API v1"));
-
-            app.UseMvc();
+            app.UseCors("Permissive");
+			app.UseMvc();
         }
 
         private void ConfigureCache(IServiceCollection services)
