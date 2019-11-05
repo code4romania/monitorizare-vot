@@ -1,6 +1,4 @@
-﻿using VoteMonitor.Api.Core.Services;
-
-namespace VotingIrregularities.Api.Services
+﻿namespace VoteMonitor.Api.Core.Services
 {
     public class ClearTextService : IHashService
     {
