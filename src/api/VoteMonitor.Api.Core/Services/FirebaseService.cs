@@ -1,15 +1,13 @@
-﻿using FirebaseAdmin;
+﻿using System.Collections.Generic;
+using FirebaseAdmin;
 using FirebaseAdmin.Messaging;
 using Google.Apis.Auth.OAuth2;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace VoteMonitor.Api.Core.Services.Impl
+namespace VoteMonitor.Api.Core.Services
 {
     public class FirebaseService : IFirebaseService
     {
-        public int SendAsync(String from, String title, String message, IList<string> recipients)
+        public int SendAsync(string from, string title, string message, IList<string> recipients)
         {
             if (FirebaseApp.DefaultInstance == null)
             {
