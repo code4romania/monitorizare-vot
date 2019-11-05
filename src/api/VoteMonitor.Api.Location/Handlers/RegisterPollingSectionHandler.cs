@@ -10,61 +10,61 @@ using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Location.Handlers
 {
-    public class RegisterPollingSectionHandler : AsyncRequestHandler<RegisterPollingStationCommand, int>
-    {
-        private readonly VoteMonitorContext _context;
-        private readonly ILogger _logger;
-        private readonly IMapper _mapper;
+	public class RegisterPollingSectionHandler : AsyncRequestHandler<RegisterPollingStationCommand, int>
+	{
+		private readonly VoteMonitorContext _context;
+		private readonly ILogger _logger;
+		private readonly IMapper _mapper;
 
-        public RegisterPollingSectionHandler(VoteMonitorContext context, ILogger logger, IMapper mapper)
-        {
-            _context = context;
-            _logger = logger;
-            _mapper = mapper;
-        }
+		public RegisterPollingSectionHandler(VoteMonitorContext context, ILogger logger, IMapper mapper)
+		{
+			_context = context;
+			_logger = logger;
+			_mapper = mapper;
+		}
 
-        protected override async Task<int> HandleCore(RegisterPollingStationCommand message)
-        {
-            try
-            {
-                //TODO[DH] this can be moved to a previous step, before the command is executed
-                var idSectie = await _context.PollingStations
-                    .Where(a =>
-                        a.Number == message.IdPollingStation &&
-                        a.County.Code == message.CountyCode).Select(a => a.Id)
-                        .FirstOrDefaultAsync();
+		protected override async Task<int> HandleCore(RegisterPollingStationCommand message)
+		{
+			try
+			{
+				//TODO[DH] this can be moved to a previous step, before the command is executed
+				var idSectie = await _context.PollingStations
+					.Where(a =>
+						a.Number == message.IdPollingStation &&
+						a.County.Code == message.CountyCode).Select(a => a.Id)
+						.FirstOrDefaultAsync();
 
-                if (idSectie == 0)
-                    throw new ArgumentException("Sectia nu exista");
+				if (idSectie == 0)
+					throw new ArgumentException("Sectia nu exista");
 
-                var formular = await _context.PollingStationInfos
-                    .FirstOrDefaultAsync(a =>
-                        a.IdObserver == message.IdObserver &&
-                        a.IdPollingStation == idSectie);
+				var formular = await _context.PollingStationInfos
+					.FirstOrDefaultAsync(a =>
+						a.IdObserver == message.IdObserver &&
+						a.IdPollingStation == idSectie);
 
-                if (formular == null)
-                {
-                    formular = _mapper.Map<PollingStationInfo>(message);
+				if (formular == null)
+				{
+					formular = _mapper.Map<PollingStationInfo>(message);
 
-                    formular.IdPollingStation = idSectie;
-                    formular.IdObserver = message.IdObserver;
+					formular.IdPollingStation = idSectie;
+					formular.IdObserver = message.IdObserver;
 
 					_context.Add(formular);
-                }
-                else
-                {
-                    _mapper.Map(message, formular);
-                }
+				}
+				else
+				{
+					_mapper.Map(message, formular);
+				}
 
-                return await _context.SaveChangesAsync();
+				return await _context.SaveChangesAsync();
 
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(new EventId(), ex.Message);
-            }
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(new EventId(), ex.Message);
+			}
 
-            return -1;
-        }
-    }
+			return -1;
+		}
+	}
 }
