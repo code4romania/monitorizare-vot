@@ -47,8 +47,9 @@ namespace VoteMonitor.Api.Location.Handlers
                     formular = _mapper.Map<PollingStationInfo>(message);
 
                     formular.IdPollingStation = idSectie;
+                    formular.IdObserver = message.IdObserver;
 
-                    _context.Add(formular);
+					_context.Add(formular);
                 }
                 else
                 {
