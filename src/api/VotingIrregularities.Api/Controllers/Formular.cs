@@ -34,19 +34,20 @@ namespace VotingIrregularities.Api.Controllers
         [HttpGet("versiune")]
         public async Task<IActionResult> GetFormVersions()
         {
+			// for now all of the forms are retrieved
             var formsAsDict = new Dictionary<string, int>();
-            (await _mediator.Send(new FormVersionQuery())).ForEach(form => formsAsDict.Add(form.Code, form.CurrentVersion));
+            (await _mediator.Send(new FormVersionQuery(null))).ForEach(form => formsAsDict.Add(form.Code, form.CurrentVersion));
 
             return Ok(new { Versiune = formsAsDict });
         }
 
         /// <summary>
-        /// Returns an array of forms
+        /// Returns an array of forms. This method will not apply filtering
         /// </summary>
         /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> GetFormsAsync()
-            => Ok(new ModelVersiune { Formulare = await _mediator.Send(new FormVersionQuery()) });
+            => Ok(new ModelVersiune { Formulare = await _mediator.Send(new FormVersionQuery(null)) });
 
         /// <summary>
         /// Se interogheaza ultima versiunea a formularului pentru observatori si se primeste definitia lui. 

@@ -65,10 +65,11 @@ namespace VoteMonitor.Api.Location.Services
             return -1;
         }
 
-        public async Task<IEnumerable<CountyPollingStationLimit>> GetPollingStationsAssignmentsForAllCounties()
+        public async Task<IEnumerable<CountyPollingStationLimit>> GetPollingStationsAssignmentsForAllCounties(bool? diaspora)
         {
             return await _context.Counties
-                .Select(c => new CountyPollingStationLimit { Name = c.Name, Code = c.Code, Limit = c.NumberOfPollingStations, Id = c.Id })
+	            .Where(c => diaspora == null || c.Diaspora == diaspora)
+	            .Select(c => new CountyPollingStationLimit { Name = c.Name, Code = c.Code, Limit = c.NumberOfPollingStations, Id = c.Id ,Diaspora = c.Diaspora })
                 .ToListAsync();
         }
     }

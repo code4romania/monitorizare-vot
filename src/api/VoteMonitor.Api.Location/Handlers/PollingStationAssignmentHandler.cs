@@ -23,7 +23,7 @@ namespace VoteMonitor.Api.Location.Handlers
 
 		protected override async Task<IEnumerable<CountyPollingStationLimit>> HandleCore(PollingStationsAssignmentQuery message)
 		{
-			var counties = await _pollingStationService.GetPollingStationsAssignmentsForAllCounties();
+			var counties = await _pollingStationService.GetPollingStationsAssignmentsForAllCounties(message.Diaspora);
 
 			if (_options.OverrideDefaultSorting)
 			{

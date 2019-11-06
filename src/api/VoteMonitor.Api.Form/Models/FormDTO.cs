@@ -12,6 +12,7 @@ namespace VoteMonitor.Api.Form.Models {
         public int CurrentVersion { get; set; }
         public string Description { get; set; }
         public List<FormSectionDTO> FormSections { get; set; }
+        public bool Diaspora { get; set; }
     }
 
     public class FormProfile : Profile {
@@ -20,8 +21,8 @@ namespace VoteMonitor.Api.Form.Models {
                 .ForMember(dest => dest.Code, c => c.MapFrom(src => src.Code))
                 .ForMember(dest => dest.CurrentVersion, c => c.MapFrom(src => src.CurrentVersion))
                 .ForMember(dest => dest.Description, c => c.MapFrom(src => src.Description))
-                .ForMember(dest => dest.FormSections, 
-                    c => c.MapFrom(src => src.FormSections));
+                .ForMember(dest => dest.FormSections, c => c.MapFrom(src => src.FormSections))
+                .ForMember(dest => dest.Diaspora, c => c.MapFrom(src => src.Diaspora));
 
             CreateMap<FormSectionDTO, Entities.FormSection>()
                 .ForMember(dest => dest.Code, c => c.MapFrom(src => src.Code))

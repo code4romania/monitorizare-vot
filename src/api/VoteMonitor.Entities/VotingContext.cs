@@ -43,7 +43,10 @@ namespace VoteMonitor.Entities
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(100);
-            });
+
+				entity.Property(x=>x.Diaspora)
+					.HasDefaultValueSql("0"); // should this be required?
+			});
 
             modelBuilder.Entity<Note>(entity => {
                 entity.HasKey(e => e.Id)
@@ -233,7 +236,11 @@ namespace VoteMonitor.Entities
                     .HasName("PK_FormVersion");
 
                 entity.Property(e => e.Id).HasMaxLength(2);
-            });
+
+				entity.Property(x=>x.Diaspora)
+					.HasDefaultValueSql("0"); // check this mapping 
+
+			});
 
             modelBuilder.Entity<AnswerQueryInfo>(entity => {
                 entity.HasKey(e => new { e.IdObserver, e.IdPollingStation})
