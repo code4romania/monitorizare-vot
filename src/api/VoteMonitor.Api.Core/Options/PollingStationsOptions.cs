@@ -1,4 +1,4 @@
-﻿namespace VoteMonitor.Api.Location.Options
+﻿namespace VoteMonitor.Api.Core.Options
 {
 	public class PollingStationsOptions
 	{

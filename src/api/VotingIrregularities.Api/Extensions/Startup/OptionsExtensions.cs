@@ -1,8 +1,6 @@
-﻿using FluentValidation;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using VoteMonitor.Api.Core.Options;
-using VoteMonitor.Api.Location.Options;
 using VotingIrregularities.Api.Options;
 
 namespace VotingIrregularities.Api.Extensions.Startup
