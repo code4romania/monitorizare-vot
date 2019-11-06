@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using VoteMonitor.Api.Core.Options;
+using VoteMonitor.Api.Location.Options;
 using VotingIrregularities.Api.Options;
 
 namespace VotingIrregularities.Api.Extensions.Startup
@@ -25,6 +26,7 @@ namespace VotingIrregularities.Api.Extensions.Startup
             services.Configure<FirebaseServiceOptions>(configuration.GetSection(nameof(FirebaseServiceOptions)));
             services.Configure<DefaultNgoOptions>(configuration.GetSection(nameof(DefaultNgoOptions)));
             services.Configure<DefaultNgoOptions>(configuration.GetSection(nameof(ApplicationCacheOptions)));
+            services.Configure<PollingStationsOptions>(configuration.GetSection(nameof(PollingStationsOptions)));
             return services;
         }
     }
