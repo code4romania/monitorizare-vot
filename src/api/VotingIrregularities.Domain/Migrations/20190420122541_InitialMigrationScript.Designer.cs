@@ -71,7 +71,11 @@ namespace VoteMonitor.Entities {
 
                     b.Property<int>("NumberOfPollingStations");
 
-                    b.HasKey("Id")
+                    b.Property<bool>("Diaspora")
+	                    .ValueGeneratedOnAdd()
+	                    .HasDefaultValueSql("0");
+
+					b.HasKey("Id")
                         .HasName("PK_County");
 
                     b.ToTable("Counties");

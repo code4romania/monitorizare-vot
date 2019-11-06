@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
@@ -27,6 +28,7 @@ namespace VoteMonitor.Api.Form.Queries
         {
             var result = await _context.Forms
                 .AsNoTracking()
+                .Where(x=>request.Diaspora == null || x.Diaspora == request.Diaspora)
                 .ToListAsync();
 
             return result;
