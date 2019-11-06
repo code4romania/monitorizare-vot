@@ -4,7 +4,9 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using VoteMonitor.Api.Core;
+using VoteMonitor.Api.Core.Options;
 using VoteMonitor.Api.Statistics.Handlers;
 using VoteMonitor.Api.Statistics.Models;
 using VoteMonitor.Api.Statistics.Queries;
@@ -14,20 +16,22 @@ namespace VoteMonitor.Api.Statistics.Controllers {
     [Route("api/v1/statistics")]
     public class StatisticsController : Controller
     {
-        private readonly IConfigurationRoot _configuration;
+		private readonly IConfigurationRoot _configuration;
+		private readonly ApplicationCacheOptions _cacheOptions;
         private readonly IMediator _mediator;
         private int _cacheHours;
         private int _cacheMinutes;
         private int _cacheSeconds;
 
-        public StatisticsController(IMediator mediator, IConfigurationRoot configuration)
+        public StatisticsController(IMediator mediator, IConfigurationRoot configuration, IOptions<ApplicationCacheOptions> cacheOptions)
         {
             _mediator = mediator;
-            _configuration = configuration;
-            _cacheHours = _configuration.GetValue<int>("DefaultCacheHours");
-            _cacheMinutes = _configuration.GetValue<int>("DefaultCacheMinutes");
-            _cacheSeconds = _configuration.GetValue<int>("DefaultCacheSeconds");
-        }
+			_configuration = configuration;
+			_cacheOptions = cacheOptions.Value;
+			_cacheHours = _cacheOptions.Hours;
+			_cacheMinutes = _cacheOptions.Minutes;
+			_cacheSeconds = _cacheOptions.Seconds;
+		}
 
         /// <summary>
         /// Returns top counties by observer number
