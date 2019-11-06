@@ -84,7 +84,7 @@ namespace VotingIrregularities.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> PollingStationsLimits()
         {
-            var result = await _mediator.Send(new PollingStationsAssignmentQuery());
+            var result = await _mediator.Send(new PollingStationsAssignmentQuery(null));
             return Ok(result);
         }
     }

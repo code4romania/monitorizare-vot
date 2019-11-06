@@ -18,6 +18,10 @@ namespace VoteMonitor.Entities
 
         [Required, JsonProperty(PropertyName = "ver")]
         public int CurrentVersion { get; set; }
-        public virtual ICollection<FormSection> FormSections { get; set; }
+
+        [JsonProperty(PropertyName = "diaspora")]
+        public bool Diaspora { get; set; }
+
+		public virtual ICollection<FormSection> FormSections { get; set; }
     }
 }
