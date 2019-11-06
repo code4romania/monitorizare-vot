@@ -2,10 +2,10 @@
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using VotingIrregularities.Api.Models;
-using Microsoft.Extensions.Configuration;
 using System;
 using VoteMonitor.Api.Form.Models;
+using VoteMonitor.Api.Core.Options;
+using Microsoft.Extensions.Options;
 
 namespace VotingIrregularities.Api.Controllers
 {
@@ -17,12 +17,12 @@ namespace VotingIrregularities.Api.Controllers
     [Obsolete("use /form instead")]
     public class Formular : Controller
     {
-        private readonly IConfigurationRoot _configuration;
+        private readonly ApplicationCacheOptions _cacheOptions;
         private readonly IMediator _mediator;
 
-        public Formular(IMediator mediator, IConfigurationRoot configuration)
+        public Formular(IMediator mediator, IOptions<ApplicationCacheOptions> cacheOptions)
         {
-            _configuration = configuration;
+			_cacheOptions = cacheOptions.Value;
             _mediator = mediator;
         }
 
@@ -60,10 +60,10 @@ namespace VotingIrregularities.Api.Controllers
         {
             var result = await _mediator.Send(new FormQuestionsQuery {
                 CodFormular = idformular,
-                CacheHours = _configuration.GetValue<int>("DefaultCacheHours"),
-                CacheMinutes = _configuration.GetValue<int>("DefaultCacheMinutes"),
-                CacheSeconds = _configuration.GetValue<int>("DefaultCacheSeconds")
-            });
+				CacheHours = _cacheOptions.Hours,
+				CacheMinutes = _cacheOptions.Minutes,
+				CacheSeconds = _cacheOptions.Seconds
+			});
 
             return result;
         }
