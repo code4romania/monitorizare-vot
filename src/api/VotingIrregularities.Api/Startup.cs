@@ -142,10 +142,9 @@ namespace VotingIrregularities.Api
             });
             services.UseSimpleInjectorAspNetRequestScoping(_container);
             ConfigureContainer(services);
+
             ConfigureCache(services);
-
             ConfigureFileLoader();
-
 
             services.AddCors(options => options.AddPolicy("Permissive", builder =>
             {
