@@ -86,9 +86,9 @@ namespace VoteMonitor.Api.Location.Controllers
         /// <returns>{ "countyCode": "numberOfPollingStationsAssigned", ... }</returns>
         [HttpGet]
         [Produces(typeof(IEnumerable<CountyPollingStationLimit>))]
-        public async Task<IActionResult> PollingStationsLimits()
+        public async Task<IActionResult> PollingStationsLimits(bool? diaspora)
         {
-            var result = await _mediator.Send(new PollingStationsAssignmentQuery());
+            var result = await _mediator.Send(new PollingStationsAssignmentQuery(diaspora));
             return Ok(result);
         }
 

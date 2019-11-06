@@ -45,7 +45,7 @@ namespace VoteMonitor.Api.Form.Controllers
 		public async Task<IActionResult> GetFormVersions()
 		{
 			var formsAsDict = new Dictionary<string, int>();
-			(await _mediator.Send(new FormVersionQuery())).ForEach(form => formsAsDict.Add(form.Code, form.CurrentVersion));
+			(await _mediator.Send(new FormVersionQuery(null))).ForEach(form => formsAsDict.Add(form.Code, form.CurrentVersion));
 
 			return Ok(new { Versions = formsAsDict });
 		}
@@ -55,8 +55,8 @@ namespace VoteMonitor.Api.Form.Controllers
 		/// </summary>
 		/// <returns></returns>
 		[HttpGet]
-		public async Task<IActionResult> GetFormsAsync()
-			=> Ok(new { FormVersions = await _mediator.Send(new FormVersionQuery()) });
+		public async Task<IActionResult> GetFormsAsync(bool? diaspora)
+			=> Ok(new { FormVersions = await _mediator.Send(new FormVersionQuery(diaspora)) });
 
 		/// <summary>
 		/// Se interogheaza ultima versiunea a formularului pentru observatori si se primeste definitia lui. 
