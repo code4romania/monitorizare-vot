@@ -27,4 +27,9 @@
     <ProjectReference Include="..\..\api\VotingIrregularities.Api\VotingIrregularities.Api.csproj" />
     <ProjectReference Include="..\..\api\VotingIrregularities.Domain\VotingIrregularities.Domain.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>
