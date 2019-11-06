@@ -42,6 +42,7 @@ using VoteMonitor.Api.Core.Handlers;
 using VoteMonitor.Api.Notification.Controllers;
 using System.IO;
 using VoteMonitor.Api.Core.Options;
+using VoteMonitor.Api.Location.Options;
 using VoteMonitor.Api.Statistics.Controllers;
 using VotingIrregularities.Api.Extensions.Startup;
 
@@ -228,6 +229,7 @@ namespace VotingIrregularities.Api
             _container.RegisterSingleton(() => app.ApplicationServices.GetService<IOptions<HashOptions>>());
             _container.RegisterSingleton(() => app.ApplicationServices.GetService<IOptions<JwtIssuerOptions>>());
             _container.RegisterSingleton(() => app.ApplicationServices.GetService<IOptions<ApplicationCacheOptions>>());
+            _container.RegisterSingleton(() => app.ApplicationServices.GetService<IOptions<PollingStationsOptions>>());
         }
 
         private void ConfigureCache(IServiceCollection services)
