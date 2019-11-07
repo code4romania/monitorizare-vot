@@ -29,7 +29,7 @@ namespace VoteMonitor.Api.Note.Controllers
         }
 
 
-        [HttpGet, AllowAnonymous]
+        [HttpGet]
         public async Task<IActionResult> Get(NoteQuery filter)
         {
             if (filter.IdQuestion.HasValue && !filter.IdPollingStation.HasValue)
