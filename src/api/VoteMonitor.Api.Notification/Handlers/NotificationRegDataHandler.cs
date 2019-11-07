@@ -35,7 +35,6 @@ namespace VoteMonitor.Api.Notification.Handlers
 			}
 			else
 			{
-
 				var notificationReg = new NotificationRegistrationData
 				{
 					ObserverId = request.ObserverId,
@@ -52,8 +51,7 @@ namespace VoteMonitor.Api.Notification.Handlers
 		public Task<int> Handle(NewNotificationCommand request, CancellationToken cancellationToken)
 		{
 			var targetFcmTokens = request.Recipients
-					.Select(observer => _context.NotificationRegistrationData.AsQueryable()
-																	.Where(regData => regData.ObserverId == int.Parse(observer))
+					.Select(observer => _context.NotificationRegistrationData.AsQueryable().Where(regData => regData.ObserverId == int.Parse(observer))
 					.First(regData => regData.ChannelName == request.Channel))
 					.Select(regDataResult => regDataResult.Token)
 					.ToList();
@@ -70,6 +68,7 @@ namespace VoteMonitor.Api.Notification.Handlers
 		{
 			var targetFcmTokens = _context.NotificationRegistrationData
 				.AsNoTracking()
+				.Where(x => x.ChannelName == request.Channel)
 				.Select(regDataResult => regDataResult.Token)
 				.ToList();
 
