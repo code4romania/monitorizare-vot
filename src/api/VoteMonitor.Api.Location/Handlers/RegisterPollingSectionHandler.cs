@@ -28,25 +28,25 @@ namespace VoteMonitor.Api.Location.Handlers
 			try
 			{
 				//TODO[DH] this can be moved to a previous step, before the command is executed
-				var idSectie = await _context.PollingStations
+				var pollingStation = await _context.PollingStations
 					.Where(a =>
 						a.Number == message.IdPollingStation &&
-						a.County.Code == message.CountyCode).Select(a => a.Id)
-						.FirstOrDefaultAsync();
+						a.County.Code == message.CountyCode)
+					.FirstOrDefaultAsync();
 
-				if (idSectie == 0)
+				if (pollingStation == null)
 					throw new ArgumentException("Sectia nu exista");
 
 				var formular = await _context.PollingStationInfos
 					.FirstOrDefaultAsync(a =>
 						a.IdObserver == message.IdObserver &&
-						a.IdPollingStation == idSectie);
+						a.IdPollingStation == pollingStation.Id);
 
 				if (formular == null)
 				{
 					formular = _mapper.Map<PollingStationInfo>(message);
 
-					formular.IdPollingStation = idSectie;
+					formular.IdPollingStation = pollingStation.Id;
 					formular.IdObserver = message.IdObserver;
 
 					_context.Add(formular);
