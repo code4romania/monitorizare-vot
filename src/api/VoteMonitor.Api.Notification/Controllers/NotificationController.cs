@@ -42,6 +42,16 @@ namespace VoteMonitor.Api.Notification.Controllers
             var result = await _mediator.Send(_mapper.Map<NewNotificationCommand>(newNotificationModel));
 
             return Task.FromResult(result);
+        }       
+        [HttpPost]
+        [Route("send/all")]
+        public async Task<dynamic> SendToAll([FromBody]NotificationForAllNewModel model)
+        {
+			var command = new SendNotificationToAll(model.Channel,model.From, model.Title, model.Message);
+
+            var result = await _mediator.Send(command);
+
+            return Task.FromResult(result);
         }
     }
 }
