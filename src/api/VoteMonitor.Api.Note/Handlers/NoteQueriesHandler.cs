@@ -39,8 +39,7 @@ namespace VoteMonitor.Api.Note.Handlers
             if (message.IdPollingStation.HasValue)
                 query = query.Where(x => x.IdPollingStation == message.IdPollingStation);
 
-            return await _context.Notes
-                .Where(n => n.IdObserver == message.IdObserver && n.IdPollingStation == message.IdPollingStation)
+            return await query
                 .OrderBy(n => n.LastModified)
                 .Select(n => new NoteModel
                 {

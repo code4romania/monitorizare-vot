@@ -12,6 +12,7 @@ using VoteMonitor.Api.Note.Commands;
 using System.Collections.Generic;
 using VoteMonitor.Api.Note.Queries;
 using VoteMonitor.Api.Core.Commands;
+using Microsoft.AspNetCore.Authorization;
 
 namespace VoteMonitor.Api.Note.Controllers
 {
@@ -28,7 +29,7 @@ namespace VoteMonitor.Api.Note.Controllers
         }
 
 
-        [HttpGet]
+        [HttpGet, AllowAnonymous]
         public async Task<IActionResult> Get(NoteQuery filter)
         {
             if (filter.IdQuestion.HasValue && !filter.IdPollingStation.HasValue)
