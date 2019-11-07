@@ -9,10 +9,8 @@ using VoteMonitor.Api.Core;
 using VoteMonitor.Api.Note.Models;
 using VoteMonitor.Api.Location.Queries;
 using VoteMonitor.Api.Note.Commands;
-using System.Collections.Generic;
 using VoteMonitor.Api.Note.Queries;
 using VoteMonitor.Api.Core.Commands;
-using Microsoft.AspNetCore.Authorization;
 
 namespace VoteMonitor.Api.Note.Controllers
 {
