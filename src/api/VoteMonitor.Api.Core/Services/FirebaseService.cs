@@ -27,7 +27,7 @@ namespace VoteMonitor.Api.Core.Services
 
 			while (recipients.Any())
 			{
-				var registrationTokens = recipients.Take(100) as IReadOnlyList<string>;
+				var registrationTokens = recipients.Take(100).ToList().AsReadOnly();
 				recipients = recipients.Skip(100).ToList();
 
 				var message2 = new MulticastMessage
