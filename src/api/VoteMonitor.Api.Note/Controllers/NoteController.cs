@@ -31,7 +31,7 @@ namespace VoteMonitor.Api.Note.Controllers
         public async Task<IActionResult> Get(NoteQuery filter)
         {
             if (filter.IdQuestion.HasValue && !filter.IdPollingStation.HasValue)
-                return BadRequest($"If the {filter.IdQuestion} param is provided then the {filter.IdPollingStation} param is required !");
+                return BadRequest($"If the {nameof(filter.IdQuestion)} param is provided then the {nameof(filter.IdPollingStation)} param is required !");
 
             if (!filter.IdObserver.HasValue)
                 filter.IdObserver = this.GetIdObserver();
