@@ -27,9 +27,11 @@ namespace VoteMonitor.Api.Form.Queries
 
 		protected override async Task<List<Entities.Form>> HandleCore(FormVersionQuery request)
 		{
+			bool bringAllForms = request.Diaspora == null || request.Diaspora == true;
+
 			var result = await _context.Forms
 				.AsNoTracking()
-				.Where(x => request.Diaspora == null || x.Diaspora == request.Diaspora)
+				.Where(x => bringAllForms || x.Diaspora == false)
 				.ToListAsync();
 
 
