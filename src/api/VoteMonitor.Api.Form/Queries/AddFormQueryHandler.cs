@@ -27,7 +27,8 @@ namespace VoteMonitor.Api.Form.Queries
                 CurrentVersion = message.Form.CurrentVersion,
                 Description = message.Form.Description,
                 FormSections = new List<FormSection>(),
-				Diaspora = message.Form.Diaspora
+				Diaspora = message.Form.Diaspora,
+				Draft = false
             };
 
             foreach (var fs in message.Form.FormSections) {

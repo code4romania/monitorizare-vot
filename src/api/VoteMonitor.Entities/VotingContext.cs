@@ -238,6 +238,9 @@ namespace VoteMonitor.Entities
                 entity.Property(e => e.Id).HasMaxLength(2);
 
 				entity.Property(x=>x.Diaspora)
+					.HasDefaultValueSql("0"); // check this mapping
+
+				entity.Property(x=>x.Draft)
 					.HasDefaultValueSql("0"); // check this mapping 
 
 			});
