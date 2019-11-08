@@ -126,7 +126,7 @@ namespace VotingIrregularities.Api.Controllers
 
                 if (identity == null) {
                     _logger.LogInformation($"Invalid Phone ({request.User}) or password ({request.Password})");
-                    return BadRequest("{ \"error\": \"A aparut o eroare la logarea in aplicatie. Va rugam sa verificati ca ati introdus corect numarul de telefon si codul de acces, iar daca eroarea persista va rugam contactati serviciul de suport la numarul 0757652712.\" }");
+                    return BadRequest("{ \"error\": \"A aparut o eroare la logarea in aplicatie. Va rugam sa verificati ca ati introdus corect numarul de telefon si codul de acces, iar daca eroarea persista va rugam contactati serviciul de suport la numarul 0767198682.\" }");
                 }
 
                 token = GetTokenFromIdentity(identity);
