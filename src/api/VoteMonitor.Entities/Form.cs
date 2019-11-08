@@ -22,6 +22,9 @@ namespace VoteMonitor.Entities
         [JsonProperty(PropertyName = "diaspora")]
         public bool Diaspora { get; set; }
 
+        [JsonIgnore]
+		public bool Draft { get; set; }
+
 		public virtual ICollection<FormSection> FormSections { get; set; }
     }
 }

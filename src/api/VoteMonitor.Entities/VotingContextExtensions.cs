@@ -162,7 +162,7 @@ namespace VoteMonitor.Entities
 			var f = context.Forms.FirstOrDefault(ff => ff.Code == formCode);
 			if (f == null)
 			{
-				f = new Form { Code = formCode, Diaspora = diaspora };
+				f = new Form { Code = formCode, Diaspora = diaspora ,Draft = false};
 				context.Forms.Add(f);
 				context.SaveChanges();
 			}
@@ -244,7 +244,7 @@ namespace VoteMonitor.Entities
 		private static void SeedForms(this VoteMonitorContext context, string formCode, bool diaspora)
 		{
 			context.Forms.Add(
-				 new Form { Code = formCode, Description = "Description " + formCode, CurrentVersion = 1, Diaspora = diaspora }
+				 new Form { Code = formCode, Description = "Description " + formCode, CurrentVersion = 1, Diaspora = diaspora, Draft = false}
 			 );
 
 			context.SaveChanges();
