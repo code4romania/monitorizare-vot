@@ -32,6 +32,7 @@ namespace VoteMonitor.Api.Form.Queries
 			var result = await _context.Forms
 				.AsNoTracking()
 				.Where(x => bringAllForms || x.Diaspora == false)
+				.Where(x=>x.Draft == false)
 				.ToListAsync();
 
 
