@@ -2,7 +2,6 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -30,13 +29,18 @@ namespace VoteMonitor.Api.Observer.Handlers
                 .Include(pi => pi.Observer)
                 .Where(i => request.CountyCodes.Contains(i.PollingStation.County.Code))
                 .Where(i => i.PollingStation.Number >= request.FromPollingStationNumber)
-                .Where(i => i.PollingStation.Number <= request.ToPollingStationNumber)
-                .Where(i => i.Observer.IdNgo == request.IdNgo)
-                .Select(i => i.Observer)
-                .Select(Mapper.Map<ObserverModel>)
-                .ToList();
+                .Where(i => i.PollingStation.Number <= request.ToPollingStationNumber);
 
-            return Task.FromResult(results);
+                if (request.IdNgo>0)
+                    results= results.Where(i => i.Observer.IdNgo == request.IdNgo);
+
+                var observers = results
+                    .Select(i => i.Observer)
+                    .AsEnumerable()
+                    .Select(Mapper.Map<ObserverModel>)
+                    .ToList();
+
+            return Task.FromResult(observers);
         }
     }
 }
