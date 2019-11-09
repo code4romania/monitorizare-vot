@@ -37,7 +37,7 @@ namespace VotingIrregularities.Api.Queries
             var hashValue = _hash.GetHash(message.Pin);
 
             // Check for username and hash
-            var userQuery = _context.Observers.Where(o => o.Pin == hashValue && o.Phone == message.Phone);
+            var userQuery = _context.Observers.Where(o => o.Pin == hashValue && o.Phone.Trim() == message.Phone.Trim());
 
             // Only if device lock is enabled verify the DeviceId
             if (_mobileSecurityOptions.LockDevice)
