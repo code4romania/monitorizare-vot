@@ -373,6 +373,45 @@ namespace VoteMonitor.Entities
                             onDelete: ReferentialAction.Restrict);
                     });
 
+            migrationBuilder.CreateTable(
+            name: "Notifications",
+            columns: table => new
+            {
+                Id = table.Column<int>(nullable: false).
+                Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                Title = table.Column<string>(maxLength: 256, nullable: false),
+                Channel = table.Column<string>(maxLength: 512, nullable: false),
+                Body = table.Column<string>(maxLength: 512, nullable: false),
+                InsertedAt = table.Column<DateTime>()
+            },
+            constraints: table =>
+            {
+                table.PrimaryKey("PK_Notifications", x => new { x.Id });
+            });
+            migrationBuilder.CreateTable(
+                    name: "NotificationRecipients",
+                    columns: table => new
+                    {
+                        ObserverId = table.Column<int>(nullable: false),
+                        NotificationId = table.Column<int>(nullable: false)
+                    },
+                    constraints: table =>
+                    {
+                        table.PrimaryKey("PK_NotificationRecipients", x => new { x.ObserverId, x.NotificationId });
+                        table.ForeignKey(
+                            name: "FK_NotificationRecipients_Observer",
+                            column: x => x.ObserverId,
+                            principalTable: "Observers",
+                            principalColumn: "Id",
+                            onDelete: ReferentialAction.Restrict);
+                        table.ForeignKey(
+                            name: "FK_NotificationRecipients_Notifications",
+                            column: x => x.NotificationId,
+                            principalTable: "Notifications",
+                            principalColumn: "Id",
+                            onDelete: ReferentialAction.Restrict);
+                    });
+
             migrationBuilder.CreateIndex(
                 name: "IX_NotificationRegistrationData_ObserverId_ChannelName",
                 table: "NotificationRegistrationData",
