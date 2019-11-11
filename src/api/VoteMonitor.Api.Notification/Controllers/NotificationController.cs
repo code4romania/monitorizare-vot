@@ -32,6 +32,8 @@ namespace VoteMonitor.Api.Notification.Controllers
 
             await _mediator.Send(_mapper.Map<NotificationRegistrationDataCommand>(tokenRegistrationModel));
 
+            _logger.LogInformation($"Observer {tokenRegistrationModel.ObserverId} registered for notifications");
+
             return Task.FromResult(new {});
         }
 
