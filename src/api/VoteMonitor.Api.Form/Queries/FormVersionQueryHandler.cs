@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using VoteMonitor.Api.Core.Services;
-using VoteMonitor.Api.Form.Models;
 using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Form.Queries

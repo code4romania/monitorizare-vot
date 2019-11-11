@@ -1,11 +1,9 @@
-﻿using System;
+﻿using AutoMapper;
 using System.Collections.Generic;
-using System.Text;
-using VoteMonitor.Api.Models;
 using VoteMonitor.Entities;
-using AutoMapper;
 
-namespace VoteMonitor.Api.Form.Models {
+namespace VoteMonitor.Api.Form.Models
+{
     public class FormDTO {
         public int Id { get; set; }
         public string Code { get; set; }
@@ -19,27 +17,18 @@ namespace VoteMonitor.Api.Form.Models {
         public FormProfile()
         {
 	        CreateMap<FormDTO, Entities.Form>()
-		        .ForMember(dest => dest.Code, c => c.MapFrom(src => src.Code))
-		        .ForMember(dest => dest.CurrentVersion, c => c.MapFrom(src => src.CurrentVersion))
-		        .ForMember(dest => dest.Description, c => c.MapFrom(src => src.Description))
 		        .ForMember(dest => dest.FormSections, c => c.MapFrom(src => src.FormSections))
-		        .ForMember(dest => dest.Diaspora, c => c.MapFrom(src => src.Diaspora))
 		        .ForMember(dest => dest.Draft, c => c.MapFrom(src => false));
 
-            CreateMap<FormSectionDTO, Entities.FormSection>()
-                .ForMember(dest => dest.Code, c => c.MapFrom(src => src.Code))
-                .ForMember(dest => dest.Description, c => c.MapFrom(src => src.Description))
+            CreateMap<FormSectionDTO, FormSection>()
                 .ForMember(dest => dest.Questions,
                     c => c.MapFrom(src => src.Questions));
 
-            CreateMap<QuestionDTO, Entities.Question>()
-                .ForMember(dest => dest.Code, c => c.MapFrom(src => src.Code))
-                .ForMember(dest => dest.Text, c => c.MapFrom(src => src.Text))
-                .ForMember(dest => dest.QuestionType, c => c.MapFrom(src => src.QuestionType))
+            CreateMap<QuestionDTO, Question>()
                 .ForMember(dest => dest.OptionsToQuestions,
                     c => c.MapFrom(src => src.OptionsToQuestions));
 
-            CreateMap<OptionToQuestionDTO, Entities.OptionToQuestion>()
+            CreateMap<OptionToQuestionDTO, OptionToQuestion>()
                 .ForMember(dest => dest.Option, c => c.MapFrom(src => 
                     new Option { 
                         Text = src.Text, 

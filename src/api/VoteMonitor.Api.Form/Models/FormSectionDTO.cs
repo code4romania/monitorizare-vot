@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using System.Collections.Generic;
-using VoteMonitor.Api.Models;
 using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Form.Models {
@@ -17,13 +16,10 @@ namespace VoteMonitor.Api.Form.Models {
     }
 
     public class QuestionProfile : Profile {
-        public QuestionProfile() {
+        public QuestionProfile()
+        {
             CreateMap<Question, QuestionDTO>()
-                .ForMember(dest => dest.OptionsToQuestions, c => c.MapFrom(src => src.OptionsToQuestions))
-                .ForMember(dest => dest.Id, c => c.MapFrom(src => src.Id))
-                .ForMember(dest => dest.Text, c => c.MapFrom(src => src.Text))
-                .ForMember(dest => dest.QuestionType, c => c.MapFrom(src => (int)src.QuestionType))
-                .ForMember(dest => dest.Code, c => c.MapFrom(src => src.Code));
+                .ForMember(dest => dest.OptionsToQuestions, c => c.MapFrom(src => src.OptionsToQuestions));
 
             CreateMap<OptionToQuestion, OptionToQuestionDTO>()
                 .ForMember(dest => dest.Text, c => c.MapFrom(src => src.Option.Text))

@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using VoteMonitor.Api.Core.Services;
 using VoteMonitor.Api.Form.Models;
-using VoteMonitor.Api.Models;
 using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Form.Queries
