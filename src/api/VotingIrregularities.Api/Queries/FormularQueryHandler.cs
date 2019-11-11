@@ -1,16 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
-using VoteMonitor.Entities;
-using VoteMonitor.Api.Form.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using VoteMonitor.Api.Core.Services;
+using VoteMonitor.Api.Form.Models;
+using VoteMonitor.Api.Form.Queries;
+using VoteMonitor.Entities;
 
-namespace VotingIrregularities.Api.Queries {
+namespace VotingIrregularities.Api.Queries
+{
     [Obsolete]
     public class FormularQueryHandler :
         AsyncRequestHandler<FormQuestionsQuery, IEnumerable<ModelSectiune>>

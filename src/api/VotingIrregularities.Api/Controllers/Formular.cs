@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using VoteMonitor.Api.Form.Models;
-using VoteMonitor.Api.Core.Options;
 using Microsoft.Extensions.Options;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using VoteMonitor.Api.Core.Options;
+using VoteMonitor.Api.Form.Models;
+using VoteMonitor.Api.Form.Queries;
 
 namespace VotingIrregularities.Api.Controllers
 {
