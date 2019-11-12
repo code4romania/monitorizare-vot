@@ -1,16 +1,16 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using VoteMonitor.Api.Location.Commands;
 using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Location.Handlers
 {
-	public class RegisterPollingSectionHandler : AsyncRequestHandler<RegisterPollingStationCommand, int>
+    public class RegisterPollingSectionHandler : AsyncRequestHandler<RegisterPollingStationCommand, int>
 	{
 		private readonly VoteMonitorContext _context;
 		private readonly ILogger _logger;

@@ -1,13 +1,13 @@
+using AutoMapper;
+using EFCore.BulkExtensions;
+using MediatR;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
-using MediatR;
-using Microsoft.Extensions.Logging;
 using VoteMonitor.Api.Location.Commands;
 using VoteMonitor.Entities;
-using EFCore.BulkExtensions;
 
 namespace VoteMonitor.Api.Location.Handlers
 {
