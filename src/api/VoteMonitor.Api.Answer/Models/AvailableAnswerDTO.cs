@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using VoteMonitor.Entities;
 
-namespace VoteMonitor.Api.Answer.Models { 
+namespace VoteMonitor.Api.Answer.Models
+{
     public class AvailableAnswerDTO
     {
         public int IdOption { get; set; }

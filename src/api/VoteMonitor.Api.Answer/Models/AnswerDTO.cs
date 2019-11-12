@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 
-namespace VoteMonitor.Api.Answer.Models {
-    public class AnswerDTO {
+namespace VoteMonitor.Api.Answer.Models
+{
+    public class AnswerDTO
+    {
         public int QuestionId { get; set; }
         public int PollingSectionId { get; set; }
         public string CountyCode { get; set; }
