@@ -1,6 +1,5 @@
-﻿using System;
-using AutoMapper;
-using MonitorizareVot.Api.Location.Models;
+﻿using AutoMapper;
+using System;
 using VoteMonitor.Api.Location.Commands;
 using VoteMonitor.Api.Location.Models;
 using VoteMonitor.Entities;
@@ -8,7 +7,7 @@ using VoteMonitor.Entities;
 namespace VoteMonitor.Api.Location.MappingProfile
 {
 
-	public class PollingStationProfile : Profile
+    public class PollingStationProfile : Profile
 	{
 		public PollingStationProfile()
 		{

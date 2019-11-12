@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using MediatR;
+using Microsoft.Extensions.Options;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using MediatR;
-using Microsoft.Extensions.Options;
 using VoteMonitor.Api.Core.Options;
 using VoteMonitor.Api.Location.Models;
 using VoteMonitor.Api.Location.Queries;
@@ -10,7 +10,7 @@ using VoteMonitor.Api.Location.Services;
 
 namespace VoteMonitor.Api.Location.Handlers
 {
-	public class PollingStationAssignmentHandler : AsyncRequestHandler<PollingStationsAssignmentQuery, IEnumerable<CountyPollingStationLimit>>
+    public class PollingStationAssignmentHandler : AsyncRequestHandler<PollingStationsAssignmentQuery, IEnumerable<CountyPollingStationLimit>>
 	{
 		private readonly IPollingStationService _pollingStationService;
 		private readonly PollingStationsOptions _options;
