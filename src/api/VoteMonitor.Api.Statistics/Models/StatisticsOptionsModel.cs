@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 
-namespace VoteMonitor.Api.Statistics.Models {
+namespace VoteMonitor.Api.Statistics.Models
+{
     public class StatisticsOptionsModel
     {
         public int QuestionId { get; set; }
