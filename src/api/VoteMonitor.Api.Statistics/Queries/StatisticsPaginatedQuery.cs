@@ -1,6 +1,7 @@
 ﻿using VoteMonitor.Api.Core;
 
-namespace VoteMonitor.Api.Statistics.Queries {
+namespace VoteMonitor.Api.Statistics.Queries
+{
 
     public class StatisticsPaginatedQuery : PagingModel
     {

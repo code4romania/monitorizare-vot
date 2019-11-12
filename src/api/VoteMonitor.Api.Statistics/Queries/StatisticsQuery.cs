@@ -1,4 +1,5 @@
-﻿namespace VoteMonitor.Api.Statistics.Queries {
+﻿namespace VoteMonitor.Api.Statistics.Queries
+{
     public class StatisticsQuery
     {
         public int IdONG { get; set; }
