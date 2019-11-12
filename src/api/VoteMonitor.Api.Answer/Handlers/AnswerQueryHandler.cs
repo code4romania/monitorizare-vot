@@ -1,21 +1,25 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Threading.Tasks;
 using VoteMonitor.Api.Answer.Commands;
 using VoteMonitor.Api.Answer.Models;
 using VoteMonitor.Entities;
 
-namespace VoteMonitor.Api.Answer.Handlers {
+namespace VoteMonitor.Api.Answer.Handlers
+{
     public class AnswerQueryHandler :
-        AsyncRequestHandler<BulkAnswers, CompleteazaRaspunsCommand> {
+        AsyncRequestHandler<BulkAnswers, CompleteazaRaspunsCommand>
+    {
         private readonly VoteMonitorContext _context;
 
-        public AnswerQueryHandler(VoteMonitorContext context) {
+        public AnswerQueryHandler(VoteMonitorContext context)
+        {
             _context = context;
         }
 
-        protected override async Task<CompleteazaRaspunsCommand> HandleCore(BulkAnswers message) {
+        protected override async Task<CompleteazaRaspunsCommand> HandleCore(BulkAnswers message)
+        {
             // se identifica sectiile in care observatorul a raspuns
             var sectii = message.Answers
                 .Select(a => new { a.PollingStationNumber, a.CountyCode })
@@ -25,16 +29,18 @@ namespace VoteMonitor.Api.Answer.Handlers {
             var command = new CompleteazaRaspunsCommand { ObserverId = message.ObserverId };
 
 
-            foreach (var sectie in sectii) {
+            foreach (var sectie in sectii)
+            {
                 var idSectie = (await _context
                     .PollingStations
                     .FirstOrDefaultAsync(p => p.County.Code == sectie.CountyCode && p.Number == sectie.PollingStationNumber))
-                    .Id; 
+                    .Id;
                 //(sectie.PollingStationNumber, sectie.CountyCode);
 
                 command.Answers.AddRange(message.Answers
                     .Where(a => a.PollingStationNumber == sectie.PollingStationNumber && a.CountyCode == sectie.CountyCode)
-                    .Select(a => new AnswerDTO {
+                    .Select(a => new AnswerDTO
+                    {
                         QuestionId = a.QuestionId,
                         PollingSectionId = idSectie,
                         Options = a.Options,
