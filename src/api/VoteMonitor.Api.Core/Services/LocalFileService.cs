@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Microsoft.Extensions.Options;
+using System;
 using System.IO;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
 using VotingIrregularities.Api.Options;
 
 namespace VoteMonitor.Api.Core.Services

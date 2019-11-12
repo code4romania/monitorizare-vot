@@ -1,8 +1,8 @@
-﻿using System.IO;
+﻿using MediatR;
+using System.IO;
 using System.Threading.Tasks;
-using MediatR;
-using VoteMonitor.Api.Core.Services;
 using VoteMonitor.Api.Core.Commands;
+using VoteMonitor.Api.Core.Services;
 
 namespace VoteMonitor.Api.Core.Handlers
 {
@@ -22,10 +22,12 @@ namespace VoteMonitor.Api.Core.Handlers
         protected override async Task<string> HandleCore(UploadFileCommand message)
         {
             if (message.File != null)
+            {
                 return await _fileService.UploadFromStreamAsync(message.File.OpenReadStream(),
                     message.File.ContentType,
                     Path.GetExtension(message.File.FileName),
                     message.UploadType);
+            }
 
             return string.Empty;
         }
