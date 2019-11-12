@@ -1,8 +1,8 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Caching.Distributed;
+﻿using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System;
+using System.Threading.Tasks;
 
 namespace VoteMonitor.Api.Core.Services
 {
@@ -24,7 +24,9 @@ namespace VoteMonitor.Api.Core.Services
             var obj = await GetObjectSafeAsync<T>(name);
 
             if (obj != null)
+            {
                 return obj;
+            }
 
             var result = await source();
 
@@ -67,10 +69,13 @@ namespace VoteMonitor.Api.Core.Services
                 var obj = JsonConvert.SerializeObject(value);
 
                 if (options != null)
+                {
                     await _cache.SetAsync(name.ToString(), GetBytes(obj), options);
+                }
                 else
+                {
                     await _cache.SetAsync(name.ToString(), GetBytes(obj));
-
+                }
             }
             catch (Exception exception)
             {
