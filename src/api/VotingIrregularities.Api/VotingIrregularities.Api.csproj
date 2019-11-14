@@ -32,6 +32,7 @@
     <None Remove="Models\PollingStation\**" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\VoteMonitor.Api.DataExport\VoteMonitor.Api.DataExport.csproj" />
     <ProjectReference Include="..\VoteMonitor.Api.Answer\VoteMonitor.Api.Answer.csproj" />
     <ProjectReference Include="..\VoteMonitor.Api.Core\VoteMonitor.Api.Core.csproj" />
     <ProjectReference Include="..\VoteMonitor.Api.Form\VoteMonitor.Api.Form.csproj" />
