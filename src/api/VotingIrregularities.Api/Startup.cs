@@ -42,6 +42,7 @@ using VoteMonitor.Api.Core.Handlers;
 using VoteMonitor.Api.Notification.Controllers;
 using System.IO;
 using VoteMonitor.Api.Core.Options;
+using VoteMonitor.Api.DataExport.Controller;
 using VoteMonitor.Api.Statistics.Controllers;
 using VotingIrregularities.Api.Extensions.Startup;
 
@@ -102,6 +103,7 @@ namespace VotingIrregularities.Api
                 .AddApplicationPart(typeof(FormController).Assembly)
                 .AddApplicationPart(typeof(AnswersController).Assembly)
                 .AddApplicationPart(typeof(StatisticsController).Assembly)
+                .AddApplicationPart(typeof(DataExportController).Assembly)
                 .AddControllersAsServices()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddSwaggerGen(options =>
@@ -381,6 +383,7 @@ namespace VotingIrregularities.Api
             yield return typeof(UploadFileHandler).GetTypeInfo().Assembly;
             yield return typeof(NotificationController).GetTypeInfo().Assembly;
             yield return typeof(StatisticsController).GetTypeInfo().Assembly;
+            yield return typeof(DataExportController).GetTypeInfo().Assembly;
             // just to identify VotingIrregularities.Domain assembly
         }
     }
