@@ -30,7 +30,6 @@ namespace VoteMonitor.Api.DataExport.Controller
                 return NotFound();
             }
 
-
             return File(
                 fileContents: excelFileBytes,
                 contentType: Utility.EXCEL_MEDIA_TYPE,
