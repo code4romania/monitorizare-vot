@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.IO;
+using System.Text.RegularExpressions;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
-using System.Text.RegularExpressions;
 
-namespace VoteMonitor.Api.DataExport.Controller
+namespace VoteMonitor.Api.DataExport
 {
     public interface IExcelGenerator
     {
