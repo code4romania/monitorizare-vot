@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
@@ -9,7 +10,7 @@ using VoteMonitor.Entities;
 namespace VoteMonitor.Api.Form.Queries
 {
     public class AddFormQueryHandler :
-        AsyncRequestHandler<AddFormQuery, FormDTO>
+        IRequestHandler<AddFormQuery, FormDTO>
     {
         private readonly VoteMonitorContext _context;
         private readonly IMapper _mapper;
@@ -20,7 +21,7 @@ namespace VoteMonitor.Api.Form.Queries
             _mapper = mapper;
         }
 
-        protected override async Task<FormDTO> HandleCore(AddFormQuery message) {
+        public async Task<FormDTO> Handle(AddFormQuery message, CancellationToken cancellationToken) {
             var newForm = new Entities.Form
             {
                 Code = message.Form.Code,
