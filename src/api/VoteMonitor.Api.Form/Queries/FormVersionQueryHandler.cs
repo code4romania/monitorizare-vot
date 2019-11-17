@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -7,7 +8,7 @@ using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Form.Queries
 {
-	public class FormVersionQueryHandler : AsyncRequestHandler<FormVersionQuery, List<Entities.Form>>
+	public class FormVersionQueryHandler : IRequestHandler<FormVersionQuery, List<Entities.Form>>
 	{
 		private readonly VoteMonitorContext _context;
 
@@ -16,7 +17,7 @@ namespace VoteMonitor.Api.Form.Queries
 			_context = context;
 		}
 
-		protected override async Task<List<Entities.Form>> HandleCore(FormVersionQuery request)
+		public async Task<List<Entities.Form>> Handle(FormVersionQuery request, CancellationToken cancellationToken)
 		{
 			var bringAllForms = request.Diaspora == null || request.Diaspora == true;
 

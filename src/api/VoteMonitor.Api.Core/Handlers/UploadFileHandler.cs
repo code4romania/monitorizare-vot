@@ -1,12 +1,13 @@
 ﻿using MediatR;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using VoteMonitor.Api.Core.Commands;
 using VoteMonitor.Api.Core.Services;
 
 namespace VoteMonitor.Api.Core.Handlers
 {
-    public class UploadFileHandler : AsyncRequestHandler<UploadFileCommand, string>
+    public class UploadFileHandler : IRequestHandler<UploadFileCommand, string>
     {
         private readonly IFileService _fileService;
 
@@ -19,7 +20,7 @@ namespace VoteMonitor.Api.Core.Handlers
         ///  Uploads a file in azure blob storage
         /// </summary>
         /// <returns>The url of the blob</returns>
-        protected override async Task<string> HandleCore(UploadFileCommand message)
+        public async Task<string> Handle(UploadFileCommand message, CancellationToken cancellationToken)
         {
             if (message.File != null)
             {
