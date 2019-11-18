@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Threading;
+using System.Threading.Tasks;
 using VoteMonitor.Api.DataExport.Queries;
 using VoteMonitor.Entities;
 
@@ -46,7 +45,7 @@ namespace VoteMonitor.Api.DataExport.Handlers
             //      })
             //      .ToListAsync(cancellationToken);
 
-            var exportData = _context.ExportModels.FromSql(@" SELECT
+            var query = @" SELECT
             NEWID() as Id,   
 			obs.Phone as [ObserverPhone],
 			obs.IdNgo,
@@ -76,12 +75,53 @@ namespace VoteMonitor.Api.DataExport.Handlers
 			LEFT JOIN Notes n
 				ON n.IdQuestion = q.Id AND n.IdObserver = obs.Id AND n.IdPollingStation = a.IdPollingStation
 		WHERE
-			a.LastModified >= @LastModified
+			a.LastModified >= @from
 			AND a.IdObserver > @IdObserverLimit
-			AND obs.IdNgo <> @IdNgo
-            ", new SqlParameter("LastModified", new DateTime(2019, 11, 08, 6, 0, 0))
-                , new SqlParameter("IdObserverLimit", 10)
-                , new SqlParameter("IdNgo", 1));
+            
+            ";
+
+            var parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@from", request.From ?? new DateTime(2019, 11, 08, 6, 0, 0)),
+                //TODO remove limit for observer Id
+                new SqlParameter("@IdObserverLimit", 10),
+
+            };
+
+            if (request.ApplyFilters)
+            {
+                if (request.To.HasValue)
+                {
+                    query += " AND a.LastModified <= @to ";
+                    parameters.Add(new SqlParameter("@to", request.To ?? DateTime.Now.AddDays(2)));
+                }
+
+                if (request.ObserverId.HasValue)
+                {
+                    query += " AND obs.Id = @ObserverId ";
+                    parameters.Add(new SqlParameter("@ObserverId", request.ObserverId));
+                }
+
+                if (request.NgoId.HasValue)
+                {
+                    query += " AND obs.IdNgo = @IdNgo ";
+                    parameters.Add(new SqlParameter("@IdNgo", request.NgoId));
+                }
+
+                if (!string.IsNullOrEmpty(request.County))
+                {
+                    query += " AND a.CountyCode = @County ";
+                    parameters.Add(new SqlParameter("@County", request.County));
+                }
+
+                if (request.PollingStationNumber.HasValue)
+                {
+                    query += " AND a.PollingStationNumber = @PollingStationNumber ";
+                    parameters.Add(new SqlParameter("@PollingStationNumber", request.PollingStationNumber));
+                }
+            }
+
+            var exportData = _context.ExportModels.FromSql(query, parameters.ToArray());
 
             return await exportData.ToListAsync(cancellationToken);
         }

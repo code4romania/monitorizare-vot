@@ -1,12 +1,14 @@
-﻿using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
 using VoteMonitor.Api.DataExport.Queries;
 
 namespace VoteMonitor.Api.DataExport.Controller
 {
     [Route("api/v1/export")]
-    public class DataExportController :Microsoft.AspNetCore.Mvc.Controller
+    public class DataExportController : Microsoft.AspNetCore.Mvc.Controller
     {
         private readonly IMediator _mediator;
 
@@ -20,9 +22,20 @@ namespace VoteMonitor.Api.DataExport.Controller
         /// </summary>
         /// <returns></returns>
         [HttpGet("all")]
-        public async Task<IActionResult> GetMyData()
+        [Authorize("NgoAdmin")]
+        public async Task<IActionResult> GetMyData(int? idNgo, int? idObserver, int? pollingStationNumber, string county, DateTime? from, DateTime? to)
         {
-            var data = await _mediator.Send(new GetDataForExport());
+            var filter = new GetDataForExport
+            {
+                NgoId = idNgo,
+                ObserverId = idObserver,
+                PollingStationNumber = pollingStationNumber,
+                County = county,
+                From = from,
+                To = to
+            };
+
+            var data = await _mediator.Send(filter);
             var excelFileBytes = await _mediator.Send(new GenerateExcelFile(data));
 
             if (excelFileBytes == null || excelFileBytes.Length == 0)

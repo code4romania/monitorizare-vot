@@ -11,8 +11,8 @@
 		<PackageReference Include="Microsoft.Extensions.Caching.Redis" Version="2.2.0" />
 	</ItemGroup>
 	<ItemGroup>
-	  <ProjectReference Include="..\api\VoteMonitor.Api.Core\VoteMonitor.Api.Core.csproj" />
-	  <ProjectReference Include="..\api\VoteMonitor.Entities\VoteMonitor.Entities.csproj" />
+	  <ProjectReference Include="..\VoteMonitor.Api.Core\VoteMonitor.Api.Core.csproj" />
+	  <ProjectReference Include="..\VoteMonitor.Entities\VoteMonitor.Entities.csproj" />
 	</ItemGroup>
 
 </Project>
