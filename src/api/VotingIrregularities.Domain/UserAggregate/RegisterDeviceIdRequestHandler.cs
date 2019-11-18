@@ -2,12 +2,13 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using VoteMonitor.Entities;
 
 namespace VotingIrregularities.Domain.UserAggregate
 {
-    public class RegisterDeviceIdRequestHandler : AsyncRequestHandler<RegisterDeviceId, int>
+    public class RegisterDeviceIdRequestHandler : IRequestHandler<RegisterDeviceId, int>
     {
         private readonly VoteMonitorContext _context;
         private readonly ILogger _logger;
@@ -17,7 +18,7 @@ namespace VotingIrregularities.Domain.UserAggregate
             _context = context;
             _logger = logger;
         }
-        protected override async Task<int> HandleCore(RegisterDeviceId request)
+        public async Task<int> Handle(RegisterDeviceId request, CancellationToken cancellationToken)
         {
             try
             {

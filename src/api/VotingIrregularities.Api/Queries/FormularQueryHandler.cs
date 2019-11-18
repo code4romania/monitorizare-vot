@@ -5,6 +5,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using VoteMonitor.Api.Core.Services;
 using VoteMonitor.Api.Form.Models;
@@ -15,7 +16,7 @@ namespace VotingIrregularities.Api.Queries
 {
     [Obsolete]
     public class FormularQueryHandler :
-        AsyncRequestHandler<FormQuestionsQuery, IEnumerable<ModelSectiune>>
+        IRequestHandler<FormQuestionsQuery, IEnumerable<ModelSectiune>>
     {
         private readonly VoteMonitorContext _context;
         private readonly IMapper _mapper;
@@ -28,7 +29,7 @@ namespace VotingIrregularities.Api.Queries
             _cacheService = cacheService;
         }
 
-        protected override async Task<IEnumerable<ModelSectiune>> HandleCore(FormQuestionsQuery message)
+        public async Task<IEnumerable<ModelSectiune>> Handle(FormQuestionsQuery message, CancellationToken cancellationToken)
         {
             var cacheKey = $"Formular{message.CodFormular}";
 
@@ -40,7 +41,7 @@ namespace VotingIrregularities.Api.Queries
                         .Include(a => a.OptionsToQuestions)
                         .ThenInclude(a => a.Option)
                         .Where(a => a.FormSection.Form.Code == message.CodFormular) // todo: maybe we should query by FormId, since Form Code might not be unique if we have verions of the same form
-                        .ToListAsync();
+                        .ToListAsync(cancellationToken: cancellationToken);
 
                     var sectiuni = r.Select(a => new { IdSectiune = a.IdSection, CodSectiune = a.FormSection.Code, Descriere = a.FormSection.Description }).Distinct();
 
