@@ -5,13 +5,14 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using VoteMonitor.Api.Answer.Commands;
 using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Answer.Handlers
 {
-    public class FillInAnswerQueryHandler : AsyncRequestHandler<CompleteazaRaspunsCommand, int>
+    public class FillInAnswerQueryHandler : IRequestHandler<CompleteazaRaspunsCommand, int>
     {
         private readonly VoteMonitorContext _context;
         private readonly IMapper _mapper;
@@ -24,7 +25,7 @@ namespace VoteMonitor.Api.Answer.Handlers
             _logger = logger;
         }
 
-        protected override async Task<int> HandleCore(CompleteazaRaspunsCommand message)
+        public async Task<int> Handle(CompleteazaRaspunsCommand message, CancellationToken cancellationToken)
         {
             try
             {

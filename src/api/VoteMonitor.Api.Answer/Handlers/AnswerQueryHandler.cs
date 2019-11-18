@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using VoteMonitor.Api.Answer.Commands;
 using VoteMonitor.Api.Answer.Models;
@@ -9,7 +10,7 @@ using VoteMonitor.Entities;
 namespace VoteMonitor.Api.Answer.Handlers
 {
     public class AnswerQueryHandler :
-        AsyncRequestHandler<BulkAnswers, CompleteazaRaspunsCommand>
+        IRequestHandler<BulkAnswers, CompleteazaRaspunsCommand>
     {
         private readonly VoteMonitorContext _context;
 
@@ -18,7 +19,7 @@ namespace VoteMonitor.Api.Answer.Handlers
             _context = context;
         }
 
-        protected override async Task<CompleteazaRaspunsCommand> HandleCore(BulkAnswers message)
+        public async Task<CompleteazaRaspunsCommand> Handle(BulkAnswers message, CancellationToken cancellationToken)
         {
             // se identifica sectiile in care observatorul a raspuns
             var sectii = message.Answers
