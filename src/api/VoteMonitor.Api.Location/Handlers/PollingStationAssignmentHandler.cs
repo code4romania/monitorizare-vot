@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using VoteMonitor.Api.Core.Options;
 using VoteMonitor.Api.Location.Models;
@@ -10,7 +11,7 @@ using VoteMonitor.Api.Location.Services;
 
 namespace VoteMonitor.Api.Location.Handlers
 {
-    public class PollingStationAssignmentHandler : AsyncRequestHandler<PollingStationsAssignmentQuery, IEnumerable<CountyPollingStationLimit>>
+    public class PollingStationAssignmentHandler : IRequestHandler<PollingStationsAssignmentQuery, IEnumerable<CountyPollingStationLimit>>
 	{
 		private readonly IPollingStationService _pollingStationService;
 		private readonly PollingStationsOptions _options;
@@ -21,7 +22,7 @@ namespace VoteMonitor.Api.Location.Handlers
 			_options = options.Value;
 		}
 
-		protected override async Task<IEnumerable<CountyPollingStationLimit>> HandleCore(PollingStationsAssignmentQuery message)
+		public async Task<IEnumerable<CountyPollingStationLimit>> Handle(PollingStationsAssignmentQuery message, CancellationToken cancellationToken)
 		{
 			var counties = await _pollingStationService.GetPollingStationsAssignmentsForAllCounties(message.Diaspora);
 

@@ -4,13 +4,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using VoteMonitor.Api.Location.Commands;
 using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Location.Handlers
 {
-    public class RegisterPollingSectionHandler : AsyncRequestHandler<RegisterPollingStationCommand, int>
+    public class RegisterPollingSectionHandler : IRequestHandler<RegisterPollingStationCommand, int>
 	{
 		private readonly VoteMonitorContext _context;
 		private readonly ILogger _logger;
@@ -23,7 +24,7 @@ namespace VoteMonitor.Api.Location.Handlers
 			_mapper = mapper;
 		}
 
-		protected override async Task<int> HandleCore(RegisterPollingStationCommand message)
+		public async Task<int> Handle(RegisterPollingStationCommand message, CancellationToken cancellationToken)
 		{
 			try
 			{

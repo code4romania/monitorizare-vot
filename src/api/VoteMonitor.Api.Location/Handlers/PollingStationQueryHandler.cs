@@ -1,11 +1,12 @@
-﻿using MediatR;
+﻿using System.Threading;
+using MediatR;
 using System.Threading.Tasks;
 using VoteMonitor.Api.Location.Queries;
 using VoteMonitor.Api.Location.Services;
 
 namespace VoteMonitor.Api.Location.Handlers
 {
-    public class PollingStationQueryHandler : AsyncRequestHandler<PollingStationQuery, int>
+    public class PollingStationQueryHandler : IRequestHandler<PollingStationQuery, int>
     {
         private readonly IPollingStationService _pollingStationService;
 
@@ -14,7 +15,7 @@ namespace VoteMonitor.Api.Location.Handlers
             _pollingStationService = pollingStationService;
         }
 
-        protected override async Task<int> HandleCore(PollingStationQuery message)
+        public async Task<int> Handle(PollingStationQuery message, CancellationToken cancellationToken)
         {
             return await _pollingStationService.GetPollingStationByCountyCode(message.IdPollingStation, message.CountyCode);
         }
