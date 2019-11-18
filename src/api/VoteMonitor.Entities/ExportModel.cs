@@ -1,9 +1,10 @@
 ﻿using System;
 
-namespace VoteMonitor.Api.DataExport.Model
+namespace VoteMonitor.Entities
 {
 	public class ExportModel
 	{
+        public Guid Id { get; set; }
 		public string ObserverPhone { get; set; }
 		public int IdNgo { get; set; }
 		public string FormCode { get; set; }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using MediatR;
-using VoteMonitor.Api.DataExport.Model;
+using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.DataExport.Queries
 {
