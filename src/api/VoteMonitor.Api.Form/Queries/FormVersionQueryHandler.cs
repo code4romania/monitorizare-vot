@@ -10,7 +10,7 @@ using VoteMonitor.Entities;
 namespace VoteMonitor.Api.Form.Queries
 {
 
-	public class FormVersionQueryHandler : IRequestHandler<FormVersionQuery, List<Entities.Form>>
+	public class FormVersionQueryHandler : IRequestHandler<FormVersionQuery, List<FormDetailsModel>>
 	{
 		private readonly VoteMonitorContext _context;
 
