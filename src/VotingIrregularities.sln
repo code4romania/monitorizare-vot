@@ -41,7 +41,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoteMonitor.Api.Notificatio
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoteMonitor.Api.Statistics", "api\VoteMonitor.Api.Statistics\VoteMonitor.Api.Statistics.csproj", "{8BA1E3BC-0F4A-4120-965E-D2709887D05E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoteMonitor.Api.DataExport", "VoteMonitor.Api.DataExport\VoteMonitor.Api.DataExport.csproj", "{4EDC6262-9BA5-46E7-BB90-E31F499A9F5A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoteMonitor.Api.DataExport", "api\VoteMonitor.Api.DataExport\VoteMonitor.Api.DataExport.csproj", "{4EDC6262-9BA5-46E7-BB90-E31F499A9F5A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

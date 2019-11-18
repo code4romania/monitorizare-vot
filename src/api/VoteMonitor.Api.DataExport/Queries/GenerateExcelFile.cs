@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using MediatR;
+﻿using MediatR;
+using System.Collections.Generic;
 using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.DataExport.Queries
