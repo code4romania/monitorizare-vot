@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using VoteMonitor.Api.Location.Services;
 using VotingIrregularities.Api.Models;
@@ -11,7 +12,7 @@ namespace VotingIrregularities.Api.Queries
     /// Hidrateaza sectiile de votare din comanda data de observator.
     /// </summary>
     public class RaspunsQueryHandler :
-        AsyncRequestHandler<RaspunsuriBulk, CompleteazaRaspunsCommand>
+        IRequestHandler<RaspunsuriBulk, CompleteazaRaspunsCommand>
     {
         private readonly IPollingStationService _pollingStationService;
 
@@ -20,7 +21,7 @@ namespace VotingIrregularities.Api.Queries
             _pollingStationService = svService;
         }
 
-        protected override async Task<CompleteazaRaspunsCommand> HandleCore(RaspunsuriBulk message)
+        public async Task<CompleteazaRaspunsCommand> Handle(RaspunsuriBulk message, CancellationToken cancellationToken)
         {
             // se identifica sectiile in care observatorul a raspuns
             var sectii = message.ModelRaspunsuriBulk

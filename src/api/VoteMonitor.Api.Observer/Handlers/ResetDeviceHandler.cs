@@ -2,13 +2,14 @@
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using VoteMonitor.Api.Observer.Commands;
 using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Observer.Handlers
 {
-    public class ResetDeviceHandler : AsyncRequestHandler<ResetDeviceCommand, int>
+    public class ResetDeviceHandler : IRequestHandler<ResetDeviceCommand, int>
     {
         private readonly VoteMonitorContext _voteMonitorContext;
         private readonly ILogger _logger;
@@ -19,7 +20,7 @@ namespace VoteMonitor.Api.Observer.Handlers
             _logger = logger;
         }
 
-        protected override Task<int> HandleCore(ResetDeviceCommand request)
+        public Task<int> Handle(ResetDeviceCommand request, CancellationToken cancellationToken)
         {
             try
             {
@@ -34,7 +35,7 @@ namespace VoteMonitor.Api.Observer.Handlers
                 observer.MobileDeviceId = null;
 
                 _voteMonitorContext.Update(observer);
-                return _voteMonitorContext.SaveChangesAsync();
+                return _voteMonitorContext.SaveChangesAsync(cancellationToken);
             }
             catch (Exception exception)
             {

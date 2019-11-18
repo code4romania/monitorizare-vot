@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using VoteMonitor.Api.Core.Options;
 using VoteMonitor.Api.Core.Services;
@@ -13,7 +14,7 @@ namespace VotingIrregularities.Api.Queries
     /// <summary>
     /// Handles the query regarding the authentication of the observer - checks the phone number and hashed pin against the database
     /// </summary>
-    public class ObserverAuthenticationQueryHandler : AsyncRequestHandler<ObserverApplicationUser, RegisteredObserverModel>
+    public class ObserverAuthenticationQueryHandler : IRequestHandler<ObserverApplicationUser, RegisteredObserverModel>
     {
         private readonly VoteMonitorContext _context;
         private readonly IHashService _hash;
@@ -32,7 +33,7 @@ namespace VotingIrregularities.Api.Queries
             _mobileSecurityOptions = mobileSecurityOptions.Value;
         }
 
-        protected override async Task<RegisteredObserverModel> HandleCore(ObserverApplicationUser message)
+        public async Task<RegisteredObserverModel> Handle(ObserverApplicationUser message, CancellationToken cancellationToken)
         {
             var hashValue = _hash.GetHash(message.Pin);
 
@@ -43,7 +44,7 @@ namespace VotingIrregularities.Api.Queries
             if (_mobileSecurityOptions.LockDevice)
                 userQuery = userQuery.Where(o => string.IsNullOrWhiteSpace(o.MobileDeviceId) || o.MobileDeviceId == message.UDID);
 
-            var userinfo = await userQuery.FirstOrDefaultAsync();
+            var userinfo = await userQuery.FirstOrDefaultAsync(cancellationToken: cancellationToken);
 
             if (userinfo == null)
                 return new RegisteredObserverModel

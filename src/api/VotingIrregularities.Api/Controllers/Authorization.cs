@@ -28,7 +28,6 @@ namespace VotingIrregularities.Api.Controllers
         private readonly JwtIssuerOptions _jwtOptions;
         private readonly ILogger _logger;
         private readonly IMediator _mediator;
-        private readonly JsonSerializerSettings _serializerSettings;
         private readonly MobileSecurityOptions _mobileSecurityOptions;
 
         /// <inheritdoc />
@@ -40,11 +39,6 @@ namespace VotingIrregularities.Api.Controllers
             _logger = logger;
             _mediator = mediator;
             _mobileSecurityOptions = mobileSecurityOptions.Value;
-
-            _serializerSettings = new JsonSerializerSettings
-            {
-                Formatting = Formatting.Indented
-            };
         }
 
         /// <summary>
