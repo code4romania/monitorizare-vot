@@ -4,10 +4,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using VoteMonitor.Api.Form.Models;
 using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Form.Queries
 {
+
 	public class FormVersionQueryHandler : IRequestHandler<FormVersionQuery, List<Entities.Form>>
 	{
 		private readonly VoteMonitorContext _context;
@@ -17,7 +19,8 @@ namespace VoteMonitor.Api.Form.Queries
 			_context = context;
 		}
 
-		public async Task<List<Entities.Form>> Handle(FormVersionQuery request, CancellationToken cancellationToken)
+
+		public async Task<List<FormDetailsModel>> Handle(FormVersionQuery request, CancellationToken cancellationToken)
 		{
 			var bringAllForms = request.Diaspora == null || request.Diaspora == true;
 
@@ -32,6 +35,13 @@ namespace VoteMonitor.Api.Form.Queries
 					.OrderBy(x => x.VotingDay)
 					.ThenBy(x => x.FormLetter)
 					.Select(x => x.Form)
+                    .Select(x=>new FormDetailsModel() { 
+                       Id = x.Id,
+                       Description = x.Description,
+                       Code = x.Code,
+                       CurrentVersion = x.CurrentVersion,
+                       Diaspora = x.Diaspora
+                    })
 					.ToList();
 
 			return sortedForms;

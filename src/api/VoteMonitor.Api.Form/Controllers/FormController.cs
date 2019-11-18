@@ -55,7 +55,7 @@ namespace VoteMonitor.Api.Form.Controllers
 		/// <returns></returns>
 		[HttpGet]
 		public async Task<IActionResult> GetFormsAsync(bool? diaspora)
-			=> Ok(new { FormVersions = await _mediator.Send(new FormVersionQuery(diaspora)) });
+			=> Ok(new FormVersionsModel { FormVersions = await _mediator.Send(new FormVersionQuery(diaspora)) });
 
 		/// <summary>
 		/// Se interogheaza ultima versiunea a formularului pentru observatori si se primeste definitia lui. 
