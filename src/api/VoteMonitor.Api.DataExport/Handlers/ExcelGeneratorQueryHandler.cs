@@ -1,12 +1,11 @@
-﻿using System.Threading;
+﻿using MediatR;
+using System.Threading;
 using System.Threading.Tasks;
-using MediatR;
-using VoteMonitor.Api.DataExport.Controller;
 using VoteMonitor.Api.DataExport.Queries;
 
 namespace VoteMonitor.Api.DataExport.Handlers
 {
-    public class ExcelGeneratorQueryHandler: IRequestHandler<GenerateExcelFile, byte[]>
+    public class ExcelGeneratorQueryHandler : IRequestHandler<GenerateExcelFile, byte[]>
     {
         private readonly IExcelGenerator _excelGenerator;
 
