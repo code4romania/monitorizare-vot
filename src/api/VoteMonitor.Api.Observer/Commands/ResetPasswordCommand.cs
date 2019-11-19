@@ -2,14 +2,17 @@
 
 namespace VoteMonitor.Api.Observer.Commands
 {
-    public class ResetPasswordCommand : IRequest<string>
+    public class ResetPasswordCommand : IRequest<bool>
     {
-        public ResetPasswordCommand(int id, string phone)
+        public ResetPasswordCommand(int id, string phone, string pin)
         {
             IdNgo = id;
             PhoneNumber = phone;
+            Pin = pin;
+
         }
-        public int IdNgo;
-        public string PhoneNumber;
+        public int IdNgo { get; }
+        public string PhoneNumber { get; }
+        public string Pin { get; }
     }
 }
