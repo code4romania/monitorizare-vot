@@ -1,11 +1,11 @@
-﻿using System;
+﻿using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.IO;
 using System.Text.RegularExpressions;
-using NPOI.SS.UserModel;
-using NPOI.XSSF.UserModel;
 
 namespace VoteMonitor.Api.DataExport
 {
@@ -60,7 +60,10 @@ namespace VoteMonitor.Api.DataExport
             {
                 DataRow row = table.NewRow();
                 foreach (PropertyDescriptor prop in properties)
+                {
                     row[prop.Name] = prop.GetValue(item) ?? DBNull.Value;
+                }
+
                 table.Rows.Add(row);
             }
             #endregion
