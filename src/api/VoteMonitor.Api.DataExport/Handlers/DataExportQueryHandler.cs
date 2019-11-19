@@ -84,7 +84,7 @@ namespace VoteMonitor.Api.DataExport.Handlers
             {
                 new SqlParameter("@from", request.From ?? new DateTime(2019, 11, 08, 6, 0, 0)),
                 //TODO remove limit for observer Id
-                new SqlParameter("@IdObserverLimit", 10),
+                new SqlParameter("@IdObserverLimit", 49),
 
             };
 
