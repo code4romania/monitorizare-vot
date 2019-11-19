@@ -13,7 +13,7 @@ namespace VoteMonitor.Api.Core
         public static readonly int UPPER_OBS_VALUE = 300;
         public static readonly string RESET_ERROR_MESSAGE = "Internal server error, please verify that provided id is correct ";
         public static readonly string DEVICE_RESET = "device";
-        public static readonly string PASSWORD_RESET = "password";
+        public static readonly string PASSWORD_RESET = "reset-password";
 
         public static int GetIdOngOrDefault(this Controller controller, int defaultIdOng)
         {
