@@ -90,7 +90,7 @@ namespace VotingIrregularities.Api.Middleware
     // Extension method used to add the middleware to the HTTP request pipeline.
     public static class ExceptionLoggerMiddlewareExtensions
     {
-        public static IApplicationBuilder UseExceptionLoggerMiddleware(this IApplicationBuilder builder)
+        public static IApplicationBuilder UseCustomExceptionLoggerMiddleware(this IApplicationBuilder builder)
         {
             return builder.UseMiddleware<ExceptionHandlerMiddleware>();
         }

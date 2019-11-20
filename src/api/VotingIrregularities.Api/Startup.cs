@@ -45,6 +45,7 @@ using VoteMonitor.Api.Core.Options;
 using VoteMonitor.Api.DataExport.Controller;
 using VoteMonitor.Api.Statistics.Controllers;
 using VotingIrregularities.Api.Extensions.Startup;
+using VotingIrregularities.Api.Middleware;
 
 namespace VotingIrregularities.Api
 {
@@ -169,18 +170,7 @@ namespace VotingIrregularities.Api
 
             appLifetime.ApplicationStopped.Register(Log.CloseAndFlush);
 
-            app.UseExceptionHandler(
-                builder =>
-                {
-                    builder.Run(context =>
-                    {
-                        context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                        context.Response.ContentType = "application/json";
-                        return Task.FromResult(0);
-                    }
-                    );
-                }
-            );
+            app.UseCustomExceptionLoggerMiddleware();
 
 
             app.UseAuthentication();
