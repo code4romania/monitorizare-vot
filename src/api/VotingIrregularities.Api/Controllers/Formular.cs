@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using VotingIrregularities.Api.Models;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using VoteMonitor.Api.Core.Options;
+using VoteMonitor.Api.Form.Models;
+using VoteMonitor.Api.Form.Queries;
 
 namespace VotingIrregularities.Api.Controllers
 {
@@ -13,15 +15,15 @@ namespace VotingIrregularities.Api.Controllers
     /// Ruta Formular ofera suport pentru toate operatiile legate de formularele completate de observatori
     /// </summary>
     [Route("api/v1/formular")]
-    [Obsolete]
+    [Obsolete("use /form instead")]
     public class Formular : Controller
     {
-        private readonly IConfigurationRoot _configuration;
+        private readonly ApplicationCacheOptions _cacheOptions;
         private readonly IMediator _mediator;
 
-        public Formular(IMediator mediator, IConfigurationRoot configuration)
+        public Formular(IMediator mediator, IOptions<ApplicationCacheOptions> cacheOptions)
         {
-            _configuration = configuration;
+			_cacheOptions = cacheOptions.Value;
             _mediator = mediator;
         }
 
@@ -33,19 +35,20 @@ namespace VotingIrregularities.Api.Controllers
         [HttpGet("versiune")]
         public async Task<IActionResult> GetFormVersions()
         {
+			// for now all of the forms are retrieved
             var formsAsDict = new Dictionary<string, int>();
-            (await _mediator.Send(new FormVersionQuery())).ForEach(form => formsAsDict.Add(form.Id, form.CurrentVersion));
+            (await _mediator.Send(new FormVersionQuery(null))).ForEach(form => formsAsDict.Add(form.Code, form.CurrentVersion));
 
             return Ok(new { Versiune = formsAsDict });
         }
 
         /// <summary>
-        /// Returns an array of forms
+        /// Returns an array of forms. This method will not apply filtering
         /// </summary>
         /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> GetFormsAsync()
-            => Ok(new ModelVersiune { Formulare = await _mediator.Send(new FormVersionQuery()) });
+            => Ok(new { Formulare = await _mediator.Send(new FormVersionQuery(null)) });
 
         /// <summary>
         /// Se interogheaza ultima versiunea a formularului pentru observatori si se primeste definitia lui. 
@@ -59,10 +62,10 @@ namespace VotingIrregularities.Api.Controllers
         {
             var result = await _mediator.Send(new FormQuestionsQuery {
                 CodFormular = idformular,
-                CacheHours = _configuration.GetValue<int>("DefaultCacheHours"),
-                CacheMinutes = _configuration.GetValue<int>("DefaultCacheMinutes"),
-                CacheSeconds = _configuration.GetValue<int>("DefaultCacheSeconds")
-            });
+				CacheHours = _cacheOptions.Hours,
+				CacheMinutes = _cacheOptions.Minutes,
+				CacheSeconds = _cacheOptions.Seconds
+			});
 
             return result;
         }

@@ -1,35 +1,31 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using LinqKit;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using VotingIrregularities.Domain.Models;
+using VoteMonitor.Entities;
 using VotingIrregularities.Domain.RaspunsAggregate.Commands;
-using Z.EntityFramework.Plus;
 
 namespace VotingIrregularities.Domain.RaspunsAggregate
 {
-    public class CompleteazaRaspunsHandler : AsyncRequestHandler<CompleteazaRaspunsCommand, int>
+    public class CompleteazaRaspunsHandler : IRequestHandler<CompleteazaRaspunsCommand, int>
     {
-        private readonly VotingContext _context;
+        private readonly VoteMonitorContext _context;
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
 
-        public CompleteazaRaspunsHandler(VotingContext context, IMapper mapper, ILogger logger)
+        public CompleteazaRaspunsHandler(VoteMonitorContext context, IMapper mapper, ILogger logger)
         {
             _context = context;
             _mapper = mapper;
             _logger = logger;
         }
 
-        protected override async Task<int> HandleCore(CompleteazaRaspunsCommand message)
+        public async Task<int> Handle(CompleteazaRaspunsCommand message, CancellationToken cancellationToken)
         {
             try
             {
@@ -111,27 +107,6 @@ namespace VotingIrregularities.Domain.RaspunsAggregate
                 .ToList();
 
             return list;
-        }
-    }
-
-    public static class EfBuilderExtensions
-    {
-        /// <summary>
-        /// super simple and dumb translation of .Contains because is not supported pe EF plus
-        /// this translates to contains in EF SQL
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="contains"></param>
-        /// <returns></returns>
-        public static IQueryable<Answer> WhereRaspunsContains(this IQueryable<Answer> source, IList<int> contains)
-        {
-            var ors = contains
-                .Aggregate<int, Expression<Func<Answer, bool>>>(null, (expression, id) =>
-                    expression == null
-                        ? (a => a.OptionAnswered.IdQuestion == id)
-                        : expression.Or(a => a.OptionAnswered.IdQuestion == id));
-
-            return source.Where(ors);
         }
     }
 }
