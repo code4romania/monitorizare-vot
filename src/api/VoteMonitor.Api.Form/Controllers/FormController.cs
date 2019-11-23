@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using VoteMonitor.Api.Core.Options;
 using VoteMonitor.Api.Form.Models;
@@ -56,7 +55,7 @@ namespace VoteMonitor.Api.Form.Controllers
 		/// <returns></returns>
 		[HttpGet]
 		public async Task<IActionResult> GetFormsAsync(bool? diaspora)
-			=> Ok(new { FormVersions = await _mediator.Send(new FormVersionQuery(diaspora)) });
+			=> Ok(new FormVersionsModel { FormVersions = await _mediator.Send(new FormVersionQuery(diaspora)) });
 
 		/// <summary>
 		/// Se interogheaza ultima versiunea a formularului pentru observatori si se primeste definitia lui. 

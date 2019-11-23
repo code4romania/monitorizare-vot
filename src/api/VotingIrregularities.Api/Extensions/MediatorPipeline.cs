@@ -29,7 +29,7 @@ namespace VotingIrregularities.Api.Extensions
             _cache = cache;
         }
 
-        protected override TResponse HandleCore(TRequest message)
+        protected override TResponse Handle(TRequest message)
         {
             using (LogContext.PushProperty("MediatRRequestType", typeof(TRequest).FullName))
             using (Metrics.Time("MediatRRequest"))
@@ -43,7 +43,7 @@ namespace VotingIrregularities.Api.Extensions
                 if (failures.Any())
                     throw new ValidationException(string.Join(", ", failures));
 
-                return this.HandleCore(message);
+                return this.Handle(message);
 
             }
         }

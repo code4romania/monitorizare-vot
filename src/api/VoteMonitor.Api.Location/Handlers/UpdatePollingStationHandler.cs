@@ -1,15 +1,16 @@
-﻿using System;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using VoteMonitor.Api.Location.Commands;
 using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Location.Handlers
 {
-    public class UpdatePollingSectionHandler : AsyncRequestHandler<UpdatePollingSectionCommand, int>
+    public class UpdatePollingSectionHandler : IRequestHandler<UpdatePollingSectionCommand, int>
     {
         private readonly VoteMonitorContext _context;
         private readonly ILogger _logger;
@@ -22,7 +23,7 @@ namespace VoteMonitor.Api.Location.Handlers
             _mapper = mapper;
         }
 
-        protected override async Task<int> HandleCore(UpdatePollingSectionCommand message)
+        public async Task<int> Handle(UpdatePollingSectionCommand message, CancellationToken cancellationToken)
         {
             try
             {

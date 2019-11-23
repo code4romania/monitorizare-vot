@@ -1,18 +1,19 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Threading;
 using Microsoft.Extensions.Caching.Distributed;
-using VoteMonitor.Api.Core.Services;
-using VoteMonitor.Entities;
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using VoteMonitor.Api.Core;
+using VoteMonitor.Api.Core.Services;
 using VoteMonitor.Api.Statistics.Models;
 using VoteMonitor.Api.Statistics.Queries;
+using VoteMonitor.Entities;
 
-namespace VoteMonitor.Api.Statistics.Handlers {
+namespace VoteMonitor.Api.Statistics.Handlers
+{
     public class StatisticsQueryHandler :
         IRequestHandler<StatisticsObserversNumberQuery, ApiListResponse<SimpleStatisticsModel>>,
         IRequestHandler<StatisticiTopSesizariQuery, ApiListResponse<SimpleStatisticsModel>>,
@@ -81,7 +82,7 @@ namespace VoteMonitor.Api.Statistics.Handlers {
                           from Answers a (nolock) inner join Observers o on a.IdObserver = o.Id ",
                 CacheKey = "StatisticiObservatori"
             };
-            
+
             queryBuilder.WhereOngFilter(message.Organizator, message.IdONG);
             //queryBuilder.Append("GROUP BY J.Name ORDER BY Value DESC");            
             queryBuilder.Append("group by CountyCode order by [Value] desc");
@@ -99,10 +100,10 @@ namespace VoteMonitor.Api.Statistics.Handlers {
                     AbsoluteExpirationRelativeToNow = new TimeSpan(message.CacheHours, message.CacheMinutes, message.CacheMinutes)
                 }
             );
-            
+
             // perform count and pagination on the records retrieved from the cache 
             var pagedList = records.Paginate(message.Page, message.PageSize);
-           
+
             return new ApiListResponse<SimpleStatisticsModel>
             {
                 Data = pagedList.Select(x => _mapper.Map<SimpleStatisticsModel>(x)).ToList(),
@@ -181,7 +182,7 @@ namespace VoteMonitor.Api.Statistics.Handlers {
             queryBuilder.Append("GROUP BY R.CountyCode, R.PollingStationNumber");
 
             // get or save paginated response in cache
-            
+
             return await _cacheService.GetOrSaveDataInCacheAsync($"{queryBuilder.CacheKey}-{message.Page}",
                 async () =>
                 {

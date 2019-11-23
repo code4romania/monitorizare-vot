@@ -1,6 +1,6 @@
-using System.Collections.Generic;
 using MediatR;
-using MonitorizareVot.Api.Location.Models;
+using System.Collections.Generic;
+using VoteMonitor.Api.Location.Models;
 
 namespace VoteMonitor.Api.Location.Commands
 {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
@@ -10,7 +11,7 @@ using VoteMonitor.Entities;
 
 namespace VotingIrregularities.Domain.SectieAggregate
 {
-    public class InregistreazaSectieHandler : AsyncRequestHandler<InregistreazaSectieCommand, int>
+    public class InregistreazaSectieHandler : IRequestHandler<InregistreazaSectieCommand, int>
     {
         private readonly VoteMonitorContext _context;
         private readonly ILogger _logger;
@@ -23,7 +24,7 @@ namespace VotingIrregularities.Domain.SectieAggregate
             _mapper = mapper;
         }
 
-        protected override async Task<int> HandleCore(InregistreazaSectieCommand message)
+        public async Task<int> Handle(InregistreazaSectieCommand message, CancellationToken cancellationToken)
         {
             try
             {

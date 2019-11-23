@@ -1,23 +1,24 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using VoteMonitor.Api.Core;
 using VoteMonitor.Api.Core.Options;
 using VoteMonitor.Api.Statistics.Handlers;
 using VoteMonitor.Api.Statistics.Models;
 using VoteMonitor.Api.Statistics.Queries;
 
-namespace VoteMonitor.Api.Statistics.Controllers {
+namespace VoteMonitor.Api.Statistics.Controllers
+{
     /// <inheritdoc />
     [Route("api/v1/statistics")]
     public class StatisticsController : Controller
     {
-		private readonly IConfigurationRoot _configuration;
-		private readonly ApplicationCacheOptions _cacheOptions;
+        private readonly IConfigurationRoot _configuration;
+        private readonly ApplicationCacheOptions _cacheOptions;
         private readonly IMediator _mediator;
         private int _cacheHours;
         private int _cacheMinutes;
@@ -26,12 +27,12 @@ namespace VoteMonitor.Api.Statistics.Controllers {
         public StatisticsController(IMediator mediator, IConfigurationRoot configuration, IOptions<ApplicationCacheOptions> cacheOptions)
         {
             _mediator = mediator;
-			_configuration = configuration;
-			_cacheOptions = cacheOptions.Value;
-			_cacheHours = _cacheOptions.Hours;
-			_cacheMinutes = _cacheOptions.Minutes;
-			_cacheSeconds = _cacheOptions.Seconds;
-		}
+            _configuration = configuration;
+            _cacheOptions = cacheOptions.Value;
+            _cacheHours = _cacheOptions.Hours;
+            _cacheMinutes = _cacheOptions.Minutes;
+            _cacheSeconds = _cacheOptions.Seconds;
+        }
 
         /// <summary>
         /// Returns top counties by observer number
@@ -74,7 +75,10 @@ namespace VoteMonitor.Api.Statistics.Controllers {
             var idONG = this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
             var organizator = this.GetOrganizatorOrDefault(_configuration.GetValue<bool>("DefaultOrganizator"));
 
-            if (model.GroupingType == StatisticsGroupingTypes.Sectie) model.PageSize = Constants.DEFAULT_PAGE_SIZE;
+            if (model.GroupingType == StatisticsGroupingTypes.Sectie)
+            {
+                model.PageSize = Constants.DEFAULT_PAGE_SIZE;
+            }
 
             return await _mediator.Send(new StatisticiTopSesizariQuery
             {

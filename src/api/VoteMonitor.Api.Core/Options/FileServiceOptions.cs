@@ -16,6 +16,6 @@ namespace VotingIrregularities.Api.Options
         /// Only relevand when `Type`=`LocalFileService`.
         /// This will be a relative path (`\notes`). Make sure you configure your container persistent storage on this path
         /// </summary>
-        public Dictionary<string,string> StoragePaths { get; set; }
+        public Dictionary<string, string> StoragePaths { get; set; }
     }
 }

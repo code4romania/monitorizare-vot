@@ -1,6 +1,5 @@
-﻿using VoteMonitor.Api.Core.Services;
-
-namespace VoteMonitor.Api.Statistics.Handlers {
+﻿namespace VoteMonitor.Api.Statistics.Handlers
+{
     public class StatisticsQueryBuilder
     {
         /// <summary>
@@ -28,7 +27,7 @@ namespace VoteMonitor.Api.Statistics.Handlers {
         /// </summary>
         public void AndFormularFilter(string formular)
         {
-            if(!string.IsNullOrEmpty(formular))
+            if (!string.IsNullOrEmpty(formular))
             {
                 Query = $"{Query} AND f.Code = '{formular}'";
                 CacheKey = $"{CacheKey}-{formular}";
@@ -41,13 +40,15 @@ namespace VoteMonitor.Api.Statistics.Handlers {
         /// </summary>
         public void AndOngFilter(bool organizator, int idONG)
         {
-            if(!organizator) 
+            if (!organizator)
             {
                 Query = $"{Query} AND O.IdNgo = {idONG}";
                 CacheKey = $"{CacheKey}-{idONG}";
             }
             else
+            {
                 CacheKey = $"{CacheKey}-Organizer";
+            }
         }
 
         /// <summary>
@@ -56,13 +57,15 @@ namespace VoteMonitor.Api.Statistics.Handlers {
         /// </summary>
         public void WhereOngFilter(bool organizator, int idONG)
         {
-            if (!organizator) 
+            if (!organizator)
             {
                 Query = $"{Query} WHERE O.IdNgo = {idONG}";
                 CacheKey = $"{CacheKey}-{idONG}";
             }
             else
+            {
                 CacheKey = $"{CacheKey}-Organizer";
+            }
         }
 
         /// <summary>

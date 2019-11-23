@@ -2,7 +2,8 @@
 using VoteMonitor.Api.Core;
 using VoteMonitor.Api.Statistics.Queries;
 
-namespace VoteMonitor.Api.Statistics.Models {
+namespace VoteMonitor.Api.Statistics.Models
+{
     public class SimpleStatisticsModel
     {
         public string Label { get; set; }

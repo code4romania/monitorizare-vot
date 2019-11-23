@@ -1,4 +1,4 @@
-namespace MonitorizareVot.Api.Location.Models
+namespace VoteMonitor.Api.Location.Models
     {
         public class PollingStationDTO
         {

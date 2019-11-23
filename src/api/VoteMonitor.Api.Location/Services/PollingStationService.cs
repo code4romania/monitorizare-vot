@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using VoteMonitor.Api.Location.Models;
 using VoteMonitor.Entities;
 
@@ -43,10 +43,10 @@ namespace VoteMonitor.Api.Location.Services
             try
             {
                 var idSectie = await
-                EntityFrameworkQueryableExtensions.ToListAsync<int>(_context.PollingStations
-                        .Where(a => a.IdCounty == countyId &&
-                                    a.Number == pollingStationNumber)
-                        .Select(a => a.Id));
+                _context.PollingStations
+                    .Where(a => a.IdCounty == countyId &&
+                                a.Number == pollingStationNumber)
+                    .Select(a => a.Id).ToListAsync();
 
                 if (idSectie.Count == 0)
                     throw new ArgumentException($"No Polling station found for: {new { countyId, pollingStationNumber }}");

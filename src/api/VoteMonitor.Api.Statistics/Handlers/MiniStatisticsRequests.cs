@@ -1,7 +1,8 @@
 ﻿using MediatR;
 using VoteMonitor.Api.Statistics.Models;
 
-namespace VoteMonitor.Api.Statistics.Handlers {
+namespace VoteMonitor.Api.Statistics.Handlers
+{
     public class AnswersRequest : IRequest<SimpleStatisticsModel>
     {
     }
