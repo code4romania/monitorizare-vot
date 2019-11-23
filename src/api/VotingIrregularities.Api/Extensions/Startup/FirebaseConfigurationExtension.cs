@@ -3,8 +3,8 @@ using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using SimpleInjector;
+using VoteMonitor.Api.Core.Options;
 using VoteMonitor.Api.Core.Services;
-using VotingIrregularities.Api.Options;
 
 namespace VotingIrregularities.Api.Extensions.Startup
 {

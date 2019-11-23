@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using MediatR;
 using MonitorizareVot.Ong.Api.Models;
+using VoteMonitor.Api.Core.Models;
 
 namespace VotingIrregularities.Api.Models.AccountViewModels
 {
@@ -13,11 +14,5 @@ namespace VotingIrregularities.Api.Models.AccountViewModels
         public string Password { get; set; }
 
         public UserType UserType{ get; set; }
-    }
-
-    public enum UserType
-    {
-        Observer,
-        NgoAdmin
     }
 }
