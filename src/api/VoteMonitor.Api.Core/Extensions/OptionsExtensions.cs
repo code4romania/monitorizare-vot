@@ -17,7 +17,7 @@ namespace VoteMonitor.Api.Core.Extensions
             IConfiguration configuration)
         {
             services.Configure<BlobStorageOptions>(configuration.GetSection(nameof(BlobStorageOptions)));
-            services.Configure<HashOptions>(configuration.GetSection(nameof(HashOptions)));
+            services.Configure<HashOptions>(configuration.GetHashOptions());
             services.Configure<MobileSecurityOptions>(configuration.GetSection(nameof(MobileSecurityOptions)));
             services.Configure<FileServiceOptions>(configuration.GetSection(nameof(FileServiceOptions)));
             services.Configure<FirebaseServiceOptions>(configuration.GetSection(nameof(FirebaseServiceOptions)));
@@ -25,6 +25,11 @@ namespace VoteMonitor.Api.Core.Extensions
             services.Configure<DefaultNgoOptions>(configuration.GetSection(nameof(ApplicationCacheOptions)));
             services.Configure<PollingStationsOptions>(configuration.GetSection(nameof(PollingStationsOptions)));
             return services;
+        }
+
+        public static IConfigurationSection GetHashOptions(this IConfiguration configuration)
+        {
+            return configuration.GetSection(nameof(HashOptions));
         }
     }
 } 

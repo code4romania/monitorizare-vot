@@ -1,7 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using MediatR;
+using VoteMonitor.Api.Auth.Models;
 
-namespace VotingIrregularities.Api.Models.AccountViewModels
+namespace VoteMonitor.Api.Auth.Queries
 {
     /// <summary>
     /// Model received from client applications in order to perform the authentication
@@ -27,15 +28,5 @@ namespace VotingIrregularities.Api.Models.AccountViewModels
         /// </summary>
         [Required(AllowEmptyStrings = false)]
         public string UDID { get; set; }
-    }
-
-    public class RegisteredObserverModel
-    {
-        public bool IsAuthenticated { get; set; }
-
-        public int ObserverId { get; set; }
-
-        public bool FirstAuthentication { get; set; }
-        public int IdNgo { get; set; }
     }
 }

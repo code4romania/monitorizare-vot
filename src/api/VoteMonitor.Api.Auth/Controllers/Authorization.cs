@@ -1,27 +1,23 @@
 ﻿using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
-using System.Linq;
-using System.Net;
-using MediatR;
-using Microsoft.AspNetCore.Http;
 using VoteMonitor.Api.Auth.Commands;
 using VoteMonitor.Api.Auth.Models;
 using VoteMonitor.Api.Auth.Queries;
 using VoteMonitor.Api.Core;
-using VoteMonitor.Api.Core.Commands;
 using VoteMonitor.Api.Core.Models;
 using VoteMonitor.Api.Core.Options;
-using VotingIrregularities.Api.Models;
 
-namespace VotingIrregularities.Api.Controllers
+namespace VoteMonitor.Api.Auth.Controllers
 {
     /// <inheritdoc />
     [Route("api/v1/access")]
@@ -33,7 +29,7 @@ namespace VotingIrregularities.Api.Controllers
         private readonly MobileSecurityOptions _mobileSecurityOptions;
 
         /// <inheritdoc />
-        public Authorization(IOptions<JwtIssuerOptions> jwtOptions, ILogger logger, IMediator mediator, IOptions<MobileSecurityOptions> mobileSecurityOptions)
+        public Authorization(IOptions<JwtIssuerOptions> jwtOptions, ILogger<Authorization> logger, IMediator mediator, IOptions<MobileSecurityOptions> mobileSecurityOptions)
         {
             _jwtOptions = jwtOptions.Value;
             ThrowIfInvalidOptions(_jwtOptions);
@@ -43,89 +39,29 @@ namespace VotingIrregularities.Api.Controllers
             _mobileSecurityOptions = mobileSecurityOptions.Value;
         }
 
-        /// <summary>
-        /// Get the auth token to be passed to subsequent requests
-        /// </summary>
-        /// <param name="applicationUser"></param>
-        /// <returns></returns>
-        [HttpPost("token")]
-        [AllowAnonymous]
-        [Obsolete("Use /access/authorize instead")]
-        public async Task<IActionResult> Observer([FromBody] ObserverApplicationUser applicationUser)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var identity = await GetClaimsIdentity(applicationUser);
-
-            if (identity == null)
-            {
-                _logger.LogInformation($"Invalid Phone ({applicationUser.Phone}) or password ({applicationUser.Pin})");
-                return BadRequest(_mobileSecurityOptions.InvalidCredentialsErrorMessage);
-            }
-
-            var token = GetTokenFromIdentity(identity);
-
-            // Serialize and return the response
-            var response = new
-            {
-                access_token = token,
-                expires_in = (int)_jwtOptions.ValidFor.TotalSeconds
-            };
-
-            return Ok(response);
-        }
-        [HttpPost]
-        [AllowAnonymous]
-        [Obsolete("Use /access/authorize instead")]
-        public async Task<IActionResult> NgoAdmin([FromBody] NgoAdminApplicationUser ngoAdminApplicationUser)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            //await _mediator.Send(new ImportObserversRequest {FilePath = "d:\\mv-name-rest.11.15.txt", IdNgo = 3, NameIndexInFile = 2}); // mv
-            //await _mediator.Send(new ImportObserversRequest { FilePath = "d:\\dv-rest7.txt", IdNgo = 2, NameIndexInFile = 0 }); // usr
-
-            var identity = await GetClaimsIdentity(ngoAdminApplicationUser);
-            if (identity == null)
-            {
-                _logger.LogInformation(
-                    $"Invalid username ({ngoAdminApplicationUser.UserName}) or password ({ngoAdminApplicationUser.Password})");
-                return BadRequest("Invalid credentials");
-            }
-
-            var json = GetTokenFromIdentity(identity);
-            return new OkObjectResult(json);
-        }
-
         [HttpPost("authorize")]
         [AllowAnonymous]
         [ProducesResponseType(typeof(AuthenticationResponseModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> AuthenticateUser([FromBody] AuthenticateUserRequest request)
-        {
+        public async Task<IActionResult> AuthenticateUser([FromBody] AuthenticateUserRequest request) {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             string token;
-            if (string.IsNullOrEmpty(request.UniqueId))
-            {
+            if (string.IsNullOrEmpty(request.UniqueId)) {
                 var identity = await GetClaimsIdentity(request);
-                if (identity == null)
-                {
+                if (identity == null) {
                     _logger.LogInformation($"Invalid username ({request.User}) or password ({request.Password})");
                     return BadRequest("Invalid credentials");
                 }
 
                 token = GetTokenFromIdentity(identity);
             }
-            else
-            {
+            else {
                 var identity = await GetClaimsIdentity(request);
 
-                if (identity == null)
-                {
+                if (identity == null) {
                     _logger.LogInformation($"Invalid Phone ({request.User}) or password ({request.Password})");
                     return BadRequest(_mobileSecurityOptions.InvalidCredentialsErrorMessage);
                 }
@@ -135,12 +71,12 @@ namespace VotingIrregularities.Api.Controllers
 
             // Serialize and return the response
             var response = new AuthenticationResponseModel
-            {
-                access_token = token,
-                expires_in = (int)_jwtOptions.ValidFor.TotalSeconds
+			{
+	            access_token = token,
+	            expires_in = (int)_jwtOptions.ValidFor.TotalSeconds
             };
 
-            return Ok(response);
+			return Ok(response);
         }
 
         /// <summary>
@@ -183,50 +119,10 @@ namespace VotingIrregularities.Api.Controllers
           => (long)Math.Round((date.ToUniversalTime() -
                                new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero))
                               .TotalSeconds);
-        private async Task<ClaimsIdentity> GetClaimsIdentity(ObserverApplicationUser user)
-        {
-            // verific daca userul exista si daca nu are asociat un alt device, il returneaza din baza
-            var userInfo = await _mediator.Send(user);
 
-            if (!userInfo.IsAuthenticated)
-                return await Task.FromResult<ClaimsIdentity>(null);
-
-            if (userInfo.FirstAuthentication && _mobileSecurityOptions.LockDevice)
-                await
-                    _mediator.Send(new RegisterDeviceId
-                    {
-                        MobileDeviceId = user.UDID,
-                        ObserverId = userInfo.ObserverId
-                    });
-
-            // Get the generic claims + the user specific one (the organizer flag)
-            return new ClaimsIdentity(await GetGenericIdentity(user.Phone, userInfo.IdNgo.ToString(), UserType.Observer.ToString()),
-                new[]
-                {
-                    new Claim(ClaimsHelper.ObserverIdProperty, userInfo.ObserverId.ToString(), ClaimValueTypes.Boolean),
-                });
-        }
-        private async Task<ClaimsIdentity> GetClaimsIdentity(NgoAdminApplicationUser user)
-        {
-            var userInfo = await _mediator.Send(user);
-
-            if (userInfo == null)
-                return null;
-
-            // Get the generic claims + the user specific one (the organizer flag)
-            return new ClaimsIdentity(await GetGenericIdentity(user.UserName, userInfo.IdNgo.ToString(), UserType.NgoAdmin.ToString()),
-                new[]
-                {
-                    new Claim(ClaimsHelper.Organizer, userInfo.Organizer.ToString(), ClaimValueTypes.Boolean),
-                });
-        }
-
-        private async Task<ClaimsIdentity> GetClaimsIdentity(AuthenticateUserRequest request)
-        {
-            if (string.IsNullOrEmpty(request.UniqueId))
-            {
-                var userInfo = await _mediator.Send(new NgoAdminApplicationUser
-                {
+        private async Task<ClaimsIdentity> GetClaimsIdentity(AuthenticateUserRequest request) {
+            if (string.IsNullOrEmpty(request.UniqueId)) {
+                var userInfo = await _mediator.Send(new NgoAdminApplicationUser {
                     Password = request.Password,
                     UserName = request.User,
                     UserType = UserType.NgoAdmin
@@ -242,11 +138,9 @@ namespace VotingIrregularities.Api.Controllers
                     new Claim(ClaimsHelper.Organizer, userInfo.Organizer.ToString(), ClaimValueTypes.Boolean)
                     });
             }
-            else
-            {
+            else {
                 // verific daca userul exista si daca nu are asociat un alt device, il returneaza din baza
-                var userInfo = await _mediator.Send(new ObserverApplicationUser
-                {
+                var userInfo = await _mediator.Send(new ObserverApplicationUser {
                     Phone = request.User,
                     Pin = request.Password,
                     UDID = request.UniqueId
@@ -257,8 +151,7 @@ namespace VotingIrregularities.Api.Controllers
 
                 if (userInfo.FirstAuthentication && _mobileSecurityOptions.LockDevice)
                     await
-                        _mediator.Send(new RegisterDeviceId
-                        {
+                        _mediator.Send(new RegisterDeviceId {
                             MobileDeviceId = request.UniqueId,
                             ObserverId = userInfo.ObserverId
                         });

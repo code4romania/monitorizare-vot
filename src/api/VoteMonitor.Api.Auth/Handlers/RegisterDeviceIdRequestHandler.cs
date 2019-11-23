@@ -1,19 +1,20 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using VoteMonitor.Api.Auth.Commands;
 using VoteMonitor.Entities;
 
-namespace VotingIrregularities.Domain.UserAggregate
+namespace VoteMonitor.Api.Auth.Handlers
 {
     public class RegisterDeviceIdRequestHandler : IRequestHandler<RegisterDeviceId, int>
     {
         private readonly VoteMonitorContext _context;
         private readonly ILogger _logger;
 
-        public RegisterDeviceIdRequestHandler(VoteMonitorContext context, ILogger logger)
+        public RegisterDeviceIdRequestHandler(VoteMonitorContext context, ILogger<RegisterDeviceIdRequestHandler> logger)
         {
             _context = context;
             _logger = logger;
@@ -22,12 +23,12 @@ namespace VotingIrregularities.Domain.UserAggregate
         {
             try
             {
-                var observator = await _context.Observers.SingleAsync(a => a.Id == request.ObserverId);
+                var observator = await _context.Observers.SingleAsync(a => a.Id == request.ObserverId, cancellationToken: cancellationToken);
 
                 observator.MobileDeviceId = request.MobileDeviceId;
                 observator.DeviceRegisterDate = DateTime.UtcNow;
 
-                return await _context.SaveChangesAsync();
+                return await _context.SaveChangesAsync(cancellationToken);
             }
             catch (Exception ex)
             {

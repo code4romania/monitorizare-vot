@@ -2,9 +2,16 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
+    <IncludeOpenAPIAnalyzers>true</IncludeOpenAPIAnalyzers>
+    <ApplicationInsightsResourceId>/subscriptions/8ad78fbb-bdc8-408b-ac97-bab673b57011/resourcegroups/rg-mv-ngo-dev/providers/microsoft.insights/components/mv-mobile-dev</ApplicationInsightsResourceId>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MediatR" Version="7.0.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.8.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0-rc4" />
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="5.0.0-rc4" />
     <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="5.0.0-rc8" />
@@ -14,7 +21,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\VoteMonitor.Api.Answer\VoteMonitor.Api.Answer.csproj" />
+    <ProjectReference Include="..\VoteMonitor.Api.Auth\VoteMonitor.Api.Auth.csproj" />
     <ProjectReference Include="..\VoteMonitor.Api.Core\VoteMonitor.Api.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services" />
   </ItemGroup>
 
 </Project>

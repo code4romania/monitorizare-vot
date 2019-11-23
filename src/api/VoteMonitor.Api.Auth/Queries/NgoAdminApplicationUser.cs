@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using MediatR;
-using MonitorizareVot.Ong.Api.Models;
+using VoteMonitor.Api.Auth.Models;
 using VoteMonitor.Api.Core.Models;
 
-namespace VotingIrregularities.Api.Models.AccountViewModels
+namespace VoteMonitor.Api.Auth.Queries
 {
     public class NgoAdminApplicationUser : IRequest<UserInfo>
     {

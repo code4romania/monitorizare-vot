@@ -4,13 +4,14 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using VoteMonitor.Api.Core;
 using VoteMonitor.Api.Core.Models;
 
-namespace VoteMonitor.Api.Core.Extensions
+namespace VoteMonitor.Api.Extensions
 {
     public static class JwtConfigurationExtensions
     {
-        public static IServiceCollection ConfigureVoteMonitorAuthentication(this IServiceCollection services,
+        public static IServiceCollection AddVoteMonitorAuthentication(this IServiceCollection services,
             IConfiguration configuration)
         {
             var jwtAppSettingOptions = configuration.GetSection(nameof(JwtIssuerOptions));
