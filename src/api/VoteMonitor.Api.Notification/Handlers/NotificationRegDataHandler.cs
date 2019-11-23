@@ -52,7 +52,7 @@ namespace VoteMonitor.Api.Notification.Handlers
 			return _context.SaveChangesAsync(cancellationToken);
 		}
 
-		public Task<int> Handle(NewNotificationCommand request, CancellationToken cancellationToken)
+		public async Task<int> Handle(NewNotificationCommand request, CancellationToken cancellationToken)
 		{
 			var targetFcmTokens = request.Recipients
 					.Select(observer => _context.NotificationRegistrationData.AsQueryable().Where(regData => regData.ObserverId == int.Parse(observer))
@@ -67,11 +67,11 @@ namespace VoteMonitor.Api.Notification.Handlers
             var notification = _mapper.Map<Entities.Notification>(request);
 
             _context.Notifications.AddRange(notification);
-            await _context.SaveChangesAsync();
-            return Task.FromResult(response);
+            await _context.SaveChangesAsync(cancellationToken);
+            return response;
 		}
 
-		public Task<int> Handle(SendNotificationToAll request, CancellationToken cancellationToken)
+		public async Task<int> Handle(SendNotificationToAll request, CancellationToken cancellationToken)
 		{
 			var targetFcmTokens = _context.NotificationRegistrationData
 				.AsNoTracking()
@@ -86,8 +86,8 @@ namespace VoteMonitor.Api.Notification.Handlers
             var notification = _mapper.Map<Entities.Notification>(request);
 
             _context.Notifications.AddRange(notification);
-            await _context.SaveChangesAsync();
-            return Task.FromResult(response);
+            await _context.SaveChangesAsync(cancellationToken);
+            return response;
 		}
 	}
 }
