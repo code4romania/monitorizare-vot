@@ -363,6 +363,7 @@ namespace VoteMonitor.Entities
                     .OnDelete(DeleteBehavior.Restrict);
             });
 
+            modelBuilder.Entity<ExportModel>(entity => { entity.HasKey(e => e.Id); });
         }
 
         public virtual DbSet<NgoAdmin> NgoAdmins { get; set; }
@@ -387,6 +388,8 @@ namespace VoteMonitor.Entities
         public virtual DbSet<SimpleStatistics> SimpleStatistics { get; set; }
         public virtual DbSet<ComposedStatistics> ComposedStatistics { get; set; }
         public virtual DbSet<OptionsStatistics> OptionsStatistics { get; set; }
+        public virtual DbSet<ExportModel> ExportModels { get; set; }
+
 
         public class AnswerQueryInfo {
             public int IdPollingStation { get; set; }

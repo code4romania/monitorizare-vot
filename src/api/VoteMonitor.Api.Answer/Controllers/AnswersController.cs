@@ -1,23 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using VoteMonitor.Api.Answer.Commands;
 using VoteMonitor.Api.Answer.Models;
 using VoteMonitor.Api.Answer.Queries;
 using VoteMonitor.Api.Core;
 
-namespace VoteMonitor.Api.Answer.Controllers {
+namespace VoteMonitor.Api.Answer.Controllers
+{
     [Route("api/v1/answers")]
-    public class AnswersController : Controller {
+    public class AnswersController : Controller
+    {
         private readonly IMediator _mediator;
         private readonly IConfigurationRoot _configuration;
 
-        public AnswersController(IMediator mediator, IConfigurationRoot configuration) {
+        public AnswersController(IMediator mediator, IConfigurationRoot configuration)
+        {
             _mediator = mediator;
             _configuration = configuration;
         }
@@ -30,11 +31,13 @@ namespace VoteMonitor.Api.Answer.Controllers {
         /// Urgent (Flagged)
         /// </param>
         [HttpGet]
-        public async Task<ApiListResponse<AnswerQueryDTO>> Get(SectionAnswersRequest model) {
+        public async Task<ApiListResponse<AnswerQueryDTO>> Get(SectionAnswersRequest model)
+        {
             var organizator = this.GetOrganizatorOrDefault(_configuration.GetValue<bool>("DefaultOrganizator"));
             var idOng = this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
 
-            return await _mediator.Send(new AnswersQuery {
+            return await _mediator.Send(new AnswersQuery
+            {
                 IdONG = idOng,
                 Organizer = organizator,
                 Page = model.Page,
@@ -50,11 +53,13 @@ namespace VoteMonitor.Api.Answer.Controllers {
         /// Returns answers given by the specified observer at the specified polling station
         /// </summary>
         [HttpGet("filledIn")]
-        public async Task<List<QuestionDTO<FilledInAnswerDTO>>> Get(int idPollingStation, int idObserver) {
-            return await _mediator.Send(new FilledInAnswersQuery {
+        public async Task<List<QuestionDTO<FilledInAnswerDTO>>> Get(int idPollingStation, int idObserver)
+        {
+            return await _mediator.Send(new FilledInAnswersQuery
+            {
                 ObserverId = idObserver,
                 PollingStationId = idPollingStation
-			});
+            });
         }
 
         /// <summary>
@@ -64,8 +69,10 @@ namespace VoteMonitor.Api.Answer.Controllers {
         /// "IdObservator" - Id-ul observatorului care a dat raspunsurile
         /// </param>
         [HttpGet("pollingStationInfo")]
-        public async Task<PollingStationInfosDTO> GetRaspunsuriFormular(ObserverAnswersRequest model) {
-            return await _mediator.Send(new FormAnswersQuery {
+        public async Task<PollingStationInfosDTO> GetRaspunsuriFormular(ObserverAnswersRequest model)
+        {
+            return await _mediator.Send(new FormAnswersQuery
+            {
                 ObserverId = model.ObserverId,
                 PollingStationId = model.PollingStationNumber
             });
@@ -81,9 +88,12 @@ namespace VoteMonitor.Api.Answer.Controllers {
         /// <returns></returns>
         [HttpPost]
         [Authorize("Observer")]
-        public async Task<IActionResult> PostAnswer([FromBody] AnswerModelWrapper answerModel) {
-            if (!ModelState.IsValid) 
+        public async Task<IActionResult> PostAnswer([FromBody] AnswerModelWrapper answerModel)
+        {
+            if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
+            }
 
             // TODO[DH] use a pipeline instead of separate Send commands
             var command = await _mediator.Send(new BulkAnswers(answerModel.Answers));
@@ -92,7 +102,10 @@ namespace VoteMonitor.Api.Answer.Controllers {
 
             var result = await _mediator.Send(command);
 
-            if (result < 0) return NotFound();
+            if (result < 0)
+            {
+                return NotFound();
+            }
 
             return Ok();
         }

@@ -1,9 +1,10 @@
-﻿using MediatR;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using MediatR;
+using VoteMonitor.Api.Form.Models;
 
-namespace VoteMonitor.Api.Form.Models
+namespace VoteMonitor.Api.Form.Queries
 {
-    public class FormVersionQuery : IRequest<List<VoteMonitor.Entities.Form>>
+    public class FormVersionQuery : IRequest<List<FormDetailsModel>>
     {
 	    public bool? Diaspora { get; }
 

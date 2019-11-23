@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using System;
 using System.Collections.Generic;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -32,7 +31,7 @@ namespace VoteMonitor.Api.Observer.Controllers
         }
 
         [HttpGet]
-        [Produces(type: typeof(List<ObserverModel>))]
+        [Produces(type: typeof(ApiListResponse<ObserverModel>))]
         public async Task<ApiListResponse<ObserverModel>> GetObservers(ObserverListQuery query)
         {
             var command = _mapper.Map<ObserverListCommand>(query);
@@ -69,6 +68,7 @@ namespace VoteMonitor.Api.Observer.Controllers
 
         [HttpPost]
         [Route("import")]
+        [Produces(type: typeof(int))]
         public async Task<int> Import(IFormFile file, [FromForm] int ongId)
         {
             if (ongId <= 0)
@@ -96,7 +96,7 @@ namespace VoteMonitor.Api.Observer.Controllers
         /// <param name="model"></param>
         /// <returns>Boolean indicating whether or not the observer was added successfully.</returns>
         [HttpPost]
-        [Produces(type: typeof(bool))]
+        [Produces(type: typeof(int))]
         public async Task<IActionResult> NewObserver(NewObserverModel model)
         {
             if (!ModelState.IsValid)
@@ -143,48 +143,48 @@ namespace VoteMonitor.Api.Observer.Controllers
             return Ok(result);
         }
 
-
         [HttpPost]
         [Route("reset")]
-        public async Task<IAsyncResult> Reset([FromForm] string action, [FromForm] string phoneNumber)
+        public async Task<IActionResult> Reset([FromBody]ResetModel model)
         {
-            if (string.IsNullOrEmpty(action) || string.IsNullOrEmpty(phoneNumber))
-                return Task.FromResult(BadRequest());
+            if (string.IsNullOrEmpty(model.Action) || string.IsNullOrEmpty(model.PhoneNumber))
+                return BadRequest();
 
-            if (string.Equals(action, ControllerExtensions.DEVICE_RESET))
+            if (string.Equals(model.Action, ControllerExtensions.DEVICE_RESET))
             {
-                var result = await _mediator.Send(new ResetDeviceCommand(NgoId, phoneNumber));
+                var result = await _mediator.Send(new ResetDeviceCommand(NgoId, model.PhoneNumber));
                 if (result == -1)
-                    return Task.FromResult(NotFound(ControllerExtensions.RESET_ERROR_MESSAGE + phoneNumber));
+                    return NotFound(ControllerExtensions.RESET_ERROR_MESSAGE + model.PhoneNumber);
                 else
-                    return Task.FromResult(Ok(result));
+                    return Ok(result);
             }
 
-            if (string.Equals(action, ControllerExtensions.PASSWORD_RESET))
+            if (string.Equals(model.Action, ControllerExtensions.PASSWORD_RESET))
             {
-                var result = await _mediator.Send(new ResetPasswordCommand(NgoId, phoneNumber));
-                if (string.IsNullOrEmpty(result))
-                    return Task.FromResult(NotFound(ControllerExtensions.RESET_ERROR_MESSAGE + phoneNumber));
-                else
-                    return Task.FromResult(Ok(result));
+                var result = await _mediator.Send(new ResetPasswordCommand(NgoId, model.PhoneNumber, model.Pin));
+                if (result == false)
+                    return NotFound(ControllerExtensions.RESET_ERROR_MESSAGE + model.PhoneNumber);
+
+                return Ok();
             }
 
-            return Task.FromResult(UnprocessableEntity());
+            return UnprocessableEntity();
         }
 
         [HttpPost]
         [Route("generate")]
-        public async Task<IAsyncResult> GenerateObservers([FromForm] int count)
+        [Produces(type: typeof(List<GeneratedObserver>))]
+        public async Task<IActionResult> GenerateObservers([FromForm] int count)
         {
             if (!ControllerExtensions.ValidateGenerateObserversNumber(count))
-                return Task.FromResult(new BadRequestObjectResult("Incorrect parameter supplied, please check that paramter is between boundaries: "
-                    + ControllerExtensions.LOWER_OBS_VALUE + " - " + ControllerExtensions.UPPER_OBS_VALUE));
+                return BadRequest("Incorrect parameter supplied, please check that paramter is between boundaries: "
+                    + ControllerExtensions.LOWER_OBS_VALUE + " - " + ControllerExtensions.UPPER_OBS_VALUE);
 
             var command = new ObserverGenerateCommand(count, NgoId);
 
             var result = await _mediator.Send(command);
 
-            return Task.FromResult(Ok(result));
+            return Ok(result);
         }
     }
 }

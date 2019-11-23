@@ -42,6 +42,7 @@ using VoteMonitor.Api.Core.Handlers;
 using VoteMonitor.Api.Notification.Controllers;
 using System.IO;
 using VoteMonitor.Api.Core.Options;
+using VoteMonitor.Api.DataExport.Controller;
 using VoteMonitor.Api.Statistics.Controllers;
 using VotingIrregularities.Api.Extensions.Startup;
 
@@ -102,6 +103,7 @@ namespace VotingIrregularities.Api
                 .AddApplicationPart(typeof(FormController).Assembly)
                 .AddApplicationPart(typeof(AnswersController).Assembly)
                 .AddApplicationPart(typeof(StatisticsController).Assembly)
+                .AddApplicationPart(typeof(DataExportController).Assembly)
                 .AddControllersAsServices()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
@@ -347,16 +349,13 @@ namespace VotingIrregularities.Api
             var assemblies = GetAssemblies().ToArray();
             _container.RegisterSingleton<IMediator, Mediator>();
             _container.Register(typeof(IRequestHandler<,>), assemblies);
-            _container.Register(typeof(AsyncRequestHandler<,>), assemblies);
             _container.Collection.Register(typeof(INotificationHandler<>), assemblies);
-            _container.Collection.Register(typeof(AsyncNotificationHandler<>), assemblies);
 
             // had to add this registration as we were getting the same behavior as described here: https://github.com/jbogard/MediatR/issues/155
             _container.Collection.Register(typeof(IPipelineBehavior<,>), Enumerable.Empty<Type>());
 
             _container.RegisterInstance(Console.Out);
-            _container.RegisterInstance(new SingleInstanceFactory(_container.GetInstance));
-            _container.RegisterInstance(new MultiInstanceFactory(_container.GetAllInstances));
+            _container.RegisterInstance(new ServiceFactory(_container.GetInstance));
 
             var mediator = _container.GetInstance<IMediator>();
 
@@ -384,6 +383,7 @@ namespace VotingIrregularities.Api
             yield return typeof(UploadFileHandler).GetTypeInfo().Assembly;
             yield return typeof(NotificationController).GetTypeInfo().Assembly;
             yield return typeof(StatisticsController).GetTypeInfo().Assembly;
+            yield return typeof(DataExportController).GetTypeInfo().Assembly;
             // just to identify VotingIrregularities.Domain assembly
         }
     }

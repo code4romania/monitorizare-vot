@@ -1,28 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using VoteMonitor.Api.Answer.Commands;
 using VoteMonitor.Entities;
 
-namespace VoteMonitor.Api.Answer.Handlers {
-    public class FillInAnswerQueryHandler : AsyncRequestHandler<CompleteazaRaspunsCommand, int> {
+namespace VoteMonitor.Api.Answer.Handlers
+{
+    public class FillInAnswerQueryHandler : IRequestHandler<CompleteazaRaspunsCommand, int>
+    {
         private readonly VoteMonitorContext _context;
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
 
-        public FillInAnswerQueryHandler(VoteMonitorContext context, IMapper mapper, ILogger logger) {
+        public FillInAnswerQueryHandler(VoteMonitorContext context, IMapper mapper, ILogger logger)
+        {
             _context = context;
             _mapper = mapper;
             _logger = logger;
         }
 
-        protected override async Task<int> HandleCore(CompleteazaRaspunsCommand message) {
-            try {
+        public async Task<int> Handle(CompleteazaRaspunsCommand message, CancellationToken cancellationToken)
+        {
+            try
+            {
                 //flat answers
                 var lastModified = DateTime.UtcNow;
 
@@ -31,8 +37,10 @@ namespace VoteMonitor.Api.Answer.Handlers {
                 // stergerea este pe fiecare sectie
                 var sectii = message.Answers.Select(a => a.PollingSectionId).Distinct().ToList();
 
-                using (var tran = await _context.Database.BeginTransactionAsync()) {
-                    foreach (var sectie in sectii) {
+                using (var tran = await _context.Database.BeginTransactionAsync())
+                {
+                    foreach (var sectie in sectii)
+                    {
                         var intrebari = message.Answers.Select(a => a.QuestionId).Distinct().ToList();
 
                         // delete existing answers for posted questions on this 'sectie'
@@ -60,17 +68,20 @@ namespace VoteMonitor.Api.Answer.Handlers {
                     return result;
                 }
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 _logger.LogError(typeof(CompleteazaRaspunsCommand).GetHashCode(), ex, ex.Message);
             }
 
             return await Task.FromResult(-1);
         }
 
-        public static List<Entities.Answer> GetFlatListOfAnswers(CompleteazaRaspunsCommand command, DateTime lastModified) {
+        public static List<Entities.Answer> GetFlatListOfAnswers(CompleteazaRaspunsCommand command, DateTime lastModified)
+        {
             var list = command.Answers.Select(a => new
             {
-                flat = a.Options.Select(o => new Entities.Answer {
+                flat = a.Options.Select(o => new Entities.Answer
+                {
                     IdObserver = command.ObserverId,
                     IdPollingStation = a.PollingSectionId,
                     IdOptionToQuestion = o.OptionId,
@@ -82,7 +93,8 @@ namespace VoteMonitor.Api.Answer.Handlers {
             })
                 .SelectMany(a => a.flat)
                 .GroupBy(k => k.IdOptionToQuestion,
-                    (g, o) => new Entities.Answer {
+                    (g, o) => new Entities.Answer
+                    {
                         IdObserver = command.ObserverId,
                         IdPollingStation = o.Last().IdPollingStation,
                         IdOptionToQuestion = g,
