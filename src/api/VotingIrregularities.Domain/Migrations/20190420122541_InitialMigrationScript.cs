@@ -373,22 +373,6 @@ namespace VoteMonitor.Entities
                             onDelete: ReferentialAction.Restrict);
                     });
 
-            migrationBuilder.CreateTable(
-            name: "Notifications",
-            columns: table => new
-            {
-                Id = table.Column<int>(nullable: false).
-                Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                Title = table.Column<string>(maxLength: 256, nullable: false),
-                Channel = table.Column<string>(maxLength: 512, nullable: false),
-                Body = table.Column<string>(maxLength: 512, nullable: false),
-                InsertedAt = table.Column<DateTime>()
-            },
-            constraints: table =>
-            {
-                table.PrimaryKey("PK_Notifications", x => new { x.Id });
-            });
-
             migrationBuilder.CreateIndex(
                 name: "IX_NotificationRegistrationData_ObserverId_ChannelName",
                 table: "NotificationRegistrationData",
