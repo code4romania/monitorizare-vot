@@ -36,7 +36,9 @@ namespace VoteMonitor.Api.Observer.Controllers
         public async Task<ApiListResponse<ObserverModel>> GetObservers(ObserverListQuery query)
         {
             var command = _mapper.Map<ObserverListCommand>(query);
-            command.IdNgo = NgoId;
+
+            var organizer = this.GetOrganizatorOrDefault(false);
+            command.IdNgo = organizer ? -1 : NgoId;
 
             var result = await _mediator.Send(command);
             return result;
@@ -48,7 +50,9 @@ namespace VoteMonitor.Api.Observer.Controllers
         public async Task<List<ObserverModel>> GetActiveObservers(ActiveObserverFilter query)
         {
             var command = _mapper.Map<ActiveObserversQuery>(query);
-            command.IdNgo = NgoId;
+
+            var organizer = this.GetOrganizatorOrDefault(false);
+            command.IdNgo = organizer ? -1 : NgoId;
 
             var result = await _mediator.Send(command);
             return result;
