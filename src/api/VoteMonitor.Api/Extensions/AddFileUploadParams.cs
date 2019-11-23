@@ -1,9 +1,7 @@
-﻿using System;
-using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.Swagger;
+﻿using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace VotingIrregularities.Api.Extensions
+namespace VoteMonitor.Api.Extensions
 {
     /// <inheritdoc />
     public class AddFileUploadParams : IOperationFilter

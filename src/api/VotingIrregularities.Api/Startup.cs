@@ -29,7 +29,6 @@ using Swashbuckle.AspNetCore.Swagger;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
-using VoteMonitor.Api.Answer.Controllers;
 using VoteMonitor.Api.Location.Controllers;
 using VoteMonitor.Api.Location.Services;
 using VoteMonitor.Api.Observer.Controllers;
@@ -102,7 +101,7 @@ namespace VotingIrregularities.Api
                 .AddApplicationPart(typeof(NotificationController).Assembly)
                 .AddApplicationPart(typeof(NoteController).Assembly)
                 .AddApplicationPart(typeof(FormController).Assembly)
-                .AddApplicationPart(typeof(AnswersController).Assembly)
+                //.AddApplicationPart(typeof(AnswersController).Assembly)
                 .AddApplicationPart(typeof(StatisticsController).Assembly)
                 .AddApplicationPart(typeof(DataExportController).Assembly)
                 .AddControllersAsServices()
@@ -344,7 +343,7 @@ namespace VotingIrregularities.Api
             yield return typeof(ObserverController).GetTypeInfo().Assembly;
             yield return typeof(NoteController).GetTypeInfo().Assembly;
             yield return typeof(FormController).GetTypeInfo().Assembly;
-            yield return typeof(AnswersController).GetTypeInfo().Assembly;
+            //yield return typeof(AnswersController).GetTypeInfo().Assembly;
             yield return typeof(UploadFileHandler).GetTypeInfo().Assembly;
             yield return typeof(NotificationController).GetTypeInfo().Assembly;
             yield return typeof(StatisticsController).GetTypeInfo().Assembly;
