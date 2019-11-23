@@ -3,13 +3,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
-using MonitorizareVot.Ong.Api.Models;
 using Microsoft.EntityFrameworkCore;
-using VoteMonitor.Entities;
-using VotingIrregularities.Api.Models.AccountViewModels;
+using VoteMonitor.Api.Auth.Models;
+using VoteMonitor.Api.Auth.Queries;
 using VoteMonitor.Api.Core.Services;
+using VoteMonitor.Entities;
 
-namespace MonitorizareVot.Ong.Api.Queries
+namespace VoteMonitor.Api.Auth.Handlers
 {
     public class AdminQueryHandler : IRequestHandler<NgoAdminApplicationUser, UserInfo>
     {

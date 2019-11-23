@@ -14,7 +14,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.PlatformAbstractions;
 using Serilog;
 using VotingIrregularities.Api.Extensions;
 using SimpleInjector;
@@ -22,10 +21,8 @@ using SimpleInjector.Integration.AspNetCore.Mvc;
 using VoteMonitor.Entities;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 using Microsoft.Extensions.Options;
-using VotingIrregularities.Api.Models.AccountViewModels;
 using Microsoft.AspNetCore.Mvc;
 using SimpleInjector.Lifestyles;
-using Swashbuckle.AspNetCore.Swagger;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -38,7 +35,7 @@ using VoteMonitor.Api.Form.Controllers;
 using VoteMonitor.Api.Core;
 using VoteMonitor.Api.Core.Handlers;
 using VoteMonitor.Api.Notification.Controllers;
-using System.IO;
+using VoteMonitor.Api.Answer.Controllers;
 using VoteMonitor.Api.Core.Extensions;
 using VoteMonitor.Api.Core.Models;
 using VoteMonitor.Api.Core.Options;
@@ -52,12 +49,6 @@ namespace VotingIrregularities.Api
     {
         private readonly Container _container = new Container { Options = { DefaultLifestyle = Lifestyle.Scoped, DefaultScopedLifestyle = new AsyncScopedLifestyle() } };
 
-        //private IConfiguration _configuration;
-
-        //public Startup(IConfiguration configuration)
-        //{
-        //    _configuration = configuration;
-        //}
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
@@ -101,9 +92,10 @@ namespace VotingIrregularities.Api
                 .AddApplicationPart(typeof(NotificationController).Assembly)
                 .AddApplicationPart(typeof(NoteController).Assembly)
                 .AddApplicationPart(typeof(FormController).Assembly)
-                //.AddApplicationPart(typeof(AnswersController).Assembly)
+                .AddApplicationPart(typeof(AnswersController).Assembly)
                 .AddApplicationPart(typeof(StatisticsController).Assembly)
                 .AddApplicationPart(typeof(DataExportController).Assembly)
+               //.AddApplicationPart(typeof(VoteMonitor.Api.Auth.Controllers.Authorization).Assembly)
                 .AddControllersAsServices()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
@@ -124,8 +116,7 @@ namespace VotingIrregularities.Api
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-		public void Configure(IApplicationBuilder app,
-            IApplicationLifetime appLifetime)
+		public void Configure(IApplicationBuilder app, IApplicationLifetime appLifetime)
         {
             app.UseStaticFiles();
 
@@ -154,7 +145,7 @@ namespace VotingIrregularities.Api
 
             RegisterOptionsInSimpleInjector(app);
 
-            RegisterServices(app);
+            RegisterServices();
 
             ConfigureFileService(app);
 
@@ -233,7 +224,6 @@ namespace VotingIrregularities.Api
         private void ConfigureFileLoader()
         {
             _container.RegisterSingleton<IFileLoader, XlsxFileLoader>();
-            return;
         }
 
         private void ConfigureFileService(IApplicationBuilder app)
@@ -264,10 +254,9 @@ namespace VotingIrregularities.Api
                 new SimpleInjectorViewComponentActivator(_container));
         }
 
-        private void RegisterServices(IApplicationBuilder app)
+        private void RegisterServices()
         {
             _container.Register<IPollingStationService, PollingStationService>(Lifestyle.Scoped);
-            
         }
 
         private void InitializeContainer(IApplicationBuilder app)
@@ -287,7 +276,7 @@ namespace VotingIrregularities.Api
             // NOTE: Prevent cross-wired instances as much as possible.
             // See: https://simpleinjector.org/blog/2016/07/
 
-            _container.RegisterInstance<IConfigurationRoot>(Configuration);
+            _container.RegisterInstance(Configuration);
         }
 
         private void RegisterDbContext<TDbContext>(string connectionString = null)
@@ -308,7 +297,7 @@ namespace VotingIrregularities.Api
             }
         }
 
-        private IMediator BuildMediator()
+        private void BuildMediator()
         {
             var assemblies = GetAssemblies().ToArray();
             _container.RegisterSingleton<IMediator, Mediator>();
@@ -320,10 +309,6 @@ namespace VotingIrregularities.Api
 
             _container.RegisterInstance(Console.Out);
             _container.RegisterInstance(new ServiceFactory(_container.GetInstance));
-
-            var mediator = _container.GetInstance<IMediator>();
-
-            return mediator;
         }
 
         private void RegisterAutomapper()
@@ -343,11 +328,12 @@ namespace VotingIrregularities.Api
             yield return typeof(ObserverController).GetTypeInfo().Assembly;
             yield return typeof(NoteController).GetTypeInfo().Assembly;
             yield return typeof(FormController).GetTypeInfo().Assembly;
-            //yield return typeof(AnswersController).GetTypeInfo().Assembly;
+            yield return typeof(AnswersController).GetTypeInfo().Assembly;
             yield return typeof(UploadFileHandler).GetTypeInfo().Assembly;
             yield return typeof(NotificationController).GetTypeInfo().Assembly;
             yield return typeof(StatisticsController).GetTypeInfo().Assembly;
             yield return typeof(DataExportController).GetTypeInfo().Assembly;
+            //yield return typeof(VoteMonitor.Api.Auth.Controllers.Authorization).GetTypeInfo().Assembly;
             // just to identify VotingIrregularities.Domain assembly
         }
     }

@@ -1,10 +1,10 @@
 ﻿using System.Threading;
-using MediatR;
 using System.Threading.Tasks;
+using MediatR;
 using VoteMonitor.Api.Location.Services;
 using VotingIrregularities.Api.Models;
 
-namespace VotingIrregularities.Api.Queries
+namespace VotingIrregularities.Api.Handlers
 {
     public class SectieQueryHandler : IRequestHandler<ModelSectieQuery, int>
     {

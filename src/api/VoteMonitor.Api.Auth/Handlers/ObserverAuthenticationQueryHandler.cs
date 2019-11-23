@@ -1,15 +1,16 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using VoteMonitor.Api.Auth.Models;
+using VoteMonitor.Api.Auth.Queries;
 using VoteMonitor.Api.Core.Options;
 using VoteMonitor.Api.Core.Services;
-using VotingIrregularities.Api.Models.AccountViewModels;
 using VoteMonitor.Entities;
 
-namespace VotingIrregularities.Api.Queries
+namespace VoteMonitor.Api.Auth.Handlers
 {
     /// <summary>
     /// Handles the query regarding the authentication of the observer - checks the phone number and hashed pin against the database

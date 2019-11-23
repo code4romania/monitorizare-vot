@@ -1,12 +1,12 @@
-﻿using MediatR;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MediatR;
 using VoteMonitor.Api.Location.Services;
 using VotingIrregularities.Api.Models;
 using VotingIrregularities.Domain.RaspunsAggregate.Commands;
 
-namespace VotingIrregularities.Api.Queries
+namespace VotingIrregularities.Api.Handlers
 {
     /// <summary>
     /// Hidrateaza sectiile de votare din comanda data de observator.

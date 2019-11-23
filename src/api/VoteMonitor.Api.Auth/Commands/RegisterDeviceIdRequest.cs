@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace VotingIrregularities.Domain.UserAggregate
+namespace VoteMonitor.Api.Auth.Commands
 {
     public class RegisterDeviceId : IRequest<int>
     {

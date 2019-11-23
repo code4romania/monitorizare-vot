@@ -17,6 +17,7 @@ namespace VotingIrregularities.Api.Extensions.Startup
             var privateKeyPath = firebaseOptions[nameof(FirebaseServiceOptions.ServerKey)];
             Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", Path.GetFullPath(privateKeyPath));
 
+
             container.RegisterSingleton<IFirebaseService, FirebaseService>();
 
             return app;
