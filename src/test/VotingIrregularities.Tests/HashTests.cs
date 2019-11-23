@@ -3,7 +3,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using VoteMonitor.Api.Core.Options;
 using VoteMonitor.Api.Core.Services;
-using VotingIrregularities.Api.Options;
 using Xunit;
 
 namespace VotingIrregularities.Tests

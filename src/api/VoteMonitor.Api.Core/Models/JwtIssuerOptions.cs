@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
 
-namespace VotingIrregularities.Api.Models.AccountViewModels
+namespace VoteMonitor.Api.Core.Models
 {
     public class JwtIssuerOptions
     {

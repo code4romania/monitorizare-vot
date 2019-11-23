@@ -4,10 +4,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using VoteMonitor.Api.Core;
-using VotingIrregularities.Api.Models.AccountViewModels;
+using VoteMonitor.Api.Core.Models;
 
-namespace VotingIrregularities.Api.Extensions.Startup
+namespace VoteMonitor.Api.Core.Extensions
 {
     public static class JwtConfigurationExtensions
     {

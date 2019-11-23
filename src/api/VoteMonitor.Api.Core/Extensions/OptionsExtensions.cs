@@ -1,9 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using VoteMonitor.Api.Core.Options;
-using VotingIrregularities.Api.Options;
 
-namespace VotingIrregularities.Api.Extensions.Startup
+namespace VoteMonitor.Api.Core.Extensions
 {
     public static class OptionsExtensions
     {
@@ -15,7 +14,7 @@ namespace VotingIrregularities.Api.Extensions.Startup
         /// <param name="configuration"></param>
         /// <returns></returns>
         public static IServiceCollection ConfigureCustomOptions(this IServiceCollection services,
-            IConfigurationRoot configuration)
+            IConfiguration configuration)
         {
             services.Configure<BlobStorageOptions>(configuration.GetSection(nameof(BlobStorageOptions)));
             services.Configure<HashOptions>(configuration.GetSection(nameof(HashOptions)));
