@@ -257,4 +257,3 @@ ModelManifest.xml
 .idea
 /src/api/VotingIrregularities.Api/etc
 /src/api/VotingIrregularities.Api/api-docs
-**/api-docs
