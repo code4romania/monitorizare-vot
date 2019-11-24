@@ -154,7 +154,12 @@ namespace VoteMonitor.Api.Observer.Controllers
 
             if (string.Equals(model.Action, ControllerExtensions.DEVICE_RESET))
             {
-                var result = await _mediator.Send(new ResetDeviceCommand(NgoId, model.PhoneNumber));
+                var result = await _mediator.Send(new ResetDeviceCommand
+                {
+                    IdNgo = NgoId,
+                    PhoneNumber = model.PhoneNumber,
+                    Organizer = this.GetOrganizatorOrDefault(false)
+                });
                 if (result == -1)
                     return NotFound(ControllerExtensions.RESET_ERROR_MESSAGE + model.PhoneNumber);
                 else
@@ -163,8 +168,11 @@ namespace VoteMonitor.Api.Observer.Controllers
 
             if (string.Equals(model.Action, ControllerExtensions.PASSWORD_RESET))
             {
-                var result = await _mediator.Send(new ResetPasswordCommand(NgoId, model.PhoneNumber, model.Pin)
+                var result = await _mediator.Send(new ResetPasswordCommand
                 {
+                    IdNgo = NgoId,
+                    PhoneNumber = model.PhoneNumber,
+                    Pin = model.Pin,
                     Organizer = this.GetOrganizatorOrDefault(false)
                 });
                 if (result == false)
