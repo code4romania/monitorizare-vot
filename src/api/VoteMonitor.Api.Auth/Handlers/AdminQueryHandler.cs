@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using VoteMonitor.Api.Auth.Models;
@@ -15,11 +16,13 @@ namespace VoteMonitor.Api.Auth.Handlers
     {
         private readonly VoteMonitorContext _context;
         private readonly IHashService _hash;
+        private readonly IMapper _mapper;
 
-        public AdminQueryHandler(VoteMonitorContext context, IHashService hash)
+        public AdminQueryHandler(VoteMonitorContext context, IHashService hash, IMapper mapper)
         {
             _context = context;
             _hash = hash;
+            _mapper = mapper;
         }
 
         public async Task<UserInfo> Handle(NgoAdminApplicationUser message, CancellationToken token)
@@ -30,8 +33,8 @@ namespace VoteMonitor.Api.Auth.Handlers
                 .Include(a => a.Ngo)
                 .Where(a => a.Password == hashValue &&
                                      a.Account == message.UserName)
-                                     .Select(Mapper.Map<UserInfo>)
-                                     .FirstOrDefault();
+                .Select(_mapper.Map<UserInfo>)
+                .FirstOrDefault();
 
             return await Task.FromResult(userinfo);
         }

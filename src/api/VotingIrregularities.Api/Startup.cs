@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
-using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -18,7 +17,6 @@ using Serilog;
 using VotingIrregularities.Api.Extensions;
 using SimpleInjector;
 using SimpleInjector.Integration.AspNetCore.Mvc;
-using VoteMonitor.Entities;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Mvc;
@@ -26,18 +24,12 @@ using SimpleInjector.Lifestyles;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
-using VoteMonitor.Api.Observer.Controllers;
 using VoteMonitor.Api.Core.Services;
-using VoteMonitor.Api.Form.Controllers;
 using VoteMonitor.Api.Core;
 using VoteMonitor.Api.Core.Handlers;
-using VoteMonitor.Api.Notification.Controllers;
-using VoteMonitor.Api.Answer.Controllers;
 using VoteMonitor.Api.Core.Extensions;
 using VoteMonitor.Api.Core.Models;
 using VoteMonitor.Api.Core.Options;
-using VoteMonitor.Api.DataExport.Controller;
-using VoteMonitor.Api.Statistics.Controllers;
 using VotingIrregularities.Api.Extensions.Startup;
 
 namespace VotingIrregularities.Api
@@ -84,12 +76,6 @@ namespace VotingIrregularities.Api
                                                                         .RequireClaim(ClaimsHelper.IdNgo)
                                                                         .Build())); 
                 })
-                .AddApplicationPart(typeof(ObserverController).Assembly)
-                .AddApplicationPart(typeof(NotificationController).Assembly)
-                .AddApplicationPart(typeof(FormController).Assembly)
-                .AddApplicationPart(typeof(AnswersController).Assembly)
-                .AddApplicationPart(typeof(StatisticsController).Assembly)
-                .AddApplicationPart(typeof(DataExportController).Assembly)
                 .AddControllersAsServices()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
@@ -145,7 +131,6 @@ namespace VotingIrregularities.Api
             InitializeContainer(app);
 
             //Registering dbContext
-            RegisterDbContext<VoteMonitorContext>(Configuration.GetConnectionString("DefaultConnection"));
 
             RegisterAutomapper();
 
@@ -168,6 +153,7 @@ namespace VotingIrregularities.Api
 			app.UseMvc();
         }
 
+        // no longer needed
         private void RegisterOptionsInSimpleInjector(IApplicationBuilder app)
         {
             // these were already registered in the default container so we're going to pick them up from there..
@@ -181,6 +167,7 @@ namespace VotingIrregularities.Api
             _container.RegisterSingleton(() => app.ApplicationServices.GetService<IOptions<PollingStationsOptions>>());
         }
 
+        // migrated
         private void ConfigureCache(IServiceCollection services)
         {
             var cacheOptions = new ApplicationCacheOptions();
@@ -212,6 +199,7 @@ namespace VotingIrregularities.Api
             }
         }
 
+        // migrated
         private void ConfigureFileService(IApplicationBuilder app)
         {
             var fileServiceOptions = app.ApplicationServices.GetService<IOptions<FileServiceOptions>>().Value;
@@ -222,6 +210,7 @@ namespace VotingIrregularities.Api
                 _container.RegisterSingleton<IFileService, BlobService>();
         }
 
+        //migrated
         private void ConfigureHash(IApplicationBuilder app)
         {
             var hashOptions = app.ApplicationServices.GetService<IOptions<HashOptions>>().Value;
@@ -232,6 +221,7 @@ namespace VotingIrregularities.Api
                 _container.RegisterSingleton<IHashService, HashService>();
         }
 
+        // no longer needed
         private void ConfigureContainer(IServiceCollection services)
         {
             services.AddSingleton<IControllerActivator>(
@@ -240,7 +230,7 @@ namespace VotingIrregularities.Api
                 new SimpleInjectorViewComponentActivator(_container));
         }
 
-
+        // no longer needed
         private void InitializeContainer(IApplicationBuilder app)
         {
             // Add application presentation components:
@@ -261,6 +251,7 @@ namespace VotingIrregularities.Api
             _container.RegisterInstance(Configuration);
         }
 
+        // migrated
         private void RegisterDbContext<TDbContext>(string connectionString = null)
             where TDbContext : DbContext
         {
@@ -279,6 +270,7 @@ namespace VotingIrregularities.Api
             }
         }
 
+        // migrated
         private void BuildMediator()
         {
             var assemblies = GetAssemblies().ToArray();
@@ -293,26 +285,20 @@ namespace VotingIrregularities.Api
             _container.RegisterInstance(new ServiceFactory(_container.GetInstance));
         }
 
+        // migrated
         private void RegisterAutomapper()
         {
-            Mapper.Initialize(cfg => { cfg.AddProfiles(GetAssemblies()); });
+            //Mapper.Initialize(cfg => { cfg.AddProfiles(GetAssemblies()); });
 
-            _container.RegisterInstance(Mapper.Configuration);
-            _container.Register<IMapper>(() => new Mapper(Mapper.Configuration), Lifestyle.Scoped);
+            //_container.RegisterInstance(Mapper.Configuration);
+            //_container.Register<IMapper>(() => new Mapper(Mapper.Configuration), Lifestyle.Scoped);
         }
 
         private static IEnumerable<Assembly> GetAssemblies()
         {
             yield return typeof(IMediator).GetTypeInfo().Assembly;
             yield return typeof(Startup).GetTypeInfo().Assembly;
-            yield return typeof(VoteMonitorContext).GetTypeInfo().Assembly;
-            yield return typeof(ObserverController).GetTypeInfo().Assembly;
-            yield return typeof(FormController).GetTypeInfo().Assembly;
-            yield return typeof(AnswersController).GetTypeInfo().Assembly;
             yield return typeof(UploadFileHandler).GetTypeInfo().Assembly;
-            yield return typeof(NotificationController).GetTypeInfo().Assembly;
-            yield return typeof(StatisticsController).GetTypeInfo().Assembly;
-            yield return typeof(DataExportController).GetTypeInfo().Assembly;
         }
     }
 }

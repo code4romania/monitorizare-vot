@@ -2,7 +2,7 @@
 using VoteMonitor.Api.Auth.Models;
 using VoteMonitor.Entities;
 
-namespace VotingIrregularities.Api.Profiles
+namespace VoteMonitor.Api.Auth.Profiles
 {
     public class UserInfoProfile : Profile
     {

@@ -16,10 +16,13 @@ namespace VoteMonitor.Api.Observer.Handlers
     {
         private readonly VoteMonitorContext _context;
         private readonly ILogger _logger;
-        public ActiveObserversQueryHandler(VoteMonitorContext context, ILogger logger)
+        private readonly IMapper _mapper;
+
+        public ActiveObserversQueryHandler(VoteMonitorContext context, ILogger logger, IMapper mapper)
         {
             _context = context;
             _logger = logger;
+            _mapper = mapper;
         }
         public Task<List<ObserverModel>> Handle(ActiveObserversQuery request, CancellationToken cancellationToken)
         {
@@ -37,7 +40,7 @@ namespace VoteMonitor.Api.Observer.Handlers
                 var observers = results
                     .Select(i => i.Observer)
                     .AsEnumerable()
-                    .Select(Mapper.Map<ObserverModel>)
+                    .Select(_mapper.Map<ObserverModel>)
                     .ToList();
 
             return Task.FromResult(observers);

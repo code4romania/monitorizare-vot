@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
     <AssemblyName>VotingIrregularities.Tests</AssemblyName>
     <PackageId>VotingIrregularities.Tests</PackageId>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
@@ -11,7 +11,6 @@
     <ProjectGuid>{6961F352-9908-40B1-A840-A96841CF2031}</ProjectGuid>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.Extensions.Caching.Redis.Core" Version="1.0.3" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
       <PrivateAssets>all</PrivateAssets>
@@ -24,8 +23,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.4" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\api\VotingIrregularities.Api\VotingIrregularities.Api.csproj" />
-    <ProjectReference Include="..\..\api\VotingIrregularities.Domain\VotingIrregularities.Domain.csproj" />
+    <ProjectReference Include="..\..\api\VoteMonitor.Api.Answer\VoteMonitor.Api.Answer.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="appsettings.json">

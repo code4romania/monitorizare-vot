@@ -8,16 +8,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{388C55EB-26FF-46AB-9395-549E1A7A99AD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VotingIrregularities.Api", "api\VotingIrregularities.Api\VotingIrregularities.Api.csproj", "{61445EF2-8644-4832-BF05-60900CF76BD3}"
-	ProjectSection(ProjectDependencies) = postProject
-		{66D79319-E1E2-46EC-981C-A704F357885B} = {66D79319-E1E2-46EC-981C-A704F357885B}
-	EndProjectSection
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VotingIrregularities.Domain", "api\VotingIrregularities.Domain\VotingIrregularities.Domain.csproj", "{66D79319-E1E2-46EC-981C-A704F357885B}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VotingIrregularities.Domain.Tests", "test\VotingIrregularities.Domain.Tests\VotingIrregularities.Domain.Tests.csproj", "{36D9D278-1959-4853-93CA-F35F1A2EB92A}"
-	ProjectSection(ProjectDependencies) = postProject
-		{66D79319-E1E2-46EC-981C-A704F357885B} = {66D79319-E1E2-46EC-981C-A704F357885B}
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VotingIrregularities.Tests", "test\VotingIrregularities.Tests\VotingIrregularities.Tests.csproj", "{6961F352-9908-40B1-A840-A96841CF2031}"
 EndProject
@@ -45,7 +35,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoteMonitor.Api.DataExport"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoteMonitor.Api", "api\VoteMonitor.Api\VoteMonitor.Api.csproj", "{87395D1E-7E9B-4099-8093-9AC16D7AE45A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoteMonitor.Api.Auth", "api\VoteMonitor.Api.Auth\VoteMonitor.Api.Auth.csproj", "{9AE873EE-2FA4-4C0E-9DDB-BB0B3C7A4004}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoteMonitor.Api.Auth", "api\VoteMonitor.Api.Auth\VoteMonitor.Api.Auth.csproj", "{9AE873EE-2FA4-4C0E-9DDB-BB0B3C7A4004}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,14 +47,6 @@ Global
 		{61445EF2-8644-4832-BF05-60900CF76BD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{61445EF2-8644-4832-BF05-60900CF76BD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{61445EF2-8644-4832-BF05-60900CF76BD3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{66D79319-E1E2-46EC-981C-A704F357885B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{66D79319-E1E2-46EC-981C-A704F357885B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{66D79319-E1E2-46EC-981C-A704F357885B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{66D79319-E1E2-46EC-981C-A704F357885B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{36D9D278-1959-4853-93CA-F35F1A2EB92A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{36D9D278-1959-4853-93CA-F35F1A2EB92A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{36D9D278-1959-4853-93CA-F35F1A2EB92A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{36D9D278-1959-4853-93CA-F35F1A2EB92A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6961F352-9908-40B1-A840-A96841CF2031}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6961F352-9908-40B1-A840-A96841CF2031}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6961F352-9908-40B1-A840-A96841CF2031}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -127,8 +109,6 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{61445EF2-8644-4832-BF05-60900CF76BD3} = {8A09B442-FB79-4293-BF9B-E34DD3AE70F3}
-		{66D79319-E1E2-46EC-981C-A704F357885B} = {8A09B442-FB79-4293-BF9B-E34DD3AE70F3}
-		{36D9D278-1959-4853-93CA-F35F1A2EB92A} = {388C55EB-26FF-46AB-9395-549E1A7A99AD}
 		{6961F352-9908-40B1-A840-A96841CF2031} = {388C55EB-26FF-46AB-9395-549E1A7A99AD}
 		{EBCE8818-41D9-4089-98F4-A03BAA909210} = {8A09B442-FB79-4293-BF9B-E34DD3AE70F3}
 		{B8004522-7E3D-41B0-B33E-86B2F090D3AA} = {8A09B442-FB79-4293-BF9B-E34DD3AE70F3}

@@ -16,11 +16,14 @@ namespace VoteMonitor.Api.Observer.Handlers
 	{
 		private readonly VoteMonitorContext _context;
 		private readonly ILogger _logger;
-		public ObserverListQueryHandler(VoteMonitorContext context, ILogger logger)
+        private readonly IMapper _mapper;
+
+        public ObserverListQueryHandler(VoteMonitorContext context, ILogger logger, IMapper mapper)
 		{
 			_context = context;
 			_logger = logger;
-		}
+            _mapper = mapper;
+        }
 		public async Task<ApiListResponse<ObserverModel>> Handle(ObserverListCommand request, CancellationToken cancellationToken)
 		{
 			_logger.LogInformation($"Searching for Observers with the following filters (IdNgo, Name, Phone): {request.IdNgo}, {request.Name}, {request.Number}");
@@ -41,7 +44,7 @@ namespace VoteMonitor.Api.Observer.Handlers
 
 			var requestedPageObservers = GetPagedQuery(observers, request.Page, request.PageSize)
 				.ToList()
-				.Select(Mapper.Map<ObserverModel>);
+				.Select(_mapper.Map<ObserverModel>);
 
 
 			return new ApiListResponse<ObserverModel>
