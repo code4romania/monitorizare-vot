@@ -15,6 +15,6 @@ namespace VoteMonitor.Entities
         public int NumberOfPollingStations { get; set; }
         public bool Diaspora { get; set; }
 
-		public virtual ICollection<PollingStation> PollingStations { get; set; }
+        public virtual ICollection<PollingStation> PollingStations { get; set; }
     }
 }

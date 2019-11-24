@@ -42,7 +42,9 @@ namespace VoteMonitor.Api.Location.Controllers
         public async Task<IAsyncResult> Register([FromBody] AddPollingStationInfo pollingStationInfo)
         {
             if (!ModelState.IsValid)
+            {
                 return this.ResultAsync(HttpStatusCode.BadRequest, ModelState);
+            }
 
             var command = _mapper.Map<RegisterPollingStationCommand>(pollingStationInfo);
 
@@ -64,11 +66,15 @@ namespace VoteMonitor.Api.Location.Controllers
         public async Task<IAsyncResult> Update([FromBody] UpdatePollingStationInfo pollingStationInfo)
         {
             if (!ModelState.IsValid)
+            {
                 return this.ResultAsync(HttpStatusCode.BadRequest, ModelState);
+            }
 
             var idSectie = await _mediator.Send(_mapper.Map<PollingStationQuery>(pollingStationInfo));
             if (idSectie < 0)
+            {
                 return this.ResultAsync(HttpStatusCode.NotFound);
+            }
 
             var command = _mapper.Map<UpdatePollingSectionCommand>(pollingStationInfo);
 
@@ -96,13 +102,17 @@ namespace VoteMonitor.Api.Location.Controllers
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> ImportFormatFile(IFormFile file)
         {
-            if(!_fileLoader.ValidateFile(file))
+            if (!_fileLoader.ValidateFile(file))
+            {
                 return UnprocessableEntity();
+            }
 
             var result = await _mediator.Send(new PollingStationCommand(_fileLoader.ImportFileAsync(file).Result));
 
-            if(result == -1)
+            if (result == -1)
+            {
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
 
             return Ok();
         }

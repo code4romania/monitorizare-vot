@@ -33,8 +33,10 @@ namespace VoteMonitor.Api.Location.Handlers
                         a.IdPollingStation == message.IdPollingStation);
 
                 if (pollingStationInfo == null)
+                {
                     throw new ArgumentException("PollingStationInfo nu exista");
-               
+                }
+
                 _mapper.Map(message, pollingStationInfo);
                 _context.Update(pollingStationInfo);
 

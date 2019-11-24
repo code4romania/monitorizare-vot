@@ -1,17 +1,17 @@
-﻿using System.Threading.Tasks;
-using System.Collections.Generic;
+﻿using AutoMapper;
 using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using VoteMonitor.Api.Core;
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using VoteMonitor.Api.Observer.Models;
-using VoteMonitor.Api.Observer.Commands;
 using Microsoft.AspNetCore.Http;
-using VoteMonitor.Api.Observer.Queries;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using VoteMonitor.Api.Core;
 using VoteMonitor.Api.Core.Commands;
 using VoteMonitor.Api.Core.Options;
+using VoteMonitor.Api.Observer.Commands;
+using VoteMonitor.Api.Observer.Models;
+using VoteMonitor.Api.Observer.Queries;
 
 namespace VoteMonitor.Api.Observer.Controllers
 {
@@ -73,7 +73,9 @@ namespace VoteMonitor.Api.Observer.Controllers
         public async Task<int> Import(IFormFile file, [FromForm] int ongId)
         {
             if (ongId <= 0)
+            {
                 ongId = NgoId;
+            }
 
             await _mediator.Send(
                 new UploadFileCommand
@@ -101,7 +103,9 @@ namespace VoteMonitor.Api.Observer.Controllers
         public async Task<IActionResult> NewObserver(NewObserverModel model)
         {
             if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
+            }
 
             var newObsCommand = _mapper.Map<NewObserverCommand>(model);
             newObsCommand.IdNgo = NgoId;
@@ -120,7 +124,9 @@ namespace VoteMonitor.Api.Observer.Controllers
         public async Task<IActionResult> EditObserver([FromBody]EditObserverModel model)
         {
             if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
+            }
 
             var id = await _mediator.Send(_mapper.Map<EditObserverCommand>(model));
 
@@ -137,7 +143,9 @@ namespace VoteMonitor.Api.Observer.Controllers
         public async Task<IActionResult> DeleteObserver(int id)
         {
             if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
+            }
 
             var result = await _mediator.Send(_mapper.Map<DeleteObserverCommand>(new DeleteObserverModel { IdObserver = id }));
 
@@ -150,7 +158,9 @@ namespace VoteMonitor.Api.Observer.Controllers
         public async Task<IActionResult> Reset([FromBody]ResetModel model)
         {
             if (string.IsNullOrEmpty(model.Action) || string.IsNullOrEmpty(model.PhoneNumber))
+            {
                 return BadRequest();
+            }
 
             if (string.Equals(model.Action, ControllerExtensions.DEVICE_RESET))
             {
@@ -161,9 +171,13 @@ namespace VoteMonitor.Api.Observer.Controllers
                     Organizer = this.GetOrganizatorOrDefault(false)
                 });
                 if (result == -1)
+                {
                     return NotFound(ControllerExtensions.RESET_ERROR_MESSAGE + model.PhoneNumber);
+                }
                 else
+                {
                     return Ok(result);
+                }
             }
 
             if (string.Equals(model.Action, ControllerExtensions.PASSWORD_RESET))
@@ -176,7 +190,9 @@ namespace VoteMonitor.Api.Observer.Controllers
                     Organizer = this.GetOrganizatorOrDefault(false)
                 });
                 if (result == false)
+                {
                     return NotFound(ControllerExtensions.RESET_ERROR_MESSAGE + model.PhoneNumber);
+                }
 
                 return Ok();
             }
@@ -190,8 +206,10 @@ namespace VoteMonitor.Api.Observer.Controllers
         public async Task<IActionResult> GenerateObservers([FromForm] int count)
         {
             if (!ControllerExtensions.ValidateGenerateObserversNumber(count))
+            {
                 return BadRequest("Incorrect parameter supplied, please check that paramter is between boundaries: "
                     + ControllerExtensions.LOWER_OBS_VALUE + " - " + ControllerExtensions.UPPER_OBS_VALUE);
+            }
 
             var command = new ObserverGenerateCommand(count, NgoId);
 

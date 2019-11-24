@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using MediatR;
+﻿using MediatR;
+using System.ComponentModel.DataAnnotations;
 using VoteMonitor.Api.Auth.Models;
 
 namespace VoteMonitor.Api.Auth.Queries

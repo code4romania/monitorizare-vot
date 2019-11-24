@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Microsoft.IdentityModel.Tokens;
+using System;
 using System.Threading.Tasks;
-using Microsoft.IdentityModel.Tokens;
 
 namespace VoteMonitor.Api.Core.Models
 {

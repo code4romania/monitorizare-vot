@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace VoteMonitor.Api.Auth.Models {
-    public class AuthenticateUserRequest {
+namespace VoteMonitor.Api.Auth.Models
+{
+    public class AuthenticateUserRequest
+    {
         [Required]
         public string User { get; set; }
         [Required]

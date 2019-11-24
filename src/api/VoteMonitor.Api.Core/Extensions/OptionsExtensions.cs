@@ -32,4 +32,4 @@ namespace VoteMonitor.Api.Core.Extensions
             return configuration.GetSection(nameof(HashOptions));
         }
     }
-} 
+}

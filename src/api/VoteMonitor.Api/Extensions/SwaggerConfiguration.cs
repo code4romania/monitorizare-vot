@@ -1,8 +1,8 @@
-﻿using System;
-using System.IO;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using System;
+using System.IO;
 
 namespace VoteMonitor.Api.Extensions
 {
@@ -52,7 +52,9 @@ namespace VoteMonitor.Api.Extensions
                 var baseDocPath = Directory.GetCurrentDirectory();
 
                 foreach (var api in Directory.GetFiles(baseDocPath, "*.xml", SearchOption.AllDirectories))
+                {
                     options.IncludeXmlComments(api);
+                }
             });
         }
 

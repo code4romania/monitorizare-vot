@@ -28,12 +28,16 @@ namespace VoteMonitor.Api.Observer.Handlers
                     .Where(o => o.Phone == request.PhoneNumber);
 
                 if (!request.Organizer)
+                {
                     observerQuery = observerQuery.Where(o => o.IdNgo == request.IdNgo);
+                }
 
                 var observer = observerQuery.FirstOrDefault();
 
                 if (observer == null)
+                {
                     return Task.FromResult(-1);
+                }
 
                 observer.DeviceRegisterDate = null;
                 observer.MobileDeviceId = null;

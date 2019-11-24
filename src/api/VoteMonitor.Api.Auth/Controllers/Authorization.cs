@@ -1,15 +1,15 @@
-﻿using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Security.Principal;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Security.Claims;
+using System.Security.Principal;
+using System.Threading.Tasks;
 using VoteMonitor.Api.Auth.Commands;
 using VoteMonitor.Api.Auth.Models;
 using VoteMonitor.Api.Auth.Queries;
@@ -44,24 +44,31 @@ namespace VoteMonitor.Api.Auth.Controllers
         [ProducesResponseType(typeof(AuthenticationResponseModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> AuthenticateUser([FromBody] AuthenticateUserRequest request) {
+        public async Task<IActionResult> AuthenticateUser([FromBody] AuthenticateUserRequest request)
+        {
             if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
+            }
 
             string token;
-            if (string.IsNullOrEmpty(request.UniqueId)) {
+            if (string.IsNullOrEmpty(request.UniqueId))
+            {
                 var identity = await GetClaimsIdentity(request);
-                if (identity == null) {
+                if (identity == null)
+                {
                     _logger.LogInformation($"Invalid username ({request.User}) or password ({request.Password})");
                     return BadRequest("Invalid credentials");
                 }
 
                 token = GetTokenFromIdentity(identity);
             }
-            else {
+            else
+            {
                 var identity = await GetClaimsIdentity(request);
 
-                if (identity == null) {
+                if (identity == null)
+                {
                     _logger.LogInformation($"Invalid Phone ({request.User}) or password ({request.Password})");
                     return BadRequest(_mobileSecurityOptions.InvalidCredentialsErrorMessage);
                 }
@@ -71,12 +78,12 @@ namespace VoteMonitor.Api.Auth.Controllers
 
             // Serialize and return the response
             var response = new AuthenticationResponseModel
-			{
-	            access_token = token,
-	            expires_in = (int)_jwtOptions.ValidFor.TotalSeconds
+            {
+                access_token = token,
+                expires_in = (int)_jwtOptions.ValidFor.TotalSeconds
             };
 
-			return Ok(response);
+            return Ok(response);
         }
 
         /// <summary>
@@ -97,7 +104,10 @@ namespace VoteMonitor.Api.Auth.Controllers
         }
         private static void ThrowIfInvalidOptions(JwtIssuerOptions options)
         {
-            if (options == null) throw new ArgumentNullException(nameof(options));
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
 
             if (options.ValidFor <= TimeSpan.Zero)
             {
@@ -120,16 +130,21 @@ namespace VoteMonitor.Api.Auth.Controllers
                                new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero))
                               .TotalSeconds);
 
-        private async Task<ClaimsIdentity> GetClaimsIdentity(AuthenticateUserRequest request) {
-            if (string.IsNullOrEmpty(request.UniqueId)) {
-                var userInfo = await _mediator.Send(new NgoAdminApplicationUser {
+        private async Task<ClaimsIdentity> GetClaimsIdentity(AuthenticateUserRequest request)
+        {
+            if (string.IsNullOrEmpty(request.UniqueId))
+            {
+                var userInfo = await _mediator.Send(new NgoAdminApplicationUser
+                {
                     Password = request.Password,
                     UserName = request.User,
                     UserType = UserType.NgoAdmin
                 });
 
                 if (userInfo == null)
+                {
                     return null;
+                }
 
                 // Get the generic claims + the user specific one (the organizer flag)
                 return new ClaimsIdentity(await GetGenericIdentity(request.User, userInfo.IdNgo.ToString(), UserType.NgoAdmin.ToString()),
@@ -138,23 +153,30 @@ namespace VoteMonitor.Api.Auth.Controllers
                     new Claim(ClaimsHelper.Organizer, userInfo.Organizer.ToString(), ClaimValueTypes.Boolean)
                     });
             }
-            else {
+            else
+            {
                 // verific daca userul exista si daca nu are asociat un alt device, il returneaza din baza
-                var userInfo = await _mediator.Send(new ObserverApplicationUser {
+                var userInfo = await _mediator.Send(new ObserverApplicationUser
+                {
                     Phone = request.User,
                     Pin = request.Password,
                     UDID = request.UniqueId
                 });
 
                 if (!userInfo.IsAuthenticated)
+                {
                     return await Task.FromResult<ClaimsIdentity>(null);
+                }
 
                 if (userInfo.FirstAuthentication && _mobileSecurityOptions.LockDevice)
+                {
                     await
-                        _mediator.Send(new RegisterDeviceId {
+                        _mediator.Send(new RegisterDeviceId
+                        {
                             MobileDeviceId = request.UniqueId,
                             ObserverId = userInfo.ObserverId
                         });
+                }
 
                 // Get the generic claims + the user specific one (the organizer flag)
                 return new ClaimsIdentity(await GetGenericIdentity(request.User, userInfo.IdNgo.ToString(), UserType.Observer.ToString()),

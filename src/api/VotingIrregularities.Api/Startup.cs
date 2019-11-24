@@ -1,36 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Reflection;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
+using Microsoft.ApplicationInsights.Extensibility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Serilog;
-using VotingIrregularities.Api.Extensions;
 using SimpleInjector;
 using SimpleInjector.Integration.AspNetCore.Mvc;
-using ILogger = Microsoft.Extensions.Logging.ILogger;
-using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Mvc;
 using SimpleInjector.Lifestyles;
-using Microsoft.ApplicationInsights.Extensibility;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Authorization;
-using VoteMonitor.Api.Core.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Reflection;
+using System.Threading.Tasks;
 using VoteMonitor.Api.Core;
-using VoteMonitor.Api.Core.Handlers;
 using VoteMonitor.Api.Core.Extensions;
+using VoteMonitor.Api.Core.Handlers;
 using VoteMonitor.Api.Core.Models;
 using VoteMonitor.Api.Core.Options;
+using VoteMonitor.Api.Core.Services;
+using VotingIrregularities.Api.Extensions;
 using VotingIrregularities.Api.Extensions.Startup;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace VotingIrregularities.Api
 {
@@ -66,15 +66,15 @@ namespace VotingIrregularities.Api
             // Get options from app settings
             services.AddOptions();
             services.ConfigureCustomOptions(Configuration);
-           
+
             services.ConfigureVoteMonitorAuthentication(Configuration);
             services.AddApplicationInsightsTelemetry(Configuration);
             services.AddMvc(config =>
                 {
-                    config.Filters.Add(new AuthorizeFilter( new AuthorizationPolicyBuilder()
+                    config.Filters.Add(new AuthorizeFilter(new AuthorizationPolicyBuilder()
                                                                         .RequireAuthenticatedUser()
                                                                         .RequireClaim(ClaimsHelper.IdNgo)
-                                                                        .Build())); 
+                                                                        .Build()));
                 })
                 .AddControllersAsServices()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
@@ -87,15 +87,15 @@ namespace VotingIrregularities.Api
 
             services.AddCors(options => options.AddPolicy("Permissive", builder =>
             {
-	            builder.AllowAnyOrigin()
-		            .AllowAnyMethod()
-		            .AllowAnyHeader();
+                builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
             }));
 
-		}
+        }
 
-		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-		public void Configure(IApplicationBuilder app, IApplicationLifetime appLifetime)
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IApplicationLifetime appLifetime)
         {
             app.UseStaticFiles();
 
@@ -150,7 +150,7 @@ namespace VotingIrregularities.Api
             // Enable middleware to serve swagger-ui assets (HTML, JS, CSS etc.)
             app.UseSwaggerUI(o => o.SwaggerEndpoint("/swagger/v1/swagger.json", "MV API v1"));
             app.UseCors("Permissive");
-			app.UseMvc();
+            app.UseMvc();
         }
 
         // no longer needed
@@ -205,9 +205,13 @@ namespace VotingIrregularities.Api
             var fileServiceOptions = app.ApplicationServices.GetService<IOptions<FileServiceOptions>>().Value;
 
             if (fileServiceOptions.Type == "LocalFileService")
+            {
                 _container.RegisterSingleton<IFileService, LocalFileService>();
+            }
             else
+            {
                 _container.RegisterSingleton<IFileService, BlobService>();
+            }
         }
 
         //migrated
@@ -216,9 +220,13 @@ namespace VotingIrregularities.Api
             var hashOptions = app.ApplicationServices.GetService<IOptions<HashOptions>>().Value;
 
             if (hashOptions.ServiceType == nameof(HashServiceType.ClearText))
+            {
                 _container.RegisterSingleton<IHashService, ClearTextService>();
+            }
             else
+            {
                 _container.RegisterSingleton<IHashService, HashService>();
+            }
         }
 
         // no longer needed

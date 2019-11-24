@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using MediatR;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
-using MediatR;
-using Microsoft.Extensions.Logging;
 using VoteMonitor.Api.Core.Services;
 using VoteMonitor.Api.Observer.Commands;
 using VoteMonitor.Entities;
@@ -32,12 +30,16 @@ namespace VoteMonitor.Api.Observer.Handlers
                     .Where(o => o.Phone == request.PhoneNumber);
 
                 if (!request.Organizer)
+                {
                     observerQuery = observerQuery.Where(o => o.IdNgo == request.IdNgo);
+                }
 
                 var observer = observerQuery.FirstOrDefault();
 
                 if (observer == null)
+                {
                     return false;
+                }
 
                 observer.Pin = _hash.GetHash(request.Pin);
 
