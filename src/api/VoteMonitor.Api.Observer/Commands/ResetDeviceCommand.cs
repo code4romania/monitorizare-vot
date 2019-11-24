@@ -4,13 +4,9 @@ namespace VoteMonitor.Api.Observer.Commands
 {
     public class ResetDeviceCommand : IRequest<int>
     {
-        public ResetDeviceCommand(int id, string phone)
-        {
-            IdNgo = id;
-            PhoneNumber = phone;
-        }
+        public int IdNgo { get; set; }
+        public string PhoneNumber { get; set; }
 
-        public int IdNgo;
-        public string PhoneNumber;
+        public bool Organizer { get; set; }
     }
 }
