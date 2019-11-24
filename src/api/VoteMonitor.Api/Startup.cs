@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -37,10 +38,9 @@ namespace VoteMonitor.Api
 
             services.AddDbContext<VoteMonitorContext>(o => o.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddMediatR(
-                Assembly.GetAssembly(typeof(VoteMonitor.Api.Auth.Controllers.Authorization))
-                //,Assembly.GetAssembly(typeof(VoteMonitor.Api.Answer.Controllers.AnswersController))
-                );
+            services.AddAutoMapper(GetAssemblies());
+            services.AddMediatR(GetAssemblies().ToArray());
+
             services.ConfigureSwagger();
             services.AddApplicationInsightsTelemetry();
         }
@@ -65,6 +65,14 @@ namespace VoteMonitor.Api
             {
                 endpoints.MapControllers();
             });
+        }
+
+        private IEnumerable<Assembly> GetAssemblies()
+        {
+            yield return Assembly.GetAssembly(typeof(Startup));
+            yield return typeof(Auth.Controllers.Authorization).GetTypeInfo().Assembly;
+            yield return typeof(Note.Controllers.NoteController).GetTypeInfo().Assembly;
+            //yield return typeof(Auth.Controllers.Authorization).GetTypeInfo().Assembly;
         }
     }
 }
