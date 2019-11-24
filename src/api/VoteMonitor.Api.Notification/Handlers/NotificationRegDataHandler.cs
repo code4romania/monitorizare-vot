@@ -1,38 +1,45 @@
-﻿using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using VoteMonitor.Api.Core.Services;
 using VoteMonitor.Api.Notification.Commands;
 using VoteMonitor.Entities;
 
-namespace VoteMonitor.Api.Notification.Handlers {
+namespace VoteMonitor.Api.Notification.Handlers
+{
     public class NotificationRegistrationDataHandler :
         IRequestHandler<NotificationRegistrationDataCommand, int>,
         IRequestHandler<NewNotificationCommand, int>,
-        IRequestHandler<SendNotificationToAll, int> {
+        IRequestHandler<SendNotificationToAll, int>
+    {
         private readonly VoteMonitorContext _context;
         private readonly IFirebaseService _firebaseService;
         private readonly IMapper _mapper;
 
-        public NotificationRegistrationDataHandler(VoteMonitorContext context, IFirebaseService firebaseService, IMapper mapper) {
+        public NotificationRegistrationDataHandler(VoteMonitorContext context, IFirebaseService firebaseService, IMapper mapper)
+        {
             _context = context;
             _firebaseService = firebaseService;
             _mapper = mapper;
         }
 
-        public Task<int> Handle(NotificationRegistrationDataCommand request, CancellationToken cancellationToken) {
+        public Task<int> Handle(NotificationRegistrationDataCommand request, CancellationToken cancellationToken)
+        {
             var existingRegistration =
                 _context.NotificationRegistrationData
                 .FirstOrDefault(data => data.ObserverId == request.ObserverId && data.ChannelName == request.ChannelName);
 
-            if (existingRegistration != null) {
+            if (existingRegistration != null)
+            {
                 existingRegistration.Token = request.Token;
             }
-            else {
-                var notificationReg = new NotificationRegistrationData {
+            else
+            {
+                var notificationReg = new NotificationRegistrationData
+                {
                     ObserverId = request.ObserverId,
                     ChannelName = request.ChannelName,
                     Token = request.Token
@@ -44,7 +51,8 @@ namespace VoteMonitor.Api.Notification.Handlers {
             return _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<int> Handle(NewNotificationCommand request, CancellationToken cancellationToken) {
+        public async Task<int> Handle(NewNotificationCommand request, CancellationToken cancellationToken)
+        {
             var targetFcmTokens = request.Recipients
                     .Select(observer => _context.NotificationRegistrationData.AsQueryable().Where(regData => regData.ObserverId == int.Parse(observer))
                     .First(regData => regData.ChannelName == request.Channel))
@@ -54,7 +62,10 @@ namespace VoteMonitor.Api.Notification.Handlers {
             var response = 0;
 
             if (targetFcmTokens.Count > 0)
+            {
                 response = _firebaseService.SendAsync(request.From, request.Title, request.Message, targetFcmTokens);
+            }
+
             var notification = _mapper.Map<Entities.Notification>(request);
 
             _context.Notifications.AddRange(notification);
@@ -62,7 +73,8 @@ namespace VoteMonitor.Api.Notification.Handlers {
             return response;
         }
 
-        public async Task<int> Handle(SendNotificationToAll request, CancellationToken cancellationToken) {
+        public async Task<int> Handle(SendNotificationToAll request, CancellationToken cancellationToken)
+        {
             var targetFcmTokens = _context.NotificationRegistrationData
                 .AsNoTracking()
                 .Where(x => x.ChannelName == request.Channel)
@@ -72,14 +84,17 @@ namespace VoteMonitor.Api.Notification.Handlers {
             var response = 0;
 
             if (targetFcmTokens.Count > 0)
+            {
                 response = _firebaseService.SendAsync(request.From, request.Title, request.Message, targetFcmTokens);
+            }
 
             var observerIds = _context.NotificationRegistrationData
                 .AsNoTracking()
                 .Where(x => x.ChannelName == request.Channel)
                 .Select(regDataResult => regDataResult.ObserverId.ToString())
                 .ToList();
-            var notification = _mapper.Map<Entities.Notification>(new NewNotificationCommand {
+            var notification = _mapper.Map<Entities.Notification>(new NewNotificationCommand
+            {
                 Channel = request.Channel,
                 Title = request.Title,
                 Message = request.Message,

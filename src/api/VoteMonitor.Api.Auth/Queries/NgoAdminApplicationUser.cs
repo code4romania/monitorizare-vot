@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using MediatR;
+﻿using MediatR;
+using System.ComponentModel.DataAnnotations;
 using VoteMonitor.Api.Auth.Models;
 using VoteMonitor.Api.Core.Models;
 
@@ -13,6 +13,6 @@ namespace VoteMonitor.Api.Auth.Queries
         [Required(AllowEmptyStrings = false)]
         public string Password { get; set; }
 
-        public UserType UserType{ get; set; }
+        public UserType UserType { get; set; }
     }
 }

@@ -1,12 +1,15 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.PlatformAbstractions;
 using Swashbuckle.AspNetCore.Swagger;
+using System.Collections.Generic;
+using System.IO;
 
-namespace VotingIrregularities.Api.Extensions {
-    public static class SwaggerConfiguration {
-        public static IServiceCollection ConfigureSwagger(this IServiceCollection services) {
+namespace VotingIrregularities.Api.Extensions
+{
+    public static class SwaggerConfiguration
+    {
+        public static IServiceCollection ConfigureSwagger(this IServiceCollection services)
+        {
             return services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new Info

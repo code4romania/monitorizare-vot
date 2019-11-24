@@ -11,4 +11,4 @@ namespace VoteMonitor.Api.Location.Services
 
         bool ValidateFile(IFormFile file);
     }
-} 
+}

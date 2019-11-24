@@ -1,9 +1,9 @@
-﻿using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using VoteMonitor.Api.Auth.Models;
 using VoteMonitor.Api.Auth.Queries;
 using VoteMonitor.Api.Core.Options;
@@ -43,15 +43,19 @@ namespace VoteMonitor.Api.Auth.Handlers
 
             // Only if device lock is enabled verify the DeviceId
             if (_mobileSecurityOptions.LockDevice)
+            {
                 userQuery = userQuery.Where(o => string.IsNullOrWhiteSpace(o.MobileDeviceId) || o.MobileDeviceId == message.UDID);
+            }
 
-            var userinfo = await userQuery.FirstOrDefaultAsync(cancellationToken: cancellationToken);
+            var userinfo = await userQuery.FirstOrDefaultAsync<Observer>(cancellationToken: cancellationToken);
 
             if (userinfo == null)
+            {
                 return new RegisteredObserverModel
                 {
                     IsAuthenticated = false
                 };
+            }
 
             return new RegisteredObserverModel
             {

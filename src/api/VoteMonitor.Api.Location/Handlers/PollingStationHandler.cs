@@ -54,7 +54,9 @@ namespace VoteMonitor.Api.Location.Handlers
                     foreach (var county in _context.Counties)
                     {
                         if (!_context.PollingStations.Any(p => p.IdCounty == county.Id))
+                        {
                             continue;
+                        }
 
                         var maxPollingStation = _context.PollingStations
                             .Where(p => p.IdCounty == county.Id)

@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.IO;
 using VoteMonitor.Api.Core.Extensions;
 using VoteMonitor.Api.Core.Options;
 using VoteMonitor.Api.Core.Services;
@@ -14,15 +10,18 @@ namespace VoteMonitor.Api.Extensions
 {
     public static class ServicesExtensions
     {
-
         public static IServiceCollection AddHashService(this IServiceCollection services, IConfiguration configuration)
         {
             var hashOptions = configuration.GetHashOptions().Get<HashOptions>();
 
             if (hashOptions.ServiceType == nameof(HashServiceType.ClearText))
+            {
                 services.AddSingleton<IHashService, ClearTextService>();
+            }
             else
+            {
                 services.AddSingleton<IHashService, HashService>();
+            }
 
             return services;
         }
@@ -36,26 +35,26 @@ namespace VoteMonitor.Api.Extensions
             switch (cacheOptions.Implementation)
             {
                 case "NoCache":
-                {
-                    services.AddSingleton<ICacheService, NoCacheService>();
-                    break;
-                }
-                case "RedisCache":
-                {
-                    services.AddSingleton<ICacheService, CacheService>();
-                    services.AddDistributedRedisCache(options =>
                     {
-                        configuration.GetSection("RedisCacheOptions").Bind(options);
-                    });
+                        services.AddSingleton<ICacheService, NoCacheService>();
+                        break;
+                    }
+                case "RedisCache":
+                    {
+                        services.AddSingleton<ICacheService, CacheService>();
+                        services.AddDistributedRedisCache(options =>
+                        {
+                            configuration.GetSection("RedisCacheOptions").Bind(options);
+                        });
 
-                    break;
-                }
+                        break;
+                    }
                 case "MemoryDistributedCache":
-                {
-                    services.AddSingleton<ICacheService, CacheService>();
-                    services.AddDistributedMemoryCache();
-                    break;
-                }
+                    {
+                        services.AddSingleton<ICacheService, CacheService>();
+                        services.AddDistributedMemoryCache();
+                        break;
+                    }
             }
 
             return services;
@@ -68,9 +67,13 @@ namespace VoteMonitor.Api.Extensions
             configuration.GetSection(nameof(FileServiceOptions)).Bind(fileServiceOptions);
 
             if (fileServiceOptions.Type == "LocalFileService")
+            {
                 services.AddSingleton<IFileService, LocalFileService>();
+            }
             else
+            {
                 services.AddSingleton<IFileService, BlobService>();
+            }
 
             return services;
         }

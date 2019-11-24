@@ -1,13 +1,13 @@
 ﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using VoteMonitor.Api.Observer.Commands;
-using VoteMonitor.Api.Core.Services;
-using VoteMonitor.Entities;
 using System.IO;
-using System.Threading.Tasks;
 using System.Linq;
 using System.Threading;
-using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
+using VoteMonitor.Api.Core.Services;
+using VoteMonitor.Api.Observer.Commands;
+using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Observer.Handlers
 {
@@ -15,7 +15,8 @@ namespace VoteMonitor.Api.Observer.Handlers
         IRequestHandler<ImportObserversRequest, int>,
         IRequestHandler<NewObserverCommand, int>,
         IRequestHandler<EditObserverCommand, int>,
-        IRequestHandler<DeleteObserverCommand, bool> {
+        IRequestHandler<DeleteObserverCommand, bool>
+    {
         private readonly VoteMonitorContext _context;
         private readonly ILogger _logger;
         private IHashService _hashService;
@@ -29,8 +30,10 @@ namespace VoteMonitor.Api.Observer.Handlers
 
         private int GetMaxIdObserver()
         {
-            if(_context.Observers.Any())
+            if (_context.Observers.Any())
+            {
                 return _context.Observers.Max(o => o.Id) + 1;
+            }
 
             return 1;
         }
@@ -40,9 +43,10 @@ namespace VoteMonitor.Api.Observer.Handlers
             var counter = 0;
             var startId = GetMaxIdObserver();
 
-           using (var reader = new StreamReader(message.File.OpenReadStream()))
+            using (var reader = new StreamReader(message.File.OpenReadStream()))
             {
-                 while (reader.Peek() >= 0) { 
+                while (reader.Peek() >= 0)
+                {
                     var fileContent = reader.ReadLine();
                     var data = fileContent.Split('\t');
                     var hashed = _hashService.GetHash(data[1]);
@@ -59,7 +63,7 @@ namespace VoteMonitor.Api.Observer.Handlers
                     counter++;
                 }
                 await _context.SaveChangesAsync();
-             }
+            }
 
             return counter;
         }
@@ -80,10 +84,12 @@ namespace VoteMonitor.Api.Observer.Handlers
             return observer.Id;
         }
 
-        public async Task<int> Handle(EditObserverCommand request, CancellationToken cancellationToken) {
-            
+        public async Task<int> Handle(EditObserverCommand request, CancellationToken cancellationToken)
+        {
+
             var observer = await _context.Observers.FirstOrDefaultAsync(o => o.Id == request.IdObserver);
-            if(observer == null) {
+            if (observer == null)
+            {
                 return -1;
             }
 
@@ -93,9 +99,11 @@ namespace VoteMonitor.Api.Observer.Handlers
             return await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> Handle(DeleteObserverCommand request, CancellationToken cancellationToken) {
+        public async Task<bool> Handle(DeleteObserverCommand request, CancellationToken cancellationToken)
+        {
             var observer = await _context.Observers.FirstOrDefaultAsync(o => o.Id == request.IdObserver);
-            if(observer == null) {
+            if (observer == null)
+            {
                 return false;
             }
             _context.Observers.Remove(observer);
