@@ -14,7 +14,7 @@ namespace VoteMonitor.Api.Location.Services
         private readonly VoteMonitorContext _context;
         private readonly ILogger _logger;
 
-        public PollingStationService(VoteMonitorContext context, ILogger logger)
+        public PollingStationService(VoteMonitorContext context, ILogger<PollingStationService> logger)
         {
             _context = context;
             _logger = logger;

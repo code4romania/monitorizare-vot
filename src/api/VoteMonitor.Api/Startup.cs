@@ -15,6 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using VoteMonitor.Api.Core.Extensions;
 using VoteMonitor.Api.Extensions;
+using VoteMonitor.Api.Location.Services;
 using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api
@@ -35,6 +36,9 @@ namespace VoteMonitor.Api
             services.ConfigureCustomOptions(Configuration);
             services.AddHashService(Configuration);
             services.AddVoteMonitorAuthentication(Configuration);
+
+            services.AddScoped<IPollingStationService, PollingStationService>();
+            services.AddScoped<IFileLoader, XlsxFileLoader>();
 
             services.AddDbContext<VoteMonitorContext>(o => o.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 

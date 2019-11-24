@@ -26,8 +26,6 @@ using SimpleInjector.Lifestyles;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
-using VoteMonitor.Api.Location.Controllers;
-using VoteMonitor.Api.Location.Services;
 using VoteMonitor.Api.Observer.Controllers;
 using VoteMonitor.Api.Core.Services;
 using VoteMonitor.Api.Form.Controllers;
@@ -86,14 +84,12 @@ namespace VotingIrregularities.Api
                                                                         .RequireClaim(ClaimsHelper.IdNgo)
                                                                         .Build())); 
                 })
-                .AddApplicationPart(typeof(PollingStationController).Assembly)
                 .AddApplicationPart(typeof(ObserverController).Assembly)
                 .AddApplicationPart(typeof(NotificationController).Assembly)
                 .AddApplicationPart(typeof(FormController).Assembly)
                 .AddApplicationPart(typeof(AnswersController).Assembly)
                 .AddApplicationPart(typeof(StatisticsController).Assembly)
                 .AddApplicationPart(typeof(DataExportController).Assembly)
-               //.AddApplicationPart(typeof(VoteMonitor.Api.Auth.Controllers.Authorization).Assembly)
                 .AddControllersAsServices()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
@@ -102,7 +98,6 @@ namespace VotingIrregularities.Api
             ConfigureContainer(services);
 
             ConfigureCache(services);
-            ConfigureFileLoader();
 
             services.AddCors(options => options.AddPolicy("Permissive", builder =>
             {
@@ -142,8 +137,6 @@ namespace VotingIrregularities.Api
             app.UseAuthentication();
 
             RegisterOptionsInSimpleInjector(app);
-
-            RegisterServices();
 
             ConfigureFileService(app);
 
@@ -219,11 +212,6 @@ namespace VotingIrregularities.Api
             }
         }
 
-        private void ConfigureFileLoader()
-        {
-            _container.RegisterSingleton<IFileLoader, XlsxFileLoader>();
-        }
-
         private void ConfigureFileService(IApplicationBuilder app)
         {
             var fileServiceOptions = app.ApplicationServices.GetService<IOptions<FileServiceOptions>>().Value;
@@ -252,10 +240,6 @@ namespace VotingIrregularities.Api
                 new SimpleInjectorViewComponentActivator(_container));
         }
 
-        private void RegisterServices()
-        {
-            _container.Register<IPollingStationService, PollingStationService>(Lifestyle.Scoped);
-        }
 
         private void InitializeContainer(IApplicationBuilder app)
         {
@@ -322,7 +306,6 @@ namespace VotingIrregularities.Api
             yield return typeof(IMediator).GetTypeInfo().Assembly;
             yield return typeof(Startup).GetTypeInfo().Assembly;
             yield return typeof(VoteMonitorContext).GetTypeInfo().Assembly;
-            yield return typeof(PollingStationController).GetTypeInfo().Assembly;
             yield return typeof(ObserverController).GetTypeInfo().Assembly;
             yield return typeof(FormController).GetTypeInfo().Assembly;
             yield return typeof(AnswersController).GetTypeInfo().Assembly;
@@ -330,8 +313,6 @@ namespace VotingIrregularities.Api
             yield return typeof(NotificationController).GetTypeInfo().Assembly;
             yield return typeof(StatisticsController).GetTypeInfo().Assembly;
             yield return typeof(DataExportController).GetTypeInfo().Assembly;
-            //yield return typeof(VoteMonitor.Api.Auth.Controllers.Authorization).GetTypeInfo().Assembly;
-            // just to identify VotingIrregularities.Domain assembly
         }
     }
 }

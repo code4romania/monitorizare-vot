@@ -25,6 +25,7 @@
     <ProjectReference Include="..\VoteMonitor.Api.Answer\VoteMonitor.Api.Answer.csproj" />
     <ProjectReference Include="..\VoteMonitor.Api.Auth\VoteMonitor.Api.Auth.csproj" />
     <ProjectReference Include="..\VoteMonitor.Api.Core\VoteMonitor.Api.Core.csproj" />
+    <ProjectReference Include="..\VoteMonitor.Api.Location\VoteMonitor.Api.Location.csproj" />
     <ProjectReference Include="..\VoteMonitor.Api.Note\VoteMonitor.Api.Note.csproj" />
   </ItemGroup>
 
