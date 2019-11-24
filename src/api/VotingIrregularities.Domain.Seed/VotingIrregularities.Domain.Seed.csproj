@@ -19,9 +19,6 @@
     <ProjectReference Include="..\VoteMonitor.Entities\VoteMonitor.Entities.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="appsettings.development.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
