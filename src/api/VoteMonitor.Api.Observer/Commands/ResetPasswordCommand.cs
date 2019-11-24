@@ -14,5 +14,6 @@ namespace VoteMonitor.Api.Observer.Commands
         public int IdNgo { get; }
         public string PhoneNumber { get; }
         public string Pin { get; }
+        public bool Organizer { get; set; }
     }
 }
