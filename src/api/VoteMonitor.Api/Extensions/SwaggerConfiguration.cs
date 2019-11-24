@@ -3,9 +3,9 @@ using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace VoteMonitor.Api.Extensions {
+namespace VoteMonitor.Api.Extensions
+{
     public static class SwaggerConfiguration
     {
         public static IServiceCollection ConfigureSwagger(this IServiceCollection services)
@@ -51,10 +51,8 @@ namespace VoteMonitor.Api.Extensions {
 
                 var baseDocPath = Directory.GetCurrentDirectory();
 
-                foreach (var api in Directory.GetFiles(baseDocPath, "*.xml"))
-                {
+                foreach (var api in Directory.GetFiles(baseDocPath, "*.xml", SearchOption.AllDirectories))
                     options.IncludeXmlComments(api);
-                }
             });
         }
 
@@ -63,9 +61,9 @@ namespace VoteMonitor.Api.Extensions {
             app.UseSwagger();
 
             // Enable middleware to serve swagger-ui assets (HTML, JS, CSS etc.)
-            app.UseSwaggerUI(o => o.SwaggerEndpoint("/swagger/v1/swagger.json", "MV API v1"));
+            app.UseSwaggerUI(o => o.SwaggerEndpoint("/swagger/v1/swagger.json", "VoteMonitor API v1"));
 
             return app;
         }
-}
+    }
 }

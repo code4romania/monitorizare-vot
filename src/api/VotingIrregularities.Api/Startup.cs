@@ -30,7 +30,6 @@ using VoteMonitor.Api.Location.Controllers;
 using VoteMonitor.Api.Location.Services;
 using VoteMonitor.Api.Observer.Controllers;
 using VoteMonitor.Api.Core.Services;
-using VoteMonitor.Api.Note.Controllers;
 using VoteMonitor.Api.Form.Controllers;
 using VoteMonitor.Api.Core;
 using VoteMonitor.Api.Core.Handlers;
@@ -90,7 +89,6 @@ namespace VotingIrregularities.Api
                 .AddApplicationPart(typeof(PollingStationController).Assembly)
                 .AddApplicationPart(typeof(ObserverController).Assembly)
                 .AddApplicationPart(typeof(NotificationController).Assembly)
-                .AddApplicationPart(typeof(NoteController).Assembly)
                 .AddApplicationPart(typeof(FormController).Assembly)
                 .AddApplicationPart(typeof(AnswersController).Assembly)
                 .AddApplicationPart(typeof(StatisticsController).Assembly)
@@ -326,7 +324,6 @@ namespace VotingIrregularities.Api
             yield return typeof(VoteMonitorContext).GetTypeInfo().Assembly;
             yield return typeof(PollingStationController).GetTypeInfo().Assembly;
             yield return typeof(ObserverController).GetTypeInfo().Assembly;
-            yield return typeof(NoteController).GetTypeInfo().Assembly;
             yield return typeof(FormController).GetTypeInfo().Assembly;
             yield return typeof(AnswersController).GetTypeInfo().Assembly;
             yield return typeof(UploadFileHandler).GetTypeInfo().Assembly;
