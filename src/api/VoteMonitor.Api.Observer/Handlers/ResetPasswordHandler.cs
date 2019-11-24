@@ -28,8 +28,13 @@ namespace VoteMonitor.Api.Observer.Handlers
         {
             try
             {
-                Entities.Observer observer = _voteMonitorContext.Observers
-                    .FirstOrDefault(o => o.Phone == request.PhoneNumber && o.IdNgo == request.IdNgo);
+                var observerQuery = _voteMonitorContext.Observers
+                    .Where(o => o.Phone == request.PhoneNumber);
+
+                if (!request.Organizer)
+                    observerQuery = observerQuery.Where(o => o.IdNgo == request.IdNgo);
+
+                var observer = observerQuery.FirstOrDefault();
 
                 if (observer == null)
                     return false;

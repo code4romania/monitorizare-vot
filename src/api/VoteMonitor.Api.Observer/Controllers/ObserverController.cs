@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using VoteMonitor.Api.Core;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using VoteMonitor.Api.Observer.Models;
 using VoteMonitor.Api.Observer.Commands;
 using Microsoft.AspNetCore.Http;
@@ -145,6 +146,7 @@ namespace VoteMonitor.Api.Observer.Controllers
 
         [HttpPost]
         [Route("reset")]
+        [Authorize("NgoAdmin")]
         public async Task<IActionResult> Reset([FromBody]ResetModel model)
         {
             if (string.IsNullOrEmpty(model.Action) || string.IsNullOrEmpty(model.PhoneNumber))
@@ -152,7 +154,12 @@ namespace VoteMonitor.Api.Observer.Controllers
 
             if (string.Equals(model.Action, ControllerExtensions.DEVICE_RESET))
             {
-                var result = await _mediator.Send(new ResetDeviceCommand(NgoId, model.PhoneNumber));
+                var result = await _mediator.Send(new ResetDeviceCommand
+                {
+                    IdNgo = NgoId,
+                    PhoneNumber = model.PhoneNumber,
+                    Organizer = this.GetOrganizatorOrDefault(false)
+                });
                 if (result == -1)
                     return NotFound(ControllerExtensions.RESET_ERROR_MESSAGE + model.PhoneNumber);
                 else
@@ -161,7 +168,13 @@ namespace VoteMonitor.Api.Observer.Controllers
 
             if (string.Equals(model.Action, ControllerExtensions.PASSWORD_RESET))
             {
-                var result = await _mediator.Send(new ResetPasswordCommand(NgoId, model.PhoneNumber, model.Pin));
+                var result = await _mediator.Send(new ResetPasswordCommand
+                {
+                    IdNgo = NgoId,
+                    PhoneNumber = model.PhoneNumber,
+                    Pin = model.Pin,
+                    Organizer = this.GetOrganizatorOrDefault(false)
+                });
                 if (result == false)
                     return NotFound(ControllerExtensions.RESET_ERROR_MESSAGE + model.PhoneNumber);
 
