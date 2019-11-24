@@ -63,7 +63,7 @@ namespace VotingIrregularities.Domain.Seed
             var conn = _configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<VoteMonitorContext>(options => {
             options.UseSqlServer(conn,
-                x => x.MigrationsAssembly("VotingIrregularities.Domain"));
+                x => x.MigrationsAssembly("ViteMonitor.Entities"));
                 });
         }
     }

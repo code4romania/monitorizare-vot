@@ -121,7 +121,7 @@ namespace VoteMonitor.Api.DataExport.Handlers
                 }
             }
 
-            var exportData = _context.ExportModels.FromSql(query, parameters.ToArray());
+            var exportData = _context.ExportModels.FromSqlRaw(query, parameters.ToArray());
 
             return await exportData.ToListAsync(cancellationToken);
         }

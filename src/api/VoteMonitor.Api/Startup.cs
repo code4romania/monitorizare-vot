@@ -35,18 +35,20 @@ namespace VoteMonitor.Api
             services.AddControllers();
             services.ConfigureCustomOptions(Configuration);
             services.AddHashService(Configuration);
+            services.AddFileService(Configuration);
             services.AddVoteMonitorAuthentication(Configuration);
 
             services.AddScoped<IPollingStationService, PollingStationService>();
             services.AddScoped<IFileLoader, XlsxFileLoader>();
 
             services.AddDbContext<VoteMonitorContext>(o => o.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
+            services.AddFirebase(Configuration);
             services.AddAutoMapper(GetAssemblies());
             services.AddMediatR(GetAssemblies().ToArray());
 
             services.ConfigureSwagger();
             services.AddApplicationInsightsTelemetry();
+            services.AddCachingService(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -76,7 +78,11 @@ namespace VoteMonitor.Api
             yield return Assembly.GetAssembly(typeof(Startup));
             yield return typeof(Auth.Controllers.Authorization).GetTypeInfo().Assembly;
             yield return typeof(Note.Controllers.NoteController).GetTypeInfo().Assembly;
-            //yield return typeof(Auth.Controllers.Authorization).GetTypeInfo().Assembly;
+            yield return typeof(Location.Controllers.PollingStationController).GetTypeInfo().Assembly;
+            yield return typeof(Statistics.Controllers.StatisticsController).GetTypeInfo().Assembly;
+            //yield return typeof(Statistics.Controllers.StatisticsController).GetTypeInfo().Assembly;
+            //yield return typeof(Statistics.Controllers.StatisticsController).GetTypeInfo().Assembly;
+            //yield return typeof(Statistics.Controllers.StatisticsController).GetTypeInfo().Assembly;
         }
     }
 }

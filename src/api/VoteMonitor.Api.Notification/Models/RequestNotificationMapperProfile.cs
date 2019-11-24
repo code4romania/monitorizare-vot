@@ -1,6 +1,6 @@
-﻿using System;
+﻿using AutoMapper;
+using System;
 using System.Linq;
-using AutoMapper;
 using VoteMonitor.Api.Notification.Commands;
 using VoteMonitor.Entities;
 
@@ -11,22 +11,12 @@ namespace VoteMonitor.Api.Notification.Models
         public RequestNotificationMapperProfile()
         {
             CreateMap<NewNotificationCommand, Entities.Notification>()
-                .ConstructUsing(request =>
-                {
-                    return new Entities.Notification
-                    {
-                        Body = request.Message,
-                        Title = request.Title,
-                        Channel = request.Channel,
-                        InsertedAt = DateTime.Now,
-                        NotificationRecipients = 
-                            request.Recipients.Select(r => new NotificationRecipient
-                            {
-                                ObserverId = int.Parse(r)
-                            }).ToList()
-                    };
-                })
+                .ForMember(dest => dest.Body, c => c.MapFrom(src => src.Message))
+                .ForMember(dest => dest.NotificationRecipients,
+                    c => c.MapFrom(src =>
+                        src.Recipients.Select(r => new NotificationRecipient { ObserverId = int.Parse(r) }).ToList()))
+                .ForMember(dest => dest.InsertedAt, c => c.MapFrom(src => DateTime.Now))
                 ;
         }
-        }
+    }
 }
