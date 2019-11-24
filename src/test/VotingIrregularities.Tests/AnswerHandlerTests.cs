@@ -18,7 +18,7 @@ namespace VotingIrregularities.Tests
             var codJudet = "B";
             var idSectie = 1;
             var nrSectie = 1;
-            var codFormular = "T";
+            //var codFormular = "T";
             var lastModified = DateTime.Now;
 
             var message = new CompleteazaRaspunsCommand

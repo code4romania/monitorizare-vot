@@ -114,12 +114,12 @@ namespace VoteMonitor.Entities
 
 		private static void DataCleanUp(this VoteMonitorContext context)
 		{
-			context.Database.ExecuteSqlCommand("delete from OptionsToQuestions");
-			context.Database.ExecuteSqlCommand("delete from Questions");
-			context.Database.ExecuteSqlCommand("delete from FormSections");
-			context.Database.ExecuteSqlCommand("delete from Forms");
-			context.Database.ExecuteSqlCommand("delete from Counties");
-			context.Database.ExecuteSqlCommand("delete from Observers");
+			context.Database.ExecuteSqlRaw("delete from OptionsToQuestions");
+			context.Database.ExecuteSqlRaw("delete from Questions");
+			context.Database.ExecuteSqlRaw("delete from FormSections");
+			context.Database.ExecuteSqlRaw("delete from Forms");
+			context.Database.ExecuteSqlRaw("delete from Counties");
+			context.Database.ExecuteSqlRaw("delete from Observers");
 		}
 
 		private static void SeedOptions(this VoteMonitorContext context)
