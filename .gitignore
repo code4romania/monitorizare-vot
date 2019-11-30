@@ -255,3 +255,5 @@ ModelManifest.xml
 
 .vscode
 .idea
+/src/api/VotingIrregularities.Api/etc
+/src/api/VotingIrregularities.Api/api-docs

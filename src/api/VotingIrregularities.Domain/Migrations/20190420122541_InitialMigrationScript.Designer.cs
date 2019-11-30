@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using VotingIrregularities.Domain.Models;
+using VoteMonitor.Entities;
 
-namespace VotingIrregularities.Domain.Migrations
-{
-    [DbContext(typeof(VotingContext))]
+namespace VoteMonitor.Entities { 
+
+    [DbContext(typeof(VoteMonitorContext))]
     [Migration("20190420122541_InitialMigrationScript")]
     partial class InitialMigrationScript
     {
@@ -71,7 +71,11 @@ namespace VotingIrregularities.Domain.Migrations
 
                     b.Property<int>("NumberOfPollingStations");
 
-                    b.HasKey("Id")
+                    b.Property<bool>("Diaspora")
+	                    .ValueGeneratedOnAdd()
+	                    .HasDefaultValueSql("0");
+
+					b.HasKey("Id")
                         .HasName("PK_County");
 
                     b.ToTable("Counties");

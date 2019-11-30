@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
 using MediatR;
 using System;
-using VotingIrregularities.Domain.Models;
+using VoteMonitor.Entities;
 
 namespace VotingIrregularities.Domain.NotaAggregate
 {
+    [Obsolete("Use AddNoteCommand instead ")]
     public class AdaugaNotaCommand : IRequest<int>
     {
         public int IdObservator { get; set; }

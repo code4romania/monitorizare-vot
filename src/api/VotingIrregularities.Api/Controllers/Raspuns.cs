@@ -1,21 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using VotingIrregularities.Api.Extensions;
+using VoteMonitor.Api.Core;
 using VotingIrregularities.Api.Models;
-using VotingIrregularities.Domain.RaspunsAggregate.Commands;
-using VotingIrregularities.Api.Helpers;
 
 namespace VotingIrregularities.Api.Controllers
 {
@@ -43,21 +35,21 @@ namespace VotingIrregularities.Api.Controllers
         /// <param name="raspuns">Sectia de votare, lista de optiuni si textul asociat unei optiuni care se completeaza cand 
         /// optiunea <code>SeIntroduceText = true</code></param>
         /// <returns></returns>
-        [HttpPost()]
+        [HttpPost]
+        [Obsolete("use /answers instead")]
         public async Task<IAsyncResult> CompleteazaRaspuns([FromBody] ModelRaspunsWrapper raspuns)
         {
 
             if (!ModelState.IsValid)
             {
                 return this.ResultAsync(HttpStatusCode.BadRequest, ModelState);
-
             }
 
             // TODO[DH] use a pipeline instead of separate Send commands
             var command = await _mediator.Send(new RaspunsuriBulk(raspuns.Raspuns));
 
             // TODO[DH] get the actual IdObservator from token
-            command.IdObservator = int.Parse(User.Claims.First(c => c.Type == ClaimsHelper._observerIdProperty).Value);
+            command.IdObservator = int.Parse(User.Claims.First(c => c.Type == ClaimsHelper.ObserverIdProperty).Value);
 
             var result = await _mediator.Send(command);
 
