@@ -1,45 +1,47 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
-using VotingIrregularities.Api.Models;
-using VotingIrregularities.Api.Services;
-using VotingIrregularities.Domain.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using VoteMonitor.Api.Core.Services;
+using VoteMonitor.Api.Form.Models;
+using VoteMonitor.Api.Form.Queries;
+using VoteMonitor.Entities;
 
 namespace VotingIrregularities.Api.Queries
 {
+    [Obsolete]
     public class FormularQueryHandler :
-        AsyncRequestHandler<FormQuestionsQuery, IEnumerable<ModelSectiune>>
+        IRequestHandler<FormQuestionsQuery, IEnumerable<ModelSectiune>>
     {
-        private readonly VotingContext _context;
+        private readonly VoteMonitorContext _context;
         private readonly IMapper _mapper;
         private readonly ICacheService _cacheService;
 
-        public FormularQueryHandler(VotingContext context, IMapper mapper, ICacheService cacheService)
+        public FormularQueryHandler(VoteMonitorContext context, IMapper mapper, ICacheService cacheService)
         {
             _context = context;
             _mapper = mapper;
             _cacheService = cacheService;
         }
 
-        protected override async Task<IEnumerable<ModelSectiune>> HandleCore(FormQuestionsQuery message)
+        public async Task<IEnumerable<ModelSectiune>> Handle(FormQuestionsQuery message, CancellationToken cancellationToken)
         {
-            CacheObjectsName formular;
-            Enum.TryParse("Formular" + message.CodFormular, out formular);
+            var cacheKey = $"Formular{message.CodFormular}";
 
-            return await _cacheService.GetOrSaveDataInCacheAsync<IEnumerable<ModelSectiune>>(formular,
+            return await _cacheService.GetOrSaveDataInCacheAsync<IEnumerable<ModelSectiune>>(cacheKey,
                 async () =>
                 {
                     var r = await _context.Questions
                         .Include(a => a.FormSection)
                         .Include(a => a.OptionsToQuestions)
                         .ThenInclude(a => a.Option)
-                        .Where(a => a.FormCode == message.CodFormular)
-                        .ToListAsync();
+                        .Where(a => a.FormSection.Form.Code == message.CodFormular) // todo: maybe we should query by FormId, since Form Code might not be unique if we have verions of the same form
+                        .ToListAsync(cancellationToken: cancellationToken);
 
                     var sectiuni = r.Select(a => new { IdSectiune = a.IdSection, CodSectiune = a.FormSection.Code, Descriere = a.FormSection.Description }).Distinct();
 

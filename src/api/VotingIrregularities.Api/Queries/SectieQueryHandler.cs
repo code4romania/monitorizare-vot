@@ -1,11 +1,12 @@
-﻿using MediatR;
+﻿using System.Threading;
+using MediatR;
 using System.Threading.Tasks;
+using VoteMonitor.Api.Location.Services;
 using VotingIrregularities.Api.Models;
-using VotingIrregularities.Api.Services;
 
 namespace VotingIrregularities.Api.Queries
 {
-    public class SectieQueryHandler : AsyncRequestHandler<ModelSectieQuery, int>
+    public class SectieQueryHandler : IRequestHandler<ModelSectieQuery, int>
     {
         private readonly IPollingStationService _pollingStationService;
 
@@ -14,7 +15,7 @@ namespace VotingIrregularities.Api.Queries
             _pollingStationService = pollingStationService;
         }
 
-        protected override async Task<int> HandleCore(ModelSectieQuery message)
+        public async Task<int> Handle(ModelSectieQuery message, CancellationToken cancellationToken)
         {
             return await _pollingStationService.GetPollingStationByCountyCode(message.NumarSectie, message.CodJudet);
         }
