@@ -16,7 +16,7 @@ namespace VotingIrregularities.Api.Extensions
             private readonly string _context;
             public Stopwatch Stopwatch { get; }
 
-            public Times (string context)
+            public Times(string context)
             {
                 _context = context;
                 Stopwatch = Stopwatch.StartNew();

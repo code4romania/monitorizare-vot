@@ -23,7 +23,7 @@ namespace VotingIrregularities.Api.Controllers
 
         public Formular(IMediator mediator, IOptions<ApplicationCacheOptions> cacheOptions)
         {
-			_cacheOptions = cacheOptions.Value;
+            _cacheOptions = cacheOptions.Value;
             _mediator = mediator;
         }
 
@@ -35,7 +35,7 @@ namespace VotingIrregularities.Api.Controllers
         [HttpGet("versiune")]
         public async Task<IActionResult> GetFormVersions()
         {
-			// for now all of the forms are retrieved
+            // for now all of the forms are retrieved
             var formsAsDict = new Dictionary<string, int>();
             (await _mediator.Send(new FormVersionQuery(null))).ForEach(form => formsAsDict.Add(form.Code, form.CurrentVersion));
 
@@ -60,12 +60,13 @@ namespace VotingIrregularities.Api.Controllers
         [HttpGet("{idformular}")]
         public async Task<IEnumerable<ModelSectiune>> GetFormAsync(string idformular)
         {
-            var result = await _mediator.Send(new FormQuestionsQuery {
+            var result = await _mediator.Send(new FormQuestionsQuery
+            {
                 CodFormular = idformular,
-				CacheHours = _cacheOptions.Hours,
-				CacheMinutes = _cacheOptions.Minutes,
-				CacheSeconds = _cacheOptions.Seconds
-			});
+                CacheHours = _cacheOptions.Hours,
+                CacheMinutes = _cacheOptions.Minutes,
+                CacheSeconds = _cacheOptions.Seconds
+            });
 
             return result;
         }

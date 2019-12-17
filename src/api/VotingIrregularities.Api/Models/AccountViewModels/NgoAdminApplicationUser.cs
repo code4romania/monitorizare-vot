@@ -12,7 +12,7 @@ namespace VotingIrregularities.Api.Models.AccountViewModels
         [Required(AllowEmptyStrings = false)]
         public string Password { get; set; }
 
-        public UserType UserType{ get; set; }
+        public UserType UserType { get; set; }
     }
 
     public enum UserType

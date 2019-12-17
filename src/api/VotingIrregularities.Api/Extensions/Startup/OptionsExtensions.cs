@@ -28,4 +28,4 @@ namespace VotingIrregularities.Api.Extensions.Startup
             return services;
         }
     }
-} 
+}

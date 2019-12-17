@@ -47,8 +47,9 @@ namespace VoteMonitor.Api.Form.Queries
 
                     var sectiuni = r.Select(a => new { IdSectiune = a.IdSection, CodSectiune = a.FormSection.Code, Descriere = a.FormSection.Description }).Distinct();
 
-                    var result = sectiuni.Select(i => new FormSectionDTO {
-                        UniqueId = form.Code + i.CodSectiune + i.IdSectiune ,
+                    var result = sectiuni.Select(i => new FormSectionDTO
+                    {
+                        UniqueId = form.Code + i.CodSectiune + i.IdSectiune,
                         Code = i.CodSectiune,
                         Description = i.Descriere,
                         Questions = r.Where(a => a.IdSection == i.IdSectiune)

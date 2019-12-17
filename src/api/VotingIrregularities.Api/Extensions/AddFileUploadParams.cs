@@ -11,7 +11,8 @@ namespace VotingIrregularities.Api.Extensions
         public void Apply(Operation operation, OperationFilterContext context)
         {
             if (operation.Tags[0] == "Observer" && operation.OperationId == "Import" ||
-                operation.Tags[0] == "Note" && operation.OperationId == "Upload") {
+                operation.Tags[0] == "Note" && operation.OperationId == "Upload")
+            {
                 operation.Consumes.Add("application/form-data");
             }
         }

@@ -8,5 +8,5 @@
         public int Limit { get; set; }
         public bool Diaspora { get; set; }
 
-	}
+    }
 }

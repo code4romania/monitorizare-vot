@@ -1,8 +1,10 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace VoteMonitor.Api.Location.Models {
-    public class AddPollingStationInfo {
+namespace VoteMonitor.Api.Location.Models
+{
+    public class AddPollingStationInfo
+    {
         [Required(AllowEmptyStrings = false)]
         public int IdPollingStation { get; set; }
 
@@ -13,6 +15,6 @@ namespace VoteMonitor.Api.Location.Models {
         public DateTime? ObserverLeaveTime { get; set; }
         public DateTime? ObserverArrivalTime { get; set; }
         public bool? IsPollingStationPresidentFemale { get; set; }
-       
+
     }
 }

@@ -14,7 +14,7 @@ using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Observer.Handlers
 {
-    public class GenerateObserversHandler: IRequestHandler<ObserverGenerateCommand, List<GeneratedObserver>>
+    public class GenerateObserversHandler : IRequestHandler<ObserverGenerateCommand, List<GeneratedObserver>>
     {
         private readonly VoteMonitorContext _voteMonitorContext;
         private readonly ILogger _logger;

@@ -30,7 +30,7 @@ namespace VotingIrregularities.Domain.NotaAggregate
                 {
                     var existaIntrebare = await _context.Questions.AnyAsync(i => i.Id == message.IdIntrebare.Value, token);
 
-                    if(!existaIntrebare)
+                    if (!existaIntrebare)
                         throw new ArgumentException($"Intrebarea {message.IdIntrebare.Value} nu exista");
                 }
 

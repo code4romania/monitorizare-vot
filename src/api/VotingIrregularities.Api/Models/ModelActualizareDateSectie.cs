@@ -6,7 +6,8 @@ using VotingIrregularities.Domain.SectieAggregate;
 namespace VotingIrregularities.Api.Models
 {
     [Obsolete("Use UpdatePollingStationInfo instead.")]
-    public class ModelActualizareDateSectie {
+    public class ModelActualizareDateSectie
+    {
         [Required(AllowEmptyStrings = false)]
         public string CodJudet { get; set; }
 

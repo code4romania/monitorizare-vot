@@ -79,18 +79,18 @@ namespace VotingIrregularities.Domain.RaspunsAggregate
         public static List<Answer> GetFlatListOfAnswers(CompleteazaRaspunsCommand command, DateTime lastModified)
         {
             var list = command.Raspunsuri.Select(a => new
+            {
+                flat = a.Optiuni.Select(o => new Answer
                 {
-                    flat = a.Optiuni.Select(o => new Answer
-                    {
-                        IdObserver = command.IdObservator,
-                        IdPollingStation = a.IdSectie,
-                        IdOptionToQuestion = o.IdOptiune,
-                        Value = o.Value,
-                        CountyCode = a.CodJudet,
-                        PollingStationNumber = a.NumarSectie,
-                        LastModified = lastModified
-                    })
+                    IdObserver = command.IdObservator,
+                    IdPollingStation = a.IdSectie,
+                    IdOptionToQuestion = o.IdOptiune,
+                    Value = o.Value,
+                    CountyCode = a.CodJudet,
+                    PollingStationNumber = a.NumarSectie,
+                    LastModified = lastModified
                 })
+            })
                 .SelectMany(a => a.flat)
                 .GroupBy(k => k.IdOptionToQuestion,
                     (g, o) => new Answer

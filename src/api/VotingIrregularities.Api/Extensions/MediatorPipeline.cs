@@ -58,7 +58,7 @@ namespace VotingIrregularities.Api.Extensions
     {
         void Evaluate<TRequest>(TRequest request) where TRequest : class;
     }
-    
+
 
     public interface IMessageCache
     {

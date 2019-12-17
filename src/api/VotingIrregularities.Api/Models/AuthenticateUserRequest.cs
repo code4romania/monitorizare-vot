@@ -4,8 +4,10 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace VotingIrregularities.Api.Models {
-    public class AuthenticateUserRequest {
+namespace VotingIrregularities.Api.Models
+{
+    public class AuthenticateUserRequest
+    {
         [Required]
         public string User { get; set; }
         [Required]

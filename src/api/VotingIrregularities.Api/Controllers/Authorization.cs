@@ -101,24 +101,29 @@ namespace VotingIrregularities.Api.Controllers
         [ProducesResponseType(typeof(AuthenticationResponseModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> AuthenticateUser([FromBody] AuthenticateUserRequest request) {
+        public async Task<IActionResult> AuthenticateUser([FromBody] AuthenticateUserRequest request)
+        {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             string token;
-            if (string.IsNullOrEmpty(request.UniqueId)) {
+            if (string.IsNullOrEmpty(request.UniqueId))
+            {
                 var identity = await GetClaimsIdentity(request);
-                if (identity == null) {
+                if (identity == null)
+                {
                     _logger.LogInformation($"Invalid username ({request.User}) or password ({request.Password})");
                     return BadRequest("Invalid credentials");
                 }
 
                 token = GetTokenFromIdentity(identity);
             }
-            else {
+            else
+            {
                 var identity = await GetClaimsIdentity(request);
 
-                if (identity == null) {
+                if (identity == null)
+                {
                     _logger.LogInformation($"Invalid Phone ({request.User}) or password ({request.Password})");
                     return BadRequest(_mobileSecurityOptions.InvalidCredentialsErrorMessage);
                 }
@@ -128,12 +133,12 @@ namespace VotingIrregularities.Api.Controllers
 
             // Serialize and return the response
             var response = new AuthenticationResponseModel
-			{
-	            access_token = token,
-	            expires_in = (int)_jwtOptions.ValidFor.TotalSeconds
+            {
+                access_token = token,
+                expires_in = (int)_jwtOptions.ValidFor.TotalSeconds
             };
 
-			return Ok(response);
+            return Ok(response);
         }
 
         /// <summary>
@@ -214,9 +219,12 @@ namespace VotingIrregularities.Api.Controllers
                 });
         }
 
-        private async Task<ClaimsIdentity> GetClaimsIdentity(AuthenticateUserRequest request) {
-            if (string.IsNullOrEmpty(request.UniqueId)) {
-                var userInfo = await _mediator.Send(new NgoAdminApplicationUser {
+        private async Task<ClaimsIdentity> GetClaimsIdentity(AuthenticateUserRequest request)
+        {
+            if (string.IsNullOrEmpty(request.UniqueId))
+            {
+                var userInfo = await _mediator.Send(new NgoAdminApplicationUser
+                {
                     Password = request.Password,
                     UserName = request.User,
                     UserType = UserType.NgoAdmin
@@ -232,9 +240,11 @@ namespace VotingIrregularities.Api.Controllers
                     new Claim(ClaimsHelper.Organizer, userInfo.Organizer.ToString(), ClaimValueTypes.Boolean)
                     });
             }
-            else {
+            else
+            {
                 // verific daca userul exista si daca nu are asociat un alt device, il returneaza din baza
-                var userInfo = await _mediator.Send(new ObserverApplicationUser {
+                var userInfo = await _mediator.Send(new ObserverApplicationUser
+                {
                     Phone = request.User,
                     Pin = request.Password,
                     UDID = request.UniqueId
@@ -245,7 +255,8 @@ namespace VotingIrregularities.Api.Controllers
 
                 if (userInfo.FirstAuthentication && _mobileSecurityOptions.LockDevice)
                     await
-                        _mediator.Send(new RegisterDeviceId {
+                        _mediator.Send(new RegisterDeviceId
+                        {
                             MobileDeviceId = request.UniqueId,
                             ObserverId = userInfo.ObserverId
                         });

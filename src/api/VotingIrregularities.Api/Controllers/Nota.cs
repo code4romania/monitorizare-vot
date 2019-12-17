@@ -15,7 +15,7 @@ namespace VotingIrregularities.Api.Controllers
 {
     [Route("api/v1/note")]
     [Obsolete("use api/v2/note")]
-    
+
     public class Nota : Controller
     {
         private readonly IMapper _mapper;

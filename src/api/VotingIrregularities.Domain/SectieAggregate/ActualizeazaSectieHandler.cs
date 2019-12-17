@@ -33,7 +33,7 @@ namespace VotingIrregularities.Domain.SectieAggregate
 
                 if (formular == null)
                     throw new ArgumentException("PollingStationInfo nu exista");
-               
+
                 _mapper.Map(message, formular);
                 _context.Update(formular);
 

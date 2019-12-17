@@ -5,7 +5,7 @@ using VoteMonitor.Api.Observer.Models;
 
 namespace VoteMonitor.Api.Observer.Queries
 {
-    public class ActiveObserversQuery :IRequest<List<ObserverModel>>
+    public class ActiveObserversQuery : IRequest<List<ObserverModel>>
     {
         public string[] CountyCodes { get; set; }
         public int FromPollingStationNumber { get; set; }

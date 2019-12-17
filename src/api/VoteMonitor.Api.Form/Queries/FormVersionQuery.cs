@@ -6,12 +6,12 @@ namespace VoteMonitor.Api.Form.Queries
 {
     public class FormVersionQuery : IRequest<List<FormDetailsModel>>
     {
-	    public bool? Diaspora { get; }
+        public bool? Diaspora { get; }
 
-	    public FormVersionQuery(bool? diaspora)
-	    {
-		    Diaspora = diaspora;
-	    }
+        public FormVersionQuery(bool? diaspora)
+        {
+            Diaspora = diaspora;
+        }
     }
 
     public class FormQuestionsQuery : IRequest<IEnumerable<ModelSectiune>>

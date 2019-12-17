@@ -47,7 +47,7 @@ namespace VotingIrregularities.Api.Queries
 
                     var result = sectiuni.Select(i => new ModelSectiune
                     {
-                        IdSectiune = message.CodFormular + i.CodSectiune + i.IdSectiune ,
+                        IdSectiune = message.CodFormular + i.CodSectiune + i.IdSectiune,
                         CodSectiune = i.CodSectiune,
                         Descriere = i.Descriere,
                         Intrebari = r.Where(a => a.IdSection == i.IdSectiune)
