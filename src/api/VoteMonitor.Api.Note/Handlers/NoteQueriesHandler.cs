@@ -36,6 +36,7 @@ namespace VoteMonitor.Api.Note.Handlers
 					AttachmentPath = n.AttachementPath,
 					Text = n.Text,
 					FormCode = n.Question.FormSection.Form.Code,
+					FormId = n.Question.FormSection.Form.Id,
 					QuestionId = n.Question.Id
 				})
 				.ToListAsync(cancellationToken: token);
