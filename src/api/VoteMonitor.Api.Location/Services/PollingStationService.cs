@@ -69,7 +69,14 @@ namespace VoteMonitor.Api.Location.Services
         {
             return await _context.Counties
 	            .Where(c => diaspora == null || c.Diaspora == diaspora)
-	            .Select(c => new CountyPollingStationLimit { Name = c.Name, Code = c.Code, Limit = c.NumberOfPollingStations, Id = c.Id ,Diaspora = c.Diaspora })
+                .OrderBy(c=>c.Order)
+	            .Select(c => new CountyPollingStationLimit { 
+                    Name = c.Name, 
+                    Code = c.Code, 
+                    Limit = c.NumberOfPollingStations, 
+                    Id = c.Id ,
+                    Diaspora = c.Diaspora,
+                    Order = c.Order})
                 .ToListAsync();
         }
     }
