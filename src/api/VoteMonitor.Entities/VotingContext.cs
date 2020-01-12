@@ -46,7 +46,10 @@ namespace VoteMonitor.Entities
 
 				entity.Property(x=>x.Diaspora)
 					.HasDefaultValueSql("0"); // should this be required?
-			});
+
+                entity.Property(x => x.Order)
+                    .HasDefaultValueSql("0");
+            });
 
             modelBuilder.Entity<Note>(entity => {
                 entity.HasKey(e => e.Id)
