@@ -8,6 +8,7 @@ using VoteMonitor.Api.Observer.Queries;
 using CsvHelper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using VoteMonitor.Api.County.Commands;
 
 namespace VoteMonitor.Api.County.Controllers
 {
@@ -45,10 +46,12 @@ namespace VoteMonitor.Api.County.Controllers
         [HttpPost]
         [Route("import")]
         [AllowAnonymous]
-        public async Task ImportAsync(IFormFile file)
+        public async Task<IActionResult> ImportAsync(IFormFile file)
         {
             // add authorization
+            var response = await _mediator.Send(new CreateOrUpdateCounties(file));
 
+            return Ok(response);
         }
     }
 }
