@@ -1,9 +1,10 @@
-﻿using MediatR;
+﻿using CSharpFunctionalExtensions;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 
 namespace VoteMonitor.Api.County.Commands
 {
-    public class CreateOrUpdateCounties: IRequest<object>
+    public class CreateOrUpdateCounties: IRequest<Result>
     {
         public IFormFile File { get; }
 

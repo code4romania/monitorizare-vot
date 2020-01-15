@@ -4,19 +4,21 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using CSharpFunctionalExtensions;
 using CsvHelper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using VoteMonitor.Api.County.Commands;
 using VoteMonitor.Api.County.Models;
-using VoteMonitor.Api.Observer.Queries;
+using VoteMonitor.Api.County.Queries;
 using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.County.Handlers
 {
-    public class CountiesCommandHandler : IRequestHandler<GetCountiesForExport, List<CountyCsvModel>>,
-        IRequestHandler<CreateOrUpdateCounties, object>
+    public class CountiesCommandHandler : IRequestHandler<GetCountiesForExport, Result<List<CountyCsvModel>>>,
+        IRequestHandler<CreateOrUpdateCounties, Result>
 
     {
         private readonly VoteMonitorContext _context;
@@ -28,43 +30,42 @@ namespace VoteMonitor.Api.County.Handlers
             _logger = logger;
         }
 
-        public async Task<List<CountyCsvModel>> Handle(GetCountiesForExport request, CancellationToken cancellationToken)
+        public async Task<Result<List<CountyCsvModel>>> Handle(GetCountiesForExport request, CancellationToken cancellationToken)
         {
-            return await _context.Counties
-                     .OrderBy(c => c.Order)
-                     .Select(c => new CountyCsvModel
-                     {
-                         Id = c.Id,
-                         Code = c.Code,
-                         Name = c.Name,
-                         NumberOfPollingStations = c.NumberOfPollingStations,
-                         Diaspora = c.Diaspora,
-                         Order = c.Order
-                     })
-                     .ToListAsync(cancellationToken);
+            return await Result.Try(async () =>
+            {
+                return await _context.Counties
+                    .OrderBy(c => c.Order)
+                    .Select(c => new CountyCsvModel
+                    {
+                        Id = c.Id,
+                        Code = c.Code,
+                        Name = c.Name,
+                        NumberOfPollingStations = c.NumberOfPollingStations,
+                        Diaspora = c.Diaspora,
+                        Order = c.Order
+                    })
+                    .ToListAsync(cancellationToken);
+            },ex => { 
+                _logger.LogError("Error retrieving counties", ex);
+                return "Cannot retrieve counties.";
+            });
         }
 
-        public async Task<object> Handle(CreateOrUpdateCounties request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(CreateOrUpdateCounties request, CancellationToken cancellationToken)
         {
-            Dictionary<int, CountyCsvModel> countiesDictionary = new Dictionary<int, CountyCsvModel>();
+            var result = await ReadFromCsv(request)
+                .Ensure(x=>x !=null && x.Count >0,"No counties to add or update")
+                .Bind(ValidateData)
+                .Tap(async x=>await InsertOrUpdateCounties(x, cancellationToken));
+            
+            return result;
+        }
 
-            try
-            {
-                using (var reader = new StreamReader(request.File.OpenReadStream()))
-                using (var csv = new CsvReader(reader))
-                {
-                    countiesDictionary = csv.GetRecords<CountyCsvModel>()
-                        .ToList()
-                        .ToDictionary(c => c.Id, y => y); ;
-                }
-            }
-            catch (Exception e)
-            {
-                _logger.LogError("Unable to read csv file", e);
-            }
-
-
+        private async Task<Result> InsertOrUpdateCounties(List<CountyCsvModel> counties, CancellationToken cancellationToken)
+        {
             List<int> countiesIdUpdated = new List<int>();
+            var countiesDictionary = counties.ToDictionary(c => c.Id, y => y);
 
             try
             {
@@ -106,12 +107,58 @@ namespace VoteMonitor.Api.County.Handlers
                     transaction.Commit();
                 }
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                _logger.LogError("Cannot add/update counties", e);
+                _logger.LogError("Cannot add/update counties", exception);
+                return Result.Failure("Cannot add/update counties");
             }
 
-            return null;
+            return Result.Ok();
+        }
+
+        private Result<List<CountyCsvModel>> ValidateData(List<CountyCsvModel> counties)
+        {
+            if (counties.Count != counties.Select(x=>x.Id).Distinct().Count())
+            {
+                return Result.Failure<List<CountyCsvModel>>("Duplicated id in csv found");
+            }
+
+            var invalidCounty = counties.FirstOrDefault(x =>
+                x == null
+                || string.IsNullOrEmpty(x.Code)
+                || string.IsNullOrEmpty(x.Name)
+                || x.Name.Length > 100
+                || x.Code.Length > 20);
+
+            if (invalidCounty == null)
+            {
+                
+                return Result.Ok(counties);
+            }
+
+            return Result.Failure<List<CountyCsvModel>>($"Invalid county entry found: {JsonConvert.SerializeObject(invalidCounty)}");
+        }
+
+        private Result<List< CountyCsvModel>> ReadFromCsv(CreateOrUpdateCounties request)
+        {
+            List<CountyCsvModel> counties;
+
+            try
+            {
+                using (var reader = new StreamReader(request.File.OpenReadStream()))
+                using (var csv = new CsvReader(reader))
+                {
+                    counties = csv.GetRecords<CountyCsvModel>()
+                        .ToList();
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("Unable to read csv file", e);
+                return Result.Failure<List<CountyCsvModel>>("Cannot read csv file provided");
+            }
+
+            return Result.Ok(counties);
         }
     }
 }

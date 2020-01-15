@@ -3,12 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using CSharpFunctionalExtensions;
 using VoteMonitor.Api.County.Models;
-using VoteMonitor.Api.Observer.Queries;
 using CsvHelper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using VoteMonitor.Api.County.Commands;
+using VoteMonitor.Api.County.Queries;
 
 namespace VoteMonitor.Api.County.Controllers
 {
@@ -23,12 +23,17 @@ namespace VoteMonitor.Api.County.Controllers
 
         [HttpGet]
         [Route("csvFormat")]
-        [AllowAnonymous]
+        [Authorize("Organizer")]
         [Produces(typeof(byte[]))]
         public async Task<IActionResult> ExportToCsvAsync()
         {
-            // add authorization
-            List<CountyCsvModel> data = await _mediator.Send(new GetCountiesForExport());
+            var dataResult = await _mediator.Send(new GetCountiesForExport());
+
+            if (dataResult.IsFailure)
+            {
+                return BadRequest(dataResult.Error);
+            }
+
             using (var mem = new MemoryStream())
             using (var writer = new StreamWriter(mem))
             using (var csvWriter = new CsvWriter(writer))
@@ -36,7 +41,7 @@ namespace VoteMonitor.Api.County.Controllers
                 csvWriter.Configuration.HasHeaderRecord = true;
                 csvWriter.Configuration.AutoMap<CountyCsvModel>();
 
-                csvWriter.WriteRecords(data);
+                csvWriter.WriteRecords(dataResult.Value);
 
                 writer.Flush();
                 return File(mem.ToArray(), "application/octet-stream", "counties.csv");
@@ -45,13 +50,21 @@ namespace VoteMonitor.Api.County.Controllers
 
         [HttpPost]
         [Route("import")]
-        [AllowAnonymous]
-        public async Task<IActionResult> ImportAsync(IFormFile file)
+        [Authorize("Organizer")]
+        public async Task<IActionResult> ImportAsync(CountiesUploadModel request)
         {
-            // add authorization
-            var response = await _mediator.Send(new CreateOrUpdateCounties(file));
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-            return Ok(response);
+            var response = await _mediator.Send(new CreateOrUpdateCounties(request.CsvFile));
+            if (response.IsSuccess)
+            {
+                return Ok();
+            }
+
+            return BadRequest(new ValidationErrorModel { Message = response.Error });
         }
     }
 }
