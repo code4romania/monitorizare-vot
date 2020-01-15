@@ -49,10 +49,13 @@ namespace VotingIrregularities.Tests.CountyApi
             using (var context = new VoteMonitorContext(_dbContextOptions))
             {
                 var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object);
-                var countyCsvModels =
+                var exportResult =
                     await countiesCommandHandler.Handle(new GetCountiesForExport(), new CancellationToken(false));
-                countyCsvModels.Count.ShouldBe(2);
-                countyCsvModels
+
+                exportResult.IsSuccess.ShouldBeTrue();
+
+                exportResult.Value.Count.ShouldBe(2);
+                exportResult.Value
                     .FirstOrDefault(x => x.Code == "Code1"
                                          && x.Diaspora == false
                                          && x.Id == 1
@@ -61,7 +64,7 @@ namespace VotingIrregularities.Tests.CountyApi
                                          && x.NumberOfPollingStations == 14)
                     .ShouldNotBeNull();
 
-                countyCsvModels
+                exportResult.Value
                     .FirstOrDefault(x => x.Code == "Code2"
                                          && x.Diaspora == true
                                          && x.Id == 3
@@ -79,9 +82,9 @@ namespace VotingIrregularities.Tests.CountyApi
             using (var context = new VoteMonitorContext(_dbContextOptions))
             {
                 var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object);
-                var result =
-                    await countiesCommandHandler.Handle(new GetCountiesForExport(), new CancellationToken(false));
-                result.Count.ShouldBe(0);
+                var result = await countiesCommandHandler.Handle(new GetCountiesForExport(), new CancellationToken(false));
+                result.IsSuccess.ShouldBeTrue();
+                result.Value.Count.ShouldBe(0);
             }
         }
 
