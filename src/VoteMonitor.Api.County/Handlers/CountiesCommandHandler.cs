@@ -56,7 +56,7 @@ namespace VoteMonitor.Api.County.Handlers
         {
             var result = await ReadFromCsv(request)
                 .Ensure(x=>x !=null && x.Count >0,"No counties to add or update")
-                .Bind(ValidateData)
+                .Bind(x=>ValidateData(x))
                 .Tap(async x=>await InsertOrUpdateCounties(x, cancellationToken));
             
             return result;
