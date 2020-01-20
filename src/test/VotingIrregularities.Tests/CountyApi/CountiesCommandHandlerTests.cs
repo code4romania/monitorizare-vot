@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -12,8 +13,8 @@ using Moq;
 using Shouldly;
 using VoteMonitor.Api.County.Commands;
 using VoteMonitor.Api.County.Handlers;
+using VoteMonitor.Api.County.Mappers;
 using VoteMonitor.Api.County.Queries;
-using VoteMonitor.Api.Observer.Queries;
 using VoteMonitor.Entities;
 using Xunit;
 
@@ -22,7 +23,10 @@ namespace VotingIrregularities.Tests.CountyApi
     public class CountiesCommandHandlerTests
     {
         Mock<ILogger> _fakeLogger = new Mock<ILogger>();
-        private DbContextOptions<VoteMonitorContext> _dbContextOptions;
+        private readonly DbContextOptions<VoteMonitorContext> _dbContextOptions;
+        private readonly IMapper _mapper;
+        private readonly MapperConfiguration _configuration = new MapperConfiguration(cfg =>
+            cfg.AddProfile(new CountyMapping()));
 
         public CountiesCommandHandlerTests()
         {
@@ -30,6 +34,14 @@ namespace VotingIrregularities.Tests.CountyApi
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
                 .ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning))
                 .Options;
+            
+            _mapper = new Mapper(_configuration);
+        }
+
+        [Fact]
+        public void Should_have_valid_automapper_config()
+        {
+            _configuration.AssertConfigurationIsValid();
         }
 
         [Fact]
@@ -48,7 +60,7 @@ namespace VotingIrregularities.Tests.CountyApi
 
             using (var context = new VoteMonitorContext(_dbContextOptions))
             {
-                var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object);
+                var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object, _mapper);
                 var exportResult =
                     await countiesCommandHandler.Handle(new GetCountiesForExport(), new CancellationToken(false));
 
@@ -81,7 +93,7 @@ namespace VotingIrregularities.Tests.CountyApi
         {
             using (var context = new VoteMonitorContext(_dbContextOptions))
             {
-                var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object);
+                var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object, _mapper);
                 var result = await countiesCommandHandler.Handle(new GetCountiesForExport(), new CancellationToken(false));
                 result.IsSuccess.ShouldBeTrue();
                 result.Value.Count.ShouldBe(0);
@@ -94,7 +106,7 @@ namespace VotingIrregularities.Tests.CountyApi
             using (var context = new VoteMonitorContext(_dbContextOptions))
             {
                 string base64Encoded = "YmFzZTY0IGVuY29kZWQgc3RyaW5n";
-                var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object);
+                var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object, _mapper);
                 var memoryStream = new MemoryStream(System.Convert.FromBase64String(base64Encoded));
                 var formFile = new FormFile(memoryStream, 0, memoryStream.Length, "Data", "dummy.jpg"); ;
                 var result = await countiesCommandHandler.Handle(new CreateOrUpdateCounties(formFile), new CancellationToken(false));
@@ -109,7 +121,7 @@ namespace VotingIrregularities.Tests.CountyApi
         {
             using (var context = new VoteMonitorContext(_dbContextOptions))
             {
-                var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object);
+                var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object, _mapper);
 
                 StringBuilder sb = new StringBuilder("Id,Code,Name,NumberOfPollingStations,Diaspora,Order");
                 sb.Append(Environment.NewLine);
@@ -134,7 +146,7 @@ namespace VotingIrregularities.Tests.CountyApi
         {
             using (var context = new VoteMonitorContext(_dbContextOptions))
             {
-                var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object);
+                var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object, _mapper);
 
                 StringBuilder sb = new StringBuilder("Id,Code,Name,NumberOfPollingStations,Diaspora,Order");
                 sb.Append(Environment.NewLine);
@@ -159,7 +171,7 @@ namespace VotingIrregularities.Tests.CountyApi
         {
             using (var context = new VoteMonitorContext(_dbContextOptions))
             {
-                var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object);
+                var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object, _mapper);
 
                 StringBuilder sb = new StringBuilder("Id,Code,Name,NumberOfPollingStations,Diaspora,Order");
                 sb.Append(Environment.NewLine);
@@ -184,7 +196,7 @@ namespace VotingIrregularities.Tests.CountyApi
         {
             using (var context = new VoteMonitorContext(_dbContextOptions))
             {
-                var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object);
+                var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object, _mapper);
 
                 StringBuilder sb = new StringBuilder("Id,Code,Name,NumberOfPollingStations,Diaspora,Order");
                 sb.Append(Environment.NewLine);
@@ -224,7 +236,7 @@ namespace VotingIrregularities.Tests.CountyApi
 
             using (var context = new VoteMonitorContext(_dbContextOptions))
             {
-                var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object);
+                var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object, _mapper);
 
                 StringBuilder sb = new StringBuilder("Id,Code,Name,NumberOfPollingStations,Diaspora,Order");
                 sb.Append(Environment.NewLine);
@@ -255,7 +267,7 @@ namespace VotingIrregularities.Tests.CountyApi
 
             using (var context = new VoteMonitorContext(_dbContextOptions))
             {
-                var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object);
+                var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object, _mapper);
 
                 StringBuilder sb = new StringBuilder("Id,Code,Name,NumberOfPollingStations,Diaspora,Order");
                 sb.Append(Environment.NewLine);
@@ -312,7 +324,7 @@ namespace VotingIrregularities.Tests.CountyApi
 
             using (var context = new VoteMonitorContext(_dbContextOptions))
             {
-                var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object);
+                var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object, _mapper);
 
                 StringBuilder sb = new StringBuilder("Id,Code,Name,NumberOfPollingStations,Diaspora,Order");
                 sb.Append(Environment.NewLine);

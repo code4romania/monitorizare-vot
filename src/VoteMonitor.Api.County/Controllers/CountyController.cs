@@ -1,9 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using CSharpFunctionalExtensions;
 using VoteMonitor.Api.County.Models;
 using CsvHelper;
 using Microsoft.AspNetCore.Authorization;
@@ -59,6 +57,47 @@ namespace VoteMonitor.Api.County.Controllers
             }
 
             var response = await _mediator.Send(new CreateOrUpdateCounties(request.CsvFile));
+            if (response.IsSuccess)
+            {
+                return Ok();
+            }
+
+            return BadRequest(new ValidationErrorModel { Message = response.Error });
+        }
+
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetAllCountiesAsync()
+        {
+            var response = await _mediator.Send(new GetAllCounties());
+            if (response.IsSuccess)
+            {
+                return Ok(response.Value);
+            }
+
+            return BadRequest(new ValidationErrorModel { Message = response.Error });
+        }
+
+        [HttpGet("{countyId}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetCountyAsync(int countyId)
+        {
+            var response = await _mediator.Send(new GetCounty(countyId));
+            if (response.IsSuccess)
+            {
+                return Ok(response.Value);
+            }
+
+            return BadRequest(new ValidationErrorModel { Message = response.Error });
+        }
+
+
+        [HttpPost("{countyId}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> UpdateCountyAsync(int countyId, [FromBody] CountyModel county)
+        {
+            var response = await _mediator.Send(new UpdateCounty(countyId, county));
             if (response.IsSuccess)
             {
                 return Ok();

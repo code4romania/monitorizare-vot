@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoMapper;
 using CSharpFunctionalExtensions;
 using CsvHelper;
 using MediatR;
@@ -18,16 +19,21 @@ using VoteMonitor.Entities;
 namespace VoteMonitor.Api.County.Handlers
 {
     public class CountiesCommandHandler : IRequestHandler<GetCountiesForExport, Result<List<CountyCsvModel>>>,
-        IRequestHandler<CreateOrUpdateCounties, Result>
+        IRequestHandler<CreateOrUpdateCounties, Result>,
+        IRequestHandler<GetAllCounties, Result<List<CountyModel>>>,
+        IRequestHandler<GetCounty, Result<CountyModel>>,
+        IRequestHandler<UpdateCounty, Result>
 
     {
         private readonly VoteMonitorContext _context;
         private readonly ILogger _logger;
+        private readonly IMapper _mapper;
 
-        public CountiesCommandHandler(VoteMonitorContext context, ILogger logger)
+        public CountiesCommandHandler(VoteMonitorContext context, ILogger logger, IMapper mapper)
         {
             _context = context;
             _logger = logger;
+            _mapper = mapper;
         }
 
         public async Task<Result<List<CountyCsvModel>>> Handle(GetCountiesForExport request, CancellationToken cancellationToken)
@@ -36,17 +42,10 @@ namespace VoteMonitor.Api.County.Handlers
             {
                 return await _context.Counties
                     .OrderBy(c => c.Order)
-                    .Select(c => new CountyCsvModel
-                    {
-                        Id = c.Id,
-                        Code = c.Code,
-                        Name = c.Name,
-                        NumberOfPollingStations = c.NumberOfPollingStations,
-                        Diaspora = c.Diaspora,
-                        Order = c.Order
-                    })
+                    .Select(c => _mapper.Map<CountyCsvModel>(c))
                     .ToListAsync(cancellationToken);
-            },ex => { 
+            }, ex =>
+            {
                 _logger.LogError("Error retrieving counties", ex);
                 return "Cannot retrieve counties.";
             });
@@ -55,10 +54,10 @@ namespace VoteMonitor.Api.County.Handlers
         public async Task<Result> Handle(CreateOrUpdateCounties request, CancellationToken cancellationToken)
         {
             var result = await ReadFromCsv(request)
-                .Ensure(x=>x !=null && x.Count >0,"No counties to add or update")
-                .Bind(x=>ValidateData(x))
-                .Tap(async x=>await InsertOrUpdateCounties(x, cancellationToken));
-            
+                .Ensure(x => x != null && x.Count > 0, "No counties to add or update")
+                .Bind(x => ValidateData(x))
+                .Tap(async x => await InsertOrUpdateCounties(x, cancellationToken));
+
             return result;
         }
 
@@ -118,7 +117,7 @@ namespace VoteMonitor.Api.County.Handlers
 
         private Result<List<CountyCsvModel>> ValidateData(List<CountyCsvModel> counties)
         {
-            if (counties.Count != counties.Select(x=>x.Id).Distinct().Count())
+            if (counties.Count != counties.Select(x => x.Id).Distinct().Count())
             {
                 return Result.Failure<List<CountyCsvModel>>("Duplicated id in csv found");
             }
@@ -132,14 +131,14 @@ namespace VoteMonitor.Api.County.Handlers
 
             if (invalidCounty == null)
             {
-                
+
                 return Result.Ok(counties);
             }
 
             return Result.Failure<List<CountyCsvModel>>($"Invalid county entry found: {JsonConvert.SerializeObject(invalidCounty)}");
         }
 
-        private Result<List< CountyCsvModel>> ReadFromCsv(CreateOrUpdateCounties request)
+        private Result<List<CountyCsvModel>> ReadFromCsv(CreateOrUpdateCounties request)
         {
             List<CountyCsvModel> counties;
 
@@ -159,6 +158,73 @@ namespace VoteMonitor.Api.County.Handlers
             }
 
             return Result.Ok(counties);
+        }
+
+        public async Task<Result<List<CountyModel>>> Handle(GetAllCounties request, CancellationToken cancellationToken)
+        {
+            List<CountyModel> counties;
+
+            try
+            {
+                counties = await _context.Counties
+                    .Select(x => _mapper.Map<CountyModel>(x))
+                    .ToListAsync(cancellationToken);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("Unable to load all counties", e);
+                return Result.Failure<List<CountyModel>>("Unable to load all counties");
+            }
+
+            return Result.Ok(counties);
+        }
+
+        public async Task<Result<CountyModel>> Handle(GetCounty request, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var county = await _context.Counties.FirstOrDefaultAsync(x => x.Id == request.CountyId, cancellationToken);
+                if (county == null)
+                {
+                    return Result.Failure<CountyModel>($"Could not find county with id = {request.CountyId}");
+                }
+
+                var countyModel = _mapper.Map<CountyModel>(county);
+
+                return Result.Ok(countyModel);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Unable to load county {request.CountyId}", e);
+                return Result.Failure<CountyModel>($"Unable to load county {request.CountyId}");
+            }
+        }
+
+        public async Task<Result> Handle(UpdateCounty request, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var county = await _context.Counties.FirstOrDefaultAsync(x => x.Id == request.CountyId, cancellationToken);
+                if (county == null)
+                {
+                    return Result.Failure($"Could not find county with id = {request.CountyId}");
+                }
+
+                county.Code = request.County.Code;
+                county.Name = request.County.Name;
+                county.NumberOfPollingStations = request.County.NumberOfPollingStations;
+                county.Diaspora = request.County.Diaspora;
+                county.Order = request.County.Order;
+
+                await _context.SaveChangesAsync(cancellationToken);
+
+                return Result.Ok();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Unable to update county {request.CountyId}", e);
+                return Result.Failure($"Unable to update county {request.CountyId}");
+            }
         }
     }
 }
