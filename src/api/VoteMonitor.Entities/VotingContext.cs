@@ -129,6 +129,8 @@ namespace VoteMonitor.Entities
                     .HasMaxLength(200);
 
                 entity.Property(e => e.Organizer).HasDefaultValueSql("0");
+                entity.Property(e => e.IsActive).HasDefaultValueSql("0");
+
             });
 
             modelBuilder.Entity<Answer>(entity => {
