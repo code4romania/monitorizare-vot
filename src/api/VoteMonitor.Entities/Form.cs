@@ -20,6 +20,8 @@ namespace VoteMonitor.Entities
 
 		public bool Draft { get; set; }
 
+		public int Order { get; set; }
+
 		public virtual ICollection<FormSection> FormSections { get; set; }
 	}
 }
