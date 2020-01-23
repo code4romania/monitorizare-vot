@@ -19,7 +19,7 @@ namespace VoteMonitor.Api.Notification.Models
                         Title = request.Title,
                         Channel = request.Channel,
                         InsertedAt = DateTime.Now,
-                        NotificationRecipients = 
+                        NotificationRecipients =
                             request.Recipients.Select(r => new NotificationRecipient
                             {
                                 ObserverId = int.Parse(r)
@@ -28,5 +28,5 @@ namespace VoteMonitor.Api.Notification.Models
                 })
                 ;
         }
-        }
+    }
 }

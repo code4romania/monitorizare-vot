@@ -13,50 +13,50 @@ using VoteMonitor.Api.Note.Queries;
 
 namespace VoteMonitor.Api.Note.Handlers
 {
-	public class NoteQueriesHandler :
-		IRequestHandler<NoteQuery, List<NoteModel>>,
-		IRequestHandler<AddNoteCommand, int>
-	{
+    public class NoteQueriesHandler :
+        IRequestHandler<NoteQuery, List<NoteModel>>,
+        IRequestHandler<AddNoteCommand, int>
+    {
 
-		private readonly VoteMonitorContext _context;
-		private readonly IMapper _mapper;
+        private readonly VoteMonitorContext _context;
+        private readonly IMapper _mapper;
 
-		public NoteQueriesHandler(VoteMonitorContext context, IMapper mapper)
-		{
-			_context = context;
-			_mapper = mapper;
-		}
-		public async Task<List<NoteModel>> Handle(NoteQuery message, CancellationToken token)
-		{
-			return await _context.Notes
-				.Where(n => n.IdObserver == message.IdObserver && n.IdPollingStation == message.IdPollingStation)
-				.OrderBy(n => n.LastModified)
-				.Select(n => new NoteModel
-				{
-					AttachmentPath = n.AttachementPath,
-					Text = n.Text,
-					FormCode = n.Question.FormSection.Form.Code,
-					FormId = n.Question.FormSection.Form.Id,
-					QuestionId = n.Question.Id
-				})
-				.ToListAsync(cancellationToken: token);
-		}
+        public NoteQueriesHandler(VoteMonitorContext context, IMapper mapper)
+        {
+            _context = context;
+            _mapper = mapper;
+        }
+        public async Task<List<NoteModel>> Handle(NoteQuery message, CancellationToken token)
+        {
+            return await _context.Notes
+                .Where(n => n.IdObserver == message.IdObserver && n.IdPollingStation == message.IdPollingStation)
+                .OrderBy(n => n.LastModified)
+                .Select(n => new NoteModel
+                {
+                    AttachmentPath = n.AttachementPath,
+                    Text = n.Text,
+                    FormCode = n.Question.FormSection.Form.Code,
+                    FormId = n.Question.FormSection.Form.Id,
+                    QuestionId = n.Question.Id
+                })
+                .ToListAsync(cancellationToken: token);
+        }
 
-		public async Task<int> Handle(AddNoteCommand request, CancellationToken cancellationToken)
-		{
-			try
-			{
-				var noteEntity = _mapper.Map<Entities.Note>(request);
+        public async Task<int> Handle(AddNoteCommand request, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var noteEntity = _mapper.Map<Entities.Note>(request);
 
-				_context.Notes.Add(noteEntity);
+                _context.Notes.Add(noteEntity);
 
-				return await _context.SaveChangesAsync(cancellationToken);
-			}
-			catch (Exception e)
-			{
-				Console.WriteLine(e);
-				throw;
-			}
-		}
-	}
+                return await _context.SaveChangesAsync(cancellationToken);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+    }
 }
