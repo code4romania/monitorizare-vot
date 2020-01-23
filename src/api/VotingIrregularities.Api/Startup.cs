@@ -106,6 +106,7 @@ namespace VotingIrregularities.Api
                 .AddApplicationPart(typeof(DataExportController).Assembly)
                 .AddControllersAsServices()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new Info
