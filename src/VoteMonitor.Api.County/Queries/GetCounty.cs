@@ -2,7 +2,7 @@
 using MediatR;
 using VoteMonitor.Api.County.Models;
 
-namespace VoteMonitor.Api.County.Commands
+namespace VoteMonitor.Api.County.Queries
 {
     public class GetCounty : IRequest<Result<CountyModel>>
     {

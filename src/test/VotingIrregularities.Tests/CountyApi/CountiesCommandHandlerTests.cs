@@ -14,6 +14,7 @@ using Shouldly;
 using VoteMonitor.Api.County.Commands;
 using VoteMonitor.Api.County.Handlers;
 using VoteMonitor.Api.County.Mappers;
+using VoteMonitor.Api.County.Models;
 using VoteMonitor.Api.County.Queries;
 using VoteMonitor.Entities;
 using Xunit;
@@ -34,7 +35,7 @@ namespace VotingIrregularities.Tests.CountyApi
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
                 .ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning))
                 .Options;
-            
+
             _mapper = new Mapper(_configuration);
         }
 
@@ -45,16 +46,21 @@ namespace VotingIrregularities.Tests.CountyApi
         }
 
         [Fact]
-        public async Task When_loading_2_counties_from_db()
+        public async Task When_loading_2_counties_from_db_for_export()
         {
             using (var context = new VoteMonitorContext(_dbContextOptions))
             {
                 context.Counties.Add(new County
                 {
-                    Code = "Code1", Diaspora = false, Id = 1, Name = "Name1", Order = 12, NumberOfPollingStations = 14
+                    Code = "Code1",
+                    Diaspora = false,
+                    Id = 1,
+                    Name = "Name1",
+                    Order = 12,
+                    NumberOfPollingStations = 14
                 });
                 context.Counties.Add(new County
-                    {Code = "Code2", Diaspora = true, Id = 3, Name = "Name2", Order = 1, NumberOfPollingStations = 2});
+                { Code = "Code2", Diaspora = true, Id = 3, Name = "Name2", Order = 1, NumberOfPollingStations = 2 });
                 context.SaveChanges();
             }
 
@@ -249,7 +255,7 @@ namespace VotingIrregularities.Tests.CountyApi
                 var result = await countiesCommandHandler.Handle(new CreateOrUpdateCounties(formFile), new CancellationToken(false));
 
                 result.IsSuccess.ShouldBeTrue();
-            
+
                 context.Counties.Count().ShouldBe(1);
                 var county = context.Counties.First();
                 county.Id.ShouldBe(3);
@@ -318,7 +324,7 @@ namespace VotingIrregularities.Tests.CountyApi
                     NumberOfPollingStations = 14
                 });
                 context.Counties.Add(new County
-                    { Code = "Code2", Diaspora = true, Id = 3, Name = "Name2", Order = 1, NumberOfPollingStations = 2 });
+                { Code = "Code2", Diaspora = true, Id = 3, Name = "Name2", Order = 1, NumberOfPollingStations = 2 });
                 context.SaveChanges();
             }
 
@@ -334,7 +340,7 @@ namespace VotingIrregularities.Tests.CountyApi
 
                 var buffer = Encoding.UTF8.GetBytes(sb.ToString());
                 var formFile = new FormFile(new MemoryStream(buffer), 0, buffer.Length, "Data", "dummy.csv");
-                
+
                 var result = await countiesCommandHandler.Handle(new CreateOrUpdateCounties(formFile), new CancellationToken(false));
 
                 result.IsSuccess.ShouldBeTrue();
@@ -358,5 +364,163 @@ namespace VotingIrregularities.Tests.CountyApi
                 iasiCounty.Order.ShouldBe(5);
             }
         }
+
+        [Fact]
+        public async Task When_loading_all_counties_should_return_them_ordered()
+        {
+            using (var context = new VoteMonitorContext(_dbContextOptions))
+            {
+                context.Counties.Add(new County { Code = "Code1", Diaspora = false, Id = 1, Name = "Name1", Order = 12, NumberOfPollingStations = 14 });
+                context.Counties.Add(new County { Code = "Code2", Diaspora = true, Id = 2, Name = "Name2", Order = 3, NumberOfPollingStations = 2 });
+                context.Counties.Add(new County { Code = "Code3", Diaspora = true, Id = 3, Name = "Name3", Order = 1, NumberOfPollingStations = 2 });
+                context.SaveChanges();
+            }
+
+            using (var context = new VoteMonitorContext(_dbContextOptions))
+            {
+                var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object, _mapper);
+                var counties =
+                    await countiesCommandHandler.Handle(new GetCountiesForExport(), new CancellationToken(false));
+
+                counties.IsSuccess.ShouldBeTrue();
+
+                counties.Value.Count.ShouldBe(3);
+                var c1 = counties.Value[0];
+                c1.Id.ShouldBe(3);
+                c1.Code.ShouldBe("Code3");
+                c1.Name.ShouldBe("Name3");
+                c1.NumberOfPollingStations.ShouldBe(2);
+                c1.Diaspora.ShouldBe(true);
+                c1.Order.ShouldBe(1);
+
+                var c2 = counties.Value[1];
+                c2.Id.ShouldBe(2);
+                c2.Code.ShouldBe("Code2");
+                c2.Name.ShouldBe("Name2");
+                c2.NumberOfPollingStations.ShouldBe(2);
+                c2.Diaspora.ShouldBe(true);
+                c2.Order.ShouldBe(3);
+
+                var c3 = counties.Value[2];
+                c3.Id.ShouldBe(1);
+                c3.Code.ShouldBe("Code1");
+                c3.Name.ShouldBe("Name1");
+                c3.NumberOfPollingStations.ShouldBe(14);
+                c3.Diaspora.ShouldBe(false);
+                c3.Order.ShouldBe(12);
+            }
+
+        }
+
+        [Fact]
+        public async Task When_loading_county_by_nonexistent_id()
+        {
+            using (var context = new VoteMonitorContext(_dbContextOptions))
+            {
+                context.Counties.Add(new County { Code = "Code1", Diaspora = false, Id = 1, Name = "Name1", Order = 12, NumberOfPollingStations = 14 });
+                context.Counties.Add(new County { Code = "Code2", Diaspora = true, Id = 2, Name = "Name2", Order = 3, NumberOfPollingStations = 2 });
+                context.Counties.Add(new County { Code = "Code3", Diaspora = true, Id = 3, Name = "Name3", Order = 1, NumberOfPollingStations = 2 });
+                context.SaveChanges();
+            }
+
+            using (var context = new VoteMonitorContext(_dbContextOptions))
+            {
+                var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object, _mapper);
+                var county =
+                    await countiesCommandHandler.Handle(new GetCounty(588), new CancellationToken(false));
+
+                county.IsFailure.ShouldBeTrue();
+                county.Error.ShouldBe("Could not find county with id = 588");
+            }
+        }
+
+        [Fact]
+        public async Task When_loading_county_by_existent_id()
+        {
+            using (var context = new VoteMonitorContext(_dbContextOptions))
+            {
+                context.Counties.Add(new County { Code = "Code1", Diaspora = false, Id = 1, Name = "Name1", Order = 12, NumberOfPollingStations = 14 });
+                context.Counties.Add(new County { Code = "Code2", Diaspora = true, Id = 2, Name = "Name2", Order = 3, NumberOfPollingStations = 2 });
+                context.Counties.Add(new County { Code = "Code3", Diaspora = true, Id = 3, Name = "Name3", Order = 1, NumberOfPollingStations = 2 });
+                context.SaveChanges();
+            }
+
+            using (var context = new VoteMonitorContext(_dbContextOptions))
+            {
+                var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object, _mapper);
+                var county =
+                    await countiesCommandHandler.Handle(new GetCounty(2), new CancellationToken(false));
+
+                county.IsSuccess.ShouldBeTrue();
+                var c2 = county.Value;
+                c2.Id.ShouldBe(2);
+                c2.Code.ShouldBe("Code2");
+                c2.Name.ShouldBe("Name2");
+                c2.NumberOfPollingStations.ShouldBe(2);
+                c2.Diaspora.ShouldBe(true);
+                c2.Order.ShouldBe(3);
+            }
+        }
+
+        [Fact]
+        public async Task When_updating_county_by_nonexistent_id()
+        {
+            using (var context = new VoteMonitorContext(_dbContextOptions))
+            {
+                context.Counties.Add(new County { Code = "Code1", Diaspora = false, Id = 1, Name = "Name1", Order = 12, NumberOfPollingStations = 14 });
+                context.Counties.Add(new County { Code = "Code2", Diaspora = true, Id = 2, Name = "Name2", Order = 3, NumberOfPollingStations = 2 });
+                context.Counties.Add(new County { Code = "Code3", Diaspora = true, Id = 3, Name = "Name3", Order = 1, NumberOfPollingStations = 2 });
+                context.SaveChanges();
+            }
+
+            using (var context = new VoteMonitorContext(_dbContextOptions))
+            {
+                var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object, _mapper);
+                var county =
+                    await countiesCommandHandler.Handle(new UpdateCounty(588, new UpdateCountyModel()), new CancellationToken(false));
+
+                county.IsFailure.ShouldBeTrue();
+                county.Error.ShouldBe("Could not find county with id = 588");
+            }
+        }
+
+        [Fact]
+        public async Task When_updating_county_by_existent_id()
+        {
+            using (var context = new VoteMonitorContext(_dbContextOptions))
+            {
+                context.Counties.Add(new County { Code = "Code1", Diaspora = false, Id = 1, Name = "Name1", Order = 12, NumberOfPollingStations = 14 });
+                context.Counties.Add(new County { Code = "Code2", Diaspora = true, Id = 2, Name = "Name2", Order = 3, NumberOfPollingStations = 2 });
+                context.Counties.Add(new County { Code = "Code3", Diaspora = true, Id = 3, Name = "Name3", Order = 1, NumberOfPollingStations = 2 });
+                context.SaveChanges();
+            }
+
+            using (var context = new VoteMonitorContext(_dbContextOptions))
+            {
+                var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object, _mapper);
+                var updateCountyModel = new UpdateCountyModel(){
+                    Name = "Super Iasi",
+                    Code = "IS",
+                    Order = 33,
+                    Diaspora = false,
+                    NumberOfPollingStations = 767
+                };
+                var county =
+                    await countiesCommandHandler.Handle(new UpdateCounty(2,updateCountyModel), new CancellationToken(false));
+
+                county.IsSuccess.ShouldBeTrue();
+                context.Counties.Count().ShouldBe(3);
+                var updatedCounty = await context.Counties.FirstOrDefaultAsync(x => x.Id == 2);
+
+                updatedCounty.ShouldNotBeNull();
+                updatedCounty.Id.ShouldBe(2);
+                updatedCounty.Code.ShouldBe("IS");
+                updatedCounty.Name.ShouldBe("Super Iasi");
+                updatedCounty.NumberOfPollingStations.ShouldBe(767);
+                updatedCounty.Diaspora.ShouldBe(false);
+                updatedCounty.Order.ShouldBe(33);
+            }
+        }
+
     }
 }

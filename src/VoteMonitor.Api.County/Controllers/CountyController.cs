@@ -1,10 +1,12 @@
-﻿using MediatR;
+﻿using System.Collections.Generic;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.IO;
 using System.Threading.Tasks;
 using VoteMonitor.Api.County.Models;
 using CsvHelper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using VoteMonitor.Api.County.Commands;
 using VoteMonitor.Api.County.Queries;
 
@@ -22,7 +24,9 @@ namespace VoteMonitor.Api.County.Controllers
         [HttpGet]
         [Route("csvFormat")]
         [Authorize("Organizer")]
-        [Produces(typeof(byte[]))]
+        [ProducesResponseType(typeof(byte[]), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> ExportToCsvAsync()
         {
             var dataResult = await _mediator.Send(new GetCountiesForExport());
@@ -62,12 +66,14 @@ namespace VoteMonitor.Api.County.Controllers
                 return Ok();
             }
 
-            return BadRequest(new ValidationErrorModel { Message = response.Error });
+            return BadRequest(new ErrorModel { Message = response.Error });
         }
-
-
+        
         [HttpGet]
-        [AllowAnonymous]
+        [Authorize("Organizer")]
+        [ProducesResponseType(typeof(List<CountyModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> GetAllCountiesAsync()
         {
             var response = await _mediator.Send(new GetAllCounties());
@@ -76,11 +82,14 @@ namespace VoteMonitor.Api.County.Controllers
                 return Ok(response.Value);
             }
 
-            return BadRequest(new ValidationErrorModel { Message = response.Error });
+            return BadRequest(new ErrorModel { Message = response.Error });
         }
 
         [HttpGet("{countyId}")]
-        [AllowAnonymous]
+        [Authorize("Organizer")]
+        [ProducesResponseType(typeof(CountyModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> GetCountyAsync(int countyId)
         {
             var response = await _mediator.Send(new GetCounty(countyId));
@@ -89,13 +98,15 @@ namespace VoteMonitor.Api.County.Controllers
                 return Ok(response.Value);
             }
 
-            return BadRequest(new ValidationErrorModel { Message = response.Error });
+            return BadRequest(new ErrorModel { Message = response.Error });
         }
 
-
         [HttpPost("{countyId}")]
-        [AllowAnonymous]
-        public async Task<IActionResult> UpdateCountyAsync(int countyId, [FromBody] CountyModel county)
+        [Authorize("Organizer")]
+        [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> UpdateCountyAsync(int countyId, [FromBody] UpdateCountyModel county)
         {
             var response = await _mediator.Send(new UpdateCounty(countyId, county));
             if (response.IsSuccess)
@@ -103,7 +114,7 @@ namespace VoteMonitor.Api.County.Controllers
                 return Ok();
             }
 
-            return BadRequest(new ValidationErrorModel { Message = response.Error });
+            return BadRequest(new ErrorModel { Message = response.Error });
         }
     }
 }

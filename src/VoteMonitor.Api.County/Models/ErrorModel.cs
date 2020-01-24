@@ -1,6 +1,6 @@
 ﻿namespace VoteMonitor.Api.County.Models
 {
-    public class ValidationErrorModel
+    public class ErrorModel
     {
         public string Message { get; set; }
     }
