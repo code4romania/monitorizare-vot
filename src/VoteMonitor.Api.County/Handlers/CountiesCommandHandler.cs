@@ -168,6 +168,7 @@ namespace VoteMonitor.Api.County.Handlers
             {
                 counties = await _context.Counties
                     .Select(x => _mapper.Map<CountyModel>(x))
+                    .OrderBy(c=>c.Order)
                     .ToListAsync(cancellationToken);
             }
             catch (Exception e)
@@ -204,10 +205,10 @@ namespace VoteMonitor.Api.County.Handlers
         {
             try
             {
-                var county = await _context.Counties.FirstOrDefaultAsync(x => x.Id == request.CountyId, cancellationToken);
+                var county = await _context.Counties.FirstOrDefaultAsync(x => x.Id == request.County.Id, cancellationToken);
                 if (county == null)
                 {
-                    return Result.Failure($"Could not find county with id = {request.CountyId}");
+                    return Result.Failure($"Could not find county with id = {request.County.Id}");
                 }
 
                 county.Code = request.County.Code;
@@ -222,8 +223,8 @@ namespace VoteMonitor.Api.County.Handlers
             }
             catch (Exception e)
             {
-                _logger.LogError($"Unable to update county {request.CountyId}", e);
-                return Result.Failure($"Unable to update county {request.CountyId}");
+                _logger.LogError($"Unable to update county {request.County.Id}", e);
+                return Result.Failure($"Unable to update county {request.County.Id}");
             }
         }
     }

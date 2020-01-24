@@ -7,12 +7,18 @@ namespace VoteMonitor.Api.County.Commands
     public class UpdateCounty : IRequest<Result>
     {
         public CountyModel County { get; }
-        public int CountyId { get; }
 
-        public UpdateCounty(int countyId, CountyModel county)
+        public UpdateCounty(int countyId, UpdateCountyModel county)
         {
-            CountyId = countyId;
-            County = county;
+            County = new CountyModel
+            {
+                Id = countyId,
+                Name = county.Name,
+                Code = county.Code,
+                Diaspora = county.Diaspora,
+                Order = county.Order,
+                NumberOfPollingStations = county.NumberOfPollingStations
+            };
         }
     }
 }
