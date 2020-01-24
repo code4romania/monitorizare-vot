@@ -39,7 +39,8 @@ namespace VoteMonitor.Api.Statistics.Handlers
                   INNER JOIN OptionsToQuestions AS OQ ON OQ.Id = A.IdOptionToQuestion
                   INNER JOIN Options AS O ON O.Id = OQ.IdOption
                   INNER JOIN Observers Obs ON Obs.Id = A.IdObserver
-                  WHERE OQ.Id = {message.QuestionId}",
+                  INNER JOIN Ngos N ON O.IdNgo = N.Id
+                  WHERE OQ.Id = {message.QuestionId} AND N.IsActive =1",
                 CacheKey = $"StatisticiOptiuni-{message.QuestionId}"
             };
 
@@ -78,8 +79,11 @@ namespace VoteMonitor.Api.Statistics.Handlers
         {
             var queryBuilder = new StatisticsQueryBuilder
             {
-                Query = @"select count(distinct a.IdObserver) as [Value], CountyCode as Label
-                          from Answers a (nolock) inner join Observers o on a.IdObserver = o.Id ",
+                Query = @"SELECT COUNT(distinct a.IdObserver) as [Value], CountyCode as Label
+                          FROM Answers a (nolock) 
+                          INNER JOIN Observers o on a.IdObserver = o.Id
+                          INNER JOIN Ngos N ON O.IdNgo = N.Id
+                          WHERE N.IsActive = 1",
                 CacheKey = "StatisticiObservatori"
             };
 
@@ -129,9 +133,10 @@ namespace VoteMonitor.Api.Statistics.Handlers
                   INNER JOIN OptionsToQuestions AS RD ON RD.Id = R.IdOptionToQuestion
                   INNER JOIN Observers O ON O.Id = R.IdObserver
                   INNER JOIN Questions I ON I.Id = RD.IdQuestion
-                    inner join FormSections fs on i.IdSection = fs.Id
-                    inner join Forms f on fs.IdForm = f.Id
-                  WHERE RD.Flagged = 1",
+                  INNER JOIN Ngos N ON O.IdNgo = N.Id
+                  INNER JOIN FormSections fs on i.IdSection = fs.Id
+                  INNER JOIN Forms f on fs.IdForm = f.Id
+                  WHERE RD.Flagged = 1 AND N.IsActive = 1",
                 CacheKey = "StatisticiJudete"
             };
 
@@ -170,10 +175,11 @@ namespace VoteMonitor.Api.Statistics.Handlers
                   FROM Answers AS R 
                   INNER JOIN OptionsToQuestions AS RD ON RD.Id = R.IdOptionToQuestion
                   INNER JOIN Observers O ON O.Id = R.IdObserver
+                  INNER JOIN Ngos N ON O.IdNgo = N.Id
                   INNER JOIN Questions I ON I.Id = RD.IdQuestion
-                    inner join FormSections fs on i.IdSection = fs.Id
-                    inner join Forms f on fs.IdForm = f.Id
-                  WHERE RD.Flagged = 1",
+                  INNER JOIN FormSections fs on i.IdSection = fs.Id
+                  INNER JOIN Forms f on fs.IdForm = f.Id
+                  WHERE RD.Flagged = 1 AND N.IsActive =1",
                 CacheKey = "StatisticiSectii"
             };
 
