@@ -11,6 +11,7 @@ namespace VoteMonitor.Api.Form.Models
         public string Description { get; set; }
         public List<FormSectionDTO> FormSections { get; set; }
         public bool Diaspora { get; set; }
+        public int Order { get; set; }
     }
 
     public class FormProfile : Profile {
