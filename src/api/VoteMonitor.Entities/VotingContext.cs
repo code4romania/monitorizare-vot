@@ -132,6 +132,8 @@ namespace VoteMonitor.Entities
                     .HasMaxLength(200);
 
                 entity.Property(e => e.Organizer).HasDefaultValueSql("0");
+                entity.Property(e => e.IsActive).HasDefaultValueSql("0");
+
             });
 
             modelBuilder.Entity<Answer>(entity => {
@@ -246,7 +248,10 @@ namespace VoteMonitor.Entities
 				entity.Property(x=>x.Draft)
 					.HasDefaultValueSql("0"); // check this mapping 
 
-			});
+                entity.Property(x => x.Order)
+                    .HasDefaultValueSql("0");
+
+            });
 
             modelBuilder.Entity<AnswerQueryInfo>(entity => {
                 entity.HasKey(e => new { e.IdObserver, e.IdPollingStation})

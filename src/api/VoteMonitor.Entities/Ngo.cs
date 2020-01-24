@@ -14,6 +14,7 @@ namespace VoteMonitor.Entities
         public string ShortName { get; set; }
         public string Name { get; set; }
         public bool Organizer { get; set; }
+        public bool IsActive { get; set; }
 
         public virtual ICollection<NgoAdmin> NgoAdmins { get; set; }
         public virtual ICollection<Observer> Observers { get; set; }
