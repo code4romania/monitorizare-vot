@@ -5,7 +5,7 @@ using VoteMonitor.Api.PollingStation.Profiles;
 using VoteMonitor.Api.PollingStation.Queries;
 using Xunit;
 
-namespace VoteMonitor.Api.PollingStation.Tests
+namespace VoteMonitor.Api.PollingStation.Tests.Mappings
 {
     public class PollingStationFilterMappingTests
     {
@@ -33,7 +33,7 @@ namespace VoteMonitor.Api.PollingStation.Tests
         [Fact]
         public void PollingStationsFilter_WhenMappingToGetPollingStations_MapsIdCountyCorrectly()
         {
-            var pollingStationFilter = new PollingStationsFilter()
+            var pollingStationFilter = new PollingStationsFilter
             {
                 IdCounty = 15
             };
@@ -46,7 +46,7 @@ namespace VoteMonitor.Api.PollingStation.Tests
         [Fact]
         public void PollingStationsFilter_WhenMappingToGetPollingStations_MapsPageCorrectly()
         {
-            var pollingStationFilter = new PollingStationsFilter()
+            var pollingStationFilter = new PollingStationsFilter
             {
                 Page = 2
             };
@@ -59,7 +59,7 @@ namespace VoteMonitor.Api.PollingStation.Tests
         [Fact]
         public void PollingStationsFilter_WhenMappingToGetPollingStations_MapsPageSizeCorrectly()
         {
-            var pollingStationFilter = new PollingStationsFilter()
+            var pollingStationFilter = new PollingStationsFilter
             {
                 PageSize = 20
             };

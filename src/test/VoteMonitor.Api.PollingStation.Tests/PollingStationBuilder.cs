@@ -12,7 +12,7 @@
 
         public Entities.PollingStation Build()
         {
-            return new Entities.PollingStation()
+            return new Entities.PollingStation
             {
                 Id = _id,
                 IdCounty = _idCounty,
@@ -33,6 +33,36 @@
         public PollingStationBuilder WithIdCounty(int idCounty)
         {
             _idCounty = idCounty;
+            return this;
+        }
+
+        public PollingStationBuilder WithAddress(string address)
+        {
+            _address = address;
+            return this;
+        }
+
+        public PollingStationBuilder WithCoordinates(string coordinates)
+        {
+            _coordinates = coordinates;
+            return this;
+        }
+
+        public PollingStationBuilder WithTerritoryCode(string territoryCode)
+        {
+            _territoryCode = territoryCode;
+            return this;
+        }
+
+        public PollingStationBuilder WithAdministrativeTerritoryCode(string administrativeTerritoryCode)
+        {
+            _administrativeTerritoryCode = administrativeTerritoryCode;
+            return this;
+        }
+
+        public PollingStationBuilder WithNumber(int number)
+        {
+            _number = number;
             return this;
         }
     }

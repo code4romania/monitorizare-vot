@@ -3,7 +3,7 @@ using MediatR;
 
 namespace VoteMonitor.Api.PollingStation.Queries
 {
-    public class GetPollingStations : IRequest<IEnumerable<Models.PollingStation>>
+    public class GetPollingStations : IRequest<IEnumerable<Models.GetPollingStation>>
     {
         public int IdCounty { get; set; }
 

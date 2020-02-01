@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VoteMonitor.Api.PollingStation.Models;
 using VoteMonitor.Api.PollingStation.Queries;
@@ -25,23 +26,34 @@ namespace VoteMonitor.Api.PollingStation.Controllers
         }
 
         [HttpGet]
-        [Produces(typeof(IEnumerable<Models.PollingStation>))]
+        [AllowAnonymous]
+        [Produces(typeof(IEnumerable<GetPollingStation>))]
         public async Task<IActionResult> GetAllPollingStations([FromQuery]PollingStationsFilter pollingStationsFilter)
         {
             var request = _mapper.Map<GetPollingStations>(pollingStationsFilter);
 
             var result = await _mediator.Send(request);
-            
+
             return Ok(result);
         }
 
-        [HttpPost]
+        [HttpPut("{id}")]
+        //[Authorize("NgoAdmin")]
         [AllowAnonymous]
-        [Produces(typeof(Models.PollingStation))]
-        public async Task<IActionResult> CreatePollingStation([FromBody]Models.PollingStation pollingStation)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> EditPollingStation([FromRoute]int id, [FromBody]Models.UpdatePollingStation pollingStation)
         {
-            var result = await _mediator.Send(new CreatePollingStation(pollingStation));
-            return Ok(result);
+            var request = _mapper.Map<Queries.UpdatePollingStation>(pollingStation);
+            request.Id = id;
+
+            var updated = await _mediator.Send(request);
+            if (updated.HasValue && !updated.Value)
+            {
+                return NotFound(id);
+            }
+
+            return Ok();
         }
     }
 }

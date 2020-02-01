@@ -12,7 +12,7 @@ using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.PollingStation.Handlers
 {
-    public class GetPollingStationsHandler : IRequestHandler<GetPollingStations, IEnumerable<Models.PollingStation>>
+    public class GetPollingStationsHandler : IRequestHandler<GetPollingStations, IEnumerable<Models.GetPollingStation>>
     {
         private readonly VoteMonitorContext _context;
         private readonly IMapper _mapper;
@@ -25,19 +25,19 @@ namespace VoteMonitor.Api.PollingStation.Handlers
             _logger = logger;
         }
 
-        public async Task<IEnumerable<Models.PollingStation>> Handle(GetPollingStations request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Models.GetPollingStation>> Handle(GetPollingStations request, CancellationToken cancellationToken)
         {
+            var skip = (request.Page - 1) * request.PageSize;
+            var take = request.PageSize;
+
             try
             {
-                var skip = (request.Page - 1) * request.PageSize;
-                var take = request.PageSize;
-
                 var iQueryable = CreateQuery(request);
 
                 var pollingStations = await iQueryable
                     .Skip(skip)
                     .Take(take)
-                    .Select(m => _mapper.Map<Models.PollingStation>(m))
+                    .Select(m => _mapper.Map<Models.GetPollingStation>(m))
                     .ToListAsync(cancellationToken);
 
                 return pollingStations;
