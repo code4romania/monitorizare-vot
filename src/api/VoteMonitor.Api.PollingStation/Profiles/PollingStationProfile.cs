@@ -8,8 +8,10 @@ namespace VoteMonitor.Api.PollingStation.Profiles
     {
         public PollingStationProfile()
         {
-            CreateMap<Entities.PollingStation, Models.PollingStation>();
+            CreateMap<Entities.PollingStation, Models.GetPollingStation>();
             CreateMap<PollingStationsFilter, GetPollingStations>();
+            CreateMap<Models.UpdatePollingStation, Queries.UpdatePollingStation>()
+                .ForMember(dest=> dest.Id, act=> act.Ignore());
         }
     }
 }
