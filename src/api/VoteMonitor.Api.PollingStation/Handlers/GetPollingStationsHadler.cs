@@ -12,7 +12,7 @@ using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.PollingStation.Handlers
 {
-    public class GetPollingStationsHandler : IRequestHandler<GetAllPollingStations, IEnumerable<Models.PollingStation>>
+    public class GetPollingStationsHandler : IRequestHandler<GetPollingStations, IEnumerable<Models.PollingStation>>
     {
         private readonly VoteMonitorContext _context;
         private readonly IMapper _mapper;
@@ -25,11 +25,18 @@ namespace VoteMonitor.Api.PollingStation.Handlers
             _logger = logger;
         }
 
-        public async Task<IEnumerable<Models.PollingStation>> Handle(GetAllPollingStations request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Models.PollingStation>> Handle(GetPollingStations request, CancellationToken cancellationToken)
         {
             try
             {
-                var pollingStations = await _context.PollingStations
+                var skip = (request.Page - 1) * request.PageSize;
+                var take = request.PageSize;
+
+                var iQueryable = CreateQuery(request);
+
+                var pollingStations = await iQueryable
+                    .Skip(skip)
+                    .Take(take)
                     .Select(m => _mapper.Map<Models.PollingStation>(m))
                     .ToListAsync(cancellationToken);
 
@@ -40,6 +47,18 @@ namespace VoteMonitor.Api.PollingStation.Handlers
                 _logger.Log(LogLevel.Error, "Error retrieving Polling Stations", ex);
                 throw;
             }
+        }
+
+        private IQueryable<Entities.PollingStation> CreateQuery(GetPollingStations request)
+        {
+            IQueryable<Entities.PollingStation> iQueryable = _context.PollingStations;
+
+            if (request.IdCounty > 0)
+            {
+                iQueryable = iQueryable.Where(p => p.IdCounty == request.IdCounty);
+            }
+
+            return iQueryable;
         }
     }
 }
