@@ -40,33 +40,79 @@ namespace VoteMonitor.Api.PollingStation.Tests
         }
 
         [Fact]
-        public async Task Handle_WhenRetrievingPollingStationEntities_MapsResults()
+        public async Task Handle_WithDefaultPage_ReturnsFirstPageResults()
         {
-            using (var context = new VoteMonitorContext(_dbContextOptions))
+            SetupContextWithPollingStations(new List<Entities.PollingStation>
             {
-                context.PollingStations.Add(new Entities.PollingStation
-                {
-                    Id = 1,
-                    Address = "str X no 5",
-                    AdministrativeTerritoryCode = "code",
-                    Coordinates = "90.91",
-                    IdCounty = 1,
-                    Number = 3
-                });
-                context.SaveChanges();
-            }
+                new PollingStationBuilder().WithId(1).Build()
+            });
 
             using (var context = new VoteMonitorContext(_dbContextOptions))
             {
                 var sut = new GetPollingStationsHandler(context, new Mapper(_mapperConfiguration), _mockLogger.Object);
 
-                var result = await sut.Handle(new GetAllPollingStations(), new CancellationToken());
+                var getPollingStations = new GetPollingStations
+                {
+                    PageSize = 10
+                };
+                var result = await sut.Handle(getPollingStations, new CancellationToken());
 
-                result.Should().BeOfType<List<Models.PollingStation>>();
                 result.Count().Should().Be(1);
+                result.First().Id.Should().Be(1);
             }
         }
 
+        [Fact]
+        public async Task Handle_WithSecondPage_ReturnsSecondPageResults()
+        {
+            SetupContextWithPollingStations(new List<Entities.PollingStation>
+            {
+                new PollingStationBuilder().WithId(1).Build(),
+                new PollingStationBuilder().WithId(2).Build()
+            });
+
+            using (var context = new VoteMonitorContext(_dbContextOptions))
+            {
+                var sut = new GetPollingStationsHandler(context, new Mapper(_mapperConfiguration), _mockLogger.Object);
+
+                var getPollingStations = new GetPollingStations
+                {
+                    Page = 2,
+                    PageSize = 1
+                };
+                var result = await sut.Handle(getPollingStations, new CancellationToken());
+
+                result.Count().Should().Be(1);
+                result.First().Id.Should().Be(2);
+            }
+        }
+
+        [Fact]
+        public async Task Handle_WithIdCounty_ReturnsCorrectResults()
+        {
+            SetupContextWithPollingStations(new List<Entities.PollingStation>
+            {
+                new PollingStationBuilder().WithId(1).WithIdCounty(5).Build(),
+                new PollingStationBuilder().WithId(2).WithIdCounty(20).Build()
+            });
+
+            using (var context = new VoteMonitorContext(_dbContextOptions))
+            {
+                var sut = new GetPollingStationsHandler(context, new Mapper(_mapperConfiguration), _mockLogger.Object);
+
+                var getPollingStations = new GetPollingStations
+                {
+                    IdCounty = 20,
+                    Page = 1,
+                    PageSize = 1
+                };
+                var result = await sut.Handle(getPollingStations, new CancellationToken());
+
+                result.Count().Should().Be(1);
+                result.First().Id.Should().Be(2);
+            }
+        }
+        
         [Fact]
         public async Task Handle_WhenExceptionIsThrown_ShouldLogError()
         {
@@ -74,10 +120,19 @@ namespace VoteMonitor.Api.PollingStation.Tests
             mockContext.Setup(m => m.PollingStations).Throws(new Exception());
             var sut = new GetPollingStationsHandler(mockContext.Object, new Mapper(_mapperConfiguration), _mockLogger.Object);
 
-            await Record.ExceptionAsync(async () => await sut.Handle(new GetAllPollingStations(), new CancellationToken()));
+            await Record.ExceptionAsync(async () => await sut.Handle(new GetPollingStations(), new CancellationToken()));
 
             _mockLogger.Verify(x => x.Log(LogLevel.Error, It.IsAny<EventId>(), It.IsAny<FormattedLogValues>(),
                 It.IsAny<Exception>(), It.IsAny<Func<object, Exception, string>>()), Times.Once);
+        }
+
+        private void SetupContextWithPollingStations(IEnumerable<Entities.PollingStation> pollingStations)
+        {
+            using (var context = new VoteMonitorContext(_dbContextOptions))
+            {
+                context.PollingStations.AddRange(pollingStations);
+                context.SaveChanges();
+            }
         }
     }
 }

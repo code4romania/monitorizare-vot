@@ -5,12 +5,12 @@ using Xunit;
 
 namespace VoteMonitor.Api.PollingStation.Tests
 {
-    public class PollingStationMappingTests
+    public class PollingStationEntityMappingTests
     {
         private readonly MapperConfiguration _configuration;
         private readonly IMapper _mapper;
 
-        public PollingStationMappingTests()
+        public PollingStationEntityMappingTests()
         {
             _configuration = new MapperConfiguration(cfg =>
             {

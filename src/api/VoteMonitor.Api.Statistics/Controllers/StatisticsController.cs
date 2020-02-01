@@ -77,7 +77,7 @@ namespace VoteMonitor.Api.Statistics.Controllers
 
             if (model.GroupingType == StatisticsGroupingTypes.Sectie)
             {
-                model.PageSize = Constants.DEFAULT_PAGE_SIZE;
+                model.PageSize = PagingDefaultsConstants.DEFAULT_PAGE_SIZE;
             }
 
             return await _mediator.Send(new StatisticiTopSesizariQuery
@@ -133,7 +133,7 @@ namespace VoteMonitor.Api.Statistics.Controllers
         {
             var idONG = this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
             var organizator = this.GetOrganizatorOrDefault(_configuration.GetValue<bool>("DefaultOrganizator"));
-            model.PageSize = Constants.DEFAULT_PAGE_SIZE;
+            model.PageSize = PagingDefaultsConstants.DEFAULT_PAGE_SIZE;
 
             return await _mediator.Send(new StatisticiTopSesizariQuery
             {
@@ -188,7 +188,7 @@ namespace VoteMonitor.Api.Statistics.Controllers
         {
             var idONG = this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
             var organizator = this.GetOrganizatorOrDefault(_configuration.GetValue<bool>("DefaultOrganizator"));
-            model.PageSize = Constants.DEFAULT_PAGE_SIZE;
+            model.PageSize = PagingDefaultsConstants.DEFAULT_PAGE_SIZE;
 
             return await _mediator.Send(new StatisticiTopSesizariQuery
             {
@@ -243,7 +243,7 @@ namespace VoteMonitor.Api.Statistics.Controllers
         {
             var idONG = this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
             var organizator = this.GetOrganizatorOrDefault(_configuration.GetValue<bool>("DefaultOrganizator"));
-            model.PageSize = Constants.DEFAULT_PAGE_SIZE;
+            model.PageSize = PagingDefaultsConstants.DEFAULT_PAGE_SIZE;
 
             return await _mediator.Send(new StatisticiTopSesizariQuery
             {
