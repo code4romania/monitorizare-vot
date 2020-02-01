@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using VoteMonitor.Api.PollingStation.Models;
 using VoteMonitor.Api.PollingStation.Queries;
 
 namespace VoteMonitor.Api.PollingStation.Controllers
@@ -14,18 +16,31 @@ namespace VoteMonitor.Api.PollingStation.Controllers
     public class PollingStationV2Controller : Controller
     {
         private readonly IMediator _mediator;
+        private readonly IMapper _mapper;
 
-        public PollingStationV2Controller(IMediator mediator)
+        public PollingStationV2Controller(IMediator mediator, IMapper mapper)
         {
             _mediator = mediator;
+            _mapper = mapper;
         }
 
         [HttpGet]
-        [AllowAnonymous]
         [Produces(typeof(IEnumerable<Models.PollingStation>))]
-        public async Task<IActionResult> GetAllPollingStations()
+        public async Task<IActionResult> GetAllPollingStations([FromQuery]PollingStationsFilter pollingStationsFilter)
         {
-            var result = await _mediator.Send(new GetAllPollingStations());
+            var request = _mapper.Map<GetPollingStations>(pollingStationsFilter);
+
+            var result = await _mediator.Send(request);
+            
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [Produces(typeof(Models.PollingStation))]
+        public async Task<IActionResult> CreatePollingStation([FromBody]Models.PollingStation pollingStation)
+        {
+            var result = await _mediator.Send(new CreatePollingStation(pollingStation));
             return Ok(result);
         }
     }
