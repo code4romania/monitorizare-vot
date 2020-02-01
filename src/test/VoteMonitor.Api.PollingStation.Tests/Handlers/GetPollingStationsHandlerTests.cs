@@ -16,7 +16,7 @@ using VoteMonitor.Api.PollingStation.Queries;
 using VoteMonitor.Entities;
 using Xunit;
 
-namespace VoteMonitor.Api.PollingStation.Tests
+namespace VoteMonitor.Api.PollingStation.Tests.Handlers
 {
     public class GetPollingStationsHandlerTests
     {

@@ -1,6 +1,6 @@
 ﻿namespace VoteMonitor.Api.PollingStation.Models
 {
-    public class PollingStation
+    public class GetPollingStation
     {
         public int Id { get; set; }
         public string Address { get; set; }
