@@ -329,11 +329,6 @@ namespace VoteMonitor.Entities
 							onDelete: ReferentialAction.Restrict);
 					});
 
-			migrationBuilder.CreateIndex(
-				name: "IX_NotificationRegistrationData_ObserverId_ChannelName",
-				table: "NotificationRegistrationData",
-				columns: new String[] { "ObserverId", "ChannelName" },
-				unique: true);
             migrationBuilder.CreateTable(
             name: "Notifications",
             columns: table => new
