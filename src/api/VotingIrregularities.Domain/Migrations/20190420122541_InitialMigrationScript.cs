@@ -16,7 +16,8 @@ namespace VoteMonitor.Entities
 					Code = table.Column<string>(maxLength: 20, nullable: false),
 					Name = table.Column<string>(maxLength: 100, nullable: false),
 					NumberOfPollingStations = table.Column<int>(nullable: false),
-					Diaspora = table.Column<bool>(nullable: false, defaultValueSql: "0")
+					Diaspora = table.Column<bool>(nullable: false, defaultValueSql: "0"),
+					Order = table.Column<int>(nullable: false, defaultValueSql: "0")
 				},
 				constraints: table =>
 				{
