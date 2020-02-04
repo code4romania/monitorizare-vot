@@ -32,7 +32,8 @@ namespace VoteMonitor.Entities
 					Id = table.Column<int>(nullable: false),
 					ShortName = table.Column<string>(maxLength: 10, nullable: false),
 					Name = table.Column<string>(maxLength: 200, nullable: false),
-					Organizer = table.Column<bool>(nullable: false, defaultValueSql: "0")
+					Organizer = table.Column<bool>(nullable: false, defaultValueSql: "0"),
+					IsActive = table.Column<bool>(nullable: false, defaultValueSql: "0")
 				},
 				constraints: table =>
 				{
