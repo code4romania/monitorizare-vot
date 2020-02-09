@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -15,13 +14,11 @@ namespace VoteMonitor.Api.Observer.Handlers
     public class ActiveObserversQueryHandler : IRequestHandler<ActiveObserversQuery, List<ObserverModel>>
     {
         private readonly VoteMonitorContext _context;
-        private readonly ILogger _logger;
         private readonly IMapper _mapper;
 
-        public ActiveObserversQueryHandler(VoteMonitorContext context, ILogger<ActiveObserversQueryHandler> logger, IMapper mapper)
+        public ActiveObserversQueryHandler(VoteMonitorContext context, IMapper mapper)
         {
             _context = context;
-            _logger = logger;
             _mapper = mapper;
         }
         public Task<List<ObserverModel>> Handle(ActiveObserversQuery request, CancellationToken cancellationToken)

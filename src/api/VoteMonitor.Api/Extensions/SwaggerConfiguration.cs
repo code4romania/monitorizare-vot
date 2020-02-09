@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using System;
 using System.IO;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace VoteMonitor.Api.Extensions
 {
@@ -12,9 +13,9 @@ namespace VoteMonitor.Api.Extensions
         {
             return services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("v1", new OpenApiInfo
+                options.SwaggerDoc("v2", new OpenApiInfo
                 {
-                    Version = "v1",
+                    Version = "v2",
                     Title = "VoteMonitor ",
                     Description = "API specs for NGO Admin and Observer operations.",
                     TermsOfService =
@@ -46,8 +47,7 @@ namespace VoteMonitor.Api.Extensions
                         }
                     }
                 );
-
-                options.OperationFilter<AddFileUploadParams>();
+                //options.OperationFilter<AddFileUploadParams>();
 
                 var baseDocPath = Directory.GetCurrentDirectory();
 
@@ -63,7 +63,7 @@ namespace VoteMonitor.Api.Extensions
             app.UseSwagger();
 
             // Enable middleware to serve swagger-ui assets (HTML, JS, CSS etc.)
-            app.UseSwaggerUI(o => o.SwaggerEndpoint("/swagger/v1/swagger.json", "VoteMonitor API v1"));
+            app.UseSwaggerUI(o => o.SwaggerEndpoint("/swagger/v2/swagger.json", "VoteMonitor API v2"));
 
             return app;
         }

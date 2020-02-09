@@ -48,11 +48,10 @@ namespace VoteMonitor.Api.Note.Controllers
         /// TextNota: "asdfasdasdasdas"
         /// API-ul va returna adresa publica a fisierului unde este salvat si obiectul trimis prin formdata
         /// </summary>
-        /// <param name="file"></param>
         /// <param name="note"></param>
         /// <returns></returns>
         [HttpPost("upload")]
-        public async Task<dynamic> Upload(IFormFile file, [FromForm]UploadNoteModel note)
+        public async Task<dynamic> Upload([FromForm]UploadNoteModel note)
         {
             if (!ModelState.IsValid)
             {
@@ -68,7 +67,7 @@ namespace VoteMonitor.Api.Note.Controllers
             }
 
             var command = _mapper.Map<AddNoteCommand>(note);
-            var fileAddress = await _mediator.Send(new UploadFileCommand { File = file, UploadType = UploadType.Notes });
+            var fileAddress = await _mediator.Send(new UploadFileCommand { File = note.File, UploadType = UploadType.Notes });
 
             command.IdObserver = int.Parse(User.Claims.First(c => c.Type == ClaimsHelper.ObserverIdProperty).Value);
             command.AttachementPath = fileAddress;
