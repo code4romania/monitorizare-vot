@@ -33,7 +33,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoteMonitor.Api.Statistics"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoteMonitor.Api.DataExport", "api\VoteMonitor.Api.DataExport\VoteMonitor.Api.DataExport.csproj", "{4EDC6262-9BA5-46E7-BB90-E31F499A9F5A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoteMonitor.Api.County", "VoteMonitor.Api.County\VoteMonitor.Api.County.csproj", "{1D0B0723-8542-41F4-AF80-6003EAC3F20E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoteMonitor.Api.County", "api\VoteMonitor.Api.County\VoteMonitor.Api.County.csproj", "{1D0B0723-8542-41F4-AF80-6003EAC3F20E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoteMonitor.Api", "api\VoteMonitor.Api\VoteMonitor.Api.csproj", "{87395D1E-7E9B-4099-8093-9AC16D7AE45A}"
 EndProject

@@ -27,7 +27,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\api\VoteMonitor.Api.Answer\VoteMonitor.Api.Answer.csproj" />
-    <ProjectReference Include="..\..\VoteMonitor.Api.County\VoteMonitor.Api.County.csproj" />
+    <ProjectReference Include="..\..\api\VoteMonitor.Api.County\VoteMonitor.Api.County.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="appsettings.json">
