@@ -47,8 +47,11 @@ namespace VoteMonitor.Entities
                     .IsRequired()
                     .HasMaxLength(100);
 
-                entity.Property(x => x.Diaspora)
-                    .HasDefaultValueSql("0"); // should this be required?
+				entity.Property(x=>x.Diaspora)
+					.HasDefaultValueSql("0"); // should this be required?
+
+                entity.Property(x => x.Order)
+                    .HasDefaultValueSql("0");
             });
 
             modelBuilder.Entity<Note>(entity =>
@@ -135,6 +138,8 @@ namespace VoteMonitor.Entities
                     .HasMaxLength(200);
 
                 entity.Property(e => e.Organizer).HasDefaultValueSql("0");
+                entity.Property(e => e.IsActive).HasDefaultValueSql("0");
+
             });
 
             modelBuilder.Entity<Answer>(entity =>
@@ -252,6 +257,9 @@ namespace VoteMonitor.Entities
 
                 entity.Property(x => x.Draft)
                     .HasDefaultValueSql("0"); // check this mapping 
+
+                entity.Property(x => x.Order)
+                    .HasDefaultValueSql("0");
 
             });
 

@@ -18,7 +18,7 @@ namespace VoteMonitor.Api.Observer.Handlers
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
 
-        public ObserverListQueryHandler(VoteMonitorContext context, ILogger logger, IMapper mapper)
+        public ObserverListQueryHandler(VoteMonitorContext context, ILogger<ObserverListQueryHandler> logger, IMapper mapper)
         {
             _context = context;
             _logger = logger;

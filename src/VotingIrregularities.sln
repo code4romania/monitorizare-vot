@@ -33,6 +33,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoteMonitor.Api.Statistics"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoteMonitor.Api.DataExport", "api\VoteMonitor.Api.DataExport\VoteMonitor.Api.DataExport.csproj", "{4EDC6262-9BA5-46E7-BB90-E31F499A9F5A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoteMonitor.Api.County", "VoteMonitor.Api.County\VoteMonitor.Api.County.csproj", "{1D0B0723-8542-41F4-AF80-6003EAC3F20E}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoteMonitor.Api", "api\VoteMonitor.Api\VoteMonitor.Api.csproj", "{87395D1E-7E9B-4099-8093-9AC16D7AE45A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoteMonitor.Api.Auth", "api\VoteMonitor.Api.Auth\VoteMonitor.Api.Auth.csproj", "{9AE873EE-2FA4-4C0E-9DDB-BB0B3C7A4004}"
@@ -103,6 +105,10 @@ Global
 		{9AE873EE-2FA4-4C0E-9DDB-BB0B3C7A4004}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9AE873EE-2FA4-4C0E-9DDB-BB0B3C7A4004}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9AE873EE-2FA4-4C0E-9DDB-BB0B3C7A4004}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D0B0723-8542-41F4-AF80-6003EAC3F20E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D0B0723-8542-41F4-AF80-6003EAC3F20E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D0B0723-8542-41F4-AF80-6003EAC3F20E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D0B0723-8542-41F4-AF80-6003EAC3F20E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -123,6 +129,7 @@ Global
 		{4EDC6262-9BA5-46E7-BB90-E31F499A9F5A} = {8A09B442-FB79-4293-BF9B-E34DD3AE70F3}
 		{87395D1E-7E9B-4099-8093-9AC16D7AE45A} = {8A09B442-FB79-4293-BF9B-E34DD3AE70F3}
 		{9AE873EE-2FA4-4C0E-9DDB-BB0B3C7A4004} = {8A09B442-FB79-4293-BF9B-E34DD3AE70F3}
+		{1D0B0723-8542-41F4-AF80-6003EAC3F20E} = {8A09B442-FB79-4293-BF9B-E34DD3AE70F3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AF1523BC-7F31-4564-8E1B-D2DB4552FFCB}

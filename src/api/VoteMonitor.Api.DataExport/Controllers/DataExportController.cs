@@ -5,7 +5,7 @@ using System;
 using System.Threading.Tasks;
 using VoteMonitor.Api.DataExport.Queries;
 
-namespace VoteMonitor.Api.DataExport.Controller
+namespace VoteMonitor.Api.DataExport.Controllers
 {
     [Route("api/v1/export")]
     public class DataExportController : Microsoft.AspNetCore.Mvc.Controller

@@ -16,7 +16,7 @@ namespace VoteMonitor.Api.DataExport.Handlers
         private readonly VoteMonitorContext _context;
         private readonly ILogger _logger;
 
-        public DataExportQueryHandler(VoteMonitorContext context, ILogger logger)
+        public DataExportQueryHandler(VoteMonitorContext context, ILogger<DataExportQueryHandler> logger)
         {
             _context = context;
             _logger = logger;

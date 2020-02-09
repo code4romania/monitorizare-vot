@@ -14,7 +14,7 @@ namespace VoteMonitor.Api.Observer.Handlers
         private readonly VoteMonitorContext _voteMonitorContext;
         private readonly ILogger _logger;
 
-        public ResetDeviceHandler(VoteMonitorContext context, ILogger logger)
+        public ResetDeviceHandler(VoteMonitorContext context, ILogger<ResetDeviceHandler> logger)
         {
             _voteMonitorContext = context;
             _logger = logger;

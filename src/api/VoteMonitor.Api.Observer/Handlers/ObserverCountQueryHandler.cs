@@ -13,7 +13,7 @@ namespace VoteMonitor.Api.Observer.Handlers
     {
         private readonly VoteMonitorContext _context;
         private readonly ILogger _logger;
-        public ObserverCountQueryHandler(VoteMonitorContext context, ILogger logger)
+        public ObserverCountQueryHandler(VoteMonitorContext context, ILogger<ObserverCountQueryHandler> logger)
         {
             _context = context;
             _logger = logger;

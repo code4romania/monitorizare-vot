@@ -7,6 +7,6 @@
         public string Code { get; set; }
         public int Limit { get; set; }
         public bool Diaspora { get; set; }
-
+        public int Order { get; set; }
     }
 }

@@ -12,5 +12,6 @@ namespace VoteMonitor.Api.Note.Models
         public string Text { get; set; }
         public string AttachmentPath { get; set; }
         public string FormCode { get; set; }
+        public int FormId { get; set; }
     }
 }

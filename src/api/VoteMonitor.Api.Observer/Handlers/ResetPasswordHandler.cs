@@ -16,7 +16,7 @@ namespace VoteMonitor.Api.Observer.Handlers
         private readonly ILogger _logger;
         private readonly IHashService _hash;
 
-        public ResetPasswordHandler(VoteMonitorContext voteMonitorContext, ILogger logger, IHashService hash)
+        public ResetPasswordHandler(VoteMonitorContext voteMonitorContext, ILogger<ResetPasswordHandler> logger, IHashService hash)
         {
             _voteMonitorContext = voteMonitorContext;
             _logger = logger;
