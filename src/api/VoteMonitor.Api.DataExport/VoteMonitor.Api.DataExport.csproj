@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
@@ -16,7 +16,7 @@
 		<PackageReference Include="DotNetCore.NPOI" Version="1.2.2" />
 		<PackageReference Include="MediatR" Version="7.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Caching.Redis" Version="2.2.0" />
-		<PackageReference Include="System.Data.SqlClient" Version="4.7.0" />
+		<PackageReference Include="System.Data.SqlClient" Version="4.8.0" />
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\VoteMonitor.Api.Core\VoteMonitor.Api.Core.csproj" />
