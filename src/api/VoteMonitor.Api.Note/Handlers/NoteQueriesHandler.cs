@@ -21,25 +21,26 @@ namespace VoteMonitor.Api.Note.Handlers
         private readonly VoteMonitorContext _context;
         private readonly IMapper _mapper;
 
-        public NoteQueriesHandler(VoteMonitorContext context, IMapper mapper)
-        {
-            _context = context;
-            _mapper = mapper;
-        }
-        public async Task<List<NoteModel>> Handle(NoteQuery message, CancellationToken token)
-        {
-            return await _context.Notes
-                .Where(n => n.IdObserver == message.IdObserver && n.IdPollingStation == message.IdPollingStation)
-                .OrderBy(n => n.LastModified)
-                .Select(n => new NoteModel
-                {
-                    AttachmentPath = n.AttachementPath,
-                    Text = n.Text,
-                    FormCode = n.Question.FormSection.Form.Code,
-                    QuestionId = n.Question.Id
-                })
-                .ToListAsync(cancellationToken: token);
-        }
+		public NoteQueriesHandler(VoteMonitorContext context, IMapper mapper)
+		{
+			_context = context;
+			_mapper = mapper;
+		}
+		public async Task<List<NoteModel>> Handle(NoteQuery message, CancellationToken token)
+		{
+			return await _context.Notes
+				.Where(n => n.IdObserver == message.IdObserver && n.IdPollingStation == message.IdPollingStation)
+				.OrderBy(n => n.LastModified)
+				.Select(n => new NoteModel
+				{
+					AttachmentPath = n.AttachementPath,
+					Text = n.Text,
+					FormCode = n.Question.FormSection.Form.Code,
+					FormId = n.Question.FormSection.Form.Id,
+					QuestionId = n.Question.Id
+				})
+				.ToListAsync(cancellationToken: token);
+		}
 
         public async Task<int> Handle(AddNoteCommand request, CancellationToken cancellationToken)
         {

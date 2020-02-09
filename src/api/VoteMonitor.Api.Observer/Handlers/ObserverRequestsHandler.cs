@@ -21,7 +21,7 @@ namespace VoteMonitor.Api.Observer.Handlers
         private readonly ILogger _logger;
         private IHashService _hashService;
 
-        public ObserverRequestsHandler(VoteMonitorContext context, ILogger logger, IHashService hashService)
+        public ObserverRequestsHandler(VoteMonitorContext context, ILogger<ObserverRequestsHandler> logger, IHashService hashService)
         {
             _context = context;
             _logger = logger;

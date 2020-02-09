@@ -21,7 +21,7 @@ namespace VoteMonitor.Api.Observer.Handlers
         private readonly IMapper _mapper;
         private readonly IHashService _hashService;
 
-        public GenerateObserversHandler(VoteMonitorContext voteMonitorContext, ILogger logger, IMapper mapper, IHashService hashService)
+        public GenerateObserversHandler(VoteMonitorContext voteMonitorContext, ILogger<GenerateObserversHandler> logger, IMapper mapper, IHashService hashService)
         {
             _voteMonitorContext = voteMonitorContext;
             _logger = logger;

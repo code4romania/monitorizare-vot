@@ -59,7 +59,7 @@ namespace VoteMonitor.Api.Extensions
             {
                 options.AddPolicy("NgoAdmin", policy => policy.RequireClaim(ClaimsHelper.UserType, UserType.NgoAdmin.ToString()));
                 options.AddPolicy("Observer", policy => policy.RequireClaim(ClaimsHelper.UserType, UserType.Observer.ToString()).RequireClaim(ClaimsHelper.ObserverIdProperty));
-                options.AddPolicy("Organizer", policy => policy.RequireClaim(ClaimsHelper.Organizer, "1"));
+                options.AddPolicy("Organizer", policy => policy.RequireClaim(ClaimsHelper.Organizer, "true"));
             });
 
             return services;

@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Microsoft.Extensions.Logging;
 using VoteMonitor.Api.Core.Extensions;
 using VoteMonitor.Api.Extensions;
 using VoteMonitor.Api.Location.Services;
@@ -48,7 +49,7 @@ namespace VoteMonitor.Api
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
             app.UseStaticFiles();
             if (env.IsDevelopment())
@@ -72,13 +73,18 @@ namespace VoteMonitor.Api
         private IEnumerable<Assembly> GetAssemblies()
         {
             yield return Assembly.GetAssembly(typeof(Startup));
+
+            yield return typeof(Answer.Controllers.AnswersController).GetTypeInfo().Assembly;
             yield return typeof(Auth.Controllers.Authorization).GetTypeInfo().Assembly;
-            yield return typeof(Note.Controllers.NoteController).GetTypeInfo().Assembly;
+            yield return typeof(County.Controllers.CountyController).GetTypeInfo().Assembly;
+            yield return typeof(DataExport.Controllers.DataExportController).GetTypeInfo().Assembly;
+            yield return typeof(Form.Controllers.FormController).GetTypeInfo().Assembly;
             yield return typeof(Location.Controllers.PollingStationController).GetTypeInfo().Assembly;
+            yield return typeof(Note.Controllers.NoteController).GetTypeInfo().Assembly;
+            yield return typeof(Notification.Controllers.NotificationController).GetTypeInfo().Assembly;            
+            yield return typeof(Observer.Controllers.ObserverController).GetTypeInfo().Assembly;
             yield return typeof(Statistics.Controllers.StatisticsController).GetTypeInfo().Assembly;
-            //yield return typeof(Statistics.Controllers.StatisticsController).GetTypeInfo().Assembly;
-            //yield return typeof(Statistics.Controllers.StatisticsController).GetTypeInfo().Assembly;
-            //yield return typeof(Statistics.Controllers.StatisticsController).GetTypeInfo().Assembly;
+
         }
     }
 }

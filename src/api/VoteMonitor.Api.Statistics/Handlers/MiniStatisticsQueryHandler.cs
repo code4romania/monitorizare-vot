@@ -28,6 +28,7 @@ namespace VoteMonitor.Api.Statistics.Handlers
             var number = await _context.Answers
                 .Include(a => a.Observer)
                 .Where(x => x.Observer.IdNgo != 1)
+                .Where(x => x.Observer.Ngo.IsActive)
                 .CountAsync(token);
 
             return new SimpleStatisticsModel
@@ -41,6 +42,7 @@ namespace VoteMonitor.Api.Statistics.Handlers
             var number = await _context.Answers
                 .Include(a => a.Observer)
                 .Where(x => x.Observer.IdNgo != 1)
+                .Where(x => x.Observer.Ngo.IsActive)
                 .Select(r => r.IdPollingStation)
                 .Distinct()
                 .CountAsync(token);
@@ -56,6 +58,7 @@ namespace VoteMonitor.Api.Statistics.Handlers
             var number = await _context.Answers
                 .Include(a => a.Observer)
                 .Where(x => x.Observer.IdNgo != 1)
+                .Where(x => x.Observer.Ngo.IsActive)
                 .Select(r => r.CountyCode)
                 .Distinct()
                 .CountAsync(token);
@@ -71,6 +74,7 @@ namespace VoteMonitor.Api.Statistics.Handlers
             var number = await _context.Notes
                 .Include(n => n.Observer)
                 .Where(x => x.Observer.IdNgo != 1)
+                .Where(x => x.Observer.Ngo.IsActive)
                 .CountAsync(token);
 
             return new SimpleStatisticsModel
@@ -84,6 +88,7 @@ namespace VoteMonitor.Api.Statistics.Handlers
             var number = await _context.PollingStationInfos
                 .Include(a => a.Observer)
                 .Where(x => x.Observer.IdNgo != 1)
+                .Where(x => x.Observer.Ngo.IsActive)
                 .Select(pi => pi.IdObserver)
                 .Distinct()
                 .CountAsync(token);
@@ -99,6 +104,7 @@ namespace VoteMonitor.Api.Statistics.Handlers
             var number = await _context.Answers
                 .Include(a => a.Observer)
                 .Where(x => x.Observer.IdNgo != 1)
+                .Where(x => x.Observer.Ngo.IsActive)
                 .Include(r => r.OptionAnswered)
                 .CountAsync(r => r.OptionAnswered.Flagged, token);
 

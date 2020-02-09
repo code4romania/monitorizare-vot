@@ -23,7 +23,7 @@ namespace VoteMonitor.Api.Form.Handlers
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
 
-        public OptionQueriesHandler(VoteMonitorContext context, IMapper mapper, ILogger logger)
+        public OptionQueriesHandler(VoteMonitorContext context, IMapper mapper, ILogger<OptionQueriesHandler> logger)
         {
             _context = context;
             _mapper = mapper;
