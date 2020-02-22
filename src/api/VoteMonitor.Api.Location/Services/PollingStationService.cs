@@ -87,9 +87,17 @@ namespace VoteMonitor.Api.Location.Services
 
             var data = await _cacheService
                  .GetOrSaveDataInCacheAsync(cacheKey, async () => await _context.Counties
-                 .Where(c => diaspora == null || c.Diaspora == diaspora)
-                 .Select(c => new CountyPollingStationLimit { Name = c.Name, Code = c.Code, Limit = c.NumberOfPollingStations, Id = c.Id, Diaspora = c.Diaspora })
-                 .ToListAsync());
+                     .Where(c => diaspora == null || c.Diaspora == diaspora)
+                     .OrderBy(c => c.Order)
+                     .Select(c => new CountyPollingStationLimit
+                     {
+                         Name = c.Name,
+                         Code = c.Code,
+                         Limit = c.NumberOfPollingStations,
+                         Id = c.Id,
+                         Diaspora = c.Diaspora,
+                         Order = c.Order
+                     }).ToListAsync());
 
             return data;
         }
