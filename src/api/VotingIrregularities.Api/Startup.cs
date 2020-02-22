@@ -106,6 +106,7 @@ namespace VotingIrregularities.Api
                 .AddApplicationPart(typeof(StatisticsController).Assembly)
                 .AddApplicationPart(typeof(DataExportController).Assembly)
                 .AddApplicationPart(typeof(PollingStationV2Controller).Assembly)
+                .AddApplicationPart(typeof(PollingStationInfoController).Assembly)
                 .AddControllersAsServices()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
@@ -386,6 +387,7 @@ namespace VotingIrregularities.Api
             yield return typeof(DataExportController).GetTypeInfo().Assembly;
             // just to identify VotingIrregularities.Domain assembly
             yield return typeof(PollingStationV2Controller).GetTypeInfo().Assembly;
+            yield return typeof(PollingStationInfoController).GetTypeInfo().Assembly;
         }
     }
 }
