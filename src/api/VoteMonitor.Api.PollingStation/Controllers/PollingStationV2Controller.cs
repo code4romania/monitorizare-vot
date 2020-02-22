@@ -26,10 +26,10 @@ namespace VoteMonitor.Api.PollingStation.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         [Produces(typeof(IEnumerable<GetPollingStation>))]
         public async Task<IActionResult> GetAllPollingStations([FromQuery]PollingStationsFilter pollingStationsFilter)
         {
+            //todo fix paging model defaults
             var request = _mapper.Map<GetPollingStations>(pollingStationsFilter);
 
             var result = await _mediator.Send(request);
@@ -38,8 +38,7 @@ namespace VoteMonitor.Api.PollingStation.Controllers
         }
 
         [HttpPut("{id}")]
-        //[Authorize("NgoAdmin")]
-        [AllowAnonymous]
+        [Authorize("NgoAdmin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> EditPollingStation([FromRoute]int id, [FromBody]Models.UpdatePollingStation pollingStation)
