@@ -68,9 +68,8 @@ namespace VoteMonitor.Api.County.Controllers
 
             return BadRequest(new ErrorModel { Message = response.Error });
         }
-        
+
         [HttpGet]
-        [Authorize("Organizer")]
         [ProducesResponseType(typeof(List<CountyModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
