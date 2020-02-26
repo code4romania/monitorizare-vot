@@ -7,14 +7,14 @@
 
         public int Page
         {
-            get { return _page; }
-            set { _page = value < 1 ? PagingDefaultsConstants.DEFAULT_PAGE : value; }
+            get => _page < 1 ? PagingDefaultsConstants.DEFAULT_PAGE : _page;
+            set => _page = value < 1 ? PagingDefaultsConstants.DEFAULT_PAGE : value;
         }
 
         public int PageSize
         {
-            get { return _pageSize; }
-            set { _pageSize = value < 1 ? PagingDefaultsConstants.DEFAULT_PAGE_SIZE : value; }
+            get => _pageSize < 1 ? PagingDefaultsConstants.DEFAULT_PAGE_SIZE : _pageSize;
+            set => _pageSize = value < 1 ? PagingDefaultsConstants.DEFAULT_PAGE_SIZE : value;
         }
     }
 }
