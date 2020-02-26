@@ -29,7 +29,6 @@ namespace VoteMonitor.Api.PollingStation.Controllers
         [Produces(typeof(IEnumerable<GetPollingStation>))]
         public async Task<IActionResult> GetAllPollingStations([FromQuery]PollingStationsFilter pollingStationsFilter)
         {
-            //todo fix paging model defaults
             var request = _mapper.Map<GetPollingStations>(pollingStationsFilter);
 
             var result = await _mediator.Send(request);
