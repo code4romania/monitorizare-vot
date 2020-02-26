@@ -38,7 +38,7 @@ namespace VoteMonitor.Api.PollingStation.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize("NgoAdmin")]
+        [Authorize("Organizer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> EditPollingStation([FromRoute]int id, [FromBody]Models.UpdatePollingStation pollingStation)
