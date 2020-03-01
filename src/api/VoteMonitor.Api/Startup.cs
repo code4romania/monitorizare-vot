@@ -59,7 +59,7 @@ namespace VoteMonitor.Api
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseSwaggerAndUi();
