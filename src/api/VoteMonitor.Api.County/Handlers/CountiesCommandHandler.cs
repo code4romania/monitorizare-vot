@@ -100,7 +100,7 @@ namespace VoteMonitor.Api.County.Handlers
                     _context.Counties.Add(newCounty);
                 }
 
-                var result = await _context.SaveChangesAsync(cancellationToken);
+                await _context.SaveChangesAsync(cancellationToken);
 
                 transaction.Commit();
             }
