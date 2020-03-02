@@ -54,7 +54,7 @@ namespace VoteMonitor.Api.Observer.Handlers
                         .ToList();
 
                     _voteMonitorContext.Observers.AddRange(dbObservers.ToArray());
-                    var result = await _voteMonitorContext.SaveChangesAsync(cancellationToken);
+                    await _voteMonitorContext.SaveChangesAsync(cancellationToken);
                     tran.Commit();
 
                     return dbObservers
