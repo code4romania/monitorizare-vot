@@ -7,10 +7,7 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <NoWarn>1701;1702;1591</NoWarn>
-    <DocumentationFile>$(SolutionDir)\api-docs\VoteMonitor.Api.Answer.xml</DocumentationFile>
-  </PropertyGroup>
+  <Import Project="$(SolutionDir)\DocumentationBuildProperties.targets" />
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="9.0.0" />

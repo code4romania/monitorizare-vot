@@ -41,8 +41,8 @@
     <WCFMetadata Include="Connected Services" />
   </ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+  <!-- <Target Name="PostBuild" AfterTargets="PostBuildEvent" >
     <Exec Command="xcopy $(SolutionDir)api-docs $(TargetDir)api-docs /i /f /y" />
-  </Target>
+  </Target> -->
 
 </Project>
