@@ -7,8 +7,6 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
-  <Import Project="$(SolutionDir)\DocumentationBuildProperties.targets" />
-
   <ItemGroup>
     <ProjectReference Include="..\VoteMonitor.Api.Core\VoteMonitor.Api.Core.csproj" />
     <ProjectReference Include="..\VoteMonitor.Entities\VoteMonitor.Entities.csproj" />
