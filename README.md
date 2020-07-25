@@ -25,7 +25,7 @@ This project is built by amazing volunteers and you can be one of them! Here's a
 
  .Net Core 2.2
 
- Swagger docs for the API are available [here](https://mv-mobile-test.azurewebsites.net/swagger/index.html).
+ Swagger docs for the API are available [here](https://app-vmon-api-dev.azurewebsites.net/swagger/index.html).
 
 ## Repos and projects
 
