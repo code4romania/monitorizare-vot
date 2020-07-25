@@ -6,8 +6,6 @@
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 	</ItemGroup>
 
-	<Import Project="$(SolutionDir)\DocumentationBuildProperties.targets" />
-	
 	<ItemGroup>
 		<PackageReference Include="AutoMapper" Version="9.0.0" />
 		<PackageReference Include="DotNetCore.NPOI" Version="1.2.2" />
