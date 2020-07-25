@@ -1,16 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-  </PropertyGroup>
-  <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
-  </ItemGroup>
+	<PropertyGroup>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+	</PropertyGroup>
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <NoWarn>1701;1702;1591</NoWarn>
-    <DocumentationFile>$(SolutionDir)\api-docs\VoteMonitor.Api.DataExport.xml</DocumentationFile>
-  </PropertyGroup>
-
+	<Import Project="$(SolutionDir)\DocumentationBuildProperties.targets" />
+	
 	<ItemGroup>
 		<PackageReference Include="AutoMapper" Version="9.0.0" />
 		<PackageReference Include="DotNetCore.NPOI" Version="1.2.2" />
@@ -19,8 +16,8 @@
 		<PackageReference Include="System.Data.SqlClient" Version="4.8.1" />
 	</ItemGroup>
 	<ItemGroup>
-	  <ProjectReference Include="..\VoteMonitor.Api.Core\VoteMonitor.Api.Core.csproj" />
-	  <ProjectReference Include="..\VoteMonitor.Entities\VoteMonitor.Entities.csproj" />
+		<ProjectReference Include="..\VoteMonitor.Api.Core\VoteMonitor.Api.Core.csproj" />
+		<ProjectReference Include="..\VoteMonitor.Entities\VoteMonitor.Entities.csproj" />
 	</ItemGroup>
 
 </Project>

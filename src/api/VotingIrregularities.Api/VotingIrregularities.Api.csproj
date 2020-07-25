@@ -9,10 +9,9 @@
     <UserSecretsId>TBRWithASecretkey</UserSecretsId>
     <ProjectGuid>{61445EF2-8644-4832-BF05-60900CF76BD3}</ProjectGuid>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <NoWarn>1701;1702;1591</NoWarn>
-  </PropertyGroup>
+
+  <Import Project="$(SolutionDir)\DocumentationBuildProperties.targets" />
+
   <ItemGroup>
     <Compile Remove="api-docs\**" />
     <Compile Remove="etc\**" />
