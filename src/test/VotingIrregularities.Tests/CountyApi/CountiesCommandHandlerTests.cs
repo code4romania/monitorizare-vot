@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Http.Internal;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Logging;
@@ -23,7 +23,7 @@ namespace VotingIrregularities.Tests.CountyApi
 {
     public class CountiesCommandHandlerTests
     {
-        Mock<ILogger> _fakeLogger = new Mock<ILogger>();
+        Mock<ILogger<CountiesCommandHandler>> _fakeLogger = new Mock<ILogger<CountiesCommandHandler>>();
         private readonly DbContextOptions<VoteMonitorContext> _dbContextOptions;
         private readonly IMapper _mapper;
         private readonly MapperConfiguration _configuration = new MapperConfiguration(cfg =>

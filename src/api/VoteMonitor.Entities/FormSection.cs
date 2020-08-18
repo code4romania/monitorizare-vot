@@ -16,7 +16,8 @@ namespace VoteMonitor.Entities
 
         public virtual ICollection<Question> Questions { get; set; }
 
-        public FormSection() {
+        public FormSection()
+        {
             Questions = new HashSet<Question>();
         }
     }

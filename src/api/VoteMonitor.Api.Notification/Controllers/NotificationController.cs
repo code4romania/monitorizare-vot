@@ -1,11 +1,11 @@
-using System.Threading.Tasks;
+using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
 using VoteMonitor.Api.Core;
-using AutoMapper;
-using VoteMonitor.Api.Notification.Models;
 using VoteMonitor.Api.Notification.Commands;
+using VoteMonitor.Api.Notification.Models;
 
 namespace VoteMonitor.Api.Notification.Controllers
 {
@@ -27,14 +27,16 @@ namespace VoteMonitor.Api.Notification.Controllers
         [Route("register")]
         public async Task<dynamic> RegisterTokenAsync(NotificationRegistrationDataModel tokenRegistrationModel)
         {
-            if(!tokenRegistrationModel.ObserverId.HasValue)
+            if (!tokenRegistrationModel.ObserverId.HasValue)
+            {
                 tokenRegistrationModel.ObserverId = this.GetIdObserver();
+            }
 
             await _mediator.Send(_mapper.Map<NotificationRegistrationDataCommand>(tokenRegistrationModel));
 
             _logger.LogInformation($"Observer {tokenRegistrationModel.ObserverId} registered for notifications");
 
-            return Task.FromResult(new {});
+            return Task.FromResult(new { });
         }
 
         [HttpPost]
@@ -44,12 +46,12 @@ namespace VoteMonitor.Api.Notification.Controllers
             var result = await _mediator.Send(_mapper.Map<NewNotificationCommand>(newNotificationModel));
 
             return Task.FromResult(result);
-        }       
+        }
         [HttpPost]
         [Route("send/all")]
         public async Task<dynamic> SendToAll([FromBody]NotificationForAllNewModel model)
         {
-			var command = new SendNotificationToAll(model.Channel,model.From, model.Title, model.Message);
+            var command = new SendNotificationToAll(model.Channel, model.From, model.Title, model.Message);
 
             var result = await _mediator.Send(command);
 

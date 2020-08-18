@@ -3,7 +3,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using VoteMonitor.Api.Core.Options;
 using VoteMonitor.Api.Core.Services;
-using VotingIrregularities.Api.Options;
 using Xunit;
 
 namespace VotingIrregularities.Tests
@@ -41,21 +40,17 @@ namespace VotingIrregularities.Tests
                + Path.DirectorySeparatorChar
                + "conturi.txt";
 
-            using (var newfile = File.Create("conturi-cu-parole.txt"))
+            using var newfile = File.Create("conturi-cu-parole.txt");
+            using var logWriter = new StreamWriter(newfile);
+            using var reader = File.OpenText(pathToFile);
+            while (reader.Peek() >= 0)
             {
-                using (var logWriter = new StreamWriter(newfile))
-                using (var reader = File.OpenText(pathToFile))
-                {
-                    while (reader.Peek() >= 0)
-                    {
-                        var fileContent = reader.ReadLine();
+                var fileContent = reader.ReadLine();
 
-                        var data = fileContent.Split('\t');
-                        var hashed = hashService.GetHash(data[1]);
+                var data = fileContent.Split('\t');
+                var hashed = hashService.GetHash(data[1]);
 
-                        logWriter.WriteLine(fileContent + '\t' + hashed);
-                    }
-                }
+                logWriter.WriteLine(fileContent + '\t' + hashed);
             }
         }
         }

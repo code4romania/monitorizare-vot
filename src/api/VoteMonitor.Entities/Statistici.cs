@@ -14,7 +14,7 @@ namespace VoteMonitor.Entities
         public int Value { get; set; }
     }
 
-    public partial class OptionsStatistics 
+    public partial class OptionsStatistics
     {
         public string Label { get; set; }
         public int Value { get; set; }

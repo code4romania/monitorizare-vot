@@ -1,12 +1,12 @@
-﻿using System;
+﻿using AutoMapper;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Distributed;
 using VoteMonitor.Api.Core.Services;
 using VoteMonitor.Api.Form.Models;
 using VoteMonitor.Entities;
@@ -31,7 +31,9 @@ namespace VoteMonitor.Api.Form.Queries
         {
             var form = _context.Forms.FirstOrDefault(f => f.Id == message.FormId);
             if (form == null)
+            {
                 return null;
+            }
 
             var cacheKey = $"Formular{form.Code}";
 
@@ -47,8 +49,9 @@ namespace VoteMonitor.Api.Form.Queries
 
                     var sectiuni = r.Select(a => new { IdSectiune = a.IdSection, CodSectiune = a.FormSection.Code, Descriere = a.FormSection.Description }).Distinct();
 
-                    var result = sectiuni.Select(i => new FormSectionDTO {
-                        UniqueId = form.Code + i.CodSectiune + i.IdSectiune ,
+                    var result = sectiuni.Select(i => new FormSectionDTO
+                    {
+                        UniqueId = form.Code + i.CodSectiune + i.IdSectiune,
                         Code = i.CodSectiune,
                         Description = i.Descriere,
                         Questions = r.Where(a => a.IdSection == i.IdSectiune)

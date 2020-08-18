@@ -1,5 +1,5 @@
-﻿using System;
-using AutoMapper;
+﻿using AutoMapper;
+using System;
 
 namespace VoteMonitor.Api.Observer.Models
 {
@@ -20,9 +20,9 @@ namespace VoteMonitor.Api.Observer.Models
         public ObserverModelProfile()
         {
             CreateMap<Entities.Observer, ObserverModel>()
-                .ForMember(dest=>dest.Ngo, c=>c.MapFrom(src=> src.Ngo.Name))
-                .ForMember(dest=>dest.NumberOfNotes, c=>c.MapFrom(src=> src.Notes.Count))
-                .ForMember(dest=>dest.NumberOfPollingStations, c=>c.MapFrom(src=> src.PollingStationInfos.Count));
+                .ForMember(dest => dest.Ngo, c => c.MapFrom(src => src.Ngo.Name))
+                .ForMember(dest => dest.NumberOfNotes, c => c.MapFrom(src => src.Notes.Count))
+                .ForMember(dest => dest.NumberOfPollingStations, c => c.MapFrom(src => src.PollingStationInfos.Count));
         }
     }
 }

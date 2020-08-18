@@ -18,7 +18,7 @@ namespace VoteMonitor.Api.Answer.Handlers
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
 
-        public FillInAnswerQueryHandler(VoteMonitorContext context, IMapper mapper, ILogger logger)
+        public FillInAnswerQueryHandler(VoteMonitorContext context, IMapper mapper, ILogger<FillInAnswerQueryHandler> logger)
         {
             _context = context;
             _mapper = mapper;

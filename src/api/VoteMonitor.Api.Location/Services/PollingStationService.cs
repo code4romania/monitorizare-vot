@@ -16,7 +16,7 @@ namespace VoteMonitor.Api.Location.Services
         private readonly ICacheService _cacheService;
         private readonly ILogger _logger;
 
-        public PollingStationService(VoteMonitorContext context, ICacheService cacheService, ILogger logger)
+        public PollingStationService(VoteMonitorContext context, ICacheService cacheService, ILogger<PollingStationService> logger)
         {
             _context = context;
             _cacheService = cacheService;
@@ -29,7 +29,7 @@ namespace VoteMonitor.Api.Location.Services
             {
                 var cacheKey = $"polling-station-countyCode-{pollingStationNumber}-{countyCode}";
 
-                var pollingStation = await _cacheService.GetOrSaveDataInCacheAsync(cacheKey, async () =>
+                await _cacheService.GetOrSaveDataInCacheAsync(cacheKey, async () =>
                  {
                      var countyId = _context.Counties.FirstOrDefault(c => c.Code == countyCode)?.Id;
                      if (countyId == null)
