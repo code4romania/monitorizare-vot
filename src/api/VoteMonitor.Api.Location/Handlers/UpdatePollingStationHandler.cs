@@ -16,7 +16,7 @@ namespace VoteMonitor.Api.Location.Handlers
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
 
-        public UpdatePollingSectionHandler(VoteMonitorContext context, ILogger logger, IMapper mapper)
+        public UpdatePollingSectionHandler(VoteMonitorContext context, ILogger<UpdatePollingSectionHandler> logger, IMapper mapper)
         {
             _context = context;
             _logger = logger;
@@ -33,8 +33,10 @@ namespace VoteMonitor.Api.Location.Handlers
                         a.IdPollingStation == message.IdPollingStation);
 
                 if (pollingStationInfo == null)
+                {
                     throw new ArgumentException("PollingStationInfo nu exista");
-               
+                }
+
                 _mapper.Map(message, pollingStationInfo);
                 _context.Update(pollingStationInfo);
 

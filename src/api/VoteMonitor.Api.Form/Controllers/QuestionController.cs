@@ -1,7 +1,7 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using VoteMonitor.Api.Form.Models;
 
 namespace VoteMonitor.Api.Form.Controllers

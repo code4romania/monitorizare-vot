@@ -29,7 +29,7 @@ namespace VoteMonitor.Api.County.Handlers
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
 
-        public CountiesCommandHandler(VoteMonitorContext context, ILogger logger, IMapper mapper)
+        public CountiesCommandHandler(VoteMonitorContext context, ILogger<CountiesCommandHandler> logger, IMapper mapper)
         {
             _context = context;
             _logger = logger;
@@ -63,48 +63,46 @@ namespace VoteMonitor.Api.County.Handlers
 
         private async Task<Result> InsertOrUpdateCounties(List<CountyCsvModel> counties, CancellationToken cancellationToken)
         {
-            List<int> countiesIdUpdated = new List<int>();
+            var countiesIdUpdated = new List<int>();
             var countiesDictionary = counties.ToDictionary(c => c.Id, y => y);
 
             try
             {
-                using (var transaction = await _context.Database.BeginTransactionAsync(cancellationToken))
+                using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
+                foreach (var county in _context.Counties)
                 {
-                    foreach (var county in _context.Counties)
+                    if (countiesDictionary.TryGetValue(county.Id, out var csvModel))
                     {
-                        if (countiesDictionary.TryGetValue(county.Id, out var csvModel))
-                        {
-                            county.Code = csvModel.Code;
-                            county.Name = csvModel.Name;
-                            county.NumberOfPollingStations = csvModel.NumberOfPollingStations;
-                            county.Diaspora = csvModel.Diaspora;
-                            county.Order = csvModel.Order;
+                        county.Code = csvModel.Code;
+                        county.Name = csvModel.Name;
+                        county.NumberOfPollingStations = csvModel.NumberOfPollingStations;
+                        county.Diaspora = csvModel.Diaspora;
+                        county.Order = csvModel.Order;
 
-                            countiesIdUpdated.Add(county.Id);
-                        }
+                        countiesIdUpdated.Add(county.Id);
                     }
-
-                    foreach (var id in countiesDictionary.Keys.Except(countiesIdUpdated))
-                    {
-                        var csvModel = countiesDictionary[id];
-
-                        var newCounty = new Entities.County
-                        {
-                            Id = csvModel.Id,
-                            Code = csvModel.Code,
-                            Name = csvModel.Name,
-                            NumberOfPollingStations = csvModel.NumberOfPollingStations,
-                            Diaspora = csvModel.Diaspora,
-                            Order = csvModel.Order
-                        };
-
-                        _context.Counties.Add(newCounty);
-                    }
-
-                    var result = await _context.SaveChangesAsync(cancellationToken);
-
-                    transaction.Commit();
                 }
+
+                foreach (var id in countiesDictionary.Keys.Except(countiesIdUpdated))
+                {
+                    var csvModel = countiesDictionary[id];
+
+                    var newCounty = new Entities.County
+                    {
+                        Id = csvModel.Id,
+                        Code = csvModel.Code,
+                        Name = csvModel.Name,
+                        NumberOfPollingStations = csvModel.NumberOfPollingStations,
+                        Diaspora = csvModel.Diaspora,
+                        Order = csvModel.Order
+                    };
+
+                    _context.Counties.Add(newCounty);
+                }
+
+                await _context.SaveChangesAsync(cancellationToken);
+
+                transaction.Commit();
             }
             catch (Exception exception)
             {
@@ -144,12 +142,10 @@ namespace VoteMonitor.Api.County.Handlers
 
             try
             {
-                using (var reader = new StreamReader(request.File.OpenReadStream()))
-                using (var csv = new CsvReader(reader))
-                {
-                    counties = csv.GetRecords<CountyCsvModel>()
-                        .ToList();
-                }
+                using var reader = new StreamReader(request.File.OpenReadStream());
+                using var csv = new CsvReader(reader);
+                counties = csv.GetRecords<CountyCsvModel>()
+                    .ToList();
             }
             catch (Exception e)
             {

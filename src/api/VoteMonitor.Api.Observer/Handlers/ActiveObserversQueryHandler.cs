@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -15,11 +14,12 @@ namespace VoteMonitor.Api.Observer.Handlers
     public class ActiveObserversQueryHandler : IRequestHandler<ActiveObserversQuery, List<ObserverModel>>
     {
         private readonly VoteMonitorContext _context;
-        private readonly ILogger _logger;
-        public ActiveObserversQueryHandler(VoteMonitorContext context, ILogger logger)
+        private readonly IMapper _mapper;
+
+        public ActiveObserversQueryHandler(VoteMonitorContext context, IMapper mapper)
         {
             _context = context;
-            _logger = logger;
+            _mapper = mapper;
         }
         public Task<List<ObserverModel>> Handle(ActiveObserversQuery request, CancellationToken cancellationToken)
         {
@@ -31,13 +31,15 @@ namespace VoteMonitor.Api.Observer.Handlers
                 .Where(i => i.PollingStation.Number >= request.FromPollingStationNumber)
                 .Where(i => i.PollingStation.Number <= request.ToPollingStationNumber);
 
-                if (request.IdNgo>0)
-                    results= results.Where(i => i.Observer.IdNgo == request.IdNgo);
+            if (request.IdNgo > 0)
+            {
+                results = results.Where(i => i.Observer.IdNgo == request.IdNgo);
+            }
 
-                var observers = results
+            var observers = results
                     .Select(i => i.Observer)
                     .AsEnumerable()
-                    .Select(Mapper.Map<ObserverModel>)
+                    .Select(_mapper.Map<ObserverModel>)
                     .ToList();
 
             return Task.FromResult(observers);

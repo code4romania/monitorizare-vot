@@ -1,25 +1,25 @@
-﻿using System;
+﻿using AutoMapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using AutoMapper;
 using System.Linq;
 using System.Threading;
-using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 using VoteMonitor.Api.Note.Commands;
-using VoteMonitor.Entities;
 using VoteMonitor.Api.Note.Models;
 using VoteMonitor.Api.Note.Queries;
+using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Note.Handlers
 {
-	public class NoteQueriesHandler :
-		IRequestHandler<NoteQuery, List<NoteModel>>,
-		IRequestHandler<AddNoteCommand, int>
-	{
+    public class NoteQueriesHandler :
+        IRequestHandler<NoteQuery, List<NoteModel>>,
+        IRequestHandler<AddNoteCommand, int>
+    {
 
-		private readonly VoteMonitorContext _context;
-		private readonly IMapper _mapper;
+        private readonly VoteMonitorContext _context;
+        private readonly IMapper _mapper;
 
 		public NoteQueriesHandler(VoteMonitorContext context, IMapper mapper)
 		{
@@ -42,21 +42,21 @@ namespace VoteMonitor.Api.Note.Handlers
 				.ToListAsync(cancellationToken: token);
 		}
 
-		public async Task<int> Handle(AddNoteCommand request, CancellationToken cancellationToken)
-		{
-			try
-			{
-				var noteEntity = _mapper.Map<Entities.Note>(request);
+        public async Task<int> Handle(AddNoteCommand request, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var noteEntity = _mapper.Map<Entities.Note>(request);
 
-				_context.Notes.Add(noteEntity);
+                _context.Notes.Add(noteEntity);
 
-				return await _context.SaveChangesAsync(cancellationToken);
-			}
-			catch (Exception e)
-			{
-				Console.WriteLine(e);
-				throw;
-			}
-		}
-	}
+                return await _context.SaveChangesAsync(cancellationToken);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+    }
 }

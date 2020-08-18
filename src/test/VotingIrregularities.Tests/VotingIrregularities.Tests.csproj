@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <AssemblyName>VotingIrregularities.Tests</AssemblyName>
     <PackageId>VotingIrregularities.Tests</PackageId>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
@@ -11,8 +11,7 @@
     <ProjectGuid>{6961F352-9908-40B1-A840-A96841CF2031}</ProjectGuid>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="2.2.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.1.2" />
     <PackageReference Include="Microsoft.Extensions.Caching.Redis.Core" Version="1.0.3" />
     <PackageReference Include="Moq" Version="4.13.1" />
     <PackageReference Include="Shouldly" Version="3.0.2" />
@@ -21,14 +20,14 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
     <PackageReference Include="xunit" Version="2.4.1" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
     <PackageReference Include="FluentValidation" Version="7.6.105" />
-    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="2.2.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.4" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="3.1.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.2" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\api\VotingIrregularities.Api\VotingIrregularities.Api.csproj" />
-    <ProjectReference Include="..\..\api\VotingIrregularities.Domain\VotingIrregularities.Domain.csproj" />
+    <ProjectReference Include="..\..\api\VoteMonitor.Api.Answer\VoteMonitor.Api.Answer.csproj" />
+    <ProjectReference Include="..\..\api\VoteMonitor.Api.County\VoteMonitor.Api.County.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="appsettings.json">

@@ -14,7 +14,7 @@ namespace VoteMonitor.Api.Observer.Handlers
         private readonly VoteMonitorContext _voteMonitorContext;
         private readonly ILogger _logger;
 
-        public ResetDeviceHandler(VoteMonitorContext context, ILogger logger)
+        public ResetDeviceHandler(VoteMonitorContext context, ILogger<ResetDeviceHandler> logger)
         {
             _voteMonitorContext = context;
             _logger = logger;
@@ -28,12 +28,16 @@ namespace VoteMonitor.Api.Observer.Handlers
                     .Where(o => o.Phone == request.PhoneNumber);
 
                 if (!request.Organizer)
+                {
                     observerQuery = observerQuery.Where(o => o.IdNgo == request.IdNgo);
+                }
 
                 var observer = observerQuery.FirstOrDefault();
 
                 if (observer == null)
+                {
                     return Task.FromResult(-1);
+                }
 
                 observer.DeviceRegisterDate = null;
                 observer.MobileDeviceId = null;
