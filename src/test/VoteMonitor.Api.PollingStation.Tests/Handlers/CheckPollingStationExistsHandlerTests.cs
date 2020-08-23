@@ -18,7 +18,7 @@ namespace VoteMonitor.Api.PollingStation.Tests.Handlers
     public class CheckPollingStationExistsHandlerTests
     {
         private readonly DbContextOptions<VoteMonitorContext> _dbContextOptions;
-        private readonly Mock<ILogger> _mockLogger;
+        private readonly Mock<ILogger<CheckPollingStationExistsHandler>> _mockLogger;
 
         public CheckPollingStationExistsHandlerTests()
         {
@@ -27,7 +27,7 @@ namespace VoteMonitor.Api.PollingStation.Tests.Handlers
                 .ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning))
                 .Options;
 
-            _mockLogger = new Mock<ILogger>();
+            _mockLogger = new Mock<ILogger<CheckPollingStationExistsHandler>>();
         }
 
         [Fact]

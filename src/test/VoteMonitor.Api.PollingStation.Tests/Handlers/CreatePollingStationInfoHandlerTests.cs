@@ -20,7 +20,7 @@ namespace VoteMonitor.Api.PollingStation.Tests.Handlers
     {
         private readonly DbContextOptions<VoteMonitorContext> _dbContextOptions;
         private readonly MapperConfiguration _mapperConfiguration;
-        private readonly Mock<ILogger> _mockLogger;
+        private readonly Mock<ILogger<CreatePollingStationInfoHandler>> _mockLogger;
 
         public CreatePollingStationInfoHandlerTests()
         {
@@ -34,7 +34,7 @@ namespace VoteMonitor.Api.PollingStation.Tests.Handlers
                 cfg.AddProfile<PollingStationInfoProfile>();
             });
 
-            _mockLogger = new Mock<ILogger>();
+            _mockLogger = new Mock<ILogger<CreatePollingStationInfoHandler>>();
         }
 
         [Fact]
