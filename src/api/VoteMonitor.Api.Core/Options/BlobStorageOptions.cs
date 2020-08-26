@@ -1,4 +1,4 @@
-﻿namespace VotingIrregularities.Api.Options
+﻿namespace VoteMonitor.Api.Core.Options
 {
     /// <summary>
     /// Manages the details about the blob storage being used

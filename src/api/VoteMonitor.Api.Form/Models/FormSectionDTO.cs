@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using VoteMonitor.Entities;
 
-namespace VoteMonitor.Api.Form.Models {
-    public class FormSectionDTO {
-        public FormSectionDTO() {
+namespace VoteMonitor.Api.Form.Models
+{
+    public class FormSectionDTO
+    {
+        public FormSectionDTO()
+        {
             Questions = new List<QuestionDTO>();
         }
         public string UniqueId { get; set; }
@@ -15,7 +18,8 @@ namespace VoteMonitor.Api.Form.Models {
         public List<QuestionDTO> Questions { get; set; }
     }
 
-    public class QuestionProfile : Profile {
+    public class QuestionProfile : Profile
+    {
         public QuestionProfile()
         {
             CreateMap<Question, QuestionDTO>()
