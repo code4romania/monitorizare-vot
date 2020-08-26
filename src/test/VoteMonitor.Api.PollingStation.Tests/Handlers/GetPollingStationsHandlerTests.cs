@@ -8,7 +8,6 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Internal;
 using Moq;
 using VoteMonitor.Api.PollingStation.Handlers;
 using VoteMonitor.Api.PollingStation.Profiles;
@@ -112,7 +111,7 @@ namespace VoteMonitor.Api.PollingStation.Tests.Handlers
                 result.First().Id.Should().Be(2);
             }
         }
-        
+
         [Fact]
         public async Task Handle_WhenExceptionIsThrown_ShouldLogError()
         {
@@ -122,8 +121,12 @@ namespace VoteMonitor.Api.PollingStation.Tests.Handlers
 
             await Record.ExceptionAsync(async () => await sut.Handle(new GetPollingStations(), new CancellationToken()));
 
-            _mockLogger.Verify(x => x.Log(LogLevel.Error, It.IsAny<EventId>(), It.IsAny<FormattedLogValues>(),
-                It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()), Times.Once);
+            _mockLogger.Verify(x => x.Log(
+                LogLevel.Error,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, t) => true),
+                It.IsAny<Exception>(),
+                It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)), Times.Once);
         }
 
         private void SetupContextWithPollingStations(IEnumerable<Entities.PollingStation> pollingStations)
