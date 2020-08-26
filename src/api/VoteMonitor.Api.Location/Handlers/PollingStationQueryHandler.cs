@@ -1,5 +1,5 @@
-﻿using System.Threading;
-using MediatR;
+﻿using MediatR;
+using System.Threading;
 using System.Threading.Tasks;
 using VoteMonitor.Api.Location.Queries;
 using VoteMonitor.Api.Location.Services;

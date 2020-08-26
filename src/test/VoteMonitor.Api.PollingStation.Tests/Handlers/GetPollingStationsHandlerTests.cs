@@ -22,7 +22,7 @@ namespace VoteMonitor.Api.PollingStation.Tests.Handlers
     {
         private readonly DbContextOptions<VoteMonitorContext> _dbContextOptions;
         private readonly MapperConfiguration _mapperConfiguration;
-        private readonly Mock<ILogger> _mockLogger;
+        private readonly Mock<ILogger<GetPollingStationsHandler>> _mockLogger;
 
         public GetPollingStationsHandlerTests()
         {
@@ -36,7 +36,7 @@ namespace VoteMonitor.Api.PollingStation.Tests.Handlers
                 cfg.AddProfile<PollingStationProfile>();
             });
 
-            _mockLogger = new Mock<ILogger>();
+            _mockLogger = new Mock<ILogger<GetPollingStationsHandler>>();
         }
 
         [Fact]
@@ -123,7 +123,7 @@ namespace VoteMonitor.Api.PollingStation.Tests.Handlers
             await Record.ExceptionAsync(async () => await sut.Handle(new GetPollingStations(), new CancellationToken()));
 
             _mockLogger.Verify(x => x.Log(LogLevel.Error, It.IsAny<EventId>(), It.IsAny<FormattedLogValues>(),
-                It.IsAny<Exception>(), It.IsAny<Func<object, Exception, string>>()), Times.Once);
+                It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()), Times.Once);
         }
 
         private void SetupContextWithPollingStations(IEnumerable<Entities.PollingStation> pollingStations)

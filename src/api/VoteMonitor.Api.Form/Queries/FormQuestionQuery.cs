@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using MediatR;
+﻿using MediatR;
+using System.Collections.Generic;
 using VoteMonitor.Api.Form.Models;
 
 namespace VoteMonitor.Api.Form.Queries

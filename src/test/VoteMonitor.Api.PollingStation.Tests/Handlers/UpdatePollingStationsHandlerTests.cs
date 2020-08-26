@@ -18,7 +18,7 @@ namespace VoteMonitor.Api.PollingStation.Tests.Handlers
     public class UpdatePollingStationsHandlerTests
     {
         private readonly DbContextOptions<VoteMonitorContext> _dbContextOptions;
-        private readonly Mock<ILogger> _mockLogger;
+        private readonly Mock<ILogger<UpdatePollingStationsHandler>> _mockLogger;
 
         public UpdatePollingStationsHandlerTests()
         {
@@ -27,7 +27,7 @@ namespace VoteMonitor.Api.PollingStation.Tests.Handlers
                 .ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning))
                 .Options;
 
-            _mockLogger = new Mock<ILogger>();
+            _mockLogger = new Mock<ILogger<UpdatePollingStationsHandler>>();
         }
 
         [Fact]
@@ -101,7 +101,7 @@ namespace VoteMonitor.Api.PollingStation.Tests.Handlers
             await Record.ExceptionAsync(async () => await sut.Handle(requestNonExistingPollingStation, new CancellationToken()));
 
             _mockLogger.Verify(x => x.Log(LogLevel.Error, It.IsAny<EventId>(), It.IsAny<FormattedLogValues>(),
-                It.IsAny<Exception>(), It.IsAny<Func<object, Exception, string>>()), Times.Once);
+                It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception, string>>()), Times.Once);
         }
 
         [Fact]

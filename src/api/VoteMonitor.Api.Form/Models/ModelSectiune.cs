@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using AutoMapper;
+﻿using AutoMapper;
+using System.Collections.Generic;
 using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Form.Models

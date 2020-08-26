@@ -13,7 +13,7 @@ namespace VoteMonitor.Api.Form.Models
     {
         [JsonProperty(PropertyName = "id")]
         public int Id { get; set; }
-     
+
         [JsonProperty(PropertyName = "code")]
         public string Code { get; set; }
 
