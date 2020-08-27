@@ -27,6 +27,9 @@ using VoteMonitor.Api.Core.Extensions;
 using VoteMonitor.Api.Core.Handlers;
 using VoteMonitor.Api.Core.Models;
 using VoteMonitor.Api.Core.Options;
+using VoteMonitor.Api.DataExport.Controller;
+using VoteMonitor.Api.PollingStation.Controllers;
+using VoteMonitor.Api.Statistics.Controllers;
 using VoteMonitor.Api.Core.Services;
 using VotingIrregularities.Api.Extensions;
 using VotingIrregularities.Api.Extensions.Startup;
@@ -76,6 +79,18 @@ namespace VotingIrregularities.Api
                                                                         .RequireClaim(ClaimsHelper.IdNgo)
                                                                         .Build()));
                 })
+                .AddApplicationPart(typeof(PollingStationController).Assembly)
+                .AddApplicationPart(typeof(ObserverController).Assembly)
+                .AddApplicationPart(typeof(NotificationController).Assembly)
+                .AddApplicationPart(typeof(NoteController).Assembly)
+                .AddApplicationPart(typeof(FormController).Assembly)
+                .AddApplicationPart(typeof(AnswersController).Assembly)
+                .AddApplicationPart(typeof(StatisticsController).Assembly)
+                .AddApplicationPart(typeof(DataExportController).Assembly)
+                .AddApplicationPart(typeof(CountyController).Assembly)
+
+                .AddApplicationPart(typeof(PollingStationV2Controller).Assembly)
+                .AddApplicationPart(typeof(PollingStationInfoController).Assembly)
                 .AddControllersAsServices()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
@@ -307,6 +322,12 @@ namespace VotingIrregularities.Api
             yield return typeof(IMediator).GetTypeInfo().Assembly;
             yield return typeof(Startup).GetTypeInfo().Assembly;
             yield return typeof(UploadFileHandler).GetTypeInfo().Assembly;
+            yield return typeof(NotificationController).GetTypeInfo().Assembly;
+            yield return typeof(StatisticsController).GetTypeInfo().Assembly;
+            yield return typeof(DataExportController).GetTypeInfo().Assembly;
+            // just to identify VotingIrregularities.Domain assembly
+            yield return typeof(PollingStationV2Controller).GetTypeInfo().Assembly;
+            yield return typeof(PollingStationInfoController).GetTypeInfo().Assembly;
         }
     }
 }

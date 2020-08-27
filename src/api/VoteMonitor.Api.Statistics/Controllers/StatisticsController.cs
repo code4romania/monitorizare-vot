@@ -68,7 +68,7 @@ namespace VoteMonitor.Api.Statistics.Controllers
         {
             if (model.GroupingType == StatisticsGroupingTypes.Sectie)
             {
-                model.PageSize = Constants.DEFAULT_PAGE_SIZE;
+                model.PageSize = PagingDefaultsConstants.DEFAULT_PAGE_SIZE;
             }
 
             return await _mediator.Send(new StatisticiTopSesizariQuery
@@ -119,7 +119,9 @@ namespace VoteMonitor.Api.Statistics.Controllers
         [Authorize("NgoAdmin")]
         public async Task<ApiListResponse<SimpleStatisticsModel>> PollingStationIrregularities(PagingModel model)
         {
-            model.PageSize = Constants.DEFAULT_PAGE_SIZE;
+            var idONG = this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
+            var organizator = this.GetOrganizatorOrDefault(_configuration.GetValue<bool>("DefaultOrganizator"));
+            model.PageSize = PagingDefaultsConstants.DEFAULT_PAGE_SIZE;
 
             return await _mediator.Send(new StatisticiTopSesizariQuery
             {
@@ -169,7 +171,9 @@ namespace VoteMonitor.Api.Statistics.Controllers
         [Authorize("NgoAdmin")]
         public async Task<ApiListResponse<SimpleStatisticsModel>> PollingStationOpeningIrregularities(PagingModel model)
         {
-            model.PageSize = Constants.DEFAULT_PAGE_SIZE;
+            var idONG = this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
+            var organizator = this.GetOrganizatorOrDefault(_configuration.GetValue<bool>("DefaultOrganizator"));
+            model.PageSize = PagingDefaultsConstants.DEFAULT_PAGE_SIZE;
 
             return await _mediator.Send(new StatisticiTopSesizariQuery
             {
@@ -219,7 +223,9 @@ namespace VoteMonitor.Api.Statistics.Controllers
         [Authorize("NgoAdmin")]
         public async Task<ApiListResponse<SimpleStatisticsModel>> PollingStationsByCountingIrregularities(PagingModel model)
         {
-            model.PageSize = Constants.DEFAULT_PAGE_SIZE;
+            var idONG = this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
+            var organizator = this.GetOrganizatorOrDefault(_configuration.GetValue<bool>("DefaultOrganizator"));
+            model.PageSize = PagingDefaultsConstants.DEFAULT_PAGE_SIZE;
 
             return await _mediator.Send(new StatisticiTopSesizariQuery
             {
