@@ -15,7 +15,7 @@ namespace VoteMonitor.Api.PollingStation.Handlers
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
 
-        public CreatePollingStationInfoHandler(VoteMonitorContext context, IMapper mapper, ILogger logger)
+        public CreatePollingStationInfoHandler(VoteMonitorContext context, IMapper mapper, ILogger<CreatePollingStationInfoHandler> logger)
         {
             _context = context;
             _mapper = mapper;

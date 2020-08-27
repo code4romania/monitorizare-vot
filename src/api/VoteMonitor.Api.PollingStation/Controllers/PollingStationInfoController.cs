@@ -24,6 +24,7 @@ namespace VoteMonitor.Api.PollingStation.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status202Accepted)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> CreatePollingStationInfo([FromBody] Models.CreatePollingStationInfo pollingStationInfo)
@@ -46,6 +47,7 @@ namespace VoteMonitor.Api.PollingStation.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> UpdatePollingStationInfo([FromRoute]int id, [FromBody]EditPollingStationInfo pollingStationInfo)
