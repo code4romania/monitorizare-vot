@@ -23,7 +23,7 @@ This project is built by amazing volunteers and you can be one of them! Here's a
 
 ## Built With
 
- .Net Core 3.0
+ .Net Core 3.1
  
  Swagger docs for the API are available [here](https://app-vmon-api-dev.azurewebsites.net/swagger/index.html).
 
@@ -57,12 +57,12 @@ src\api\VotingIrregularities.Domain.Seed> dotnet run
 
 1. install .NetCore (refer to the [Built With](#built-with) section for the proper version) (Open Source/Free/Multiplatform) from [here](https://www.microsoft.com/net/core#windows)
 
-2. run the following console command form the `src` folder:
+2. run the following console command from the `src` folder:
     ```sh
     src> dotnet restore
     ```
   
-3. run the following console command form the `VoteMonitor.Api` folder:
+3. run the following console command from the `VoteMonitor.Api` folder:
     ```sh
     src\api\VoteMonitor.Api> dotnet run
     ```
