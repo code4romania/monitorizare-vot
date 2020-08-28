@@ -85,7 +85,7 @@ namespace VoteMonitor.Api.County.Controllers
         }
 
         [HttpGet("{countyId}")]
-        [Authorize("Organizer")]
+        [Authorize("NgoAdmin")]
         [ProducesResponseType(typeof(CountyModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
