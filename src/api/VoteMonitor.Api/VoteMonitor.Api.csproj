@@ -35,6 +35,7 @@
     <ProjectReference Include="..\VoteMonitor.Api.Notification\VoteMonitor.Api.Notification.csproj" />
     <ProjectReference Include="..\VoteMonitor.Api.Observer\VoteMonitor.Api.Observer.csproj" />
     <ProjectReference Include="..\VoteMonitor.Api.Statistics\VoteMonitor.Api.Statistics.csproj" />
+    <ProjectReference Include="..\VoteMonitor.Api.PollingStation\VoteMonitor.Api.PollingStation.csproj" />
   </ItemGroup>
 
   <ItemGroup>
