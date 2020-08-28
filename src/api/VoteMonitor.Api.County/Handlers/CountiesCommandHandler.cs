@@ -163,8 +163,8 @@ namespace VoteMonitor.Api.County.Handlers
             try
             {
                 counties = await _context.Counties
+                    .OrderBy(c => c.Order)
                     .Select(x => _mapper.Map<CountyModel>(x))
-                    .OrderBy(c=>c.Order)
                     .ToListAsync(cancellationToken);
             }
             catch (Exception e)
