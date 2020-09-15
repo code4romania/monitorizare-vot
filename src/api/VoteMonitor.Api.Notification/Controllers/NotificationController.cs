@@ -13,10 +13,10 @@ namespace VoteMonitor.Api.Notification.Controllers
     public class NotificationController : Controller
     {
         private readonly IMediator _mediator;
-        private readonly ILogger _logger;
+        private readonly ILogger<NotificationController> _logger;
         private readonly IMapper _mapper;
 
-        public NotificationController(IMediator mediator, ILogger logger, IMapper mapper)
+        public NotificationController(IMediator mediator, ILogger<NotificationController> logger, IMapper mapper)
         {
             _mediator = mediator;
             _logger = logger;
