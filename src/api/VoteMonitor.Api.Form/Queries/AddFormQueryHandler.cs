@@ -30,7 +30,7 @@ namespace VoteMonitor.Api.Form.Queries
                 Description = message.Form.Description,
                 FormSections = new List<FormSection>(),
 				Diaspora = message.Form.Diaspora,
-				Draft = false,
+				Draft = message.Form.Draft,
                 Order = message.Form.Order
             };
 
@@ -44,7 +44,7 @@ namespace VoteMonitor.Api.Form.Queries
                 };
                 foreach (var q in fs.Questions)
                 {
-                    var question = new Question { QuestionType = q.QuestionType, Hint = q.Hint, Text = q.Text };
+                    var question = new Question { QuestionType = q.QuestionType, Hint = q.Hint, Text = q.Text, Code = q.Code };
                     var optionsForQuestion = new List<OptionToQuestion>();
                     foreach (var o in q.OptionsToQuestions)
                     {
