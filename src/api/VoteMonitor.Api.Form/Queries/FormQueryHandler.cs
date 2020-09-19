@@ -81,6 +81,14 @@ namespace VoteMonitor.Api.Form.Queries
             var questionsIds = questions.Select(q => q.Id);
             var optionsToQuestions = _context.OptionsToQuestions.Where(o => questionsIds.Contains(o.IdQuestion));
             var optionsIds = optionsToQuestions.Select(o => o.IdOption);
+
+            // check if there are already saved answers
+            var answers = _context.Answers.Where(a => optionsIds.Contains(a.IdOptionToQuestion));
+            if (answers != null && answers.Any()) 
+            {
+                return false;
+            }
+
             var options = _context.Options.Where(o => optionsIds.Contains(o.Id));
 
             _context.OptionsToQuestions.RemoveRange(optionsToQuestions);
