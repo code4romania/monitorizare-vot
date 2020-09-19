@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -22,13 +21,11 @@ namespace VoteMonitor.Api.Form.Controllers
     {
         private readonly ApplicationCacheOptions _cacheOptions;
         private readonly IMediator _mediator;
-        private readonly IMapper _mapper;
-
-        public FormController(IMediator mediator, IOptions<ApplicationCacheOptions> cacheOptions, IMapper mapper)
+        
+        public FormController(IMediator mediator, IOptions<ApplicationCacheOptions> cacheOptions)
         {
             _cacheOptions = cacheOptions.Value;
             _mediator = mediator;
-            _mapper = mapper;
         }
 
         [HttpPost]
@@ -85,7 +82,7 @@ namespace VoteMonitor.Api.Form.Controllers
         [HttpDelete]
         [Authorize("NgoAdmin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteForm(int formId)
         {
             if (!ModelState.IsValid)
@@ -93,12 +90,11 @@ namespace VoteMonitor.Api.Form.Controllers
                 return BadRequest(ModelState);
             }
 
-            var command = _mapper.Map<DeleteFormCommand>(new DeleteFormModel { FormId = formId });
-            var formDeleted = await _mediator.Send(command);
+            var formDeleted = await _mediator.Send(new DeleteFormCommand { FormId = formId });
 
             if (!formDeleted)
             {
-                return NotFound(formId);
+                return BadRequest("The form could not be deleted. Make sure the form exists and it doesn't already have saved answers.");
             }
 
             return Ok();
