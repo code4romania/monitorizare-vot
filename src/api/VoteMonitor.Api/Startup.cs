@@ -30,6 +30,7 @@ namespace VoteMonitor.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson();
             services.ConfigureCustomOptions(Configuration);
             services.AddHashService(Configuration);
             services.AddFileService(Configuration);
