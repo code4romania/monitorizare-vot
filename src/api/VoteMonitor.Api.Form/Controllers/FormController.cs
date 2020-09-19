@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Collections.Generic;
@@ -20,7 +21,7 @@ namespace VoteMonitor.Api.Form.Controllers
     {
         private readonly ApplicationCacheOptions _cacheOptions;
         private readonly IMediator _mediator;
-
+        
         public FormController(IMediator mediator, IOptions<ApplicationCacheOptions> cacheOptions)
         {
             _cacheOptions = cacheOptions.Value;
@@ -76,6 +77,27 @@ namespace VoteMonitor.Api.Form.Controllers
             });
 
             return result;
+        }
+
+        [HttpDelete]
+        [Authorize("NgoAdmin")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DeleteForm(int formId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var formDeleted = await _mediator.Send(new DeleteFormCommand { FormId = formId });
+
+            if (!formDeleted)
+            {
+                return BadRequest("The form could not be deleted. Make sure the form exists and it doesn't already have saved answers.");
+            }
+
+            return Ok();
         }
     }
 }
