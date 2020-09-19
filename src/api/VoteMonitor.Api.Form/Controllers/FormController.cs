@@ -1,5 +1,7 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Collections.Generic;
@@ -20,11 +22,13 @@ namespace VoteMonitor.Api.Form.Controllers
     {
         private readonly ApplicationCacheOptions _cacheOptions;
         private readonly IMediator _mediator;
+        private readonly IMapper _mapper;
 
-        public FormController(IMediator mediator, IOptions<ApplicationCacheOptions> cacheOptions)
+        public FormController(IMediator mediator, IOptions<ApplicationCacheOptions> cacheOptions, IMapper mapper)
         {
             _cacheOptions = cacheOptions.Value;
             _mediator = mediator;
+            _mapper = mapper;
         }
 
         [HttpPost]
@@ -76,6 +80,28 @@ namespace VoteMonitor.Api.Form.Controllers
             });
 
             return result;
+        }
+
+        [HttpDelete]
+        [Authorize("NgoAdmin")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> DeleteForm(int formId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var command = _mapper.Map<DeleteFormCommand>(new DeleteFormModel { FormId = formId });
+            var formDeleted = await _mediator.Send(command);
+
+            if (!formDeleted)
+            {
+                return NotFound(formId);
+            }
+
+            return Ok();
         }
     }
 }
