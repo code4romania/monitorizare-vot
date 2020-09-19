@@ -15,9 +15,9 @@ namespace VoteMonitor.Api.Answer.Controllers
     public class AnswersController : Controller
     {
         private readonly IMediator _mediator;
-        private readonly IConfigurationRoot _configuration;
+        private readonly IConfiguration _configuration;
 
-        public AnswersController(IMediator mediator, IConfigurationRoot configuration)
+        public AnswersController(IMediator mediator, IConfiguration configuration)
         {
             _mediator = mediator;
             _configuration = configuration;
