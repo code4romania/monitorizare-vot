@@ -29,7 +29,7 @@ namespace VoteMonitor.Api.Location.Services
             {
                 var cacheKey = $"polling-station-countyCode-{pollingStationNumber}-{countyCode}";
 
-                await _cacheService.GetOrSaveDataInCacheAsync(cacheKey, async () =>
+                return await _cacheService.GetOrSaveDataInCacheAsync(cacheKey, async () =>
                  {
                      var countyId = _context.Counties.FirstOrDefault(c => c.Code == countyCode)?.Id;
                      if (countyId == null)
