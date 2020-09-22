@@ -87,6 +87,7 @@ namespace VoteMonitor.Api
             yield return typeof(Statistics.Controllers.StatisticsController).GetTypeInfo().Assembly;
 	        yield return typeof(PollingStation.Controllers.PollingStationV2Controller).GetTypeInfo().Assembly;
             yield return typeof(PollingStation.Controllers.PollingStationInfoController).GetTypeInfo().Assembly;
+            yield return typeof(Core.Handlers.UploadFileHandler).GetTypeInfo().Assembly;
 
         }
     }
