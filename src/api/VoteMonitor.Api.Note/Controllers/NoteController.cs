@@ -61,17 +61,22 @@ namespace VoteMonitor.Api.Note.Controllers
             // TODO[DH] use a pipeline instead of separate Send commands
             // daca nota este asociata sectiei
             var idSectie = await _mediator.Send(_mapper.Map<PollingStationQuery>(note));
+
             if (idSectie < 0)
             {
                 return this.ResultAsync(HttpStatusCode.NotFound);
             }
 
             var command = _mapper.Map<AddNoteCommand>(note);
-            var fileAddress = await _mediator.Send(new UploadFileCommand { File = note.File, UploadType = UploadType.Notes });
 
             command.IdObserver = int.Parse(User.Claims.First(c => c.Type == ClaimsHelper.ObserverIdProperty).Value);
-            command.AttachementPath = fileAddress;
             command.IdPollingStation = idSectie;
+
+            if (note.File != null) 
+            {
+                var fileAddress = await _mediator.Send(new UploadFileCommand { File = note.File, UploadType = UploadType.Notes });
+                command.AttachementPath = fileAddress;
+            }
 
             var result = await _mediator.Send(command);
 
@@ -80,7 +85,7 @@ namespace VoteMonitor.Api.Note.Controllers
                 return this.ResultAsync(HttpStatusCode.NotFound);
             }
 
-            return await Task.FromResult(new { FileAdress = fileAddress, note });
+            return await Task.FromResult(new { FileAddress = command.AttachementPath, note });
         }
     }
 }
