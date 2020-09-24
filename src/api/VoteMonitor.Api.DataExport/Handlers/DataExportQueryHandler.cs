@@ -76,15 +76,13 @@ namespace VoteMonitor.Api.DataExport.Handlers
 				ON n.IdQuestion = q.Id AND n.IdObserver = obs.Id AND n.IdPollingStation = a.IdPollingStation
 		WHERE
 			a.LastModified >= @from
-			AND a.IdObserver > @IdObserverLimit
-            
+            AND obs.IsTestObserver = 0
+
             ";
 
             var parameters = new List<SqlParameter>
             {
                 new SqlParameter("@from", request.From ?? new DateTime(2019, 11, 08, 6, 0, 0)),
-                //TODO remove limit for observer Id
-                new SqlParameter("@IdObserverLimit", 49),
 
             };
 
