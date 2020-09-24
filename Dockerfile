@@ -17,7 +17,11 @@ COPY /src/test/. .
 ENTRYPOINT ["dotnet", "test", "--logger:trx"]
 
 # Build runtime image
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-alpine
+RUN apk add --no-cache --repository https://alpine.global.ssl.fastly.net/alpine/edge/testing/ \
+        libgdiplus-dev \
+        fontconfig \
+        ttf-dejavu
 WORKDIR /
 COPY --from=build-env /app/api/VoteMonitor.Api/out/ .
 ENTRYPOINT ["dotnet", "VoteMonitor.Api.dll"]
