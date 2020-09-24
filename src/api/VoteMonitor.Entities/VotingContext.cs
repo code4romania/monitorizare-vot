@@ -112,6 +112,9 @@ namespace VoteMonitor.Entities
                     .IsRequired()
                     .HasMaxLength(200);
 
+                entity.Property(e => e.IsTestObserver)
+                    .HasDefaultValueSql("0");
+
                 entity.Property(e => e.Pin)
                     .IsRequired()
                     .HasMaxLength(100);
