@@ -48,7 +48,7 @@ namespace VoteMonitor.Api.Form.Queries
                         .Where(a => a.FormSection.Form.Id == message.FormId) // todo: FormCode might not be unique anymore - maybe we should query by FormId?
                         .ToListAsync();
 
-                    var sectiuni = r.Select(a => new { IdSectiune = a.IdSection, CodSectiune = a.FormSection.Code, Descriere = a.FormSection.Description }).Distinct();
+                    var sectiuni = r.Select(a => new { IdSectiune = a.IdSection, CodSectiune = a.FormSection.Code, Descriere = a.FormSection.Description }).OrderBy(sectiune => sectiune.CodSectiune).Distinct();
 
                     var result = sectiuni.Select(i => new FormSectionDTO
                     {
