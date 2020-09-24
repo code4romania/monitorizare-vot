@@ -20,6 +20,7 @@ namespace VoteMonitor.Entities
         public string Pin { get; set; }
         public string MobileDeviceId { get; set; }
         public DateTime? DeviceRegisterDate { get; set; }
+        public bool IsTestObserver { get; set; }
 
         public virtual ICollection<Note> Notes { get; set; }
         public virtual ICollection<Answer> Answers { get; set; }
