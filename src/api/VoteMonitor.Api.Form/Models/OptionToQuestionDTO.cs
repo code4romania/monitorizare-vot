@@ -5,5 +5,6 @@
         public int IdOption { get; set; }
         public string Text { get; set; }
         public bool IsFreeText { get; set; }
+        public bool Flagged { get; set; }
     }
 }

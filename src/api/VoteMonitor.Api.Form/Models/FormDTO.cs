@@ -33,6 +33,7 @@ namespace VoteMonitor.Api.Form.Models
                     c => c.MapFrom(src => src.OptionsToQuestions));
 
             CreateMap<OptionToQuestionDTO, OptionToQuestion>()
+                .ForMember(dest => dest.Flagged, c => c.MapFrom(src => src.Flagged))
                 .ForMember(dest => dest.Option, c => c.MapFrom(src =>
                     new Option
                     {
