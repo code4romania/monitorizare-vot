@@ -59,7 +59,7 @@ namespace VoteMonitor.Api.Answer.Handlers
                 {
                     IdObserver = x.Key.IdObserver,
                     IdPollingStation = x.Key.IdPollingStation,
-                    PollingStation = x.Key.CountyCode + " " + x.Key.PollingStationNumber,
+                    PollingStation = x.Key.CountyCode + " " + x.Key.PollingStationNumber.ToString(),
                     ObserverName = x.Key.ObserverName,
                     LastModified = x.Max(a => a.LastModified)
                 });
