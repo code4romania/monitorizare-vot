@@ -41,22 +41,24 @@ namespace VoteMonitor.Api.Form.Queries
             return await _cacheService.GetOrSaveDataInCacheAsync<IEnumerable<FormSectionDTO>>(cacheKey,
                 async () =>
                 {
-                    var r = await _context.Questions
+                    var questions = await _context.Questions
                         .Include(a => a.FormSection)
                         .Include(a => a.OptionsToQuestions)
                         .ThenInclude(a => a.Option)
                         .Where(a => a.FormSection.Form.Id == message.FormId) // todo: FormCode might not be unique anymore - maybe we should query by FormId?
                         .ToListAsync();
 
-                    var sectiuni = r.Select(a => new { IdSectiune = a.IdSection, CodSectiune = a.FormSection.Code, Descriere = a.FormSection.Description }).Distinct();
+                    var sections = questions.Select(q => new { q.IdSection, q.FormSection.Code, q.FormSection.Description })
+                                    .Distinct()
+                                    .OrderBy(x => x.IdSection);
 
-                    var result = sectiuni.Select(i => new FormSectionDTO
+                    var result = sections.Select(section => new FormSectionDTO
                     {
-                        UniqueId = form.Code + i.CodSectiune + i.IdSectiune,
-                        Code = i.CodSectiune,
-                        Description = i.Descriere,
-                        Questions = r.Where(a => a.IdSection == i.IdSectiune)
-                                     .OrderBy(intrebare => intrebare.Code)
+                        UniqueId = form.Code + section.Code + section.IdSection,
+                        Code = section.Code,
+                        Description = section.Description,
+                        Questions = questions.Where(a => a.IdSection == section.IdSection)
+                                     .OrderBy(question => question.Id)
                                      .Select(a => _mapper.Map<QuestionDTO>(a)).ToList()
                     }).ToList();
                     return result;
