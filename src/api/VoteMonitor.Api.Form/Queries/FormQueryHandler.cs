@@ -48,9 +48,9 @@ namespace VoteMonitor.Api.Form.Queries
                         .Where(a => a.FormSection.Form.Id == message.FormId) // todo: FormCode might not be unique anymore - maybe we should query by FormId?
                         .ToListAsync();
 
-                    var sections = questions.Select(q => new { q.IdSection, q.FormSection.Code, q.FormSection.Description })
+                    var sections = questions.Select(q => new { q.IdSection, q.FormSection.Code, q.FormSection.Description, q.FormSection.OrderNumber })
                                     .Distinct()
-                                    .OrderBy(x => x.IdSection);
+                                    .OrderBy(s => s.OrderNumber);
 
                     var result = sections.Select(section => new FormSectionDTO
                     {
@@ -58,15 +58,24 @@ namespace VoteMonitor.Api.Form.Queries
                         Code = section.Code,
                         Description = section.Description,
                         Questions = questions.Where(a => a.IdSection == section.IdSection)
-                                     .OrderBy(question => question.Id)
+                                     .OrderBy(question => question.OrderNumber)
+                                     .Select(q=>OrderOptions(q))
                                      .Select(a => _mapper.Map<QuestionDTO>(a)).ToList()
                     }).ToList();
+
+ 
                     return result;
                 },
                 new DistributedCacheEntryOptions
                 {
                     AbsoluteExpirationRelativeToNow = new TimeSpan(message.CacheHours, message.CacheMinutes, message.CacheMinutes)
                 });
+        }
+
+        private static Question OrderOptions(Question q)
+        {
+            q.OptionsToQuestions = q.OptionsToQuestions.OrderBy(o => o.Option.OrderNumber).ToList();
+            return q;
         }
 
         public async Task<bool> Handle(DeleteFormCommand request, CancellationToken cancellationToken)
