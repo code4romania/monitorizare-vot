@@ -29,7 +29,7 @@ namespace VoteMonitor.Api.Form.Controllers
         }
 
         [HttpPost]
-        [Authorize("NgoAdmin")]
+        [Authorize("Organizer")]
         public async Task<int> AddForm([FromBody]FormDTO newForm)
         {
             FormDTO result = await _mediator.Send(new AddFormQuery { Form = newForm });
@@ -80,7 +80,7 @@ namespace VoteMonitor.Api.Form.Controllers
         }
 
         [HttpDelete]
-        [Authorize("NgoAdmin")]
+        [Authorize("Organizer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteForm(int formId)
