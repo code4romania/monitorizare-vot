@@ -22,6 +22,7 @@ namespace VoteMonitor.Entities
         [Required, MaxLength(1000)]
         public string Text { get; set; }
         public string Hint { get; set; }
+        public int OrderNumber { get; set; }
 
         public virtual ICollection<Note> Notes { get; set; }
         public virtual ICollection<OptionToQuestion> OptionsToQuestions { get; set; }
