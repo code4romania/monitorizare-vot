@@ -246,13 +246,17 @@ ModelManifest.xml
 *.pubxml
 *.ps1
 *.psm1
-/private-api/app/src/VotingIrregularities.Api/appsettings.development.json
-/private-api/app/src/VotingIrregularities.Api/appsettings.localdevelopment.json
-/private-api/app/src/VotingIrregularities.Domain/appsettings.target.json
-/private-api/app/src/VotingIrregularities.Domain/appsettings.development.json
-/private-api/app/src/modules/WebAPIContrib.Core/
-/private-api/app/src/VotingIrregularities.Domain/appsettings.localdevelopment.json
-/private-api/app/test/VotingIrregularities.Tests/appsettings.localDevelopment.json
-/private-api/app/test/VotingIrregularities.Tests/conturi.txt
-/private-api/app/test/VotingIrregularities.Tests/conturi-cu-parole.txt
+
+# Specifics
+
+**/appsettings.*.json
+**/conturi*.txt
+/src/api/modules/WebAPIContrib.Core/
+
 .vscode
+.idea
+/src/api/VotingIrregularities.Api/etc
+/src/api/VotingIrregularities.Api/api-docs
+**/api-docs
+
+.DS_Store
