@@ -1,0 +1,7 @@
+<Project DefaultTargets="Build"
+    xmlns="http://schemas.microsoft.com/developer/msbuild/2003" >
+    <PropertyGroup>
+        <NoWarn>1701;1702;1591;1573</NoWarn>
+        <DocumentationFile>$(SolutionDir)\api-docs\$(MSBuildProjectName).xml</DocumentationFile>
+    </PropertyGroup>
+</Project>

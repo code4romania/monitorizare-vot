@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using MediatR;
-using VoteMonitor.Api.Core;
-using VoteMonitor.Api.Observer.Models;
+﻿using VoteMonitor.Api.Core;
 
 namespace VoteMonitor.Api.Observer.Queries
 {

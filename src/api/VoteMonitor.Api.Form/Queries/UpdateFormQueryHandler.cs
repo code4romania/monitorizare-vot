@@ -1,13 +1,15 @@
-﻿using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using MediatR;
+
+using System.Threading;
+using System.Threading.Tasks;
 using VoteMonitor.Api.Form.Models;
 using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Form.Queries
 {
     public class UpdateFormQueryHandler :
-        AsyncRequestHandler<UpdateFormQuery, FormDTO>
+        IRequestHandler<UpdateFormQuery, FormDTO>
     {
         private readonly VoteMonitorContext _context;
         private readonly IMapper _mapper;
@@ -18,7 +20,7 @@ namespace VoteMonitor.Api.Form.Queries
             _mapper = mapper;
         }
 
-        protected override async Task<FormDTO> HandleCore(UpdateFormQuery message)
+        public async Task<FormDTO> Handle(UpdateFormQuery message, CancellationToken cancellationToken)
         {
             var form = _context.Forms.Find(message.Id);
             var formUpdater = new FormDbMapper(_context, _mapper);

@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Serilog.Context;
+using System;
 using System.Diagnostics;
-using Serilog.Context;
 
 namespace VotingIrregularities.Api.Extensions
 {
@@ -16,7 +16,7 @@ namespace VotingIrregularities.Api.Extensions
             private readonly string _context;
             public Stopwatch Stopwatch { get; }
 
-            public Times (string context)
+            public Times(string context)
             {
                 _context = context;
                 Stopwatch = Stopwatch.StartNew();

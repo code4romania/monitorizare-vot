@@ -1,8 +1,9 @@
-﻿using System.Linq;
-using AutoMapper;
+﻿using AutoMapper;
+using System.Linq;
 using VoteMonitor.Entities;
 
-namespace VoteMonitor.Api.Answer.Models {
+namespace VoteMonitor.Api.Answer.Models
+{
     public class FilledInAnswerDTO
     {
         public int IdOption { get; set; }

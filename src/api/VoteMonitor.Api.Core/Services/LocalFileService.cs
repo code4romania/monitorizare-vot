@@ -2,11 +2,9 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using VoteMonitor.Api.Core;
-using VoteMonitor.Api.Core.Services;
-using VotingIrregularities.Api.Options;
+using VoteMonitor.Api.Core.Options;
 
-namespace VoteMonitor.Api.Note.Services
+namespace VoteMonitor.Api.Core.Services
 {
     /// <summary>
     /// This will be used just for development purposes

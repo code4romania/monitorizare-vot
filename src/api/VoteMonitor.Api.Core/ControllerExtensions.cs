@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace VoteMonitor.Api.Core
 {
@@ -13,8 +13,8 @@ namespace VoteMonitor.Api.Core
         public static readonly int UPPER_OBS_VALUE = 300;
         public static readonly string RESET_ERROR_MESSAGE = "Internal server error, please verify that provided id is correct ";
         public static readonly string DEVICE_RESET = "device";
-        public static readonly string PASSWORD_RESET = "password";
-        
+        public static readonly string PASSWORD_RESET = "reset-password";
+
         public static int GetIdOngOrDefault(this Controller controller, int defaultIdOng)
         {
             return int.TryParse(controller.User.Claims.FirstOrDefault(a => a.Type == ClaimsHelper.IdNgo)?.Value, out var result)
@@ -42,7 +42,9 @@ namespace VoteMonitor.Api.Core
             controller.Response.StatusCode = (int)statusCode;
 
             if (modelState == null)
+            {
                 return Task.FromResult(new StatusCodeResult((int)statusCode));
+            }
 
             return Task.FromResult(controller.BadRequest(modelState));
         }

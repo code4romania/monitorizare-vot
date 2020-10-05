@@ -1,6 +1,5 @@
-﻿using System;
-using AutoMapper;
-using MonitorizareVot.Api.Location.Models;
+﻿using AutoMapper;
+using System;
 using VoteMonitor.Api.Location.Commands;
 using VoteMonitor.Api.Location.Models;
 using VoteMonitor.Entities;
@@ -15,10 +14,18 @@ namespace VoteMonitor.Api.Location.MappingProfile
             CreateMap<PollingStationInfo, RegisterPollingStationCommand>();
 
             CreateMap<RegisterPollingStationCommand, PollingStationInfo>()
-                .ForMember(dest => dest.LastModified, c => c.MapFrom(src => DateTime.UtcNow));
+                .ForMember(dest => dest.LastModified, c => c.MapFrom(src => DateTime.UtcNow))
+                .ForMember(dest => dest.IsPollingStationPresidentFemale, c => c.MapFrom(src => src.IsPollingStationPresidentFemale))
+                .ForMember(dest => dest.ObserverArrivalTime, c => c.MapFrom(src => src.ObserverArrivalTime))
+                .ForMember(dest => dest.ObserverLeaveTime, c => c.MapFrom(src => src.ObserverLeaveTime))
+                .ForMember(dest => dest.UrbanArea, c => c.MapFrom(src => src.UrbanArea))
+                .ForAllOtherMembers(x => x.Ignore());
 
             CreateMap<UpdatePollingSectionCommand, PollingStationInfo>()
-                .ForMember(dest => dest.LastModified, c => c.MapFrom(src => DateTime.UtcNow));
+                .ForMember(dest => dest.LastModified, c => c.MapFrom(src => DateTime.UtcNow))
+                .ForMember(dest => dest.ObserverLeaveTime, c => c.MapFrom(src => src.ObserverLeaveTime))
+                .ForAllOtherMembers(x => x.Ignore());
+
 
             CreateMap<AddPollingStationInfo, RegisterPollingStationCommand>()
                 .ForMember(dest => dest.CountyCode, c => c.MapFrom(src => src.CountyCode))

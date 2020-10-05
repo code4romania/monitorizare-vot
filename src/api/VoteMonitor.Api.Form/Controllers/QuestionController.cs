@@ -1,12 +1,8 @@
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MediatR;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using VoteMonitor.Api.Form.Models;
-using VoteMonitor.Api.Form.Queries;
-using VoteMonitor.Api.Models;
 
 namespace VoteMonitor.Api.Form.Controllers
 {

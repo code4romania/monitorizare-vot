@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace VoteMonitor.Api.Core.Services
 {
     public interface IFirebaseService
     {
-        int SendAsync(String from, String title, String message, IList<string> recipients);
+        int SendAsync(string from, string title, string message, List<string> recipients);
     }
 }

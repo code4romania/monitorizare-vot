@@ -1,35 +1,47 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using VoteMonitor.Api.Core.Services;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using VoteMonitor.Api.Form.Models;
 using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Form.Queries
 {
-    public class FormVersionQueryHandler : AsyncRequestHandler<FormVersionQuery, List<Entities.Form>>
+
+    public class FormVersionQueryHandler : IRequestHandler<FormVersionQuery, List<FormDetailsModel>>
     {
-
         private readonly VoteMonitorContext _context;
-        private readonly IMapper _mapper;
-        private readonly ICacheService _cacheService;
 
-        public FormVersionQueryHandler(VoteMonitorContext context, IMapper mapper, ICacheService cacheService)
+        public FormVersionQueryHandler(VoteMonitorContext context)
         {
             _context = context;
-            _mapper = mapper;
-            _cacheService = cacheService;
         }
-      
-        protected override async Task<List<Entities.Form>> HandleCore(FormVersionQuery request)
-        {
+
+		public async Task<List<FormDetailsModel>> Handle(FormVersionQuery request, CancellationToken cancellationToken)
+		{
+			var bringAllForms = request.Diaspora == null || request.Diaspora == true;
+
             var result = await _context.Forms
                 .AsNoTracking()
+                .Where(x => bringAllForms || x.Diaspora == false)
+                .Where(x => x.Draft == false)
                 .ToListAsync();
 
-            return result;
-        }
+			var sortedForms = result
+					.OrderBy(x=>x.Order)
+                    .Select(x=>new FormDetailsModel() { 
+                       Id = x.Id,
+                       Description = x.Description,
+                       Code = x.Code,
+                       CurrentVersion = x.CurrentVersion,
+                       Diaspora = x.Diaspora,
+					   Order = x.Order
+                    })
+                    .ToList();
+
+			return sortedForms;
+		}
     }
 }
