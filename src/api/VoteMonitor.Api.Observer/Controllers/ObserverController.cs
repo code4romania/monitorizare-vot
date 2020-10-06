@@ -68,6 +68,7 @@ namespace VoteMonitor.Api.Observer.Controllers
         }
 
         [HttpPost]
+        [Authorize("Organizer")]
         [Route("import")]
         [Produces(type: typeof(int))]
         public async Task<int> Import(IFormFile file, [FromForm] int ongId)
@@ -99,6 +100,7 @@ namespace VoteMonitor.Api.Observer.Controllers
         /// <param name="model"></param>
         /// <returns>Boolean indicating whether or not the observer was added successfully.</returns>
         [HttpPost]
+        [Authorize("Organizer")]
         [Produces(type: typeof(int))]
         public async Task<IActionResult> NewObserver(NewObserverModel model)
         {
@@ -120,6 +122,7 @@ namespace VoteMonitor.Api.Observer.Controllers
         /// <param name="model"></param>
         /// <returns>Boolean indicating whether or not the observer was changed successfully</returns>
         [HttpPut]
+        [Authorize("Organizer")]
         [Produces(type: typeof(bool))]
         public async Task<IActionResult> EditObserver([FromBody]EditObserverModel model)
         {
@@ -139,6 +142,7 @@ namespace VoteMonitor.Api.Observer.Controllers
         /// <param name="id">The Observer id</param>
         /// <returns>Boolean indicating whether or not the observer was deleted successfully</returns>
         [HttpDelete]
+        [Authorize("Organizer")]
         [Produces(type: typeof(bool))]
         public async Task<IActionResult> DeleteObserver(int id)
         {
@@ -154,7 +158,7 @@ namespace VoteMonitor.Api.Observer.Controllers
 
         [HttpPost]
         [Route("reset")]
-        [Authorize("NgoAdmin")]
+        [Authorize("Organizer")]
         public async Task<IActionResult> Reset([FromBody]ResetModel model)
         {
             if (string.IsNullOrEmpty(model.Action) || string.IsNullOrEmpty(model.PhoneNumber))
@@ -201,6 +205,7 @@ namespace VoteMonitor.Api.Observer.Controllers
         }
 
         [HttpPost]
+        [Authorize("Organizer")]
         [Route("generate")]
         [Produces(type: typeof(List<GeneratedObserver>))]
         public async Task<IActionResult> GenerateObservers([FromForm] int count)

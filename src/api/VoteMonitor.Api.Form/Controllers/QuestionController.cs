@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -26,6 +27,7 @@ namespace VoteMonitor.Api.Form.Controllers
             return null;
         }
         [HttpPost]
+        [Authorize("Organizer")]
         public Task<int> NewQuestion()
         {
             return null;

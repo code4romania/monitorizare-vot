@@ -22,7 +22,7 @@ namespace VoteMonitor.Api.DataExport.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("all")]
-        [Authorize("NgoAdmin")]
+        [Authorize("Organizer")]
         public async Task<IActionResult> GetMyData(int? idNgo, int? idObserver, int? pollingStationNumber, string county, DateTime? from, DateTime? to)
         {
             var filter = new GetDataForExport
