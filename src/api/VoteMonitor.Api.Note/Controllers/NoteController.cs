@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,6 +51,7 @@ namespace VoteMonitor.Api.Note.Controllers
         /// <param name="note"></param>
         /// <returns></returns>
         [HttpPost("upload")]
+        [Authorize("Observer")]
         public async Task<dynamic> Upload([FromForm]UploadNoteModel note)
         {
             if (!ModelState.IsValid)

@@ -1,5 +1,6 @@
 using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
@@ -25,6 +26,7 @@ namespace VoteMonitor.Api.Notification.Controllers
 
         [HttpPost]
         [Route("register")]
+        [Authorize("Observer")]
         public async Task<dynamic> RegisterTokenAsync(NotificationRegistrationDataModel tokenRegistrationModel)
         {
             if (!tokenRegistrationModel.ObserverId.HasValue)
@@ -40,6 +42,7 @@ namespace VoteMonitor.Api.Notification.Controllers
         }
 
         [HttpPost]
+        [Authorize("Organizer")]
         [Route("send")]
         public async Task<dynamic> Send([FromBody]NotificationNewModel newNotificationModel)
         {
@@ -48,6 +51,7 @@ namespace VoteMonitor.Api.Notification.Controllers
             return Task.FromResult(result);
         }
         [HttpPost]
+        [Authorize("Organizer")]
         [Route("send/all")]
         public async Task<dynamic> SendToAll([FromBody]NotificationForAllNewModel model)
         {

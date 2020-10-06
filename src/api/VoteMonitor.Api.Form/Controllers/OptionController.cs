@@ -52,7 +52,7 @@ namespace VoteMonitor.Api.Form.Controllers
         }
 
         [HttpPost("create")]
-        [Authorize("NgoAdmin")]
+        [Authorize("Organizer")]
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
@@ -74,7 +74,7 @@ namespace VoteMonitor.Api.Form.Controllers
         }
 
         [HttpPut("update")]
-        [Authorize("NgoAdmin")]
+        [Authorize("Organizer")]
         [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
