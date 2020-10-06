@@ -17,6 +17,7 @@ namespace VoteMonitor.Api.Form.Models
         public QuestionType QuestionType { get; set; }
         public string Text { get; set; }
         public string Hint { get; set; }
+        public int OrderNumber { get; set; }
 
         public IEnumerable<OptionToQuestionDTO> OptionsToQuestions { get; set; }
     }
