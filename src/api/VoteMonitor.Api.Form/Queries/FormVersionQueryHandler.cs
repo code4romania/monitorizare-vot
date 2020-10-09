@@ -19,14 +19,15 @@ namespace VoteMonitor.Api.Form.Queries
             _context = context;
         }
 
-		public async Task<List<FormDetailsModel>> Handle(FormVersionQuery request, CancellationToken cancellationToken)
-		{
-			var bringAllForms = request.Diaspora == null || request.Diaspora == true;
+        public async Task<List<FormDetailsModel>> Handle(FormVersionQuery request, CancellationToken cancellationToken)
+        {
+            var bringAllForms = request.Diaspora == null || request.Diaspora == true;
+            var returnDraft = request.Draft == false || request.Draft == null ? false : true;
 
             var result = await _context.Forms
                 .AsNoTracking()
                 .Where(x => bringAllForms || x.Diaspora == false)
-                .Where(x => x.Draft == false)
+                .Where(x => x.Draft == returnDraft)
                 .ToListAsync();
 
 			var sortedForms = result
@@ -37,7 +38,8 @@ namespace VoteMonitor.Api.Form.Queries
                        Code = x.Code,
                        CurrentVersion = x.CurrentVersion,
                        Diaspora = x.Diaspora,
-					   Order = x.Order
+					   Order = x.Order,
+                       Draft = x.Draft
                     })
                     .ToList();
 
