@@ -26,6 +26,11 @@ namespace VoteMonitor.Api.Core
         {
             return int.Parse(controller.User.Claims.First(c => c.Type == ClaimsHelper.ObserverIdProperty).Value);
         }
+
+        public static int GetNgoAdminId(this Controller controller)
+        {
+            return int.Parse(controller.User.Claims.First(c => c.Type == ClaimsHelper.NgoAdminIdProperty).Value);
+        }
         public static bool GetOrganizatorOrDefault(this Controller controller, bool defaultOrganizator)
         {
             return bool.TryParse(controller.User.Claims.FirstOrDefault(a => a.Type == ClaimsHelper.Organizer)?.Value, out var result)
