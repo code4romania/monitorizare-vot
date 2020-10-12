@@ -28,5 +28,8 @@ namespace VoteMonitor.Api.Form.Models
 
         [JsonProperty(PropertyName = "order")]
         public int Order { get; set; }
+
+        [JsonProperty(PropertyName = "draft")]
+        public bool Draft { get; set; }
     }
 }
