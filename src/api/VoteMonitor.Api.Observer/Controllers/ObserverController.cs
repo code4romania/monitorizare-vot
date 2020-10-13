@@ -45,6 +45,7 @@ namespace VoteMonitor.Api.Observer.Controllers
         }
 
         [HttpGet]
+        [Authorize("NgoAdmin")]
         [Produces(type: typeof(List<ObserverModel>))]
         [Route("active")]
         public async Task<List<ObserverModel>> GetActiveObservers(ActiveObserverFilter query)
