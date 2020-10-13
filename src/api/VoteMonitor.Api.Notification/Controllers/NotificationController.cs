@@ -46,7 +46,9 @@ namespace VoteMonitor.Api.Notification.Controllers
         [Route("send")]
         public async Task<dynamic> Send([FromBody]NotificationNewModel newNotificationModel)
         {
-            var result = await _mediator.Send(_mapper.Map<NewNotificationCommand>(newNotificationModel));
+            NewNotificationCommand command = _mapper.Map<NewNotificationCommand>(newNotificationModel);
+            command.SenderAdminId = this.GetNgoAdminId();
+            var result = await _mediator.Send(command);
 
             return Task.FromResult(result);
         }
@@ -55,7 +57,7 @@ namespace VoteMonitor.Api.Notification.Controllers
         [Route("send/all")]
         public async Task<dynamic> SendToAll([FromBody]NotificationForAllNewModel model)
         {
-            var command = new SendNotificationToAll(model.Channel, model.From, model.Title, model.Message);
+            var command = new SendNotificationToAll(this.GetNgoAdminId(), model.Channel, model.From, model.Title, model.Message);
 
             var result = await _mediator.Send(command);
 

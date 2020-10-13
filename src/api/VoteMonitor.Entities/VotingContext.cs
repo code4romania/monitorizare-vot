@@ -392,6 +392,14 @@ namespace VoteMonitor.Entities
                     .WithMany(p => p.Notifications)
                     .HasForeignKey(d => d.ObserverId)
                     .OnDelete(DeleteBehavior.Restrict);
+            });           
+            
+            modelBuilder.Entity<Notification>(entity =>
+            {
+                entity.HasOne(d => d.SenderAdmin)
+                    .WithMany(p => p.NotificationsSent)
+                    .HasForeignKey(d => d.SenderAdminId)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<ExportModel>(entity => { entity.HasKey(e => e.Id); });
