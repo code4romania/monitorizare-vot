@@ -57,18 +57,15 @@ namespace VoteMonitor.Api.PollingStation.Handlers
 
         private async Task DeleteAnswersData(CancellationToken cancellationToken)
         {
-            await _context.Database.ExecuteSqlRawAsync($"DELETE FROM {nameof(_context.Answers)}"
-                                        , cancellationToken);
+            await DeleteDataFromTable(nameof(_context.Answers), cancellationToken);
         }
         private async Task DeleteNotes(CancellationToken cancellationToken)
         {
-            await _context.Database.ExecuteSqlRawAsync($"DELETE FROM {nameof(_context.Notes)}"
-                                        , cancellationToken);
+            await DeleteDataFromTable(nameof(_context.Notes), cancellationToken);
         }
         private async Task DeletePollingStationsInfo(CancellationToken cancellationToken)
         {
-            await _context.Database.ExecuteSqlRawAsync($"DELETE FROM {nameof(_context.PollingStationInfos)}"
-                                        , cancellationToken);
+            await DeleteDataFromTable(nameof(_context.PollingStationInfos), cancellationToken);
         }
         private async Task ResetCountiesPollingStationCounter(CancellationToken cancellationToken)
         {
@@ -77,10 +74,10 @@ namespace VoteMonitor.Api.PollingStation.Handlers
         }
         private async Task DeletePollingStations(CancellationToken cancellationToken)
         {
-            await RemoveDataFromTable(nameof(_context.PollingStations), cancellationToken);
+            await DeleteDataFromTable(nameof(_context.PollingStations), cancellationToken);
         }
 
-        private async Task RemoveDataFromTable(string tableName, CancellationToken cancellationToken)
+        private async Task DeleteDataFromTable(string tableName, CancellationToken cancellationToken)
         {
             //if there are any performance issues, DELETE can be changed to TRUNCATE - but then we need to tackle a way to 
             //bypass foreign key relationship while removing data
