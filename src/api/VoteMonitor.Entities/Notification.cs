@@ -14,6 +14,8 @@ namespace VoteMonitor.Entities
         public string Channel { get; set; }
         public string Body { get; set; }
         public DateTime InsertedAt { get; set; }
+        public int SenderAdminId { get; set; }
+        public NgoAdmin SenderAdmin { get; set; }
         public virtual ICollection<NotificationRecipient> NotificationRecipients { get; set; }
     }
 
