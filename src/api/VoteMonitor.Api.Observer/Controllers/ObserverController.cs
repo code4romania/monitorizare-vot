@@ -157,6 +157,27 @@ namespace VoteMonitor.Api.Observer.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// Removes mobile device Id associated with Observer of given Id.
+        /// </summary>
+        /// <param name="id">The Observer id</param>
+        /// <returns>Boolean indicating whether or not the mobile device Id was removed successfully</returns>
+        [HttpPost]
+        [Route("removeDeviceId")]
+        [Authorize("NgoAdmin")]
+        [Produces(type: typeof(bool))]
+        public async Task<IActionResult> RemoveObserverDeviceId(int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _mediator.Send(_mapper.Map<RemoveDeviceIdCommand>(new RemoveDeviceIdModel { IdObserver = id }));
+
+            return Ok(result);
+        }
+
         [HttpPost]
         [Route("reset")]
         [Authorize("Organizer")]
