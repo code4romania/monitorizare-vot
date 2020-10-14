@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using FluentValidation;
+﻿using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
 using Serilog.Context;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace VotingIrregularities.Api.Extensions
 {
@@ -29,7 +29,7 @@ namespace VotingIrregularities.Api.Extensions
             _cache = cache;
         }
 
-        protected override TResponse HandleCore(TRequest message)
+        protected override TResponse Handle(TRequest message)
         {
             using (LogContext.PushProperty("MediatRRequestType", typeof(TRequest).FullName))
             using (Metrics.Time("MediatRRequest"))
@@ -41,9 +41,11 @@ namespace VotingIrregularities.Api.Extensions
                 .ToList();
 
                 if (failures.Any())
+                {
                     throw new ValidationException(string.Join(", ", failures));
+                }
 
-                return this.HandleCore(message);
+                return this.Handle(message);
 
             }
         }
@@ -58,7 +60,7 @@ namespace VotingIrregularities.Api.Extensions
     {
         void Evaluate<TRequest>(TRequest request) where TRequest : class;
     }
-    
+
 
     public interface IMessageCache
     {

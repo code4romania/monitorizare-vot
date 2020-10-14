@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Microsoft.Extensions.Options;
+using System;
 using System.Security.Cryptography;
 using System.Text;
-using Microsoft.Extensions.Options;
 using VoteMonitor.Api.Core.Options;
 
 namespace VoteMonitor.Api.Core.Services

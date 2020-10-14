@@ -1,17 +1,17 @@
-﻿using System.Threading.Tasks;
-using System;
-using System.Collections.Generic;
+﻿using AutoMapper;
 using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using VoteMonitor.Api.Core;
-using AutoMapper;
-using VoteMonitor.Api.Observer.Models;
-using VoteMonitor.Api.Observer.Commands;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using VoteMonitor.Api.Observer.Queries;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using VoteMonitor.Api.Core;
 using VoteMonitor.Api.Core.Commands;
 using VoteMonitor.Api.Core.Options;
+using VoteMonitor.Api.Observer.Commands;
+using VoteMonitor.Api.Observer.Models;
+using VoteMonitor.Api.Observer.Queries;
 
 namespace VoteMonitor.Api.Observer.Controllers
 {
@@ -32,23 +32,28 @@ namespace VoteMonitor.Api.Observer.Controllers
         }
 
         [HttpGet]
-        [Produces(type: typeof(List<ObserverModel>))]
+        [Produces(type: typeof(ApiListResponse<ObserverModel>))]
         public async Task<ApiListResponse<ObserverModel>> GetObservers(ObserverListQuery query)
         {
             var command = _mapper.Map<ObserverListCommand>(query);
-            command.IdNgo = NgoId;
+
+            var organizer = this.GetOrganizatorOrDefault(false);
+            command.IdNgo = organizer ? -1 : NgoId;
 
             var result = await _mediator.Send(command);
             return result;
         }
 
         [HttpGet]
+        [Authorize("NgoAdmin")]
         [Produces(type: typeof(List<ObserverModel>))]
         [Route("active")]
         public async Task<List<ObserverModel>> GetActiveObservers(ActiveObserverFilter query)
         {
             var command = _mapper.Map<ActiveObserversQuery>(query);
-            command.IdNgo = NgoId;
+
+            var organizer = this.GetOrganizatorOrDefault(false);
+            command.IdNgo = organizer ? -1 : NgoId;
 
             var result = await _mediator.Send(command);
             return result;
@@ -64,11 +69,15 @@ namespace VoteMonitor.Api.Observer.Controllers
         }
 
         [HttpPost]
+        [Authorize("Organizer")]
         [Route("import")]
+        [Produces(type: typeof(int))]
         public async Task<int> Import(IFormFile file, [FromForm] int ongId)
         {
             if (ongId <= 0)
+            {
                 ongId = NgoId;
+            }
 
             await _mediator.Send(
                 new UploadFileCommand
@@ -92,11 +101,14 @@ namespace VoteMonitor.Api.Observer.Controllers
         /// <param name="model"></param>
         /// <returns>Boolean indicating whether or not the observer was added successfully.</returns>
         [HttpPost]
-        [Produces(type: typeof(bool))]
+        [Authorize("Organizer")]
+        [Produces(type: typeof(int))]
         public async Task<IActionResult> NewObserver(NewObserverModel model)
         {
             if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
+            }
 
             var newObsCommand = _mapper.Map<NewObserverCommand>(model);
             newObsCommand.IdNgo = NgoId;
@@ -111,11 +123,14 @@ namespace VoteMonitor.Api.Observer.Controllers
         /// <param name="model"></param>
         /// <returns>Boolean indicating whether or not the observer was changed successfully</returns>
         [HttpPut]
+        [Authorize("Organizer")]
         [Produces(type: typeof(bool))]
         public async Task<IActionResult> EditObserver([FromBody]EditObserverModel model)
         {
             if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
+            }
 
             var id = await _mediator.Send(_mapper.Map<EditObserverCommand>(model));
 
@@ -128,59 +143,85 @@ namespace VoteMonitor.Api.Observer.Controllers
         /// <param name="id">The Observer id</param>
         /// <returns>Boolean indicating whether or not the observer was deleted successfully</returns>
         [HttpDelete]
+        [Authorize("Organizer")]
         [Produces(type: typeof(bool))]
         public async Task<IActionResult> DeleteObserver(int id)
         {
             if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
+            }
 
             var result = await _mediator.Send(_mapper.Map<DeleteObserverCommand>(new DeleteObserverModel { IdObserver = id }));
 
             return Ok(result);
         }
 
-
         [HttpPost]
         [Route("reset")]
-        public async Task<IAsyncResult> Reset([FromForm] string action, [FromForm] string phoneNumber)
+        [Authorize("Organizer")]
+        public async Task<IActionResult> Reset([FromBody]ResetModel model)
         {
-            if (string.IsNullOrEmpty(action) || string.IsNullOrEmpty(phoneNumber))
-                return Task.FromResult(BadRequest());
-
-            if (string.Equals(action, ControllerExtensions.DEVICE_RESET))
+            if (string.IsNullOrEmpty(model.Action) || string.IsNullOrEmpty(model.PhoneNumber))
             {
-                var result = await _mediator.Send(new ResetDeviceCommand(NgoId, phoneNumber));
+                return BadRequest();
+            }
+
+            if (string.Equals(model.Action, ControllerExtensions.DEVICE_RESET))
+            {
+                var result = await _mediator.Send(new ResetDeviceCommand
+                {
+                    IdNgo = NgoId,
+                    PhoneNumber = model.PhoneNumber,
+                    Organizer = this.GetOrganizatorOrDefault(false)
+                });
                 if (result == -1)
-                    return Task.FromResult(NotFound(ControllerExtensions.RESET_ERROR_MESSAGE + phoneNumber));
+                {
+                    return NotFound(ControllerExtensions.RESET_ERROR_MESSAGE + model.PhoneNumber);
+                }
                 else
-                    return Task.FromResult(Ok(result));
+                {
+                    return Ok(result);
+                }
             }
 
-            if (string.Equals(action, ControllerExtensions.PASSWORD_RESET))
+            if (string.Equals(model.Action, ControllerExtensions.PASSWORD_RESET))
             {
-                var result = await _mediator.Send(new ResetPasswordCommand(NgoId, phoneNumber));
-                if (string.IsNullOrEmpty(result))
-                    return Task.FromResult(NotFound(ControllerExtensions.RESET_ERROR_MESSAGE + phoneNumber));
-                else
-                    return Task.FromResult(Ok(result));
+                var result = await _mediator.Send(new ResetPasswordCommand
+                {
+                    IdNgo = NgoId,
+                    PhoneNumber = model.PhoneNumber,
+                    Pin = model.Pin,
+                    Organizer = this.GetOrganizatorOrDefault(false)
+                });
+                if (result == false)
+                {
+                    return NotFound(ControllerExtensions.RESET_ERROR_MESSAGE + model.PhoneNumber);
+                }
+
+                return Ok();
             }
 
-            return Task.FromResult(UnprocessableEntity());
+            return UnprocessableEntity();
         }
 
         [HttpPost]
+        [Authorize("Organizer")]
         [Route("generate")]
-        public async Task<IAsyncResult> GenerateObservers([FromForm] int count)
+        [Produces(type: typeof(List<GeneratedObserver>))]
+        public async Task<IActionResult> GenerateObservers([FromForm] int count)
         {
             if (!ControllerExtensions.ValidateGenerateObserversNumber(count))
-                return Task.FromResult(new BadRequestObjectResult("Incorrect parameter supplied, please check that paramter is between boundaries: "
-                    + ControllerExtensions.LOWER_OBS_VALUE + " - " + ControllerExtensions.UPPER_OBS_VALUE));
+            {
+                return BadRequest("Incorrect parameter supplied, please check that paramter is between boundaries: "
+                    + ControllerExtensions.LOWER_OBS_VALUE + " - " + ControllerExtensions.UPPER_OBS_VALUE);
+            }
 
             var command = new ObserverGenerateCommand(count, NgoId);
 
             var result = await _mediator.Send(command);
 
-            return Task.FromResult(Ok(result));
+            return Ok(result);
         }
     }
 }

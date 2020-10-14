@@ -1,20 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <NoWarn>1701;1702;1591</NoWarn>
-    <DocumentationFile>$(SolutionDir)\api\VotingIrregularities.Api\api-docs\VoteMonitor.Api.Location.xml</DocumentationFile>
-  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="7.0.1" />
-    <PackageReference Include="EFCore.BulkExtensions" Version="2.6.3" />
-    <PackageReference Include="MediatR" Version="4.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="EPPlus" Version="4.5.3.2" />
+    <PackageReference Include="AutoMapper" Version="9.0.0" />
+    <PackageReference Include="EFCore.BulkExtensions" Version="3.1.0" />
+    <PackageReference Include="MediatR" Version="7.0.0" />
+    <PackageReference Include="EPPlus" Version="4.5.3.3" />
   </ItemGroup>
 
   <ItemGroup>

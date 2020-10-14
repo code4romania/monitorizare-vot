@@ -1,11 +1,11 @@
-﻿using System;
-using System.IO;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Auth;
 using Microsoft.WindowsAzure.Storage.Blob;
-using VotingIrregularities.Api.Options;
+using System;
+using System.IO;
+using System.Threading.Tasks;
+using VoteMonitor.Api.Core.Options;
 
 namespace VoteMonitor.Api.Core.Services
 {

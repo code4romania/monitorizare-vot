@@ -1,15 +1,15 @@
-﻿using System;
+﻿using AutoMapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using AutoMapper;
 using System.Linq;
 using System.Threading;
-using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 using VoteMonitor.Api.Note.Commands;
-using VoteMonitor.Entities;
 using VoteMonitor.Api.Note.Models;
 using VoteMonitor.Api.Note.Queries;
+using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Note.Handlers
 {

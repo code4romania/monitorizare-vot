@@ -32,7 +32,11 @@ namespace VotingIrregularities.Domain.Seed
                 context.Database.Migrate();
                 _logger.LogDebug("Database created");
 
-                if (!args.Contains("-seed")) return;
+                if (!args.Contains("-seed"))
+                {
+                    return;
+                }
+
                 _logger.LogDebug("Initializing data seeding...");
                 context.EnsureSeedData();
                 _logger.LogDebug("Data seeded.");
@@ -61,10 +65,11 @@ namespace VotingIrregularities.Domain.Seed
 
             // DB Context
             var conn = _configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<VoteMonitorContext>(options => {
-            options.UseSqlServer(conn,
-                x => x.MigrationsAssembly("VotingIrregularities.Domain"));
-                });
+            services.AddDbContext<VoteMonitorContext>(options =>
+            {
+                options.UseSqlServer(conn,
+                    x => x.MigrationsAssembly("VotingIrregularities.Domain.Seed"));
+            });
         }
     }
 }

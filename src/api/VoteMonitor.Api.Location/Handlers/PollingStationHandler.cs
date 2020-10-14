@@ -1,37 +1,38 @@
+using AutoMapper;
+using EFCore.BulkExtensions;
+using MediatR;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
-using MediatR;
-using Microsoft.Extensions.Logging;
 using VoteMonitor.Api.Location.Commands;
 using VoteMonitor.Entities;
-using EFCore.BulkExtensions;
 
 namespace VoteMonitor.Api.Location.Handlers
 {
-    public class PollingStationHandler : AsyncRequestHandler<PollingStationCommand, int>
+    public class PollingStationHandler : IRequestHandler<PollingStationCommand, int>
     {
-        private VoteMonitorContext _context;
-        private IMapper _mapper;
-        private ILogger _logger;
+        private readonly VoteMonitorContext _context;
+        private readonly IMapper _mapper;
+        private readonly ILogger _logger;
 
-        public PollingStationHandler(VoteMonitorContext context, IMapper mapper, ILogger logger)
+        public PollingStationHandler(VoteMonitorContext context, IMapper mapper, ILogger<PollingStationHandler> logger)
         {
-            this._context = context;
-            this._mapper = mapper;
-            this._logger = logger;
+            _context = context;
+            _mapper = mapper;
+            _logger = logger;
         }
 
-        protected override async Task<int> HandleCore(PollingStationCommand request)
+        public async Task<int> Handle(PollingStationCommand request, CancellationToken cancellationToken)
         {
             var random = new Random();
 
             try
             {
                 //import the new entities
-                using (var transaction = await _context.Database.BeginTransactionAsync())
+                using (var transaction = await _context.Database.BeginTransactionAsync(cancellationToken))
                 {
                     var id = 100;
                     var newPollingStations = new List<PollingStation>();
@@ -53,7 +54,9 @@ namespace VoteMonitor.Api.Location.Handlers
                     foreach (var county in _context.Counties)
                     {
                         if (!_context.PollingStations.Any(p => p.IdCounty == county.Id))
+                        {
                             continue;
+                        }
 
                         var maxPollingStation = _context.PollingStations
                             .Where(p => p.IdCounty == county.Id)
@@ -62,7 +65,7 @@ namespace VoteMonitor.Api.Location.Handlers
                         _context.Counties.Update(county);
                     }
 
-                    var result = await _context.SaveChangesAsync();
+                    var result = await _context.SaveChangesAsync(cancellationToken);
 
                     transaction.Commit();
                     return result;

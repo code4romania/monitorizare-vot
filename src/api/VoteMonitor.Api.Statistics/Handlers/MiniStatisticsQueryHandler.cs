@@ -3,11 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using VoteMonitor.Api.Statistics.Handlers;
 using VoteMonitor.Api.Statistics.Models;
 using VoteMonitor.Entities;
 
-namespace VoteMonitor.Api.Statistics.Handlers {
+namespace VoteMonitor.Api.Statistics.Handlers
+{
     public class MiniStatisticsQueryHandler :
         IRequestHandler<AnswersRequest, SimpleStatisticsModel>,
         IRequestHandler<StationsVisitedRequest, SimpleStatisticsModel>,
@@ -25,7 +25,12 @@ namespace VoteMonitor.Api.Statistics.Handlers {
 
         public async Task<SimpleStatisticsModel> Handle(AnswersRequest message, CancellationToken token)
         {
-            var number = await _context.Answers.CountAsync();
+            var number = await _context.Answers
+                .Include(a => a.Observer)
+                .Where(x => x.Observer.IdNgo != 1)
+                .Where(x => x.Observer.Ngo.IsActive)
+                .CountAsync(token);
+
             return new SimpleStatisticsModel
             {
                 Label = "Number of answers submitted",
@@ -34,7 +39,14 @@ namespace VoteMonitor.Api.Statistics.Handlers {
         }
         public async Task<SimpleStatisticsModel> Handle(StationsVisitedRequest message, CancellationToken token)
         {
-            var number = await _context.Answers.Select(r => r.IdPollingStation).Distinct().CountAsync();
+            var number = await _context.Answers
+                .Include(a => a.Observer)
+                .Where(x => x.Observer.IdNgo != 1)
+                .Where(x => x.Observer.Ngo.IsActive)
+                .Select(r => r.IdPollingStation)
+                .Distinct()
+                .CountAsync(token);
+
             return new SimpleStatisticsModel
             {
                 Label = "Number of Polling Stations visited",
@@ -43,7 +55,14 @@ namespace VoteMonitor.Api.Statistics.Handlers {
         }
         public async Task<SimpleStatisticsModel> Handle(CountiesVisitedRequest message, CancellationToken token)
         {
-            var number = await _context.Answers.Select(r => r.CountyCode).Distinct().CountAsync();
+            var number = await _context.Answers
+                .Include(a => a.Observer)
+                .Where(x => x.Observer.IdNgo != 1)
+                .Where(x => x.Observer.Ngo.IsActive)
+                .Select(r => r.CountyCode)
+                .Distinct()
+                .CountAsync(token);
+
             return new SimpleStatisticsModel
             {
                 Label = "Number of Counties visited",
@@ -52,7 +71,12 @@ namespace VoteMonitor.Api.Statistics.Handlers {
         }
         public async Task<SimpleStatisticsModel> Handle(NotesUploadedRequest message, CancellationToken token)
         {
-            var number = await _context.Notes.CountAsync();
+            var number = await _context.Notes
+                .Include(n => n.Observer)
+                .Where(x => x.Observer.IdNgo != 1)
+                .Where(x => x.Observer.Ngo.IsActive)
+                .CountAsync(token);
+
             return new SimpleStatisticsModel
             {
                 Label = "Number of notes submitted",
@@ -61,7 +85,14 @@ namespace VoteMonitor.Api.Statistics.Handlers {
         }
         public async Task<SimpleStatisticsModel> Handle(LoggedInObserversRequest message, CancellationToken token)
         {
-            var number = await _context.PollingStationInfos.Select(pi => pi.IdObserver).Distinct().CountAsync(token);
+            var number = await _context.PollingStationInfos
+                .Include(a => a.Observer)
+                .Where(x => x.Observer.IdNgo != 1)
+                .Where(x => x.Observer.Ngo.IsActive)
+                .Select(pi => pi.IdObserver)
+                .Distinct()
+                .CountAsync(token);
+
             return new SimpleStatisticsModel
             {
                 Label = "Number of logged in Observers",
@@ -70,7 +101,13 @@ namespace VoteMonitor.Api.Statistics.Handlers {
         }
         public async Task<SimpleStatisticsModel> Handle(FlaggedAnswersRequest message, CancellationToken token)
         {
-            var number = await _context.Answers.Include(r => r.OptionAnswered).CountAsync(r => r.OptionAnswered.Flagged);
+            var number = await _context.Answers
+                .Include(a => a.Observer)
+                .Where(x => x.Observer.IdNgo != 1)
+                .Where(x => x.Observer.Ngo.IsActive)
+                .Include(r => r.OptionAnswered)
+                .CountAsync(r => r.OptionAnswered.Flagged, token);
+
             return new SimpleStatisticsModel
             {
                 Label = "Number of flagged answers submitted",

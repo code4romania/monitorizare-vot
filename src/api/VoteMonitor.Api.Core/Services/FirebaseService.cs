@@ -1,13 +1,14 @@
-﻿using System.Collections.Generic;
-using FirebaseAdmin;
+﻿using FirebaseAdmin;
 using FirebaseAdmin.Messaging;
 using Google.Apis.Auth.OAuth2;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace VoteMonitor.Api.Core.Services
 {
     public class FirebaseService : IFirebaseService
     {
-        public int SendAsync(string from, string title, string message, IList<string> recipients)
+        public int SendAsync(string from, string title, string message, List<string> recipients)
         {
             if (FirebaseApp.DefaultInstance == null)
             {
@@ -17,27 +18,39 @@ namespace VoteMonitor.Api.Core.Services
                 });
             }
 
-            var registrationTokens = recipients as IReadOnlyList<string>;
+            int successCount = 0;
 
-            var message2 = new MulticastMessage()
+            if (recipients == null)
             {
-                Tokens = registrationTokens,
-                Data = new Dictionary<string, string>()
-                {
-                    { "title", title },
-                    { "body", message },
-                },
-                Notification = new Notification
-                {
-                    Title = title,
-                    Body = message
-                },
-            };
+                return successCount;
+            }
 
-            var response = FirebaseMessaging.DefaultInstance.SendMulticastAsync(message2);
-            response.Wait();
+            while (recipients.Any())
+            {
+                var registrationTokens = recipients.Take(100).ToList().AsReadOnly();
+                recipients = recipients.Skip(100).ToList();
 
-            return response.Result.SuccessCount;
+                var message2 = new MulticastMessage
+                {
+                    Tokens = registrationTokens,
+                    Data = new Dictionary<string, string>
+                    {
+                        { "title", title },
+                        { "body", message },
+                    },
+                    Notification = new Notification
+                    {
+                        Title = title,
+                        Body = message
+                    },
+                };
+
+                var response = FirebaseMessaging.DefaultInstance.SendMulticastAsync(message2);
+                response.Wait();
+                successCount += response.Result.SuccessCount;
+            }
+
+            return successCount;
         }
     }
 }

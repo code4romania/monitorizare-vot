@@ -1,15 +1,16 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using MediatR;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using VoteMonitor.Api.Form.Models;
 using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Form.Queries
 {
     public class AddFormQueryHandler :
-        AsyncRequestHandler<AddFormQuery, FormDTO>
+        IRequestHandler<AddFormQuery, FormDTO>
     {
         private readonly VoteMonitorContext _context;
         private readonly IMapper _mapper;
@@ -20,34 +21,62 @@ namespace VoteMonitor.Api.Form.Queries
             _mapper = mapper;
         }
 
-        protected override async Task<FormDTO> HandleCore(AddFormQuery message) {
+        public async Task<FormDTO> Handle(AddFormQuery message, CancellationToken cancellationToken)
+        {
             var newForm = new Entities.Form
             {
                 Code = message.Form.Code,
                 CurrentVersion = message.Form.CurrentVersion,
                 Description = message.Form.Description,
                 FormSections = new List<FormSection>(),
-				Diaspora = message.Form.Diaspora
+                Diaspora = message.Form.Diaspora,
+                Draft = message.Form.Draft,
+                Order = message.Form.Order
             };
 
-            foreach (var fs in message.Form.FormSections) {
+            foreach (var (form, formIndex) in message.Form.FormSections.Select((form, formIndex) => (form, formIndex + 1)))
+            {
                 var formSection = new FormSection
                 {
-                    Code = fs.Code, Description = fs.Description, Questions = new List<Question>()
+                    Code = form.Code,
+                    Description = form.Description,
+                    OrderNumber = formIndex,
+                    Questions = new List<Question>()
                 };
-                foreach (var q in fs.Questions) {
-                    var question = new Question{ QuestionType = q.QuestionType, Hint = q.Hint, Text = q.Text };
+                foreach (var (question, questionIndex) in form.Questions.Select((question, questionIndex) => (question, questionIndex + 1)))
+                {
+                    var questionEntity = new Question
+                    {
+                        QuestionType = question.QuestionType,
+                        Hint = question.Hint,
+                        Text = question.Text,
+                        Code = question.Code,
+                        OrderNumber = questionIndex
+                    };
+
                     var optionsForQuestion = new List<OptionToQuestion>();
-                    foreach (var o in q.OptionsToQuestions)
-                        if (o.IdOption > 0) {
-                            var existingOption = _context.Options.FirstOrDefault(option => option.Id == o.IdOption);
-                            optionsForQuestion.Add(new OptionToQuestion { Option = existingOption });
+                    foreach (var (option, optionIndex) in question.OptionsToQuestions.Select((option, optionIndex) => (option, optionIndex + 1)))
+                    {
+                        if (option.IdOption > 0)
+                        {
+                            var existingOption = _context.Options.FirstOrDefault(o => o.Id == option.IdOption);
+                            existingOption.OrderNumber = optionIndex;
+                            optionsForQuestion.Add(new OptionToQuestion
+                            {
+                                Option = existingOption,
+                                Flagged = option.Flagged
+                            });
                         }
-                        else {
-                            optionsForQuestion.Add(_mapper.Map<OptionToQuestion>(o));
+                        else
+                        {
+                            OptionToQuestion newOptionToQuestion = _mapper.Map<OptionToQuestion>(option);
+                            newOptionToQuestion.Option.OrderNumber = optionIndex;
+                            optionsForQuestion.Add(newOptionToQuestion);
                         }
-                    question.OptionsToQuestions = optionsForQuestion;
-                    formSection.Questions.Add(question);
+                    }
+
+                    questionEntity.OptionsToQuestions = optionsForQuestion;
+                    formSection.Questions.Add(questionEntity);
                 }
                 newForm.FormSections.Add(formSection);
             }

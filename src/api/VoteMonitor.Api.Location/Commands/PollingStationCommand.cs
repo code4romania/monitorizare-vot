@@ -1,6 +1,6 @@
-using System.Collections.Generic;
 using MediatR;
-using MonitorizareVot.Api.Location.Models;
+using System.Collections.Generic;
+using VoteMonitor.Api.Location.Models;
 
 namespace VoteMonitor.Api.Location.Commands
 {
@@ -10,10 +10,10 @@ namespace VoteMonitor.Api.Location.Commands
         public PollingStationCommand(List<PollingStationDTO> list)
         {
             PollingStationsDTOs = new List<PollingStationDTO>();
-            foreach(PollingStationDTO element in list)
+            foreach (PollingStationDTO element in list)
             {
                 this.PollingStationsDTOs.Add(element);
             }
         }
     }
-} 
+}

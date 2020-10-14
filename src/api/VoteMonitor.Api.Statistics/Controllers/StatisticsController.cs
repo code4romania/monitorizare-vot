@@ -1,37 +1,35 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using VoteMonitor.Api.Core;
 using VoteMonitor.Api.Core.Options;
 using VoteMonitor.Api.Statistics.Handlers;
 using VoteMonitor.Api.Statistics.Models;
 using VoteMonitor.Api.Statistics.Queries;
 
-namespace VoteMonitor.Api.Statistics.Controllers {
+namespace VoteMonitor.Api.Statistics.Controllers
+{
     /// <inheritdoc />
     [Route("api/v1/statistics")]
     public class StatisticsController : Controller
     {
-		private readonly IConfigurationRoot _configuration;
-		private readonly ApplicationCacheOptions _cacheOptions;
+        private readonly IConfiguration _configuration;
+        private readonly ApplicationCacheOptions _cacheOptions;
         private readonly IMediator _mediator;
-        private int _cacheHours;
-        private int _cacheMinutes;
-        private int _cacheSeconds;
 
-        public StatisticsController(IMediator mediator, IConfigurationRoot configuration, IOptions<ApplicationCacheOptions> cacheOptions)
+        public StatisticsController(IMediator mediator, IConfiguration configuration, IOptions<ApplicationCacheOptions> cacheOptions)
         {
             _mediator = mediator;
-			_configuration = configuration;
-			_cacheOptions = cacheOptions.Value;
-			_cacheHours = _cacheOptions.Hours;
-			_cacheMinutes = _cacheOptions.Minutes;
-			_cacheSeconds = _cacheOptions.Seconds;
-		}
+            _configuration = configuration;
+            _cacheOptions = cacheOptions.Value;
+        }
+
+        private int NgoId => this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
+        private bool Organizer => this.GetOrganizatorOrDefault(_configuration.GetValue<bool>("DefaultOrganizator"));
 
         /// <summary>
         /// Returns top counties by observer number
@@ -43,18 +41,15 @@ namespace VoteMonitor.Api.Statistics.Controllers {
         [Authorize("NgoAdmin")]
         public async Task<ApiListResponse<SimpleStatisticsModel>> NumarObservatori(PagingModel model)
         {
-            var idONG = this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
-            var organizator = this.GetOrganizatorOrDefault(_configuration.GetValue<bool>("DefaultOrganizator"));
-
             return await _mediator.Send(new StatisticsObserversNumberQuery
             {
-                IdONG = idONG,
-                Organizator = organizator,
+                IdONG = NgoId,
+                Organizator = Organizer,
                 PageSize = model.PageSize,
                 Page = model.Page,
-                CacheHours = _cacheHours,
-                CacheMinutes = _cacheMinutes,
-                CacheSeconds = _cacheSeconds
+                CacheHours = _cacheOptions.Hours,
+                CacheMinutes = _cacheOptions.Minutes,
+                CacheSeconds = _cacheOptions.Seconds
             });
         }
 
@@ -71,22 +66,22 @@ namespace VoteMonitor.Api.Statistics.Controllers {
         [Authorize("NgoAdmin")]
         public async Task<ApiListResponse<SimpleStatisticsModel>> Irregularities(SimpleStatisticsFilter model)
         {
-            var idONG = this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
-            var organizator = this.GetOrganizatorOrDefault(_configuration.GetValue<bool>("DefaultOrganizator"));
-
-            if (model.GroupingType == StatisticsGroupingTypes.Sectie) model.PageSize = Constants.DEFAULT_PAGE_SIZE;
+            if (model.GroupingType == StatisticsGroupingTypes.Sectie)
+            {
+                model.PageSize = PagingDefaultsConstants.DEFAULT_PAGE_SIZE;
+            }
 
             return await _mediator.Send(new StatisticiTopSesizariQuery
             {
-                IdONG = idONG,
-                Organizator = organizator,
+                IdONG = NgoId,
+                Organizator = Organizer,
                 Grupare = model.GroupingType,
                 Formular = model.FormCode,
                 Page = model.Page,
                 PageSize = model.PageSize,
-                CacheHours = _cacheHours,
-                CacheMinutes = _cacheMinutes,
-                CacheSeconds = _cacheSeconds
+                CacheHours = _cacheOptions.Hours,
+                CacheMinutes = _cacheOptions.Minutes,
+                CacheSeconds = _cacheOptions.Seconds
             });
         }
 
@@ -100,20 +95,17 @@ namespace VoteMonitor.Api.Statistics.Controllers {
         [Authorize("NgoAdmin")]
         public async Task<ApiListResponse<SimpleStatisticsModel>> CountiesIrregularities(PagingModel model)
         {
-            var idONG = this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
-            var organizator = this.GetOrganizatorOrDefault(_configuration.GetValue<bool>("DefaultOrganizator"));
-
             return await _mediator.Send(new StatisticiTopSesizariQuery
             {
-                IdONG = idONG,
-                Organizator = organizator,
+                IdONG = NgoId,
+                Organizator = Organizer,
                 Grupare = StatisticsGroupingTypes.Judet,
                 Formular = null,
                 Page = model.Page,
                 PageSize = model.PageSize,
-                CacheHours = _cacheHours,
-                CacheMinutes = _cacheMinutes,
-                CacheSeconds = _cacheSeconds
+                CacheHours = _cacheOptions.Hours,
+                CacheMinutes = _cacheOptions.Minutes,
+                CacheSeconds = _cacheOptions.Seconds
             });
         }
 
@@ -129,19 +121,19 @@ namespace VoteMonitor.Api.Statistics.Controllers {
         {
             var idONG = this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
             var organizator = this.GetOrganizatorOrDefault(_configuration.GetValue<bool>("DefaultOrganizator"));
-            model.PageSize = Constants.DEFAULT_PAGE_SIZE;
+            model.PageSize = PagingDefaultsConstants.DEFAULT_PAGE_SIZE;
 
             return await _mediator.Send(new StatisticiTopSesizariQuery
             {
-                IdONG = idONG,
-                Organizator = organizator,
+                IdONG = NgoId,
+                Organizator = Organizer,
                 Grupare = StatisticsGroupingTypes.Sectie,
                 Formular = null,
                 Page = model.Page,
                 PageSize = model.PageSize,
-                CacheHours = _cacheHours,
-                CacheMinutes = _cacheMinutes,
-                CacheSeconds = _cacheSeconds
+                CacheHours = _cacheOptions.Hours,
+                CacheMinutes = _cacheOptions.Minutes,
+                CacheSeconds = _cacheOptions.Seconds
             });
         }
 
@@ -155,20 +147,17 @@ namespace VoteMonitor.Api.Statistics.Controllers {
         [Authorize("NgoAdmin")]
         public async Task<ApiListResponse<SimpleStatisticsModel>> CountiesOpeningIrregularities(PagingModel model)
         {
-            var idONG = this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
-            var organizator = this.GetOrganizatorOrDefault(_configuration.GetValue<bool>("DefaultOrganizator"));
-
             return await _mediator.Send(new StatisticiTopSesizariQuery
             {
-                IdONG = idONG,
-                Organizator = organizator,
+                IdONG = NgoId,
+                Organizator = Organizer,
                 Grupare = StatisticsGroupingTypes.Judet,
                 Formular = "A",
                 Page = model.Page,
                 PageSize = model.PageSize,
-                CacheHours = _cacheHours,
-                CacheMinutes = _cacheMinutes,
-                CacheSeconds = _cacheSeconds
+                CacheHours = _cacheOptions.Hours,
+                CacheMinutes = _cacheOptions.Minutes,
+                CacheSeconds = _cacheOptions.Seconds
             });
         }
 
@@ -184,19 +173,19 @@ namespace VoteMonitor.Api.Statistics.Controllers {
         {
             var idONG = this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
             var organizator = this.GetOrganizatorOrDefault(_configuration.GetValue<bool>("DefaultOrganizator"));
-            model.PageSize = Constants.DEFAULT_PAGE_SIZE;
+            model.PageSize = PagingDefaultsConstants.DEFAULT_PAGE_SIZE;
 
             return await _mediator.Send(new StatisticiTopSesizariQuery
             {
-                IdONG = idONG,
-                Organizator = organizator,
+                IdONG = NgoId,
+                Organizator = Organizer,
                 Grupare = StatisticsGroupingTypes.Sectie,
                 Formular = "A",
                 Page = model.Page,
                 PageSize = model.PageSize,
-                CacheHours = _cacheHours,
-                CacheMinutes = _cacheMinutes,
-                CacheSeconds = _cacheSeconds
+                CacheHours = _cacheOptions.Hours,
+                CacheMinutes = _cacheOptions.Minutes,
+                CacheSeconds = _cacheOptions.Seconds
             });
         }
 
@@ -210,20 +199,17 @@ namespace VoteMonitor.Api.Statistics.Controllers {
         [Authorize("NgoAdmin")]
         public async Task<ApiListResponse<SimpleStatisticsModel>> CountiesByCountingIrregularities(PagingModel model)
         {
-            var idONG = this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
-            var organizator = this.GetOrganizatorOrDefault(_configuration.GetValue<bool>("DefaultOrganizator"));
-
             return await _mediator.Send(new StatisticiTopSesizariQuery
             {
-                IdONG = idONG,
-                Organizator = organizator,
+                IdONG = NgoId,
+                Organizator = Organizer,
                 Grupare = StatisticsGroupingTypes.Judet,
                 Formular = "C",
                 Page = model.Page,
                 PageSize = model.PageSize,
-                CacheHours = _cacheHours,
-                CacheMinutes = _cacheMinutes,
-                CacheSeconds = _cacheSeconds
+                CacheHours = _cacheOptions.Hours,
+                CacheMinutes = _cacheOptions.Minutes,
+                CacheSeconds = _cacheOptions.Seconds
             });
         }
 
@@ -239,19 +225,19 @@ namespace VoteMonitor.Api.Statistics.Controllers {
         {
             var idONG = this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
             var organizator = this.GetOrganizatorOrDefault(_configuration.GetValue<bool>("DefaultOrganizator"));
-            model.PageSize = Constants.DEFAULT_PAGE_SIZE;
+            model.PageSize = PagingDefaultsConstants.DEFAULT_PAGE_SIZE;
 
             return await _mediator.Send(new StatisticiTopSesizariQuery
             {
-                IdONG = idONG,
-                Organizator = organizator,
+                IdONG = NgoId,
+                Organizator = Organizer,
                 Grupare = StatisticsGroupingTypes.Sectie,
                 Formular = "C",
                 Page = model.Page,
                 PageSize = model.PageSize,
-                CacheHours = _cacheHours,
-                CacheMinutes = _cacheMinutes,
-                CacheSeconds = _cacheSeconds
+                CacheHours = _cacheOptions.Hours,
+                CacheMinutes = _cacheOptions.Minutes,
+                CacheSeconds = _cacheOptions.Seconds
             });
         }
 
@@ -266,17 +252,14 @@ namespace VoteMonitor.Api.Statistics.Controllers {
         [Authorize("NgoAdmin")]
         public async Task<StatisticsOptionsModel> CountAnswersForQuestion(OptionsFilterModel model)
         {
-            var idONG = this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
-            var organizator = this.GetOrganizatorOrDefault(_configuration.GetValue<bool>("DefaultOrganizator"));
-
             return await _mediator.Send(new StatisticsOptionsQuery
             {
                 QuestionId = model.QuestionId,
-                Organizator = organizator,
-                IdONG = idONG,
-                CacheHours = _cacheHours,
-                CacheMinutes = _cacheMinutes,
-                CacheSeconds = _cacheSeconds
+                IdONG = NgoId,
+                Organizator = Organizer,
+                CacheHours = _cacheOptions.Hours,
+                CacheMinutes = _cacheOptions.Minutes,
+                CacheSeconds = _cacheOptions.Seconds
             });
         }
 

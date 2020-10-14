@@ -1,12 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace VoteMonitor.Entities
 {
-    public partial class VoteMonitorContext : DbContext {
-        protected override void OnModelCreating(ModelBuilder modelBuilder) {
-            modelBuilder.Entity<NgoAdmin>(entity => {
+    public partial class VoteMonitorContext : DbContext
+    {
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<NgoAdmin>(entity =>
+            {
                 entity.HasKey(e => e.Id)
                     .HasName("PK_NgoAdminId");
 
@@ -30,7 +32,8 @@ namespace VoteMonitor.Entities
                     .HasConstraintName("FK_NgoAdmin_Ngo");
             });
 
-            modelBuilder.Entity<County>(entity => {
+            modelBuilder.Entity<County>(entity =>
+            {
                 entity.HasKey(e => e.Id)
                     .HasName("PK_County");
 
@@ -46,9 +49,13 @@ namespace VoteMonitor.Entities
 
 				entity.Property(x=>x.Diaspora)
 					.HasDefaultValueSql("0"); // should this be required?
-			});
 
-            modelBuilder.Entity<Note>(entity => {
+                entity.Property(x => x.Order)
+                    .HasDefaultValueSql("0");
+            });
+
+            modelBuilder.Entity<Note>(entity =>
+            {
                 entity.HasKey(e => e.Id)
                     .HasName("PK_Note");
 
@@ -81,7 +88,8 @@ namespace VoteMonitor.Entities
                     .OnDelete(DeleteBehavior.Restrict);
             });
 
-            modelBuilder.Entity<Observer>(entity => {
+            modelBuilder.Entity<Observer>(entity =>
+            {
                 entity.HasKey(e => e.Id)
                     .HasName("PK_Observer");
 
@@ -104,6 +112,9 @@ namespace VoteMonitor.Entities
                     .IsRequired()
                     .HasMaxLength(200);
 
+                entity.Property(e => e.IsTestObserver)
+                    .HasDefaultValueSql("0");
+
                 entity.Property(e => e.Pin)
                     .IsRequired()
                     .HasMaxLength(100);
@@ -114,7 +125,8 @@ namespace VoteMonitor.Entities
                     .OnDelete(DeleteBehavior.Restrict);
             });
 
-            modelBuilder.Entity<Ngo>(entity => {
+            modelBuilder.Entity<Ngo>(entity =>
+            {
                 entity.HasKey(e => e.Id)
                     .HasName("PK_NGO");
 
@@ -129,9 +141,12 @@ namespace VoteMonitor.Entities
                     .HasMaxLength(200);
 
                 entity.Property(e => e.Organizer).HasDefaultValueSql("0");
+                entity.Property(e => e.IsActive).HasDefaultValueSql("0");
+
             });
 
-            modelBuilder.Entity<Answer>(entity => {
+            modelBuilder.Entity<Answer>(entity =>
+            {
                 entity.HasKey(e => new { IdObservator = e.IdObserver, IdRaspunsDisponibil = e.IdOptionToQuestion, IdSectieDeVotare = e.IdPollingStation })
                     .HasName("PK_Answer");
 
@@ -170,7 +185,8 @@ namespace VoteMonitor.Entities
             });
 
 
-            modelBuilder.Entity<PollingStationInfo>(entity => {
+            modelBuilder.Entity<PollingStationInfo>(entity =>
+            {
                 entity.HasKey(e => new { e.IdObserver, e.IdPollingStation })
                     .HasName("PK_PollingStationInfo");
 
@@ -200,7 +216,8 @@ namespace VoteMonitor.Entities
                     .OnDelete(DeleteBehavior.Restrict);
             });
 
-            modelBuilder.Entity<PollingStation>(entity => {
+            modelBuilder.Entity<PollingStation>(entity =>
+            {
                 entity.HasKey(e => e.Id)
                     .HasName("PK_PollingStation");
 
@@ -231,22 +248,31 @@ namespace VoteMonitor.Entities
             });
 
 
-            modelBuilder.Entity<Form>(entity => {
+            modelBuilder.Entity<Form>(entity =>
+            {
                 entity.HasKey(e => e.Id)
                     .HasName("PK_FormVersion");
 
                 entity.Property(e => e.Id).HasMaxLength(2);
 
-				entity.Property(x=>x.Diaspora)
-					.HasDefaultValueSql("0"); // check this mapping 
+                entity.Property(x => x.Diaspora)
+                    .HasDefaultValueSql("0"); // check this mapping
 
-			});
+                entity.Property(x => x.Draft)
+                    .HasDefaultValueSql("0"); // check this mapping 
 
-            modelBuilder.Entity<AnswerQueryInfo>(entity => {
-                entity.HasKey(e => new { e.IdObserver, e.IdPollingStation})
+                entity.Property(x => x.Order)
+                    .HasDefaultValueSql("0");
+
+            });
+
+            modelBuilder.Entity<AnswerQueryInfo>(entity =>
+            {
+                entity.HasKey(e => new { e.IdObserver, e.IdPollingStation })
                     .HasName("PK_AnswerQueryInfo");
             });
-            modelBuilder.Entity<FormSection>(entity => {
+            modelBuilder.Entity<FormSection>(entity =>
+            {
                 entity.HasKey(e => e.Id)
                     .HasName("PK_FormSection");
 
@@ -262,7 +288,8 @@ namespace VoteMonitor.Entities
                     .IsRequired()
                     .HasMaxLength(200);
             });
-            modelBuilder.Entity<Question>(entity => {
+            modelBuilder.Entity<Question>(entity =>
+            {
                 entity.HasKey(e => e.Id)
                     .HasName("PK_Question");
 
@@ -274,7 +301,8 @@ namespace VoteMonitor.Entities
                     .HasForeignKey(d => d.IdSection)
                     .OnDelete(DeleteBehavior.Restrict);
             });
-            modelBuilder.Entity<OptionToQuestion>(entity => {
+            modelBuilder.Entity<OptionToQuestion>(entity =>
+            {
                 entity.HasKey(e => e.Id)
                     .HasName("PK_OptionToQuestion");
 
@@ -302,14 +330,16 @@ namespace VoteMonitor.Entities
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_OptionToQuestion_Option");
             });
-            modelBuilder.Entity<Option>(entity => {
+            modelBuilder.Entity<Option>(entity =>
+            {
                 entity.HasKey(e => e.Id)
                     .HasName("PK_Option");
 
                 entity.Property(e => e.IsFreeText).HasDefaultValueSql("0");
             });
 
-            modelBuilder.Entity<NotificationRegistrationData>(entity => {
+            modelBuilder.Entity<NotificationRegistrationData>(entity =>
+            {
                 entity.HasKey(e => new { e.ObserverId, e.ChannelName })
                     .HasName("PK_NotificationRegistrationData");
 
@@ -331,20 +361,48 @@ namespace VoteMonitor.Entities
                     .HasMaxLength(512);
             });
 
-            modelBuilder.Entity<SimpleStatistics>(entity => {
+            modelBuilder.Entity<SimpleStatistics>(entity =>
+            {
                 entity.HasKey(e => e.Label)
                     .HasName("PK_Statistici");
             });
 
-            modelBuilder.Entity<ComposedStatistics>(entity => {
+            modelBuilder.Entity<ComposedStatistics>(entity =>
+            {
                 entity.HasKey(e => new { e.Label, e.Code })
                     .HasName("PK_StatisticiCompuse");
             });
 
-            modelBuilder.Entity<OptionsStatistics>(entity => {
+            modelBuilder.Entity<OptionsStatistics>(entity =>
+            {
                 entity.HasKey(e => e.Label)
                     .HasName("PK_StatisticiOptiuni");
             });
+
+            modelBuilder.Entity<NotificationRecipient>(entity =>
+            {
+                entity.HasKey(e => new { e.ObserverId, e.NotificationId });
+
+                entity.HasOne(d => d.Notification)
+                    .WithMany(p => p.NotificationRecipients)
+                    .HasForeignKey(d => d.NotificationId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(d => d.Observer)
+                    .WithMany(p => p.Notifications)
+                    .HasForeignKey(d => d.ObserverId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });           
+            
+            modelBuilder.Entity<Notification>(entity =>
+            {
+                entity.HasOne(d => d.SenderAdmin)
+                    .WithMany(p => p.NotificationsSent)
+                    .HasForeignKey(d => d.SenderAdminId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<ExportModel>(entity => { entity.HasKey(e => e.Id); });
         }
 
         public virtual DbSet<NgoAdmin> NgoAdmins { get; set; }
@@ -361,19 +419,24 @@ namespace VoteMonitor.Entities
         public virtual DbSet<PollingStation> PollingStations { get; set; }
         public virtual DbSet<FormSection> FormSections { get; set; }
         public virtual DbSet<Form> Forms { get; set; }
-        public virtual DbSet<AnswerQueryInfo> AnswerQueryInfos{ get;set; }
+        public virtual DbSet<AnswerQueryInfo> AnswerQueryInfos { get; set; }
+        public virtual DbSet<Notification> Notifications { get; set; }
+        public virtual DbSet<NotificationRecipient> NotificationRecipients { get; set; }
 
         // Entities used for GROUP BY results
         public virtual DbSet<SimpleStatistics> SimpleStatistics { get; set; }
         public virtual DbSet<ComposedStatistics> ComposedStatistics { get; set; }
         public virtual DbSet<OptionsStatistics> OptionsStatistics { get; set; }
+        public virtual DbSet<ExportModel> ExportModels { get; set; }
 
-        public class AnswerQueryInfo {
+
+        public class AnswerQueryInfo
+        {
             public int IdPollingStation { get; set; }
             public int IdObserver { get; set; }
             public string ObserverName { get; set; }
             public string PollingStation { get; set; }
-            public DateTime LastModified {get;set;}
+            public DateTime LastModified { get; set; }
+        }
     }
-}
 }
