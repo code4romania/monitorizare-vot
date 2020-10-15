@@ -25,10 +25,9 @@ namespace VoteMonitor.Api.Observer.Handlers
         {
             try
             {
-                var observer = _context.Observers
+                var observer = await _context.Observers
                     .Where(o => o.Id == request.Id)
-                    .FirstAsync(cancellationToken)
-                    .Result;
+                    .FirstAsync(cancellationToken);
 
                 observer.MobileDeviceId = null;
                 await _context.SaveChangesAsync(cancellationToken);
