@@ -87,7 +87,7 @@ namespace VoteMonitor.Api.Statistics.Handlers
                 CacheKey = "StatisticiObservatori"
             };
 
-            queryBuilder.WhereOngFilter(message.Organizator, message.IdONG);
+            queryBuilder.AndOngFilter(message.Organizator, message.IdONG);
             //queryBuilder.Append("GROUP BY J.Name ORDER BY Value DESC");            
             queryBuilder.Append("group by CountyCode order by [Value] desc");
 
