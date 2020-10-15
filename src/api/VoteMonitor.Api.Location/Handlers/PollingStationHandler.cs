@@ -60,7 +60,7 @@ namespace VoteMonitor.Api.Location.Handlers
 
                         var maxPollingStation = _context.PollingStations
                             .Where(p => p.IdCounty == county.Id)
-                            .Max(p => p.Number);
+                            .Count();
                         county.NumberOfPollingStations = maxPollingStation;
                         _context.Counties.Update(county);
                     }

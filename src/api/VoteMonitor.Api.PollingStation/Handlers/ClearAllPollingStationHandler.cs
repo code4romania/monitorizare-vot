@@ -6,7 +6,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using VoteMonitor.Api.PollingStation.Commands;
-using VoteMonitor.Api.PollingStation.Models;
 using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.PollingStation.Handlers
@@ -28,7 +27,7 @@ namespace VoteMonitor.Api.PollingStation.Handlers
             {
                 using (var transaction = await _context.Database.BeginTransactionAsync(cancellationToken))
                 {
-                    if (IncludeRelatedData(request.Options))
+                    if (request.IncludeRelatedData)
                     {
                         await DeleteAnswersData(cancellationToken);
                         await DeleteNotes(cancellationToken);
@@ -48,11 +47,6 @@ namespace VoteMonitor.Api.PollingStation.Handlers
                 _logger.LogError("Error while removing polling stations.", ex);
                 return Result.Failure("Cannot remove polling stations.");
             }
-        }
-
-        private static bool IncludeRelatedData(ClearPollingStationOptions options)
-        {
-            return options != null && options.IncludeRelatedData;
         }
 
         private async Task DeleteAnswersData(CancellationToken cancellationToken)

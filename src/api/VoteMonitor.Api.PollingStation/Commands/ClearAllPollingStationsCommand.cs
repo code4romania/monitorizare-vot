@@ -6,11 +6,11 @@ namespace VoteMonitor.Api.PollingStation.Commands
 {
     public class ClearAllPollingStationsCommand : IRequest<Result>
     {
-        internal ClearPollingStationOptions Options;
+        internal bool IncludeRelatedData;
 
-        public ClearAllPollingStationsCommand(ClearPollingStationOptions options)
+        public ClearAllPollingStationsCommand(bool includeRelatedData)
         {
-            this.Options = options;
+            this.IncludeRelatedData = includeRelatedData;
         }
     }
 }

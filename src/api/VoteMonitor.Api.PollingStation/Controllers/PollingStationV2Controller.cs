@@ -82,9 +82,9 @@ namespace VoteMonitor.Api.PollingStation.Controllers
         [Authorize("Organizer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> ClearAll([FromBody] ClearPollingStationOptions options)
+        public async Task<IActionResult> ClearAll([FromQuery] bool includeRelatedData = false)
         {
-            var result = await _mediator.Send(new ClearAllPollingStationsCommand(options));
+            var result = await _mediator.Send(new ClearAllPollingStationsCommand(includeRelatedData));
 
             if (result.IsSuccess)
             {
