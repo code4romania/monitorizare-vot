@@ -2,6 +2,6 @@
 {
     public class RemoveDeviceIdModel
     {
-        public int IdObserver { get; set; }
+        public int Id { get; set; }
     }
 }

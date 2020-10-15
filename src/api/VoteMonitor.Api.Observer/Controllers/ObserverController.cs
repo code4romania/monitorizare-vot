@@ -165,17 +165,25 @@ namespace VoteMonitor.Api.Observer.Controllers
         [HttpPost]
         [Route("removeDeviceId")]
         [Authorize("NgoAdmin")]
-        [Produces(type: typeof(bool))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> RemoveObserverDeviceId(int id)
         {
-            if (!ModelState.IsValid)
+            var observerRequest = new CheckObserverExists
             {
-                return BadRequest(ModelState);
+                Id = id
+            };
+
+            var foundObserver = await _mediator.Send(observerRequest);
+            if (!foundObserver)
+            {
+                return NotFound(id);
             }
 
-            var result = await _mediator.Send(_mapper.Map<RemoveDeviceIdCommand>(new RemoveDeviceIdModel { IdObserver = id }));
+            var request = _mapper.Map<RemoveDeviceIdCommand>(new RemoveDeviceIdModel {Id = id});
+            await _mediator.Send(request);
 
-            return Ok(result);
+            return Ok();
         }
 
         [HttpPost]
@@ -234,7 +242,7 @@ namespace VoteMonitor.Api.Observer.Controllers
         {
             if (!ControllerExtensions.ValidateGenerateObserversNumber(count))
             {
-                return BadRequest("Incorrect parameter supplied, please check that paramter is between boundaries: "
+                return BadRequest("Incorrect parameter supplied, please check that parameter is between boundaries: "
                     + ControllerExtensions.LOWER_OBS_VALUE + " - " + ControllerExtensions.UPPER_OBS_VALUE);
             }
 
