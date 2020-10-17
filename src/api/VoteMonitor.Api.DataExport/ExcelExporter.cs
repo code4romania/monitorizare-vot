@@ -15,7 +15,7 @@ namespace VoteMonitor.Api.DataExport
             bool appendDateTimeInFileName = false, string sheetName = Utility.DEFAULT_SHEET_NAME);
     }
 
-    public class Utility
+    public partial class Utility
     {
         public const string DEFAULT_SHEET_NAME = "Sheet1";
         public const string DEFAULT_FILE_DATETIME = "yyyyMMdd_HHmm";
