@@ -5,7 +5,7 @@ using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.DataExport.Queries
 {
-    public class GetDataForExport : IRequest<List<ExportModel>>
+    public class GetDataForExport : IRequest<IEnumerable<ExportModel>>
     {
         public int? NgoId { get; set; }
         public int? ObserverId { get; set; }

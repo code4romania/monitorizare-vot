@@ -13,7 +13,7 @@ using System.Linq;
 
 namespace VoteMonitor.Api.DataExport.Handlers
 {
-    public class DataExportQueryHandler : IRequestHandler<GetDataForExport, List<ExportModel>>
+    public class DataExportQueryHandler : IRequestHandler<GetDataForExport, IEnumerable<ExportModel>>
     {
         private readonly VoteMonitorContext _context;
         private readonly ILogger _logger;
@@ -24,7 +24,7 @@ namespace VoteMonitor.Api.DataExport.Handlers
             _logger = logger;
         }
 
-        public async Task<List<ExportModel>> Handle(GetDataForExport request, CancellationToken cancellationToken)
+        public Task<IEnumerable<ExportModel>> Handle(GetDataForExport request, CancellationToken cancellationToken)
         {
             DynamicParameters parameter = new DynamicParameters();
             parameter.Add("From", request.From ?? new DateTime(2019, 11, 08, 6, 0, 0));
