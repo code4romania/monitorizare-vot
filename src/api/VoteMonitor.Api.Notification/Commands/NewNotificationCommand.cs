@@ -10,5 +10,6 @@ namespace VoteMonitor.Api.Notification.Commands
         public string Title { get; set; }
         public string Message { get; set; }
         public List<string> Recipients { get; set; }
+        public int SenderAdminId { get; set; }
     }
 }
