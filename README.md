@@ -19,7 +19,7 @@ The app also has a web version, available for every citizen who wants to report 
 
 ## Contributing
 
-This project is built by amazing volunteers and you can be one of them! Here's a list of ways in [which you can contribute to this project](.github/CONTRIBUTING.MD).
+This project is built by amazing volunteers and you can be one of them! Here's a list of ways in [which you can contribute to this project](https://github.com/code4romania/.github/blob/master/CONTRIBUTING.md).
 
 ## Built With
 
@@ -29,7 +29,7 @@ This project is built by amazing volunteers and you can be one of them! Here's a
 
 ## Repos and projects
 
-![alt text](https://raw.githubusercontent.com/code4romania/monitorizare-vot/develop/vote_monitor_diagram.png)
+Please see more info and docs about the MV apps [in the wiki](https://github.com/code4romania/monitorizare-vot/wiki).
 
 Client apps:
 
@@ -53,6 +53,11 @@ src\api\VotingIrregularities.Domain.Seed> dotnet run
 
 **Important:** the migrate action with delete the data from the following tables: `Answers`, `Questions`, `FormSections`, `Options`.
 
+## Test data
+
+- to test admin features, you will need to add a test NGO and a test NGO admin linked to that NGO
+- to test observer features, you will need to add observer accounts
+
 ## Deployment
 
 1. install .NetCore (refer to the [Built With](#built-with) section for the proper version) (Open Source/Free/Multiplatform) from [here](https://www.microsoft.com/net/core#windows)
@@ -68,6 +73,19 @@ src\api\VotingIrregularities.Domain.Seed> dotnet run
     ```
   
 4. browse to indicated address: <http://localhost:5000/swagger>
+
+## Testing out the API
+
+Use the swagger UI to understand the endpoints and routes; you can also use the UI for token generation (testing out the `POST /api/v1/access/token` route)
+For the rest of the endpoints you will need to use this token and inject a header (this is not currently possible using the swagger UI - it is probably a configuration effort - any hints are welcome)
+
+The auth header is 
+
+```
+Authorization: Bearer {token}
+```
+
+and it needs to be injected into each request.
 
 ## Feedback
 

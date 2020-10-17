@@ -150,7 +150,8 @@ namespace VoteMonitor.Api.Auth.Controllers
                 return new ClaimsIdentity(await GetGenericIdentity(request.User, userInfo.IdNgo.ToString(), UserType.NgoAdmin.ToString()),
                     new[]
                     {
-                    new Claim(ClaimsHelper.Organizer, userInfo.Organizer.ToString(), ClaimValueTypes.Boolean)
+                        new Claim(ClaimsHelper.Organizer, userInfo.Organizer.ToString(), ClaimValueTypes.Boolean),
+                        new Claim(ClaimsHelper.NgoAdminIdProperty, userInfo.NgoAdminId.ToString(),  ClaimValueTypes.Integer32)
                     });
             }
             else
@@ -182,7 +183,7 @@ namespace VoteMonitor.Api.Auth.Controllers
                 return new ClaimsIdentity(await GetGenericIdentity(request.User, userInfo.IdNgo.ToString(), UserType.Observer.ToString()),
                     new[]
                     {
-                    new Claim(ClaimsHelper.ObserverIdProperty, userInfo.ObserverId.ToString(), ClaimValueTypes.Boolean)
+                        new Claim(ClaimsHelper.ObserverIdProperty, userInfo.ObserverId.ToString(), ClaimValueTypes.String)
                     });
             }
 

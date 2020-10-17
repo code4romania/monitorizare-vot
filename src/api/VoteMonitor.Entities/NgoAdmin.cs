@@ -1,4 +1,6 @@
-﻿namespace VoteMonitor.Entities
+﻿using System.Collections.Generic;
+
+namespace VoteMonitor.Entities
 {
     public partial class NgoAdmin
     {
@@ -8,5 +10,7 @@
         public string Password { get; set; }
 
         public virtual Ngo Ngo { get; set; }
+        public virtual ICollection<Notification> NotificationsSent { get; set; }
+
     }
 }
