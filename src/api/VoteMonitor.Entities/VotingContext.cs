@@ -159,6 +159,9 @@ namespace VoteMonitor.Entities
                 entity.HasIndex(e => e.IdPollingStation)
                     .HasName("IX_Answer_IdPollingStation");
 
+                entity.HasIndex(e => new { e.IdObserver, e.CountyCode, e.PollingStationNumber, e.LastModified })
+                    .HasName("IX_Answer_IdObserver_CountyCode_PollingStationNumber_LastModified");
+
                 entity.Property(e => e.LastModified)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("getdate()");
