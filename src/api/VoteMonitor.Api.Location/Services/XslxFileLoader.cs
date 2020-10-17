@@ -3,6 +3,7 @@ using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using VoteMonitor.Api.Location.Models;
@@ -12,10 +13,26 @@ namespace VoteMonitor.Api.Location.Services
     public class XlsxFileLoader : IFileLoader
     {
         private static readonly string[] SUFFIXES = { ".xlsx", ".xls" };
-        private static readonly int COD_JUDET_INDEX = 1;
-        private static readonly int ADRESA_INDEX = 7;
-        private static readonly int SIRUTA_INDEX = 3;
-        private static readonly int NR_SECTIE_INDEX = 5;
+        private static PollingStationExcelHeader header = new PollingStationExcelHeader();
+
+        public byte[] ExportHeaderInformation()
+        {
+            using (var excelPackage = new ExcelPackage())
+            {
+                var workSheet = excelPackage.Workbook.Worksheets.Add("HeaderInfo");
+
+                var maximumColumnIndex = header.Columns.OrderByDescending(x => x.Index).FirstOrDefault().Index;
+
+                List<string> headerColumns = new List<string>();
+
+                for (int i = 1; i <= maximumColumnIndex; i++)
+                {
+                    workSheet.Cells[1, i].Value = header.Columns.FirstOrDefault(x => x.Index == i)?.Name ?? "not used";
+                }
+
+                return excelPackage.GetAsByteArray();
+            }
+        }
 
         public async Task<List<PollingStationDTO>> ImportFileAsync(IFormFile file)
         {
@@ -38,16 +55,15 @@ namespace VoteMonitor.Api.Location.Services
                     ExcelWorksheet workSheet = excelPackage.Workbook.Worksheets[0];
                     for (int index = 2; index < workSheet.Dimension.Rows; ++index)
                     {
-                        if (workSheet.Cells[index, NR_SECTIE_INDEX].Text.Length == 0)
+                        if (workSheet.Cells[index, header[nameof(PollingStationDTO.NrSV)].Index].Text.Length == 0)
                         {
                             continue;
                         }
-
                         PollingStationDTO dto = new PollingStationDTO();
-                        dto.Adresa = workSheet.Cells[index, ADRESA_INDEX].Text;
-                        dto.CodJudet = workSheet.Cells[index, COD_JUDET_INDEX].Text;
-                        Int32.TryParse(workSheet.Cells[index, SIRUTA_INDEX].Text, out int codValue);
-                        Int32.TryParse(workSheet.Cells[index, NR_SECTIE_INDEX].Text, out int nrSectieValue);
+                        dto.Adresa = workSheet.Cells[index, header[nameof(PollingStationDTO.Adresa)].Index].Text;
+                        dto.CodJudet = workSheet.Cells[index, header[nameof(PollingStationDTO.CodJudet)].Index].Text;
+                        Int32.TryParse(workSheet.Cells[index, header[nameof(PollingStationDTO.CodSiruta)].Index].Text, out int codValue);
+                        Int32.TryParse(workSheet.Cells[index, header[nameof(PollingStationDTO.NrSV)].Index].Text, out int nrSectieValue);
                         dto.CodSiruta = codValue;
                         dto.NrSV = nrSectieValue;
                         resultList.Add(dto);
