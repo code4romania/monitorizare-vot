@@ -7,7 +7,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using VoteMonitor.Api.DataExport.Queries;
 using VoteMonitor.Entities;
-using System.Text;
 using Dapper;
 using System.Linq;
 
@@ -26,106 +25,75 @@ namespace VoteMonitor.Api.DataExport.Handlers
 
         public Task<IEnumerable<ExportModel>> Handle(GetDataForExport request, CancellationToken cancellationToken)
         {
-            DynamicParameters parameter = new DynamicParameters();
-            parameter.Add("From", request.From ?? new DateTime(2019, 11, 08, 6, 0, 0));
+            var query = @" SELECT
+            NEWID() as Id,   
+			obs.Phone as [ObserverPhone],
+			obs.IdNgo,
+			f.Code as FormCode,
+			q.Text as QuestionText,
+			o.Text as [OptionText],
+			a.[Value] as [AnswerFreeText],
+			n.Text as NoteText,
+			n.AttachementPath as [NoteAttachmentPath],
+			a.LastModified,
+			a.CountyCode,
+			a.PollingStationNumber
+		FROM 
+			(Answers a 
+			INNER JOIN Observers obs
+				ON a.IdObserver = obs.Id
+			INNER JOIN OptionsToQuestions oq
+				ON a.IdOptionToQuestion = oq.Id
+			INNER JOIN Options o 
+				ON oq.IdOption = o.Id
+			INNER JOIN Questions q
+				ON oq.IdQuestion = q.Id
+			INNER JOIN FormSections fs
+				ON q.IdSection = fs.Id
+			INNER JOIN Forms f
+				ON fs.IdForm = f.Id)
+			LEFT JOIN Notes n
+				ON n.IdQuestion = q.Id AND n.IdObserver = obs.Id AND n.IdPollingStation = a.IdPollingStation
+		WHERE
+			a.LastModified >= @from
+            AND obs.IsTestObserver = 0
+            ";
 
-            // buld query
-            var query = new StringBuilder()
-                .AppendLine(";WITH FilteredAnswer AS (")
-                .AppendLine("	SELECT")
-                .AppendLine("		[Value] AS AnswerFreeText")
-                .AppendLine("		, LastModified")
-                .AppendLine("		, CountyCode")
-                .AppendLine("		, PollingStationNumber")
-                .AppendLine("		, IdObserver")
-                .AppendLine("		, IdOptionToQuestion")
-                .AppendLine("		, IdPollingStation")
-                .AppendLine("	FROM Answers")
-                .AppendLine("	WHERE ")
-                .AppendLine("		LastModified >= @From");
+            DynamicParameters parameters = new DynamicParameters();
+            parameters.Add("from", request.From ?? new DateTime(2019, 11, 08, 6, 0, 0));
 
-            // request.To
-            if (request.ApplyFilters && request.To.HasValue)
+            if (request.ApplyFilters)
             {
-                query.AppendLine("		AND LastModified <= @To");
-                parameter.Add("To", request.To ?? DateTime.Now.AddDays(2));
-            }
-            // request.County
-            if (request.ApplyFilters && !string.IsNullOrEmpty(request.County))
-            {
-                query.AppendLine("		AND CountyCode = @CountyCode");
-                parameter.Add("CountyCode", request.County);
-            }
-            // request.PollingStationNumber
-            if (request.ApplyFilters && request.PollingStationNumber.HasValue)
-            {
-                query.AppendLine("		AND PollingStationNumber = @PollingStationNumber");
-                parameter.Add("PollingStationNumber", request.PollingStationNumber);
-            }
+                if (request.To.HasValue)
+                {
+                    query += " AND a.LastModified <= @to ";
+                    parameters.Add("to", request.To ?? DateTime.Now.AddDays(2));
+                }
 
-            query
-                .AppendLine(")") // ends FilteredAnswer
-                .AppendLine(", FilteredObservers AS (")
-                .AppendLine("	SELECT")
-                .AppendLine("		Id")
-                .AppendLine("		, Phone as ObserverPhone")
-                .AppendLine("		, IdNgo")
-                .AppendLine("	FROM Observers")
-                .AppendLine("	WHERE ")
-                .AppendLine("		IsTestObserver = 0");
+                if (request.ObserverId.HasValue)
+                {
+                    query += " AND obs.Id = @ObserverId ";
+                    parameters.Add("ObserverId", request.ObserverId);
+                }
 
-            // request.ObserverId
-            if (request.ApplyFilters && request.ObserverId.HasValue)
-            {
-                query.AppendLine("		AND Id = @ObserverId");
-                parameter.Add("ObserverId", request.ObserverId);
-            }
-            // request.NgoId
-            if (request.ApplyFilters && request.NgoId.HasValue)
-            {
-                query.AppendLine("		AND IdNgo = @IdNgo");
-                parameter.Add("IdNgo", request.NgoId);
-            }
+                if (request.NgoId.HasValue)
+                {
+                    query += " AND obs.IdNgo = @IdNgo ";
+                    parameters.Add("IdNgo", request.NgoId);
+                }
 
-            query
-                .AppendLine(")") // ends FilteredObservers
-                .AppendLine(", PreFiltered AS (")
-                .AppendLine(" SELECT  ")
-                .AppendLine("	obs.ObserverPhone")
-                .AppendLine("	, obs.IdNgo")
-                .AppendLine("	, f.Code as FormCode")
-                .AppendLine("	, q.Text as QuestionText")
-                .AppendLine("	, o.Text as OptionText")
-                .AppendLine("	, a.AnswerFreeText")
-                .AppendLine("	, a.CountyCode")
-                .AppendLine("	, a.PollingStationNumber")
-                .AppendLine("	, q.Id AS QuestionId")
-                .AppendLine("	, obs.Id AS ObserverId")
-                .AppendLine("	, a.IdPollingStation")
-                .AppendLine("	FROM ")
-                .AppendLine("		FilteredAnswer AS a")
-                .AppendLine("		INNER JOIN FilteredObservers AS obs ON a.IdObserver = obs.Id")
-                .AppendLine("		INNER JOIN OptionsToQuestions AS oq ON a.IdOptionToQuestion = oq.Id")
-                .AppendLine("		INNER JOIN Options AS o ON oq.IdOption = o.Id")
-                .AppendLine("		INNER JOIN Questions AS q ON oq.IdQuestion = q.Id")
-                .AppendLine("		INNER JOIN FormSections AS fs ON q.IdSection = fs.Id")
-                .AppendLine("		INNER JOIN Forms f ON fs.IdForm = f.Id")
-                .AppendLine(")")
-                .AppendLine("SELECT ")
-                .AppendLine("    NEWID() as Id ")
-                .AppendLine("	, ObserverPhone")
-                .AppendLine("	, IdNgo")
-                .AppendLine("	, FormCode")
-                .AppendLine("	, QuestionText")
-                .AppendLine("	, OptionText")
-                .AppendLine("	, AnswerFreeText")
-                .AppendLine("	, n.Text as NoteText")
-                .AppendLine("	, n.AttachementPath as NoteAttachmentPath")
-                .AppendLine("	, LastModified")
-                .AppendLine("	, CountyCode")
-                .AppendLine("	, PollingStationNumber")
-                .AppendLine("FROM PreFiltered")
-                .AppendLine("LEFT JOIN Notes AS n ON n.IdQuestion = QuestionId AND n.IdObserver = ObserverId AND n.IdPollingStation = PreFiltered.IdPollingStation");
+                if (!string.IsNullOrEmpty(request.County))
+                {
+                    query += " AND a.CountyCode = @County ";
+                    parameters.Add("County", request.County);
+                }
+
+                if (request.PollingStationNumber.HasValue)
+                {
+                    query += " AND a.PollingStationNumber = @PollingStationNumber ";
+                    parameters.Add("PollingStationNumber", request.PollingStationNumber);
+                }
+            }
 
             IEnumerable<ExportModel> data = Enumerable.Empty<ExportModel>();
             using (var db = _context.Database.GetDbConnection())
@@ -133,7 +101,7 @@ namespace VoteMonitor.Api.DataExport.Handlers
                 try
                 {
                     db.Open();
-                    data = db.Query<ExportModel>(sql: query.ToString(), param: parameter, commandTimeout: 60);
+                    data = db.Query<ExportModel>(sql: query.ToString(), param: parameters, commandTimeout: 60);
                 }
                 catch (Exception e)
                 {
