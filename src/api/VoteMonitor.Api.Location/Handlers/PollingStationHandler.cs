@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using VoteMonitor.Api.Location.Commands;
+using VoteMonitor.Api.Location.Models;
 using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Location.Handlers
@@ -27,43 +28,17 @@ namespace VoteMonitor.Api.Location.Handlers
 
         public async Task<int> Handle(PollingStationCommand request, CancellationToken cancellationToken)
         {
-            var random = new Random();
 
             try
             {
-                //import the new entities
                 using (var transaction = await _context.Database.BeginTransactionAsync(cancellationToken))
                 {
-                    var id = 100;
-                    var newPollingStations = new List<PollingStation>();
-                    var counties = _context.Counties.ToDictionary(c => c.Code, c => c.Id);
+                    var countiesFromDatabase = _context.Counties.ToList();
 
-                    foreach (var record in request.PollingStationsDTOs)
-                    {
-                        var pollingStation = _mapper.Map<PollingStation>(record);
-                        pollingStation.Id = id++;
-                        pollingStation.IdCounty = counties[record.CodJudet];//county.Id;
-                        pollingStation.Coordinates = null;
-                        pollingStation.TerritoryCode = random.Next(10000).ToString();
-
-                        newPollingStations.Add(pollingStation);
-                    }
-
+                    List<PollingStation> newPollingStations = CreatePollingStationEntitiesFromDto(request.PollingStationsDTOs, countiesFromDatabase);
                     _context.BulkInsert(newPollingStations);
 
-                    foreach (var county in _context.Counties)
-                    {
-                        if (!_context.PollingStations.Any(p => p.IdCounty == county.Id))
-                        {
-                            continue;
-                        }
-
-                        var maxPollingStation = _context.PollingStations
-                            .Where(p => p.IdCounty == county.Id)
-                            .Count();
-                        county.NumberOfPollingStations = maxPollingStation;
-                        _context.Counties.Update(county);
-                    }
+                    UpdateCountiesPollingStationCounter(countiesFromDatabase, newPollingStations);
 
                     var result = await _context.SaveChangesAsync(cancellationToken);
 
@@ -77,6 +52,47 @@ namespace VoteMonitor.Api.Location.Handlers
             }
 
             return -1;
+        }
+
+        private void UpdateCountiesPollingStationCounter(List<County> countiesFromDatabase, List<PollingStation> newPollingStations)
+        {
+            var idsOfCountiesToBeUpdated = newPollingStations.Select(x => x.IdCounty).Distinct();
+            var countiesToBeUpdated = countiesFromDatabase.Where(c => idsOfCountiesToBeUpdated.Any(id => c.Id == id));
+
+            foreach (var county in countiesToBeUpdated)
+            {
+                county.NumberOfPollingStations = _context.PollingStations
+                    .Where(p => p.IdCounty == county.Id)
+                    .Count();
+                _context.Counties.Update(county);
+            }
+        }
+
+        private List<PollingStation> CreatePollingStationEntitiesFromDto(List<PollingStationDTO> pollingStationDtos, List<County> countiesFromDatabase)
+        {
+            var random = new Random();
+            var id = 100;
+
+            var newPollingStations = new List<PollingStation>();
+            foreach (var record in pollingStationDtos)
+            {
+                var countyForPollingStation = countiesFromDatabase.FirstOrDefault(x => x.Code.Equals(record.CodJudet, StringComparison.OrdinalIgnoreCase));
+                if (countyForPollingStation == null)
+                {
+                    throw new KeyNotFoundException($"County {record.CodJudet} not found in the database");
+                }
+
+                var pollingStation = _mapper.Map<PollingStation>(record);
+                pollingStation.Id = id++;
+                pollingStation.IdCounty = countyForPollingStation.Id;
+                pollingStation.Coordinates = null;
+                pollingStation.TerritoryCode = random.Next(10000).ToString();
+
+                newPollingStations.Add(pollingStation);
+
+            }
+
+            return newPollingStations;
         }
     }
 }
