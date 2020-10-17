@@ -77,17 +77,19 @@ namespace VoteMonitor.Api.Location.Handlers
             foreach (var record in pollingStationDtos)
             {
                 var countyForPollingStation = countiesFromDatabase.FirstOrDefault(x => x.Code.Equals(record.CodJudet, StringComparison.OrdinalIgnoreCase));
-
-                if (countyForPollingStation != null)
+                if (countyForPollingStation == null)
                 {
-                    var pollingStation = _mapper.Map<PollingStation>(record);
-                    pollingStation.Id = id++;
-                    pollingStation.IdCounty = countyForPollingStation.Id;
-                    pollingStation.Coordinates = null;
-                    pollingStation.TerritoryCode = random.Next(10000).ToString();
-
-                    newPollingStations.Add(pollingStation);
+                    throw new KeyNotFoundException($"County {record.CodJudet} not found in the database")
                 }
+
+                var pollingStation = _mapper.Map<PollingStation>(record);
+                pollingStation.Id = id++;
+                pollingStation.IdCounty = countyForPollingStation.Id;
+                pollingStation.Coordinates = null;
+                pollingStation.TerritoryCode = random.Next(10000).ToString();
+
+                newPollingStations.Add(pollingStation);
+
             }
 
             return newPollingStations;
