@@ -36,17 +36,17 @@ namespace VoteMonitor.Api.DataExport.Controllers
             };
 
             var data = await _mediator.Send(filter);
-            var excelFileBytes = await _mediator.Send(new GenerateExcelFile(data));
+            var csvFileBytes = await _mediator.Send(new GenerateCSVFile(data));
 
-            if (excelFileBytes == null || excelFileBytes.Length == 0)
+            if (csvFileBytes == null || csvFileBytes.Length == 0)
             {
                 return NotFound();
             }
 
             return File(
-                fileContents: excelFileBytes,
-                contentType: Utility.EXCEL_MEDIA_TYPE,
-                fileDownloadName: "data.xlsx"
+                fileContents: csvFileBytes,
+                contentType: Utility.CSV_MEDIA_TYPE,
+                fileDownloadName: "data.csv"
             );
         }
     }
