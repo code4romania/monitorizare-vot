@@ -44,12 +44,14 @@ namespace VoteMonitor.Api.Auth.Handlers
             // Only if device lock is enabled verify the DeviceId
             if (_mobileSecurityOptions.LockDevice)
             {
-                userQuery = userQuery.Where(o => string.IsNullOrWhiteSpace(o.MobileDeviceId) || o.MobileDeviceId == message.UDID);
+                userQuery = userQuery.Where(observer => string.IsNullOrWhiteSpace(observer.MobileDeviceId)
+                || observer.MobileDeviceId == message.MobileDeviceId
+                || (observer.MobileDeviceIdType == MobileDeviceIdType.UserGeneratedGuid && message.MobileDeviceIdType == MobileDeviceIdType.FcmToken));
             }
 
-            var userinfo = await userQuery.FirstOrDefaultAsync<Observer>(cancellationToken: cancellationToken);
+            var userInfo = await userQuery.FirstOrDefaultAsync(cancellationToken: cancellationToken);
 
-            if (userinfo == null)
+            if (userInfo == null)
             {
                 return new RegisteredObserverModel
                 {
@@ -59,10 +61,12 @@ namespace VoteMonitor.Api.Auth.Handlers
 
             return new RegisteredObserverModel
             {
-                ObserverId = userinfo.Id,
-                IdNgo = userinfo.IdNgo,
+                ObserverId = userInfo.Id,
+                IdNgo = userInfo.IdNgo,
                 IsAuthenticated = true,
-                FirstAuthentication = string.IsNullOrWhiteSpace(userinfo.MobileDeviceId) && _mobileSecurityOptions.LockDevice
+                ShouldRegisterMobileDeviceId = _mobileSecurityOptions.LockDevice &&
+                                            (string.IsNullOrWhiteSpace(userInfo.MobileDeviceId)
+                                            || (userInfo.MobileDeviceIdType == MobileDeviceIdType.UserGeneratedGuid && message.MobileDeviceIdType == MobileDeviceIdType.FcmToken))
             };
         }
     }

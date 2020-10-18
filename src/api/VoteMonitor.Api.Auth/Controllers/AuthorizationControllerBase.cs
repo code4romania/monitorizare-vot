@@ -13,6 +13,7 @@ using VoteMonitor.Api.Core;
 using VoteMonitor.Api.Core.Extensions;
 using VoteMonitor.Api.Core.Models;
 using VoteMonitor.Api.Core.Options;
+using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Auth.Controllers
 {
@@ -20,7 +21,6 @@ namespace VoteMonitor.Api.Auth.Controllers
     {
         private readonly IMediator _mediator;
         private readonly JwtIssuerOptions _jwtOptions;
-        private readonly MobileSecurityOptions _mobileSecurityOptions;
 
         public AuthorizationControllerBase(IOptions<JwtIssuerOptions> jwtOptions, IMediator mediator, IOptions<MobileSecurityOptions> mobileSecurityOptions)
         {
@@ -28,10 +28,9 @@ namespace VoteMonitor.Api.Auth.Controllers
             ThrowIfInvalidOptions(_jwtOptions);
 
             _mediator = mediator;
-            _mobileSecurityOptions = mobileSecurityOptions.Value;
         }
 
-        protected async Task<ClaimsIdentity> GetGenericIdentity(string name, string idNgo, string usertype)
+        protected async Task<ClaimsIdentity> GetGenericIdentity(string name, string idNgo, string userType)
         {
             return new ClaimsIdentity(
                 new GenericIdentity(name, ClaimsHelper.GenericIdProvider),
@@ -44,7 +43,7 @@ namespace VoteMonitor.Api.Auth.Controllers
                         ClaimValueTypes.Integer64),
                     // Custom
                     new Claim(ClaimsHelper.IdNgo, idNgo),
-                    new Claim(ClaimsHelper.UserType, usertype)
+                    new Claim(ClaimsHelper.UserType, userType)
                 });
         }
 
@@ -64,9 +63,9 @@ namespace VoteMonitor.Api.Auth.Controllers
             return encodedJwt;
         }
 
-        protected async Task<ClaimsIdentity> GetClaimsIdentity(string userName, string password, string uniqueId)
+        protected async Task<ClaimsIdentity> GetClaimsIdentity(string userName, string password, string mobileDeviceId, MobileDeviceIdType mobileDeviceIdType)
         {
-            if (string.IsNullOrEmpty(uniqueId))
+            if (string.IsNullOrEmpty(mobileDeviceId))
             {
                 var userInfo = await _mediator.Send(new NgoAdminApplicationUser
                 {
@@ -94,7 +93,8 @@ namespace VoteMonitor.Api.Auth.Controllers
             {
                 Phone = userName,
                 Pin = password,
-                UDID = uniqueId
+                MobileDeviceId = mobileDeviceId,
+                MobileDeviceIdType = mobileDeviceIdType
             });
 
             if (!mobileUserInfo.IsAuthenticated)
@@ -102,12 +102,13 @@ namespace VoteMonitor.Api.Auth.Controllers
                 return await Task.FromResult<ClaimsIdentity>(null);
             }
 
-            if (mobileUserInfo.FirstAuthentication && _mobileSecurityOptions.LockDevice)
+            if (mobileUserInfo.ShouldRegisterMobileDeviceId)
             {
                 await
                     _mediator.Send(new RegisterDeviceId
                     {
-                        MobileDeviceId = uniqueId,
+                        MobileDeviceId = mobileDeviceId,
+                        MobileDeviceIdType = mobileDeviceIdType,
                         ObserverId = mobileUserInfo.ObserverId
                     });
             }

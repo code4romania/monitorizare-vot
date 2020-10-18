@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using VoteMonitor.Api.Auth.Models;
 using VoteMonitor.Api.Core.Models;
 using VoteMonitor.Api.Core.Options;
+using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Auth.Controllers
 {
@@ -42,7 +43,7 @@ namespace VoteMonitor.Api.Auth.Controllers
             }
 
             string token;
-            var identity = await GetClaimsIdentity(request.User, request.Password, request.UniqueId);
+            var identity = await GetClaimsIdentity(request.User, request.Password, request.UniqueId, MobileDeviceIdType.UserGeneratedGuid);
 
             var haveUniqueId = !string.IsNullOrEmpty(request.UniqueId);
 

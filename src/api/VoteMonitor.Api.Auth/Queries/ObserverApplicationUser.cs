@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using System.ComponentModel.DataAnnotations;
 using VoteMonitor.Api.Auth.Models;
+using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Auth.Queries
 {
@@ -27,6 +28,12 @@ namespace VoteMonitor.Api.Auth.Queries
         /// This is the unique identifier of the mobile device
         /// </summary>
         [Required(AllowEmptyStrings = false)]
-        public string UDID { get; set; }
+        public string MobileDeviceId { get; set; }
+
+
+        /// <summary>
+        /// This is the type of unique identifier from the mobile device.
+        /// </summary>
+        public MobileDeviceIdType MobileDeviceIdType { get; set; }
     }
 }

@@ -10,6 +10,7 @@ using VoteMonitor.Api.Core.Commands;
 using VoteMonitor.Api.Core.Extensions;
 using VoteMonitor.Api.Core.Models;
 using VoteMonitor.Api.Core.Options;
+using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Auth.Controllers
 {
@@ -46,7 +47,7 @@ namespace VoteMonitor.Api.Auth.Controllers
             }
 
             string token;
-            var identity = await GetClaimsIdentity(request.User, request.Password, request.FcmToken);
+            var identity = await GetClaimsIdentity(request.User, request.Password, request.FcmToken, MobileDeviceIdType.FcmToken);
 
             var haveFcmToken = !string.IsNullOrEmpty(request.FcmToken);
 
@@ -67,7 +68,7 @@ namespace VoteMonitor.Api.Auth.Controllers
                 {
                     ChannelName = request.ChannelName,
                     ObserverId = observerId.Value,
-                    Token = request.FcmToken
+                    Token = request.FcmToken,
                 }
                 );
 

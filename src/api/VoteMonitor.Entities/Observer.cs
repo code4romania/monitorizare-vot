@@ -27,5 +27,6 @@ namespace VoteMonitor.Entities
         public virtual ICollection<PollingStationInfo> PollingStationInfos { get; set; }
         public virtual Ngo Ngo { get; set; }
         public virtual ICollection<NotificationRecipient> Notifications { get; set; }
+        public MobileDeviceIdType MobileDeviceIdType { get; set; }
     }
 }
