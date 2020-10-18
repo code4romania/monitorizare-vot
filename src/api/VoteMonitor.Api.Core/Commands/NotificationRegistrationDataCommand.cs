@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace VoteMonitor.Api.Notification.Commands
+namespace VoteMonitor.Api.Core.Commands
 {
     public class NotificationRegistrationDataCommand : IRequest<int>
     {

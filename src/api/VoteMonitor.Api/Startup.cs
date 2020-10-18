@@ -76,7 +76,7 @@ namespace VoteMonitor.Api
             yield return Assembly.GetAssembly(typeof(Startup));
 
             yield return typeof(Answer.Controllers.AnswersController).GetTypeInfo().Assembly;
-            yield return typeof(Auth.Controllers.Authorization).GetTypeInfo().Assembly;
+            yield return typeof(Auth.Controllers.AuthorizationV1Controller).GetTypeInfo().Assembly;
             yield return typeof(County.Controllers.CountyController).GetTypeInfo().Assembly;
             yield return typeof(DataExport.Controllers.DataExportController).GetTypeInfo().Assembly;
             yield return typeof(Form.Controllers.FormController).GetTypeInfo().Assembly;
