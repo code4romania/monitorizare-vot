@@ -30,7 +30,6 @@ namespace VoteMonitor.Api.Auth.Queries
         [Required(AllowEmptyStrings = false)]
         public string MobileDeviceId { get; set; }
 
-
         /// <summary>
         /// This is the type of unique identifier from the mobile device.
         /// </summary>

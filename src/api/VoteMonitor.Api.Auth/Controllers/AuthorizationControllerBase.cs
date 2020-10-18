@@ -99,13 +99,12 @@ namespace VoteMonitor.Api.Auth.Controllers
 
             if (!mobileUserInfo.IsAuthenticated)
             {
-                return await Task.FromResult<ClaimsIdentity>(null);
+                return null;
             }
 
             if (mobileUserInfo.ShouldRegisterMobileDeviceId)
             {
-                await
-                    _mediator.Send(new RegisterDeviceId
+                await _mediator.Send(new RegisterDeviceId
                     {
                         MobileDeviceId = mobileDeviceId,
                         MobileDeviceIdType = mobileDeviceIdType,

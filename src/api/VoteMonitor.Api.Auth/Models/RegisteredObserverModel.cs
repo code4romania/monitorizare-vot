@@ -13,6 +13,5 @@ namespace VoteMonitor.Api.Auth.Models
         /// </summary>
         public bool ShouldRegisterMobileDeviceId { get; set; }
         public int IdNgo { get; set; }
-        public MobileDeviceIdType MobileDeviceIdType { get; set; }
     }
 }

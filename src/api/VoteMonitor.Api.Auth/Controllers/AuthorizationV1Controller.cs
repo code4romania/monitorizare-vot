@@ -42,13 +42,12 @@ namespace VoteMonitor.Api.Auth.Controllers
                 return BadRequest(ModelState);
             }
 
-            string token;
             var identity = await GetClaimsIdentity(request.User, request.Password, request.UniqueId, MobileDeviceIdType.UserGeneratedGuid);
-
-            var haveUniqueId = !string.IsNullOrEmpty(request.UniqueId);
 
             if (identity == null)
             {
+                var haveUniqueId = !string.IsNullOrEmpty(request.UniqueId);
+
                 _logger.LogInformation($"Invalid {(haveUniqueId ? "Phone" : "UserName")} ({request.User}) or password");
 
                 return BadRequest(haveUniqueId
@@ -56,7 +55,7 @@ namespace VoteMonitor.Api.Auth.Controllers
                     : "Invalid credentials");
             }
 
-            token = GetTokenFromIdentity(identity);
+            var token = GetTokenFromIdentity(identity);
 
             // Serialize and return the response
             var response = new AuthenticationResponseModel

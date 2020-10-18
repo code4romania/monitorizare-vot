@@ -46,7 +46,6 @@ namespace VoteMonitor.Api.Auth.Controllers
                 return BadRequest(ModelState);
             }
 
-            string token;
             var identity = await GetClaimsIdentity(request.User, request.Password, request.FcmToken, MobileDeviceIdType.FcmToken);
 
             var haveFcmToken = !string.IsNullOrEmpty(request.FcmToken);
@@ -69,13 +68,12 @@ namespace VoteMonitor.Api.Auth.Controllers
                     ChannelName = request.ChannelName,
                     ObserverId = observerId.Value,
                     Token = request.FcmToken,
-                }
-                );
+                });
 
                 _logger.LogInformation($"Observer {observerId} registered for notifications");
             }
 
-            token = GetTokenFromIdentity(identity);
+            var token = GetTokenFromIdentity(identity);
 
             // Serialize and return the response
             var response = new AuthenticationResponseModel
