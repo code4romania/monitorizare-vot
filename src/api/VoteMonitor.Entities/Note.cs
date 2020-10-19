@@ -2,7 +2,7 @@
 
 namespace VoteMonitor.Entities
 {
-    public partial class Note
+    public partial class Note : IIdentifiableEntity
     {
         public int Id { get; set; }
         public string AttachementPath { get; set; }

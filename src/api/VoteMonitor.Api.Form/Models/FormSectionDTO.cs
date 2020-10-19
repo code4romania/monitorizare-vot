@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System.Text.Json.Serialization;
+using System.Collections.Generic;
+using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Form.Models
 {
-    public class FormSectionDTO
+    public class FormSectionDTO : IHierarchicalEntity<QuestionDTO>, IOrderedEntity, IIdentifiableEntity
     {
         public FormSectionDTO()
         {
@@ -13,7 +15,10 @@ namespace VoteMonitor.Api.Form.Models
         public string Code { get; set; }
         public string Description { get; set; }
         public int OrderNumber { get; set; }
+        public ICollection<QuestionDTO> Questions { get; set; }
 
-        public List<QuestionDTO> Questions { get; set; }
+        [JsonIgnore]
+        [Newtonsoft.Json.JsonIgnore]
+        ICollection<QuestionDTO> IHierarchicalEntity<QuestionDTO>.Children { get => Questions; set => Questions = value; }
     }
 }

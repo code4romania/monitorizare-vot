@@ -23,7 +23,7 @@ namespace VoteMonitor.Api.Form.QueryHandlers
         public async Task<List<FormDetailsModel>> Handle(FormVersionQuery request, CancellationToken cancellationToken)
         {
             var bringAllForms = request.Diaspora == null || request.Diaspora == true;
-            var returnDraft = request.Draft != false && request.Draft != null;
+            var returnDraft = request.Draft == true;
 
             var result = await _context.Forms
                 .AsNoTracking()

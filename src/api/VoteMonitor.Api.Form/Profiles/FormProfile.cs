@@ -7,7 +7,9 @@ namespace VoteMonitor.Api.Form.Profiles
     {
         public FormProfile()
         {
-            CreateMap<FormDTO, Entities.Form>().ForMember(dest => dest.FormSections, c => c.Ignore());
+            CreateMap<FormDTO, Entities.Form>()
+                .ForMember(dest => dest.FormSections, c => c.Ignore())
+                .ForMember(dest => dest.Id, c => c.Ignore());
         }
     }
 }

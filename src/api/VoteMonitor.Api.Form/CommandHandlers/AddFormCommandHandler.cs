@@ -1,10 +1,9 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 using VoteMonitor.Api.Form.Commands;
+using VoteMonitor.Api.Form.Mappers;
 using VoteMonitor.Api.Form.Models;
-using VoteMonitor.Api.Form.Queries;
 using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Form.CommandHandlers
@@ -12,24 +11,23 @@ namespace VoteMonitor.Api.Form.CommandHandlers
     public class AddFormCommandHandler : IRequestHandler<AddFormCommand, FormDTO>
     {
         private readonly VoteMonitorContext _context;
-        private readonly IMapper _mapper;
+        private readonly IFormMapper _formMapper;
 
-        public AddFormCommandHandler(VoteMonitorContext context, IMapper mapper)
+        public AddFormCommandHandler(VoteMonitorContext context, IFormMapper formMapper)
         {
             _context = context;
-            _mapper = mapper;
+            _formMapper = formMapper;
         }
 
         public async Task<FormDTO> Handle(AddFormCommand message, CancellationToken cancellationToken)
         {
-            var newForm = new Entities.Form();
-            var formMapper = new FormDbMapper(_context, _mapper);
+            Entities.Form form = null;
+            _formMapper.Map(ref form, message.Form);
 
-            formMapper.Map(ref newForm, message.Form);
-            _context.Forms.Add(newForm);
+            _context.Forms.Add(form);
 
             await _context.SaveChangesAsync();
-            message.Form.Id = newForm.Id;
+            message.Form.Id = form.Id;
             return message.Form;
         }
     }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace VoteMonitor.Entities
 {
-    public partial class Observer
+    public partial class Observer : IIdentifiableEntity
     {
         public Observer()
         {

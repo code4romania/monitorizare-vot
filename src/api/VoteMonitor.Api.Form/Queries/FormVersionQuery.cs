@@ -15,8 +15,4 @@ namespace VoteMonitor.Api.Form.Queries
             Draft = draft;
         }
     }
-
-    public class FormQuestionsQuery
-    {
-    }
 }

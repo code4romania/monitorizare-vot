@@ -1,6 +1,8 @@
-﻿namespace VoteMonitor.Api.Form.Models
+﻿using VoteMonitor.Entities;
+
+namespace VoteMonitor.Api.Form.Models
 {
-    public class OptionToQuestionDTO
+    public class OptionToQuestionDTO : IIdentifiableEntity
     {
         public int Id { get; set; }
         public int IdOption { get; set; }

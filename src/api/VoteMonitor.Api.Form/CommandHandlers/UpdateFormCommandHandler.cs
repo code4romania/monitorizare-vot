@@ -1,11 +1,10 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using System.Threading.Tasks;
 using VoteMonitor.Api.Form.Commands;
+using VoteMonitor.Api.Form.Mappers;
 using VoteMonitor.Api.Form.Models;
-using VoteMonitor.Api.Form.Queries;
 using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Form.CommandHandlers
@@ -13,12 +12,12 @@ namespace VoteMonitor.Api.Form.CommandHandlers
     public class UpdateFormCommandHandler : IRequestHandler<UpdateFormCommand, FormDTO>
     {
         private readonly VoteMonitorContext _context;
-        private readonly IMapper _mapper;
+        private readonly IFormMapper _formMapper;
 
-        public UpdateFormCommandHandler(VoteMonitorContext context, IMapper mapper)
+        public UpdateFormCommandHandler(VoteMonitorContext context, IFormMapper formMapper)
         {
             _context = context;
-            _mapper = mapper;
+            _formMapper = formMapper;
         }
 
         public async Task<FormDTO> Handle(UpdateFormCommand message, CancellationToken cancellationToken)
@@ -26,10 +25,10 @@ namespace VoteMonitor.Api.Form.CommandHandlers
             var form = await _context.Forms.Include(f => f.FormSections)
                 .ThenInclude(fs => fs.Questions)
                 .ThenInclude(q => q.OptionsToQuestions)
+                .ThenInclude(otq => otq.Option)
                 .FirstOrDefaultAsync(f => f.Id == message.Id);
 
-            var formUpdater = new FormDbMapper(_context, _mapper);
-            formUpdater.Map(ref form, message.Form);
+            _formMapper.Map(ref form, message.Form);
 
             await _context.SaveChangesAsync();
             return message.Form;
