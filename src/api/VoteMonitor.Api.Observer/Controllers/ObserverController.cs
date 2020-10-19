@@ -79,13 +79,6 @@ namespace VoteMonitor.Api.Observer.Controllers
                 ongId = NgoId;
             }
 
-            await _mediator.Send(
-                new UploadFileCommand
-                {
-                    File = file,
-                    UploadType = UploadType.Observers
-                });
-
             var counter = await _mediator.Send(new ImportObserversRequest
             {
                 File = file,
