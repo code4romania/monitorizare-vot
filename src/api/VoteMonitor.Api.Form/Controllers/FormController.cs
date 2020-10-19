@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using VoteMonitor.Api.Core.Options;
+using VoteMonitor.Api.Form.Commands;
 using VoteMonitor.Api.Form.Models;
 using VoteMonitor.Api.Form.Queries;
 
@@ -13,7 +14,7 @@ namespace VoteMonitor.Api.Form.Controllers
 {
     /// <inheritdoc />
     /// <summary>
-    /// Ruta Formular ofera suport pentru toate operatiile legate de formularele completate de observatori
+    /// Form Controller offers support for CRUD Operations on the forms completed by observers.
     /// </summary>
 
     [Route("api/v1/form")]
@@ -32,15 +33,16 @@ namespace VoteMonitor.Api.Form.Controllers
         [Authorize("Organizer")]
         public async Task<int> AddForm([FromBody]FormDTO newForm)
         {
-            FormDTO result = await _mediator.Send(new AddFormQuery { Form = newForm });
+            var result = await _mediator.Send(new AddFormCommand { Form = newForm });
             return result.Id;
         }
 
         [HttpPut("{formId}")]
         [Authorize("Organizer")]
-        public async Task UpdateForm(int formId, [FromBody]FormDTO newForm)
+        public async Task<int> UpdateForm(int formId, [FromBody]FormDTO newForm)
         {
-            FormDTO result = await _mediator.Send(new UpdateFormQuery { Id = formId, Form = newForm });
+            var result = await _mediator.Send(new UpdateFormCommand { Id = formId, Form = newForm });
+            return result.Id;
         }
         /// <summary>
         /// Returneaza versiunea tuturor formularelor sub forma unui array. 

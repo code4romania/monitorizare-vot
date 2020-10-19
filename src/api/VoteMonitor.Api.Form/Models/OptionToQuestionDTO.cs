@@ -2,6 +2,7 @@
 {
     public class OptionToQuestionDTO
     {
+        public int Id { get; set; }
         public int IdOption { get; set; }
         public string Text { get; set; }
         public bool IsFreeText { get; set; }

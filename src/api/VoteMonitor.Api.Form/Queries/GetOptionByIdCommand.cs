@@ -1,13 +1,13 @@
 ﻿using MediatR;
-using VoteMonitor.Api.Form.Models;
+using VoteMonitor.Api.Form.Models.Options;
 
 namespace VoteMonitor.Api.Form.Queries
 {
-    public class GetOptionByIdCommand : IRequest<OptionDto>
+    public class GetOptionByIdQuery : IRequest<OptionDTO>
     {
         public int OptionId { get; }
 
-        public GetOptionByIdCommand(int optionId)
+        public GetOptionByIdQuery(int optionId)
         {
             OptionId = optionId;
         }
