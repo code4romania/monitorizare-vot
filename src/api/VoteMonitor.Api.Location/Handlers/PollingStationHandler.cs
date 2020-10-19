@@ -8,12 +8,14 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using VoteMonitor.Api.Location.Commands;
+using VoteMonitor.Api.Location.Exceptions;
 using VoteMonitor.Api.Location.Models;
+using VoteMonitor.Api.Location.Models.ResultValues;
 using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Location.Handlers
 {
-    public class PollingStationHandler : IRequestHandler<PollingStationCommand, int>
+    public class PollingStationHandler : IRequestHandler<PollingStationCommand, PollingStationImportResultValue>
     {
         private readonly VoteMonitorContext _context;
         private readonly IMapper _mapper;
@@ -26,7 +28,7 @@ namespace VoteMonitor.Api.Location.Handlers
             _logger = logger;
         }
 
-        public async Task<int> Handle(PollingStationCommand request, CancellationToken cancellationToken)
+        public async Task<PollingStationImportResultValue> Handle(PollingStationCommand request, CancellationToken cancellationToken)
         {
 
             try
@@ -43,15 +45,14 @@ namespace VoteMonitor.Api.Location.Handlers
                     var result = await _context.SaveChangesAsync(cancellationToken);
 
                     transaction.Commit();
-                    return result;
+                    return PollingStationImportResultValue.SuccessValue;
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError("Error while importing polling station information ", ex);
+                return new PollingStationImportResultValue(ex);
             }
-
-            return -1;
         }
 
         private void UpdateCountiesPollingStationCounter(List<County> countiesFromDatabase, List<PollingStation> newPollingStations)
@@ -79,7 +80,7 @@ namespace VoteMonitor.Api.Location.Handlers
                 var countyForPollingStation = countiesFromDatabase.FirstOrDefault(x => x.Code.Equals(record.CodJudet, StringComparison.OrdinalIgnoreCase));
                 if (countyForPollingStation == null)
                 {
-                    throw new KeyNotFoundException($"County {record.CodJudet} not found in the database");
+                    throw new PollingStationImportException($"County {record.CodJudet} not found in the database");
                 }
 
                 var pollingStation = _mapper.Map<PollingStation>(record);
