@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using VoteMonitor.Api.Core;
 using VoteMonitor.Api.Location.Commands;
 using VoteMonitor.Api.Location.Models;
+using VoteMonitor.Api.Location.Models.ResultValues;
 using VoteMonitor.Api.Location.Queries;
 using VoteMonitor.Api.Location.Services;
 
@@ -109,12 +110,19 @@ namespace VoteMonitor.Api.Location.Controllers
 
             var result = await _mediator.Send(new PollingStationCommand(_fileLoader.ImportFileAsync(file).Result));
 
-            if (result == -1)
+            if (result.Success)
+            {
+                return Ok();
+            }
+            else if (result.Error.ErrorCode == PollingStationImportErrorCode.CountyNotFound)
+            {
+                return BadRequest(result.Error.Exception.Message);
+            }
+            else
             {
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
 
-            return Ok();
         }
     }
 }
