@@ -133,5 +133,14 @@ namespace VoteMonitor.Api.Location.Controllers
         {
             return File(_fileLoader.ExportHeaderInformation(), "application/octet-stream", "pollingStationHeader.xlsx");
         }
+
+        [HttpGet]
+        [Route("excelHeaderFile")]
+        [ProducesResponseType(typeof(byte[]), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult ExcelHeaderFile()
+        {
+            return File(_fileLoader.ExportHeaderInformation(), "application/octet-stream", "pollingStationHeader.xlsx");
+        }
     }
 }
