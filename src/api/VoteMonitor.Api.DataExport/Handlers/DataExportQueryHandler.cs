@@ -59,7 +59,7 @@ namespace VoteMonitor.Api.DataExport.Handlers
             AND obs.IsTestObserver = 0
             ";
 
-            DynamicParameters parameters = new DynamicParameters();
+            var parameters = new DynamicParameters();
             parameters.Add("from", request.From ?? new DateTime(2019, 11, 08, 6, 0, 0));
 
             if (request.ApplyFilters)
