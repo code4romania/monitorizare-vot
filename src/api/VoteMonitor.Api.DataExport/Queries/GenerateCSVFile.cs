@@ -1,14 +1,14 @@
 ﻿using MediatR;
 using System.Collections.Generic;
-using VoteMonitor.Entities;
+using VoteMonitor.Api.DataExport.Models;
 
 namespace VoteMonitor.Api.DataExport.Queries
 {
     public class GenerateCSVFile : IRequest<byte[]>
     {
-        public IEnumerable<ExportModel> Data { get; }
+        public IEnumerable<ExportModelDto> Data { get; }
 
-        public GenerateCSVFile(IEnumerable<ExportModel> data)
+        public GenerateCSVFile(IEnumerable<ExportModelDto> data)
         {
             Data = data;
         }

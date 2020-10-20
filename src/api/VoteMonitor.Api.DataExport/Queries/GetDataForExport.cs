@@ -1,11 +1,11 @@
 ﻿using MediatR;
 using System;
 using System.Collections.Generic;
-using VoteMonitor.Entities;
+using VoteMonitor.Api.DataExport.Models;
 
 namespace VoteMonitor.Api.DataExport.Queries
 {
-    public class GetDataForExport : IRequest<IEnumerable<ExportModel>>
+    public class GetDataForExport : IRequest<IEnumerable<ExportModelDto>>
     {
         public int? NgoId { get; set; }
         public int? ObserverId { get; set; }

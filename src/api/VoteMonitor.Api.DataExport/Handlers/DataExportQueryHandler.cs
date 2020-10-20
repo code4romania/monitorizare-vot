@@ -1,18 +1,19 @@
-﻿using MediatR;
+﻿using Dapper;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using VoteMonitor.Api.DataExport.Models;
 using VoteMonitor.Api.DataExport.Queries;
 using VoteMonitor.Entities;
-using Dapper;
-using System.Linq;
 
 namespace VoteMonitor.Api.DataExport.Handlers
 {
-    public class DataExportQueryHandler : IRequestHandler<GetDataForExport, IEnumerable<ExportModel>>
+    public class DataExportQueryHandler : IRequestHandler<GetDataForExport, IEnumerable<ExportModelDto>>
     {
         private readonly VoteMonitorContext _context;
         private readonly ILogger _logger;
@@ -23,10 +24,9 @@ namespace VoteMonitor.Api.DataExport.Handlers
             _logger = logger;
         }
 
-        public Task<IEnumerable<ExportModel>> Handle(GetDataForExport request, CancellationToken cancellationToken)
+        public Task<IEnumerable<ExportModelDto>> Handle(GetDataForExport request, CancellationToken cancellationToken)
         {
             var query = @" SELECT
-            NEWID() as Id,   
 			obs.Phone as [ObserverPhone],
 			obs.IdNgo,
 			f.Code as FormCode,
@@ -95,11 +95,11 @@ namespace VoteMonitor.Api.DataExport.Handlers
                 }
             }
 
-            IEnumerable<ExportModel> data = Enumerable.Empty<ExportModel>();
+            IEnumerable<ExportModelDto> data = Enumerable.Empty<ExportModelDto>();
             using (var db = _context.Database.GetDbConnection())
             {
                 db.Open();
-                data = db.Query<ExportModel>(sql: query.ToString(), param: parameters, commandTimeout: 60);
+                data = db.Query<ExportModelDto>(sql: query.ToString(), param: parameters, commandTimeout: 60);
             }
 
             return Task.FromResult(data);
