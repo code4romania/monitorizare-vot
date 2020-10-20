@@ -17,28 +17,26 @@ namespace VoteMonitor.Api.Location.Services
 
         public byte[] ExportHeaderInformation()
         {
-            using (var excelPackage = new ExcelPackage())
+            using var excelPackage = new ExcelPackage();
+            var workSheet = excelPackage.Workbook.Worksheets.Add("HeaderInfo");
+
+            var maximumColumnIndex = header.Columns.Max(x => x.Index);
+
+            var headerColumns = new List<string>();
+
+            for (int i = 1; i <= maximumColumnIndex; i++)
             {
-                var workSheet = excelPackage.Workbook.Worksheets.Add("HeaderInfo");
-
-                var maximumColumnIndex = header.Columns.OrderByDescending(x => x.Index).FirstOrDefault().Index;
-
-                List<string> headerColumns = new List<string>();
-
-                for (int i = 1; i <= maximumColumnIndex; i++)
-                {
-                    workSheet.Cells[1, i].Value = header.Columns.FirstOrDefault(x => x.Index == i)?.Name ?? "not used";
-                }
-
-                return excelPackage.GetAsByteArray();
+                workSheet.Cells[1, i].Value = header.Columns.FirstOrDefault(x => x.Index == i)?.Name ?? "not used";
             }
+
+            return excelPackage.GetAsByteArray();
         }
 
         public async Task<List<PollingStationDTO>> ImportFileAsync(IFormFile file)
         {
             if (file == null || file.Length <= 0)
             {
-                throw new System.ArgumentException();
+                throw new ArgumentException();
             }
 
             List<PollingStationDTO> resultList = new List<PollingStationDTO>();
