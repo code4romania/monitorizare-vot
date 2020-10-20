@@ -150,6 +150,35 @@ namespace VoteMonitor.Api.Observer.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// Removes mobile device Id associated with Observer of given Id.
+        /// </summary>
+        /// <param name="id">The Observer id</param>
+        /// <returns>Boolean indicating whether or not the mobile device Id was removed successfully</returns>
+        [HttpPost]
+        [Route("removeDeviceId")]
+        [Authorize("NgoAdmin")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> RemoveObserverDeviceId(int id)
+        {
+            var observerRequest = new CheckObserverExists
+            {
+                Id = id
+            };
+
+            var foundObserver = await _mediator.Send(observerRequest);
+            if (!foundObserver)
+            {
+                return NotFound(id);
+            }
+
+            var request = _mapper.Map<RemoveDeviceIdCommand>(new RemoveDeviceIdModel {Id = id});
+            await _mediator.Send(request);
+
+            return Ok();
+        }
+
         [HttpPost]
         [Route("reset")]
         [Authorize("Organizer")]
@@ -206,7 +235,7 @@ namespace VoteMonitor.Api.Observer.Controllers
         {
             if (!ControllerExtensions.ValidateGenerateObserversNumber(count))
             {
-                return BadRequest("Incorrect parameter supplied, please check that paramter is between boundaries: "
+                return BadRequest("Incorrect parameter supplied, please check that parameter is between boundaries: "
                     + ControllerExtensions.LOWER_OBS_VALUE + " - " + ControllerExtensions.UPPER_OBS_VALUE);
             }
 
