@@ -1,24 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Text;
-using System;
-using System.Linq;
-using Microsoft.AspNetCore.Http.Connections;
+﻿using CsvHelper;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 using System.IO;
-using CsvHelper;
+using System.Linq;
 
-namespace VoteMonitor.Api.DataExport
+namespace VoteMonitor.Api.DataExport.FileGenerator
 {
-    public interface ICsvGenerator
-    {
-        byte[] Export<T>(IEnumerable<T> exportData, string fileName);
-    }
-
-    public partial class Utility
-    {
-        public const string CSV_MEDIA_TYPE = "text/csv"; // ref: https://stackoverflow.com/questions/7076042/what-mime-type-should-i-use-for-csv > https://tools.ietf.org/html/rfc7111
-    }
-
     public class CsvGenerator : ICsvGenerator
     {
         private readonly ILogger _logger;

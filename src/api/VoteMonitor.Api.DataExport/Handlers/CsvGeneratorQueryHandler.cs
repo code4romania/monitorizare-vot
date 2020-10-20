@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using System.Threading;
 using System.Threading.Tasks;
+using VoteMonitor.Api.DataExport.FileGenerator;
 using VoteMonitor.Api.DataExport.Queries;
 
 namespace VoteMonitor.Api.DataExport.Handlers

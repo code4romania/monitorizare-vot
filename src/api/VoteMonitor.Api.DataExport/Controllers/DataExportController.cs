@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
+using VoteMonitor.Api.DataExport.FileGenerator;
 using VoteMonitor.Api.DataExport.Queries;
 
 namespace VoteMonitor.Api.DataExport.Controllers
@@ -45,7 +46,7 @@ namespace VoteMonitor.Api.DataExport.Controllers
 
             return File(
                 fileContents: csvFileBytes,
-                contentType: Utility.CSV_MEDIA_TYPE,
+                contentType: CsvUtility.CSV_MEDIA_TYPE,
                 fileDownloadName: "data.csv"
             );
         }
