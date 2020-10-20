@@ -98,20 +98,10 @@ namespace VoteMonitor.Api.DataExport.Handlers
             IEnumerable<ExportModel> data = Enumerable.Empty<ExportModel>();
             using (var db = _context.Database.GetDbConnection())
             {
-                try
-                {
-                    db.Open();
-                    data = db.Query<ExportModel>(sql: query.ToString(), param: parameters, commandTimeout: 60);
-                }
-                catch (Exception e)
-                {
-                    _logger.LogError(e, nameof(Handle));
-                }
-                finally
-                {
-                    db.Close();
-                }
+                db.Open();
+                data = db.Query<ExportModel>(sql: query.ToString(), param: parameters, commandTimeout: 60);
             }
+
             return Task.FromResult(data);
         }
     }
