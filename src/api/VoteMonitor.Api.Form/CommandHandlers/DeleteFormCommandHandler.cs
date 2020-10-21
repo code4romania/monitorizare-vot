@@ -15,7 +15,7 @@ namespace VoteMonitor.Api.Form.CommandHandlers
 
         public DeleteFormCommandHandler(VoteMonitorContext context)
         {
-            this._context = context;
+            _context = context;
         }
 
         public async Task<bool> Handle(DeleteFormCommand request, CancellationToken cancellationToken)
@@ -34,8 +34,8 @@ namespace VoteMonitor.Api.Form.CommandHandlers
             var optionsIds = optionsToQuestions.Select(o => o.IdOption);
 
             // check if there are already saved answers
-            var answers = _context.Answers.Where(a => optionsIds.Contains(a.IdOptionToQuestion));
-            if (answers != null && answers.Any())
+            var haveAnswers = await _context.Answers.AnyAsync(a => optionsIds.Contains(a.IdOptionToQuestion), cancellationToken);
+            if (haveAnswers)
             {
                 return false;
             }
@@ -48,7 +48,7 @@ namespace VoteMonitor.Api.Form.CommandHandlers
             _context.FormSections.RemoveRange(sections);
             _context.Forms.Remove(form);
 
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
             return true;
         }
     }

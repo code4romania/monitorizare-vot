@@ -8,28 +8,24 @@ namespace VoteMonitor.Api.Form.Mappers
     /// <summary>
     /// Base class using Template Design Pattern in order to facilitate the mapping of hierarchical objects.
     /// </summary>
-    public abstract class HierarchicalMapperBase<TEntity, TDto, TChildEntity, TChildDto>
+    public abstract class HierarchicalMapper<TEntity, TDto, TChildEntity, TChildDto> : UpdateOrCreateEntityMapper<TEntity, TDto>
         where TEntity : IHierarchicalEntity<TChildEntity>
         where TDto : IHierarchicalEntity<TChildDto>
         where TChildEntity : IIdentifiableEntity
         where TChildDto : IIdentifiableEntity
     {
-        private readonly IMapper _mapper;
-        private readonly VoteMonitorContext _voteMonitorContext;
+        private readonly IUpdateOrCreateEntityMapper<TChildEntity, TChildDto> _updateOrCreateChildEntityMapper;
 
-        protected HierarchicalMapperBase(IMapper mapper, VoteMonitorContext voteMonitorContext)
+        protected HierarchicalMapper(IMapper mapper, IUpdateOrCreateEntityMapper<TChildEntity, TChildDto> updateOrCreateChildEntityMapper)
+            :base(mapper)
         {
-            this._mapper = mapper;
-            this._voteMonitorContext = voteMonitorContext;
+            _updateOrCreateChildEntityMapper = updateOrCreateChildEntityMapper;
         }
 
-        public void Map(ref TEntity entity, TDto dto)
+        public override void Map(ref TEntity entity, TDto dto)
         {
-            // If the entity is new in the dto (entity is null), we just map it
-            // Otherwise, we update all properties except the hierarchy part(Excluded from profile).
-            entity = entity == null
-                    ? _mapper.Map<TEntity>(dto)
-                    : _mapper.Map(dto, entity);
+            // We map the entity from dto using the base method.
+            base.Map(ref entity, dto);
 
             // In case the children property is null, we'll initialize it with an empty list.
             entity.Children ??= new List<TChildEntity>();
@@ -49,7 +45,7 @@ namespace VoteMonitor.Api.Form.Mappers
                 var child = childDataItem.Child;
 
                 // We update the child property using the template method.
-                Map(ref child, childDataItem.ChildDto);
+                _updateOrCreateChildEntityMapper.Map(ref child, childDataItem.ChildDto);
 
                 // If the entity is ordered, we set the childIndex on it.
                 if (child is IOrderedEntity orderedChildEntity)
@@ -70,7 +66,5 @@ namespace VoteMonitor.Api.Form.Mappers
                 entity.Children.Add(child);
             }
         }
-
-        protected abstract void Map(ref TChildEntity childEntity, TChildDto childDto);
     }
 }

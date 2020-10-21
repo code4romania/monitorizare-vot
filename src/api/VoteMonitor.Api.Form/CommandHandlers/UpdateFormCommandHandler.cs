@@ -12,12 +12,12 @@ namespace VoteMonitor.Api.Form.CommandHandlers
     public class UpdateFormCommandHandler : IRequestHandler<UpdateFormCommand, FormDTO>
     {
         private readonly VoteMonitorContext _context;
-        private readonly IFormMapper _formMapper;
+        private readonly IUpdateOrCreateEntityMapper<Entities.Form, FormDTO> _updateOrCreateFormMapper;
 
-        public UpdateFormCommandHandler(VoteMonitorContext context, IFormMapper formMapper)
+        public UpdateFormCommandHandler(VoteMonitorContext context, IUpdateOrCreateEntityMapper<Entities.Form, FormDTO> updateOrCreateFormMapper)
         {
             _context = context;
-            _formMapper = formMapper;
+            _updateOrCreateFormMapper = updateOrCreateFormMapper;
         }
 
         public async Task<FormDTO> Handle(UpdateFormCommand message, CancellationToken cancellationToken)
@@ -28,7 +28,7 @@ namespace VoteMonitor.Api.Form.CommandHandlers
                 .ThenInclude(otq => otq.Option)
                 .FirstOrDefaultAsync(f => f.Id == message.Id);
 
-            _formMapper.Map(ref form, message.Form);
+            _updateOrCreateFormMapper.Map(ref form, message.Form);
 
             await _context.SaveChangesAsync();
             return message.Form;
