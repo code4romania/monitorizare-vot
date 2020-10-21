@@ -44,10 +44,12 @@ namespace VoteMonitor.Api.Observer.Handlers
             {
                 using (var tran = await _voteMonitorContext.Database.BeginTransactionAsync(cancellationToken))
                 {
-                    int latestId = _voteMonitorContext.Observers
-                        .OrderByDescending(o => o.Id)
-                        .First()
-                        .Id;
+                    int latestId = _voteMonitorContext.Observers.Count() > 0 ?
+                                    _voteMonitorContext.Observers
+                                    .OrderByDescending(o => o.Id)
+                                    .First()
+                                    .Id
+                                    : 0;
 
                     dbObservers = dbObservers
                         .Select(o => { o.Id = ++latestId; return o; })
