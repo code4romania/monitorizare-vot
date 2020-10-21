@@ -1,7 +1,6 @@
 ﻿namespace VoteMonitor.Api.Form.Mappers
 {
-    public interface IUpdateOrCreateEntityMapper<TEntity, TDto>
+    public interface IUpdateOrCreateEntityMapper<TEntity, TDto> : IEntityMapper<TEntity, TDto>
     {
-        void Map(ref TEntity entity, TDto dto);
     }
 }

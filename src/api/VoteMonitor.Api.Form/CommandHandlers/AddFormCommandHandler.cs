@@ -11,18 +11,18 @@ namespace VoteMonitor.Api.Form.CommandHandlers
     public class AddFormCommandHandler : IRequestHandler<AddFormCommand, FormDTO>
     {
         private readonly VoteMonitorContext _context;
-        private readonly IUpdateOrCreateEntityMapper<Entities.Form, FormDTO> _updateOrCreateFormMapper;
+        private readonly IEntityMapper<Entities.Form, FormDTO> _entityMapper;
 
-        public AddFormCommandHandler(VoteMonitorContext context, IUpdateOrCreateEntityMapper<Entities.Form, FormDTO> updateOrCreateFormMapper)
+        public AddFormCommandHandler(VoteMonitorContext context, IEntityMapper<Entities.Form, FormDTO> entityMapper)
         {
             _context = context;
-            _updateOrCreateFormMapper = updateOrCreateFormMapper;
+            _entityMapper = entityMapper;
         }
 
         public async Task<FormDTO> Handle(AddFormCommand message, CancellationToken cancellationToken)
         {
             Entities.Form form = null;
-            _updateOrCreateFormMapper.Map(ref form, message.Form);
+            _entityMapper.Map(ref form, message.Form);
 
             _context.Forms.Add(form);
 

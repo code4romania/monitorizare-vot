@@ -9,10 +9,10 @@ namespace VoteMonitor.Api.Form
     {
         public static IServiceCollection AddFormServices(this IServiceCollection services)
         {
-            services.AddScoped<IUpdateOrCreateEntityMapper<Entities.Form, FormDTO>, HierarchicalMapper<Entities.Form, FormDTO, FormSection, FormSectionDTO>>();
-            services.AddScoped<IUpdateOrCreateEntityMapper<FormSection, FormSectionDTO>, HierarchicalMapper<FormSection, FormSectionDTO, Question, QuestionDTO>>();
-            services.AddScoped<IUpdateOrCreateEntityMapper<Question, QuestionDTO>, HierarchicalMapper<Question, QuestionDTO, OptionToQuestion, OptionToQuestionDTO>>();
-            services.AddScoped<IUpdateOrCreateEntityMapper<OptionToQuestion, OptionToQuestionDTO>, UpdateOrCreateEntityMapper<OptionToQuestion, OptionToQuestionDTO>>();
+            services.AddScoped<IEntityMapper<Entities.Form, FormDTO>, HierarchicalMapper<Entities.Form, FormDTO, FormSection, FormSectionDTO>>();
+            services.AddScoped<IEntityMapper<FormSection, FormSectionDTO>, HierarchicalMapper<FormSection, FormSectionDTO, Question, QuestionDTO>>();
+            services.AddScoped<IEntityMapper<Question, QuestionDTO>, HierarchicalMapper<Question, QuestionDTO, OptionToQuestion, OptionToQuestionDTO>>();
+            services.AddScoped(typeof(IUpdateOrCreateEntityMapper<,>), typeof(UpdateOrCreateEntityMapper<,>));
             return services;
         }
     }

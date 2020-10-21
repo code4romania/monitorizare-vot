@@ -6,26 +6,27 @@ using VoteMonitor.Entities;
 namespace VoteMonitor.Api.Form.Mappers
 {
     /// <summary>
-    /// Base class using Template Design Pattern in order to facilitate the mapping of hierarchical objects.
+    /// Represents a helper class used to map an hierarchic entity from its DTO by either create or update.
     /// </summary>
-    public abstract class HierarchicalMapper<TEntity, TDto, TChildEntity, TChildDto> : UpdateOrCreateEntityMapper<TEntity, TDto>
+    public class HierarchicalMapper<TEntity, TDto, TChildEntity, TChildDto> : IEntityMapper<TEntity, TDto>
         where TEntity : IHierarchicalEntity<TChildEntity>
         where TDto : IHierarchicalEntity<TChildDto>
         where TChildEntity : IIdentifiableEntity
         where TChildDto : IIdentifiableEntity
     {
-        private readonly IUpdateOrCreateEntityMapper<TChildEntity, TChildDto> _updateOrCreateChildEntityMapper;
+        private readonly IUpdateOrCreateEntityMapper<TEntity, TDto> _updateOrCreateEntityMapper;
+        private readonly IEntityMapper<TChildEntity, TChildDto> _updateOrCreateChildEntityMapper;
 
-        protected HierarchicalMapper(IMapper mapper, IUpdateOrCreateEntityMapper<TChildEntity, TChildDto> updateOrCreateChildEntityMapper)
-            :base(mapper)
+        public HierarchicalMapper(IUpdateOrCreateEntityMapper<TEntity, TDto> updateOrCreateEntityMapper, IEntityMapper<TChildEntity, TChildDto> updateOrCreateChildEntityMapper)
         {
+            _updateOrCreateEntityMapper = updateOrCreateEntityMapper;
             _updateOrCreateChildEntityMapper = updateOrCreateChildEntityMapper;
         }
 
-        public override void Map(ref TEntity entity, TDto dto)
+        public void Map(ref TEntity entity, TDto dto)
         {
-            // We map the entity from dto using the base method.
-            base.Map(ref entity, dto);
+            // We map the entity from dto using the update or create entity mapper.
+            _updateOrCreateEntityMapper.Map(ref entity, dto);
 
             // In case the children property is null, we'll initialize it with an empty list.
             entity.Children ??= new List<TChildEntity>();
