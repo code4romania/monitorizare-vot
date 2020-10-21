@@ -4,7 +4,7 @@ using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Form.Models
 {
-    public class FormDTO : IHierarchicalEntity<FormSectionDTO>, IOrderedEntity, IIdentifiableEntity
+    public class FormDTO : IHierarchicalEntity<FormSectionDTO>, IIdentifiableEntity
     {
         public int Id { get; set; }
         public string Code { get; set; }
@@ -18,10 +18,6 @@ namespace VoteMonitor.Api.Form.Models
         [JsonIgnore]
         [Newtonsoft.Json.JsonIgnore]
         public ICollection<FormSectionDTO> Children { get => FormSections; set => FormSections = value; }
-
-        [JsonIgnore]
-        [Newtonsoft.Json.JsonIgnore]
-        public int OrderNumber { get => Order; set => Order = value; }
     }
 
 }

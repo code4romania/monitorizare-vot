@@ -41,18 +41,12 @@ namespace VoteMonitor.Api.Form.Mappers
 
             var childrenToAdd = new List<TChildEntity>();
 
-            foreach (var (childDataItem, childIndex) in childData.Select((childDataItem, childIndex) => (childDataItem, childIndex + 1)))
+            foreach (var childDataItem in childData)
             {
                 var child = childDataItem.Child;
 
                 // We update the child property using the template method.
                 _updateOrCreateChildEntityMapper.Map(ref child, childDataItem.ChildDto);
-
-                // If the entity is ordered, we set the childIndex on it.
-                if (child is IOrderedEntity orderedChildEntity)
-                {
-                    orderedChildEntity.OrderNumber = childIndex;
-                }
 
                 // In case the entity was added, we add it to the list of Children.
                 if (childDataItem.Child == null)

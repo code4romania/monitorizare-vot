@@ -4,7 +4,7 @@ using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Form.Models
 {
-    public class FormSectionDTO : IHierarchicalEntity<QuestionDTO>, IOrderedEntity, IIdentifiableEntity
+    public class FormSectionDTO : IHierarchicalEntity<QuestionDTO>, IIdentifiableEntity
     {
         public FormSectionDTO()
         {

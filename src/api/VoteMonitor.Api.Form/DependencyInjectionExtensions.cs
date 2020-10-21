@@ -13,6 +13,7 @@ namespace VoteMonitor.Api.Form
             services.AddScoped<IEntityMapper<FormSection, FormSectionDTO>, HierarchicalMapper<FormSection, FormSectionDTO, Question, QuestionDTO>>();
             services.AddScoped<IEntityMapper<Question, QuestionDTO>, HierarchicalMapper<Question, QuestionDTO, OptionToQuestion, OptionToQuestionDTO>>();
             services.AddScoped(typeof(IUpdateOrCreateEntityMapper<,>), typeof(UpdateOrCreateEntityMapper<,>));
+            services.AddScoped<IEntityMapper<OptionToQuestion, OptionToQuestionDTO>, UpdateOrCreateEntityMapper <OptionToQuestion, OptionToQuestionDTO>> ();
             return services;
         }
     }
