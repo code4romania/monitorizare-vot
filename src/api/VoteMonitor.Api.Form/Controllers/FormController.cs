@@ -22,7 +22,7 @@ namespace VoteMonitor.Api.Form.Controllers
     {
         private readonly ApplicationCacheOptions _cacheOptions;
         private readonly IMediator _mediator;
-        
+
         public FormController(IMediator mediator, IOptions<ApplicationCacheOptions> cacheOptions)
         {
             _cacheOptions = cacheOptions.Value;
@@ -31,18 +31,24 @@ namespace VoteMonitor.Api.Form.Controllers
 
         [HttpPost]
         [Authorize("Organizer")]
-        public async Task<int> AddForm([FromBody]FormDTO newForm)
+        public async Task<int> AddForm([FromBody] FormDTO newForm)
         {
             var result = await _mediator.Send(new AddFormCommand { Form = newForm });
             return result.Id;
         }
 
-        [HttpPut("{formId}")]
+        [HttpPut]
         [Authorize("Organizer")]
-        public async Task<int> UpdateForm(int formId, [FromBody]FormDTO newForm)
+        public async Task<ActionResult> UpdateForm([FromBody] FormDTO newForm)
         {
-            var result = await _mediator.Send(new UpdateFormCommand { Id = formId, Form = newForm });
-            return result.Id;
+            var formExists = await _mediator.Send(new GetFormExistsByIdQuery() { Id = newForm.Id });
+            if (!formExists)
+            {
+                return NotFound($"The form with id {newForm.Id} was not found.");
+            }
+
+            var result = await _mediator.Send(new UpdateFormCommand { Id = newForm.Id, Form = newForm });
+            return Ok(result.Id);
         }
         /// <summary>
         /// Returneaza versiunea tuturor formularelor sub forma unui array. 
