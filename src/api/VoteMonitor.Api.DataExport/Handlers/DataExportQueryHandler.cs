@@ -1,17 +1,19 @@
-﻿using MediatR;
+﻿using Dapper;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using Microsoft.Data.SqlClient;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using VoteMonitor.Api.DataExport.Models;
 using VoteMonitor.Api.DataExport.Queries;
 using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.DataExport.Handlers
 {
-    public class DataExportQueryHandler : IRequestHandler<GetDataForExport, List<ExportModel>>
+    public class DataExportQueryHandler : IRequestHandler<GetDataForExport, IEnumerable<ExportModelDto>>
     {
         private readonly VoteMonitorContext _context;
         private readonly ILogger _logger;
@@ -22,31 +24,9 @@ namespace VoteMonitor.Api.DataExport.Handlers
             _logger = logger;
         }
 
-        public async Task<List<ExportModel>> Handle(GetDataForExport request, CancellationToken cancellationToken)
+        public Task<IEnumerable<ExportModelDto>> Handle(GetDataForExport request, CancellationToken cancellationToken)
         {
-            //var exportData = await _context.Answers
-            //      .Where(a => a.IdObserver > 10)
-            //      .Where(a => a.LastModified >= new DateTime(2019, 11, 08, 6, 0, 0))
-            //      .Where(a => a.Observer.IdNgo != 1)
-            //      .Where(a => a.OptionAnswered != null && a.OptionAnswered.Question != null)
-            //      .SelectMany(a => a.OptionAnswered.Question.Notes.DefaultIfEmpty(), (a, note) => new ExportModel
-            //      {
-            //          ObserverPhone = a.Observer.Phone,
-            //          IdNgo = a.Observer.IdNgo,
-            //          FormCode = a.OptionAnswered.Question.FormSection.Form.Code,
-            //          QuestionText = a.OptionAnswered.Question.Text,
-            //          OptionText = a.OptionAnswered.Option.Text,
-            //          AnswerFreeText = a.Value,
-            //          NoteText = note.Text,
-            //          NoteAttachmentPath = note.AttachementPath,
-            //          LastModified = a.LastModified,
-            //          CountyCode = a.CountyCode,
-            //          PollingStationNumber = a.PollingStationNumber
-            //      })
-            //      .ToListAsync(cancellationToken);
-
             var query = @" SELECT
-            NEWID() as Id,   
 			obs.Phone as [ObserverPhone],
 			obs.IdNgo,
 			f.Code as FormCode,
@@ -77,51 +57,52 @@ namespace VoteMonitor.Api.DataExport.Handlers
 		WHERE
 			a.LastModified >= @from
             AND obs.IsTestObserver = 0
-
             ";
 
-            var parameters = new List<SqlParameter>
-            {
-                new SqlParameter("@from", request.From ?? new DateTime(2019, 11, 08, 6, 0, 0)),
-
-            };
+            var parameters = new DynamicParameters();
+            parameters.Add("from", request.From ?? new DateTime(2019, 11, 08, 6, 0, 0));
 
             if (request.ApplyFilters)
             {
                 if (request.To.HasValue)
                 {
                     query += " AND a.LastModified <= @to ";
-                    parameters.Add(new SqlParameter("@to", request.To ?? DateTime.Now.AddDays(2)));
+                    parameters.Add("to", request.To ?? DateTime.Now.AddDays(2));
                 }
 
                 if (request.ObserverId.HasValue)
                 {
                     query += " AND obs.Id = @ObserverId ";
-                    parameters.Add(new SqlParameter("@ObserverId", request.ObserverId));
+                    parameters.Add("ObserverId", request.ObserverId);
                 }
 
                 if (request.NgoId.HasValue)
                 {
                     query += " AND obs.IdNgo = @IdNgo ";
-                    parameters.Add(new SqlParameter("@IdNgo", request.NgoId));
+                    parameters.Add("IdNgo", request.NgoId);
                 }
 
                 if (!string.IsNullOrEmpty(request.County))
                 {
                     query += " AND a.CountyCode = @County ";
-                    parameters.Add(new SqlParameter("@County", request.County));
+                    parameters.Add("County", request.County);
                 }
 
                 if (request.PollingStationNumber.HasValue)
                 {
                     query += " AND a.PollingStationNumber = @PollingStationNumber ";
-                    parameters.Add(new SqlParameter("@PollingStationNumber", request.PollingStationNumber));
+                    parameters.Add("PollingStationNumber", request.PollingStationNumber);
                 }
             }
 
-            var exportData = _context.ExportModels.FromSqlRaw(query, parameters.ToArray());
+            IEnumerable<ExportModelDto> data = Enumerable.Empty<ExportModelDto>();
+            using (var db = _context.Database.GetDbConnection())
+            {
+                db.Open();
+                data = db.Query<ExportModelDto>(sql: query.ToString(), param: parameters, commandTimeout: 60);
+            }
 
-            return await exportData.ToListAsync(cancellationToken);
+            return Task.FromResult(data);
         }
     }
 }

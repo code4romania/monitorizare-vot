@@ -1,8 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
+using VoteMonitor.Api.DataExport.FileGenerator;
 using VoteMonitor.Api.DataExport.Queries;
 
 namespace VoteMonitor.Api.DataExport.Controllers
@@ -11,10 +13,12 @@ namespace VoteMonitor.Api.DataExport.Controllers
     public class DataExportController : Microsoft.AspNetCore.Mvc.Controller
     {
         private readonly IMediator _mediator;
+        private readonly ILogger<DataExportController> _logger;
 
-        public DataExportController(IMediator mediator)
+        public DataExportController(IMediator mediator, ILogger<DataExportController> logger)
         {
             _mediator = mediator;
+            _logger = logger;
         }
 
         /// <summary>
@@ -35,18 +39,27 @@ namespace VoteMonitor.Api.DataExport.Controllers
                 To = to
             };
 
-            var data = await _mediator.Send(filter);
-            var excelFileBytes = await _mediator.Send(new GenerateExcelFile(data));
+            var csvFileBytes = default(byte[]);
+            try
+            {
+                var data = await _mediator.Send(filter);
+                csvFileBytes = await _mediator.Send(new GenerateCSVFile(data));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, nameof(GetMyData));
+            }
+            
 
-            if (excelFileBytes == null || excelFileBytes.Length == 0)
+            if (csvFileBytes == null || csvFileBytes.Length == 0)
             {
                 return NotFound();
             }
 
             return File(
-                fileContents: excelFileBytes,
-                contentType: Utility.EXCEL_MEDIA_TYPE,
-                fileDownloadName: "data.xlsx"
+                fileContents: csvFileBytes,
+                contentType: CsvUtility.CSV_MEDIA_TYPE,
+                fileDownloadName: "data.csv"
             );
         }
     }
