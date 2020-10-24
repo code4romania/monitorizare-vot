@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using VoteMonitor.Api.Core.Options;
+using VoteMonitor.Api.Form.Commands;
 using VoteMonitor.Api.Form.Models;
 using VoteMonitor.Api.Form.Queries;
 
@@ -21,7 +22,7 @@ namespace VoteMonitor.Api.Form.Controllers
     {
         private readonly ApplicationCacheOptions _cacheOptions;
         private readonly IMediator _mediator;
-        
+
         public FormController(IMediator mediator, IOptions<ApplicationCacheOptions> cacheOptions)
         {
             _cacheOptions = cacheOptions.Value;
@@ -30,7 +31,7 @@ namespace VoteMonitor.Api.Form.Controllers
 
         [HttpPost]
         [Authorize("Organizer")]
-        public async Task<int> AddForm([FromBody]FormDTO newForm)
+        public async Task<int> AddForm([FromBody] FormDTO newForm)
         {
             FormDTO result = await _mediator.Send(new AddFormQuery { Form = newForm });
             return result.Id;
@@ -95,6 +96,22 @@ namespace VoteMonitor.Api.Form.Controllers
             if (!formDeleted)
             {
                 return BadRequest("The form could not be deleted. Make sure the form exists and it doesn't already have saved answers.");
+            }
+
+            return Ok();
+        }
+
+        [HttpDelete("section/{sectionId}")]
+        [Authorize("Organizer")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DeleteSection(int sectionId)
+        {
+            var deleted = await _mediator.Send(new DeleteSectionCommand { SectionId = sectionId });
+
+            if (!deleted)
+            {
+                return BadRequest("The section could not be deleted. Make sure the section exists and it doesn't already have saved answers.");
             }
 
             return Ok();
