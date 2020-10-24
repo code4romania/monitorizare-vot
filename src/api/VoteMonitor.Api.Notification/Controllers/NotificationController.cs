@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.Extensions.Configuration;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 using VoteMonitor.Api.Core;
 using VoteMonitor.Api.Notification.Commands;
 using VoteMonitor.Api.Notification.Models;
+using VoteMonitor.Api.Notification.Queries;
 
 namespace VoteMonitor.Api.Notification.Controllers
 {
@@ -16,12 +18,14 @@ namespace VoteMonitor.Api.Notification.Controllers
         private readonly IMediator _mediator;
         private readonly ILogger<NotificationController> _logger;
         private readonly IMapper _mapper;
+        private readonly IConfiguration _configuration;
 
-        public NotificationController(IMediator mediator, ILogger<NotificationController> logger, IMapper mapper)
+        public NotificationController(IMediator mediator, ILogger<NotificationController> logger, IMapper mapper, IConfiguration configuration)
         {
             _mediator = mediator;
             _logger = logger;
             _mapper = mapper;
+            _configuration = configuration;
         }
 
         [HttpPost]
@@ -52,6 +56,7 @@ namespace VoteMonitor.Api.Notification.Controllers
 
             return Task.FromResult(result);
         }
+
         [HttpPost]
         [Authorize("Organizer")]
         [Route("send/all")]
@@ -62,6 +67,27 @@ namespace VoteMonitor.Api.Notification.Controllers
             var result = await _mediator.Send(command);
 
             return Task.FromResult(result);
+        }
+
+        [HttpGet]
+        [Authorize("Organizer")]
+        [Authorize("NgoAdmin")]
+        [Route("get/all")]
+        public async Task<IActionResult> GetAll(PagingModel query)
+        {
+            var userType = this.GetUserType();
+            if (!userType.HasValue)
+                return BadRequest();
+
+            var command = _mapper.Map<NotificationListCommand>(new NotificationListQuery {
+                IdNgo = this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng")),
+                UserType = userType.Value,
+                Page = query.Page,
+                PageSize = query.PageSize
+            });
+
+            var result = await _mediator.Send(command);
+            return Ok(result);
         }
     }
 }
