@@ -15,12 +15,4 @@ namespace VoteMonitor.Api.Form.Queries
             Draft = draft;
         }
     }
-
-    public class FormQuestionsQuery : IRequest<IEnumerable<ModelSectiune>>
-    {
-        public string CodFormular { get; set; }
-        public int CacheHours { get; set; }
-        public int CacheMinutes { get; set; }
-        public int CacheSeconds { get; set; }
-    }
 }

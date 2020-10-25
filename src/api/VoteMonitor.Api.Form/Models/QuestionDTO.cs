@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Form.Models
 {
-    public class QuestionDTO
+    public class QuestionDTO : IHierarchicalEntity<OptionToQuestionDTO>, IIdentifiableEntity
     {
         public QuestionDTO()
         {
@@ -19,6 +20,10 @@ namespace VoteMonitor.Api.Form.Models
         public string Hint { get; set; }
         public int OrderNumber { get; set; }
 
-        public IEnumerable<OptionToQuestionDTO> OptionsToQuestions { get; set; }
+        public ICollection<OptionToQuestionDTO> OptionsToQuestions { get; set; }
+
+        [JsonIgnore]
+        [Newtonsoft.Json.JsonIgnore]
+        public ICollection<OptionToQuestionDTO> Children { get => OptionsToQuestions; set => OptionsToQuestions = value; }
     }
 }

@@ -5,9 +5,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using VoteMonitor.Api.Form.Models;
+using VoteMonitor.Api.Form.Queries;
 using VoteMonitor.Entities;
 
-namespace VoteMonitor.Api.Form.Queries
+namespace VoteMonitor.Api.Form.QueryHandlers
 {
 
     public class FormVersionQueryHandler : IRequestHandler<FormVersionQuery, List<FormDetailsModel>>
@@ -22,7 +23,7 @@ namespace VoteMonitor.Api.Form.Queries
         public async Task<List<FormDetailsModel>> Handle(FormVersionQuery request, CancellationToken cancellationToken)
         {
             var bringAllForms = request.Diaspora == null || request.Diaspora == true;
-            var returnDraft = request.Draft == false || request.Draft == null ? false : true;
+            var returnDraft = request.Draft == true;
 
             var result = await _context.Forms
                 .AsNoTracking()

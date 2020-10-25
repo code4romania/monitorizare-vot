@@ -1,4 +1,4 @@
-namespace VoteMonitor.Api.Notification.Models
+﻿namespace VoteMonitor.Api.Notification.Models
 {
     public class NotificationRegistrationDataModel
     {

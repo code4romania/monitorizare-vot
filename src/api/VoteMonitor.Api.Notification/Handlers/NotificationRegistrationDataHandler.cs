@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using VoteMonitor.Api.Core.Commands;
 using VoteMonitor.Api.Core.Services;
 using VoteMonitor.Api.Notification.Commands;
 using VoteMonitor.Entities;

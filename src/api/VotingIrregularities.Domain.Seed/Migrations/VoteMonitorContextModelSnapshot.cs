@@ -421,6 +421,11 @@ namespace VoteMonitor.Entities.Migrations
                     b.Property<string>("MobileDeviceId")
                         .HasColumnType("varchar(500)");
 
+                    b.Property<int>("MobileDeviceIdType")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(200)")
@@ -441,6 +446,10 @@ namespace VoteMonitor.Entities.Migrations
 
                     b.HasIndex("IdNgo")
                         .HasName("IX_Observer_IdNgo");
+
+                    b.HasIndex("MobileDeviceId");
+
+                    b.HasIndex("MobileDeviceIdType");
 
                     b.ToTable("Observers");
                 });
