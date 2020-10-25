@@ -172,7 +172,7 @@ namespace VoteMonitor.Api.Observer.Controllers
             var observerRequest = new GetObserverDetails(NgoId, id);
 
             var observer = await _mediator.Send(observerRequest);
-            if (observer != null)
+            if (observer == null)
             {
                 return false;
             }
