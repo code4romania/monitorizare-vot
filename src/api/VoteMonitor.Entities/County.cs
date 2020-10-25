@@ -2,7 +2,7 @@
 
 namespace VoteMonitor.Entities
 {
-    public partial class County
+    public partial class County : IIdentifiableEntity
     {
         public County()
         {

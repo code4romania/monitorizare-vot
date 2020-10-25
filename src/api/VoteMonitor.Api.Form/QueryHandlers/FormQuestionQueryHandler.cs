@@ -9,19 +9,18 @@ using System.Threading;
 using System.Threading.Tasks;
 using VoteMonitor.Api.Core.Services;
 using VoteMonitor.Api.Form.Models;
+using VoteMonitor.Api.Form.Queries;
 using VoteMonitor.Entities;
 
-namespace VoteMonitor.Api.Form.Queries
+namespace VoteMonitor.Api.Form.QueryHandlers
 {
-    public class FormQueryHandler :
-        IRequestHandler<FormQuestionQuery, IEnumerable<FormSectionDTO>>,
-        IRequestHandler<DeleteFormCommand, bool>
+    public class FormQuestionQueryHandler : IRequestHandler<FormQuestionQuery, IEnumerable<FormSectionDTO>>
     {
         private readonly VoteMonitorContext _context;
         private readonly IMapper _mapper;
         private readonly ICacheService _cacheService;
 
-        public FormQueryHandler(VoteMonitorContext context, IMapper mapper, ICacheService cacheService)
+        public FormQuestionQueryHandler(VoteMonitorContext context, IMapper mapper, ICacheService cacheService)
         {
             _context = context;
             _mapper = mapper;
@@ -61,7 +60,7 @@ namespace VoteMonitor.Api.Form.Queries
                         Description = section.Description,
                         Questions = questions.Where(a => a.IdSection == section.IdSection)
                                      .OrderBy(question => question.OrderNumber)
-                                     .Select(q=>OrderOptions(q))
+                                     .Select(q=> OrderOptions(q))
                                      .Select(a => _mapper.Map<QuestionDTO>(a)).ToList()
                     }).ToList();
 
@@ -78,40 +77,6 @@ namespace VoteMonitor.Api.Form.Queries
         {
             q.OptionsToQuestions = q.OptionsToQuestions.OrderBy(o => o.Option.OrderNumber).ToList();
             return q;
-        }
-
-        public async Task<bool> Handle(DeleteFormCommand request, CancellationToken cancellationToken)
-        {
-            var form = await _context.Forms.FirstOrDefaultAsync(f => f.Id == request.FormId);
-            if (form == null)
-            {
-                return false;
-            }
-
-            var sections = _context.FormSections.Where(s => s.IdForm == form.Id);
-            var sectionsIds = sections.Select(s => s.Id);
-            var questions = _context.Questions.Where(q => sectionsIds.Contains(q.IdSection));
-            var questionsIds = questions.Select(q => q.Id);
-            var optionsToQuestions = _context.OptionsToQuestions.Where(o => questionsIds.Contains(o.IdQuestion));
-            var optionsIds = optionsToQuestions.Select(o => o.IdOption);
-
-            // check if there are already saved answers
-            var answers = _context.Answers.Where(a => optionsIds.Contains(a.IdOptionToQuestion));
-            if (answers != null && answers.Any()) 
-            {
-                return false;
-            }
-
-            var options = _context.Options.Where(o => optionsIds.Contains(o.Id));
-
-            _context.OptionsToQuestions.RemoveRange(optionsToQuestions);
-            _context.Options.RemoveRange(options);
-            _context.Questions.RemoveRange(questions);
-            _context.FormSections.RemoveRange(sections);
-            _context.Forms.Remove(form);
-
-            await _context.SaveChangesAsync();
-            return true;
         }
     }
 }
