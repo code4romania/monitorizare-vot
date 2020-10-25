@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using VoteMonitor.Api.Core;
 using VoteMonitor.Api.Core.Options;
@@ -128,7 +129,7 @@ namespace VoteMonitor.Api.Observer.Controllers
             var isActionAllowed = await IsActionAllowed(model.IdObserver);
             if (!isActionAllowed)
             {
-                return Problem("Action not allowed");
+                return Problem("Action not allowed", statusCode: (int)HttpStatusCode.BadRequest);
             }
 
             var id = await _mediator.Send(_mapper.Map<EditObserverCommand>(model));
@@ -154,7 +155,7 @@ namespace VoteMonitor.Api.Observer.Controllers
             var isActionAllowed = await IsActionAllowed(id);
             if (!isActionAllowed)
             {
-                return Problem("Action not allowed");
+                return Problem("Action not allowed", statusCode: (int)HttpStatusCode.BadRequest);
             }
 
             var result = await _mediator.Send(new DeleteObserverCommand(id));
@@ -195,7 +196,7 @@ namespace VoteMonitor.Api.Observer.Controllers
             var isActionAllowed = await IsActionAllowed(id);
             if (!isActionAllowed)
             {
-                return Problem("Action not allowed");
+                return Problem("Action not allowed", statusCode: (int)HttpStatusCode.BadRequest);
             }
 
             var request = _mapper.Map<RemoveDeviceIdCommand>(new RemoveDeviceIdModel { Id = id });
