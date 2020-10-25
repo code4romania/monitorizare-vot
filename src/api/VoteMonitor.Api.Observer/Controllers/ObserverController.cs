@@ -38,8 +38,7 @@ namespace VoteMonitor.Api.Observer.Controllers
         {
             var command = _mapper.Map<ObserverListCommand>(query);
 
-            var organizer = this.GetOrganizatorOrDefault(false);
-            command.IdNgo = organizer ? -1 : NgoId;
+            command.IdNgo = IsOrganizer ? -1 : NgoId;
 
             var result = await _mediator.Send(command);
             return result;
@@ -53,8 +52,7 @@ namespace VoteMonitor.Api.Observer.Controllers
         {
             var command = _mapper.Map<ActiveObserversQuery>(query);
 
-            var organizer = this.GetOrganizatorOrDefault(false);
-            command.IdNgo = organizer ? -1 : NgoId;
+            command.IdNgo = IsOrganizer ? -1 : NgoId;
 
             var result = await _mediator.Send(command);
             return result;
@@ -65,7 +63,7 @@ namespace VoteMonitor.Api.Observer.Controllers
         [Route("count")]
         public async Task<int> GetTotalObserverCount()
         {
-            var result = await _mediator.Send(new ObserverCountCommand { IdNgo = NgoId });
+            var result = await _mediator.Send(new ObserverCountCommand(NgoId, IsOrganizer));
             return result;
         }
 
