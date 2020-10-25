@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using System.Collections.Generic;
 using VoteMonitor.Api.Observer.Models;
 
@@ -12,14 +11,5 @@ namespace VoteMonitor.Api.Observer.Queries
         public int ToPollingStationNumber { get; set; }
         public bool CurrentlyCheckedIn { get; set; }
         public int IdNgo { get; set; }
-    }
-
-    public class ActiveObserverProfile : Profile
-    {
-        public ActiveObserverProfile()
-        {
-            CreateMap<ActiveObserverFilter, ActiveObserversQuery>();
-            CreateMap<ActiveObserversQuery, ActiveObserverFilter>();
-        }
     }
 }
