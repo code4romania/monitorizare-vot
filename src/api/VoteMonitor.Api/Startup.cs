@@ -14,6 +14,7 @@ using VoteMonitor.Api.Core.Extensions;
 using VoteMonitor.Api.Extensions;
 using VoteMonitor.Api.Location.Services;
 using VoteMonitor.Entities;
+using VoteMonitor.Api.Form;
 
 namespace VoteMonitor.Api
 {
@@ -43,6 +44,7 @@ namespace VoteMonitor.Api
             services.AddFirebase(Configuration);
             services.AddAutoMapper(GetAssemblies());
             services.AddMediatR(GetAssemblies().ToArray());
+            services.AddFormServices();
 
             services.ConfigureSwagger();
             services.AddApplicationInsightsTelemetry();

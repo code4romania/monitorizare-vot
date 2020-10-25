@@ -2,7 +2,7 @@
 
 namespace VoteMonitor.Entities
 {
-    public partial class NgoAdmin
+    public partial class NgoAdmin : IIdentifiableEntity
     {
         public int Id { get; set; }
         public int IdNgo { get; set; }

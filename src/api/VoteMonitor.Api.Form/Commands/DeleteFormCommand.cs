@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace VoteMonitor.Api.Form.Queries
+namespace VoteMonitor.Api.Form.Commands
 {
     public class DeleteFormCommand : IRequest<bool>
     {

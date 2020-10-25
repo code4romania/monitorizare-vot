@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VoteMonitor.Entities
 {
-    public partial class OptionToQuestion
+    public partial class OptionToQuestion : IIdentifiableEntity
     {
         public OptionToQuestion()
         {

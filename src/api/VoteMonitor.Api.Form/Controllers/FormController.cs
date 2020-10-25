@@ -14,7 +14,7 @@ namespace VoteMonitor.Api.Form.Controllers
 {
     /// <inheritdoc />
     /// <summary>
-    /// Ruta Formular ofera suport pentru toate operatiile legate de formularele completate de observatori
+    /// Form Controller offers support for CRUD Operations on the forms completed by observers.
     /// </summary>
 
     [Route("api/v1/form")]
@@ -33,15 +33,22 @@ namespace VoteMonitor.Api.Form.Controllers
         [Authorize("Organizer")]
         public async Task<int> AddForm([FromBody] FormDTO newForm)
         {
-            FormDTO result = await _mediator.Send(new AddFormQuery { Form = newForm });
+            var result = await _mediator.Send(new AddFormCommand { Form = newForm });
             return result.Id;
         }
 
-        [HttpPut("{formId}")]
+        [HttpPut]
         [Authorize("Organizer")]
-        public async Task UpdateForm(int formId, [FromBody]FormDTO newForm)
+        public async Task<ActionResult> UpdateForm([FromBody] FormDTO newForm)
         {
-            FormDTO result = await _mediator.Send(new UpdateFormQuery { Id = formId, Form = newForm });
+            var formExists = await _mediator.Send(new GetFormExistsByIdQuery() { Id = newForm.Id });
+            if (!formExists)
+            {
+                return NotFound($"The form with id {newForm.Id} was not found.");
+            }
+
+            var result = await _mediator.Send(new UpdateFormCommand { Id = newForm.Id, Form = newForm });
+            return Ok(result.Id);
         }
         /// <summary>
         /// Returneaza versiunea tuturor formularelor sub forma unui array. 
