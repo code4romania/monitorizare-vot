@@ -25,6 +25,7 @@ namespace VoteMonitor.Api.Auth.Handlers
             {
                 var observator = await _context.Observers.SingleAsync(a => a.Id == request.ObserverId, cancellationToken: cancellationToken);
 
+                observator.MobileDeviceIdType = request.MobileDeviceIdType;
                 observator.MobileDeviceId = request.MobileDeviceId;
                 observator.DeviceRegisterDate = DateTime.UtcNow;
 

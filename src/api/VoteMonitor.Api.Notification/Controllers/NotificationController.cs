@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using VoteMonitor.Api.Core;
+using VoteMonitor.Api.Core.Commands;
 using VoteMonitor.Api.Notification.Commands;
 using VoteMonitor.Api.Notification.Models;
 

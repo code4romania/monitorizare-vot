@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using VoteMonitor.Api.Core;
-using VoteMonitor.Api.Core.Commands;
 using VoteMonitor.Api.Core.Options;
 using VoteMonitor.Api.Observer.Commands;
 using VoteMonitor.Api.Observer.Models;
@@ -23,6 +23,7 @@ namespace VoteMonitor.Api.Observer.Controllers
         private readonly DefaultNgoOptions _defaultNgoOptions;
 
         private int NgoId => this.GetIdOngOrDefault(_defaultNgoOptions.DefaultNgoId);
+        private bool IsOrganizer => this.GetOrganizatorOrDefault(false);
 
         public ObserverController(IMediator mediator, IMapper mapper, IOptions<DefaultNgoOptions> defaultNgoOptions)
         {
@@ -118,11 +119,17 @@ namespace VoteMonitor.Api.Observer.Controllers
         [HttpPut]
         [Authorize("Organizer")]
         [Produces(type: typeof(bool))]
-        public async Task<IActionResult> EditObserver([FromBody]EditObserverModel model)
+        public async Task<IActionResult> EditObserver([FromBody] EditObserverModel model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
+            }
+
+            var isActionAllowed = await IsActionAllowed(model.IdObserver);
+            if (!isActionAllowed)
+            {
+                return Problem("Action not allowed", statusCode: (int)HttpStatusCode.BadRequest);
             }
 
             var id = await _mediator.Send(_mapper.Map<EditObserverCommand>(model));
@@ -145,9 +152,33 @@ namespace VoteMonitor.Api.Observer.Controllers
                 return BadRequest(ModelState);
             }
 
-            var result = await _mediator.Send(_mapper.Map<DeleteObserverCommand>(new DeleteObserverModel { IdObserver = id }));
+            var isActionAllowed = await IsActionAllowed(id);
+            if (!isActionAllowed)
+            {
+                return Problem("Action not allowed", statusCode: (int)HttpStatusCode.BadRequest);
+            }
+
+            var result = await _mediator.Send(new DeleteObserverCommand(id));
 
             return Ok(result);
+        }
+
+        private async Task<bool> IsActionAllowed(int id)
+        {
+            if (IsOrganizer)
+            {
+                return true;
+            }
+
+            var observerRequest = new GetObserverDetails(NgoId, id);
+
+            var observer = await _mediator.Send(observerRequest);
+            if (observer == null)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -162,18 +193,13 @@ namespace VoteMonitor.Api.Observer.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> RemoveObserverDeviceId(int id)
         {
-            var observerRequest = new CheckObserverExists
+            var isActionAllowed = await IsActionAllowed(id);
+            if (!isActionAllowed)
             {
-                Id = id
-            };
-
-            var foundObserver = await _mediator.Send(observerRequest);
-            if (!foundObserver)
-            {
-                return NotFound(id);
+                return Problem("Action not allowed", statusCode: (int)HttpStatusCode.BadRequest);
             }
 
-            var request = _mapper.Map<RemoveDeviceIdCommand>(new RemoveDeviceIdModel {Id = id});
+            var request = _mapper.Map<RemoveDeviceIdCommand>(new RemoveDeviceIdModel { Id = id });
             await _mediator.Send(request);
 
             return Ok();
@@ -182,7 +208,7 @@ namespace VoteMonitor.Api.Observer.Controllers
         [HttpPost]
         [Route("reset")]
         [Authorize("Organizer")]
-        public async Task<IActionResult> Reset([FromBody]ResetModel model)
+        public async Task<IActionResult> Reset([FromBody] ResetModel model)
         {
             if (string.IsNullOrEmpty(model.Action) || string.IsNullOrEmpty(model.PhoneNumber))
             {

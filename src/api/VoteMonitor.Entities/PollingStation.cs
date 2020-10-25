@@ -2,7 +2,7 @@
 
 namespace VoteMonitor.Entities
 {
-    public partial class PollingStation
+    public partial class PollingStation : IIdentifiableEntity
     {
         public PollingStation()
         {

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VoteMonitor.Entities
 {
-    public partial class Form
+    public partial class Form : IHierarchicalEntity<FormSection>, IIdentifiableEntity
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -23,5 +23,7 @@ namespace VoteMonitor.Entities
 		public int Order { get; set; }
 
 		public virtual ICollection<FormSection> FormSections { get; set; }
-	}
+
+        ICollection<FormSection> IHierarchicalEntity<FormSection>.Children { get => FormSections; set => FormSections = value; }
+    }
 }
