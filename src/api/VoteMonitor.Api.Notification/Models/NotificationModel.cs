@@ -15,6 +15,7 @@ namespace VoteMonitor.Api.Notification.Models
         //
         public int SenderId { get; set; }
         public int SenderIdNgo { get; set; }
+        public string SenderNgoName { get; set; }
         public string SenderAccount { get; set; }
         //
         public ICollection<int> SentObserverIds { get; set; }
@@ -32,6 +33,7 @@ namespace VoteMonitor.Api.Notification.Models
                 .ForMember(dest => dest.InsertedAt, c => c.MapFrom(src => src.InsertedAt))
                 .ForMember(dest => dest.SenderId, c => c.MapFrom(src => src.SenderAdmin.Id))
                 .ForMember(dest => dest.SenderIdNgo, c => c.MapFrom(src => src.SenderAdmin.IdNgo))
+                .ForMember(dest => dest.SenderNgoName, c => c.MapFrom(src => src.SenderAdmin.Ngo.Name))
                 .ForMember(dest => dest.SenderAccount, c => c.MapFrom(src => src.SenderAdmin.Account))
                 .ForMember(dest => dest.SentObserverIds, c => c.MapFrom(src => src.NotificationRecipients.Select(o => o.ObserverId)));
         }
