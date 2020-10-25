@@ -2,10 +2,7 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using VoteMonitor.Api.Core;
@@ -16,7 +13,7 @@ using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Notification.Handlers
 {
-    public class NotificationListQueryHandler : IRequestHandler<NotificationListCommand, ApiListResponse<NotificationModel>>, IPaginatedQueryHandler
+    public class NotificationListQueryHandler : PaginatedQueryHandlerBase, IRequestHandler<NotificationListCommand, ApiListResponse<NotificationModel>>
     {
         private readonly VoteMonitorContext _context;
         private readonly ILogger _logger;
@@ -31,23 +28,22 @@ namespace VoteMonitor.Api.Notification.Handlers
 
         public async Task<ApiListResponse<NotificationModel>> Handle(NotificationListCommand request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation($"Searching for Notifications with the following filters (UserType, IdNgo): {request.UserType}, {request.IdNgo}");
+            _logger.LogInformation($"Searching for Notifications with the following filters (Organizer, IdNgo): {request.Organizer}, {request.IdNgo}");
 
             IQueryable<Entities.Notification> notifications = _context.Notifications
-                .Include(o => o.SenderAdmin)
+                .Include(o => o.SenderAdmin).ThenInclude(o => o.Ngo)
                 .Include(o => o.NotificationRecipients);
 
-            if (request.UserType == Core.Models.UserType.NgoAdmin)
+            if (!request.Organizer)
             {
                 notifications = notifications.Where(o => o.SenderAdmin.IdNgo == request.IdNgo);
             }
 
             var count = await notifications.CountAsync(cancellationToken);
 
-            var requestedPageNotifications = this.GetPagedQuery(notifications, request.Page, request.PageSize)
+            var requestedPageNotifications = GetPagedQuery(notifications, request.Page, request.PageSize)
                 .ToList()
                 .Select(_mapper.Map<NotificationModel>);
-
 
             return new ApiListResponse<NotificationModel>
             {

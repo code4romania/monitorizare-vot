@@ -70,18 +70,18 @@ namespace VoteMonitor.Api.Notification.Controllers
         }
 
         [HttpGet]
-        [Authorize("Organizer")]
         [Authorize("NgoAdmin")]
         [Route("get/all")]
         public async Task<IActionResult> GetAll(PagingModel query)
         {
-            var userType = this.GetUserType();
-            if (!userType.HasValue)
+            var idNgo = this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
+            var organizer = this.GetOrganizatorOrDefault(false);
+            if (!organizer && idNgo == _configuration.GetValue<int>("DefaultIdOng"))
                 return BadRequest();
 
             var command = _mapper.Map<NotificationListCommand>(new NotificationListQuery {
-                IdNgo = this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng")),
-                UserType = userType.Value,
+                IdNgo = idNgo != _configuration.GetValue<int>("DefaultIdOng") ? idNgo : (int?)null,
+                Organizer = organizer,
                 Page = query.Page,
                 PageSize = query.PageSize
             });
