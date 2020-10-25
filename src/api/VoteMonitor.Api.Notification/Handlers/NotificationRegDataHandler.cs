@@ -93,13 +93,15 @@ namespace VoteMonitor.Api.Notification.Handlers
                 .Where(x => x.ChannelName == request.Channel)
                 .Select(regDataResult => regDataResult.ObserverId.ToString())
                 .ToList();
+
             var notification = _mapper.Map<Entities.Notification>(new NewNotificationCommand
             {
                 Channel = request.Channel,
                 Title = request.Title,
                 Message = request.Message,
                 From = request.From,
-                Recipients = observerIds
+                Recipients = observerIds,
+                SenderAdminId = request.SenderAdminId
             });
 
             _context.Notifications.AddRange(notification);

@@ -9,7 +9,8 @@ namespace VoteMonitor.Api.Auth.Profiles
         public UserInfoProfile()
         {
             CreateMap<NgoAdmin, UserInfo>()
-                .ForMember(u => u.Organizer, opt => opt.MapFrom(a => a.Ngo.Organizer));
+                .ForMember(u => u.Organizer, opt => opt.MapFrom(a => a.Ngo.Organizer))
+                .ForMember(u => u.NgoAdminId, opt => opt.MapFrom(a => a.Id));
         }
     }
 }

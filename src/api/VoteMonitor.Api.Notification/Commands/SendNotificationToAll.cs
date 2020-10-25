@@ -8,9 +8,11 @@ namespace VoteMonitor.Api.Notification.Commands
         public string From { get; }
         public string Title { get; }
         public string Message { get; }
+        public int SenderAdminId { get; }
 
-        public SendNotificationToAll(string channel, string sender, string title, string message)
+        public SendNotificationToAll(int senderAdminId, string channel, string sender, string title, string message)
         {
+            SenderAdminId = senderAdminId;
             Channel = channel;
             From = sender;
             Title = title;

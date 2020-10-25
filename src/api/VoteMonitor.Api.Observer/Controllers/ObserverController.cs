@@ -45,6 +45,7 @@ namespace VoteMonitor.Api.Observer.Controllers
         }
 
         [HttpGet]
+        [Authorize("NgoAdmin")]
         [Produces(type: typeof(List<ObserverModel>))]
         [Route("active")]
         public async Task<List<ObserverModel>> GetActiveObservers(ActiveObserverFilter query)
@@ -68,6 +69,7 @@ namespace VoteMonitor.Api.Observer.Controllers
         }
 
         [HttpPost]
+        [Authorize("Organizer")]
         [Route("import")]
         [Produces(type: typeof(int))]
         public async Task<int> Import(IFormFile file, [FromForm] int ongId)
@@ -76,13 +78,6 @@ namespace VoteMonitor.Api.Observer.Controllers
             {
                 ongId = NgoId;
             }
-
-            await _mediator.Send(
-                new UploadFileCommand
-                {
-                    File = file,
-                    UploadType = UploadType.Observers
-                });
 
             var counter = await _mediator.Send(new ImportObserversRequest
             {
@@ -99,6 +94,7 @@ namespace VoteMonitor.Api.Observer.Controllers
         /// <param name="model"></param>
         /// <returns>Boolean indicating whether or not the observer was added successfully.</returns>
         [HttpPost]
+        [Authorize("Organizer")]
         [Produces(type: typeof(int))]
         public async Task<IActionResult> NewObserver(NewObserverModel model)
         {
@@ -120,6 +116,7 @@ namespace VoteMonitor.Api.Observer.Controllers
         /// <param name="model"></param>
         /// <returns>Boolean indicating whether or not the observer was changed successfully</returns>
         [HttpPut]
+        [Authorize("Organizer")]
         [Produces(type: typeof(bool))]
         public async Task<IActionResult> EditObserver([FromBody]EditObserverModel model)
         {
@@ -139,6 +136,7 @@ namespace VoteMonitor.Api.Observer.Controllers
         /// <param name="id">The Observer id</param>
         /// <returns>Boolean indicating whether or not the observer was deleted successfully</returns>
         [HttpDelete]
+        [Authorize("Organizer")]
         [Produces(type: typeof(bool))]
         public async Task<IActionResult> DeleteObserver(int id)
         {
@@ -152,9 +150,38 @@ namespace VoteMonitor.Api.Observer.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// Removes mobile device Id associated with Observer of given Id.
+        /// </summary>
+        /// <param name="id">The Observer id</param>
+        /// <returns>Boolean indicating whether or not the mobile device Id was removed successfully</returns>
+        [HttpPost]
+        [Route("removeDeviceId")]
+        [Authorize("NgoAdmin")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> RemoveObserverDeviceId(int id)
+        {
+            var observerRequest = new CheckObserverExists
+            {
+                Id = id
+            };
+
+            var foundObserver = await _mediator.Send(observerRequest);
+            if (!foundObserver)
+            {
+                return NotFound(id);
+            }
+
+            var request = _mapper.Map<RemoveDeviceIdCommand>(new RemoveDeviceIdModel {Id = id});
+            await _mediator.Send(request);
+
+            return Ok();
+        }
+
         [HttpPost]
         [Route("reset")]
-        [Authorize("NgoAdmin")]
+        [Authorize("Organizer")]
         public async Task<IActionResult> Reset([FromBody]ResetModel model)
         {
             if (string.IsNullOrEmpty(model.Action) || string.IsNullOrEmpty(model.PhoneNumber))
@@ -201,13 +228,14 @@ namespace VoteMonitor.Api.Observer.Controllers
         }
 
         [HttpPost]
+        [Authorize("Organizer")]
         [Route("generate")]
         [Produces(type: typeof(List<GeneratedObserver>))]
         public async Task<IActionResult> GenerateObservers([FromForm] int count)
         {
             if (!ControllerExtensions.ValidateGenerateObserversNumber(count))
             {
-                return BadRequest("Incorrect parameter supplied, please check that paramter is between boundaries: "
+                return BadRequest("Incorrect parameter supplied, please check that parameter is between boundaries: "
                     + ControllerExtensions.LOWER_OBS_VALUE + " - " + ControllerExtensions.UPPER_OBS_VALUE);
             }
 

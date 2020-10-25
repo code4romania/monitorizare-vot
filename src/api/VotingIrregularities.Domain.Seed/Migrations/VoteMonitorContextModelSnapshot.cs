@@ -58,6 +58,9 @@ namespace VoteMonitor.Entities.Migrations
                     b.HasIndex("IdPollingStation")
                         .HasName("IX_Answer_IdPollingStation");
 
+                    b.HasIndex("IdObserver", "CountyCode", "PollingStationNumber", "LastModified")
+                        .HasName("IX_Answer_IdObserver_CountyCode_PollingStationNumber_LastModified");
+
                     b.ToTable("Answers");
                 });
 
@@ -340,10 +343,15 @@ namespace VoteMonitor.Entities.Migrations
                     b.Property<DateTime>("InsertedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("SenderAdminId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("SenderAdminId");
 
                     b.ToTable("Notifications");
                 });
@@ -729,6 +737,15 @@ namespace VoteMonitor.Entities.Migrations
                         .WithMany("Notes")
                         .HasForeignKey("IdQuestion")
                         .HasConstraintName("FK_Note_Question");
+                });
+
+            modelBuilder.Entity("VoteMonitor.Entities.Notification", b =>
+                {
+                    b.HasOne("VoteMonitor.Entities.NgoAdmin", "SenderAdmin")
+                        .WithMany("NotificationsSent")
+                        .HasForeignKey("SenderAdminId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("VoteMonitor.Entities.NotificationRecipient", b =>

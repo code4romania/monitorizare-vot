@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,14 +29,17 @@ namespace VoteMonitor.Api.Note.Controllers
 
 
         [HttpGet]
-        public async Task<List<NoteModel>> Get(NoteQuery filter)
+        public async Task<IActionResult> Get(NoteQuery filter)
         {
+            if (filter.IdQuestion.HasValue && !filter.IdPollingStation.HasValue)
+                return BadRequest($"If the {nameof(filter.IdQuestion)} param is provided then the {nameof(filter.IdPollingStation)} param is required !");
+
             if (!filter.IdObserver.HasValue)
             {
                 filter.IdObserver = this.GetIdObserver();
             }
 
-            return await _mediator.Send(filter);
+            return Ok(await _mediator.Send(filter));
         }
         /// <summary>
         /// Aceasta ruta este folosita cand observatorul incarca o imagine sau un clip in cadrul unei note.
@@ -51,6 +54,7 @@ namespace VoteMonitor.Api.Note.Controllers
         /// <param name="note"></param>
         /// <returns></returns>
         [HttpPost("upload")]
+        [Authorize("Observer")]
         public async Task<dynamic> Upload([FromForm]UploadNoteModel note)
         {
             if (!ModelState.IsValid)

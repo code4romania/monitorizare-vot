@@ -55,6 +55,8 @@ namespace VoteMonitor.Api.Form.Queries
                     var result = sections.Select(section => new FormSectionDTO
                     {
                         UniqueId = form.Code + section.Code + section.IdSection,
+                        Id = section.IdSection,
+                        OrderNumber = section.OrderNumber,
                         Code = section.Code,
                         Description = section.Description,
                         Questions = questions.Where(a => a.IdSection == section.IdSection)
