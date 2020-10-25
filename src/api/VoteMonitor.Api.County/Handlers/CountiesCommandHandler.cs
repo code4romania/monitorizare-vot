@@ -110,7 +110,7 @@ namespace VoteMonitor.Api.County.Handlers
                 return Result.Failure("Cannot add/update counties");
             }
 
-            return Result.Ok();
+            return Result.Success();
         }
 
         private Result<List<CountyCsvModel>> ValidateData(List<CountyCsvModel> counties)
@@ -130,7 +130,7 @@ namespace VoteMonitor.Api.County.Handlers
             if (invalidCounty == null)
             {
 
-                return Result.Ok(counties);
+                return Result.Success(counties);
             }
 
             return Result.Failure<List<CountyCsvModel>>($"Invalid county entry found: {JsonConvert.SerializeObject(invalidCounty)}");
@@ -153,7 +153,7 @@ namespace VoteMonitor.Api.County.Handlers
                 return Result.Failure<List<CountyCsvModel>>("Cannot read csv file provided");
             }
 
-            return Result.Ok(counties);
+            return Result.Success(counties);
         }
 
         public async Task<Result<List<CountyModel>>> Handle(GetAllCounties request, CancellationToken cancellationToken)
@@ -173,7 +173,7 @@ namespace VoteMonitor.Api.County.Handlers
                 return Result.Failure<List<CountyModel>>("Unable to load all counties");
             }
 
-            return Result.Ok(counties);
+            return Result.Success(counties);
         }
 
         public async Task<Result<CountyModel>> Handle(GetCounty request, CancellationToken cancellationToken)
@@ -188,7 +188,7 @@ namespace VoteMonitor.Api.County.Handlers
 
                 var countyModel = _mapper.Map<CountyModel>(county);
 
-                return Result.Ok(countyModel);
+                return Result.Success(countyModel);
             }
             catch (Exception e)
             {
@@ -215,7 +215,7 @@ namespace VoteMonitor.Api.County.Handlers
 
                 await _context.SaveChangesAsync(cancellationToken);
 
-                return Result.Ok();
+                return Result.Success();
             }
             catch (Exception e)
             {
