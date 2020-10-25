@@ -6,14 +6,14 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using VoteMonitor.Api.Core;
-using VoteMonitor.Api.Core.Handlers;
+using VoteMonitor.Api.Core.Extensions;
 using VoteMonitor.Api.Notification.Commands;
 using VoteMonitor.Api.Notification.Models;
 using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Notification.Handlers
 {
-    public class NotificationListQueryHandler : PaginatedQueryHandlerBase, IRequestHandler<NotificationListCommand, ApiListResponse<NotificationModel>>
+    public class NotificationListQueryHandler : QueryExtension, IRequestHandler<NotificationListCommand, ApiListResponse<NotificationModel>>
     {
         private readonly VoteMonitorContext _context;
         private readonly ILogger _logger;

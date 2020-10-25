@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 
-namespace VoteMonitor.Api.Core.Handlers
+namespace VoteMonitor.Api.Core.Extensions
 {
-    public class PaginatedQueryHandlerBase
+    public class QueryExtension
     {
         public IQueryable<T> GetPagedQuery<T>(IQueryable<T> entities, int page, int pageSize)
             where T: class // could be more restrictive if all entities implemented the same interface or the same base class
