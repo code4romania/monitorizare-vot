@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VoteMonitor.Entities;
 
 namespace VoteMonitor.Entities.Migrations
 {
     [DbContext(typeof(VoteMonitorContext))]
-    partial class VoteMonitorContextModelSnapshot : ModelSnapshot
+    [Migration("20201018210207_AddedMobileDeviceIdTypeOnObserver")]
+    partial class AddedMobileDeviceIdTypeOnObserver
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,9 +59,6 @@ namespace VoteMonitor.Entities.Migrations
 
                     b.HasIndex("IdPollingStation")
                         .HasName("IX_Answer_IdPollingStation");
-
-                    b.HasIndex("IdObserver", "CountyCode", "PollingStationNumber", "LastModified")
-                        .HasName("IX_Answer_IdObserver_CountyCode_PollingStationNumber_LastModified");
 
                     b.ToTable("Answers");
                 });
