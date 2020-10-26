@@ -11,6 +11,7 @@ using VoteMonitor.Api.Ngo.Queries;
 namespace VoteMonitor.Api.Ngo.Controllers
 {
     [Route("api/v1/ngo")]
+    [Authorize("Organizer")]
     public class NgoController : Controller
     {
         private readonly IMediator _mediator;
@@ -25,7 +26,6 @@ namespace VoteMonitor.Api.Ngo.Controllers
         /// </summary>
         /// <returns>A list of ngos</returns>
         [HttpGet]
-        [Authorize("NgoAdmin")]
         [ProducesResponseType(typeof(List<NgoModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
@@ -70,7 +70,6 @@ namespace VoteMonitor.Api.Ngo.Controllers
         /// <returns> 200 code response if update was successful or an error </returns>
         [HttpPost]
         [Route("{id}")]
-        [Authorize("Organizer")]
         [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
@@ -92,7 +91,6 @@ namespace VoteMonitor.Api.Ngo.Controllers
         /// <param name="ngo">Ngo details</param>
         /// <returns></returns>
         [HttpPost]
-        [Authorize("Organizer")]
         [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
@@ -110,7 +108,6 @@ namespace VoteMonitor.Api.Ngo.Controllers
 
         [HttpDelete]
         [Route("{id}")]
-        [Authorize("Organizer")]
         [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
@@ -128,7 +125,6 @@ namespace VoteMonitor.Api.Ngo.Controllers
 
         [HttpPatch]
         [Route("{id}/status")]
-        [Authorize("Organizer")]
         [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
@@ -146,7 +142,6 @@ namespace VoteMonitor.Api.Ngo.Controllers
 
         [HttpPatch]
         [Route("{id}/organizer")]
-        [Authorize("Organizer")]
         [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
