@@ -39,7 +39,7 @@ namespace VoteMonitor.Api.PollingStation.Handlers
 
                     await transaction.CommitAsync(cancellationToken);
 
-                    return Result.Ok();
+                    return Result.Success();
                 }
             }
             catch (Exception ex)
