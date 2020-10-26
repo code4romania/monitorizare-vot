@@ -1,6 +1,6 @@
 ﻿namespace VoteMonitor.Api.Ngo.Models
 {
-    public class PathcNgoOrganiserModel
+    public class PatchNgoOrganiserModel
     {
         public bool IsOrganiser { get; set; }
     }
