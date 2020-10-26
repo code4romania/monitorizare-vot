@@ -145,9 +145,9 @@ namespace VoteMonitor.Api.Ngo.Controllers
         [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> UpdateIsOrganizerAsync([FromRoute] int id, [FromBody] PathcNgoOrganiserModel newStatus)
+        public async Task<IActionResult> UpdateIsOrganizerAsync([FromRoute] int id, [FromBody] PatchNgoOrganizerModel newStatus)
         {
-            var ngoDetailsResult = await _mediator.Send(new SetNgoOrganizerFlag(id, newStatus.IsOrganiser));
+            var ngoDetailsResult = await _mediator.Send(new SetNgoOrganizerFlag(id, newStatus.IsOrganizer));
 
             if (ngoDetailsResult.IsFailure)
             {
