@@ -100,7 +100,7 @@ namespace VoteMonitor.Api.Observer.Handlers
 
             if (!string.IsNullOrWhiteSpace(request.Phone))
             {
-                observer.Name = request.Phone;
+                observer.Phone = request.Phone;
             }
 
             if (!string.IsNullOrWhiteSpace(request.Pin))
