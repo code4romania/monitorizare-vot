@@ -7,5 +7,6 @@ namespace VoteMonitor.Api.Observer.Commands
         public int IdObserver { get; set; }
         public string Phone { get; set; }
         public string Name { get; set; }
+        public string Pin { get; set; }
     }
 }
