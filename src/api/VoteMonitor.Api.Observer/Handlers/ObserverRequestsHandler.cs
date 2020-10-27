@@ -93,17 +93,17 @@ namespace VoteMonitor.Api.Observer.Handlers
                 return -1;
             }
 
-            if (string.IsNullOrWhiteSpace(request.Name))
+            if (!string.IsNullOrWhiteSpace(request.Name))
             {
                 observer.Name = request.Name;
             }
 
-            if (string.IsNullOrWhiteSpace(request.Phone))
+            if (!string.IsNullOrWhiteSpace(request.Phone))
             {
                 observer.Name = request.Phone;
             }
 
-            if (string.IsNullOrWhiteSpace(request.Pin))
+            if (!string.IsNullOrWhiteSpace(request.Pin))
             {
                 observer.Pin = _hashService.GetHash(request.Pin);
             }
