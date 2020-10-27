@@ -124,6 +124,13 @@ namespace VoteMonitor.Api.Observer.Controllers
                 return BadRequest(ModelState);
             }
 
+            if(string.IsNullOrWhiteSpace(model.Name)
+                && string.IsNullOrWhiteSpace(model.Phone)
+                && string.IsNullOrWhiteSpace(model.Pin))
+            {
+                return BadRequest("Invalid request");
+            }
+
             var isActionAllowed = await IsActionAllowed(model.IdObserver);
             if (!isActionAllowed)
             {
@@ -161,14 +168,14 @@ namespace VoteMonitor.Api.Observer.Controllers
             return Ok(result);
         }
 
-        private async Task<bool> IsActionAllowed(int id)
+        private async Task<bool> IsActionAllowed(int? id)
         {
             if (IsOrganizer)
             {
                 return true;
             }
 
-            var observerRequest = new GetObserverDetails(NgoId, id);
+            var observerRequest = new GetObserverDetails(NgoId, id.Value);
 
             var observer = await _mediator.Send(observerRequest);
             if (observer == null)
