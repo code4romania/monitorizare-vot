@@ -2,7 +2,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -64,17 +63,17 @@ namespace VoteMonitor.Api.Note.Controllers
 
             // TODO[DH] use a pipeline instead of separate Send commands
             // daca nota este asociata sectiei
-            var idSectie = await _mediator.Send(_mapper.Map<PollingStationQuery>(note));
+            var pollingStationId = await _mediator.Send(_mapper.Map<PollingStationQuery>(note));
 
-            if (idSectie < 0)
+            if (pollingStationId < 0)
             {
                 return this.ResultAsync(HttpStatusCode.NotFound);
             }
 
             var command = _mapper.Map<AddNoteCommand>(note);
 
-            command.IdObserver = int.Parse(User.Claims.First(c => c.Type == ClaimsHelper.ObserverIdProperty).Value);
-            command.IdPollingStation = idSectie;
+            command.IdObserver = this.GetIdObserver();
+            command.IdPollingStation = pollingStationId;
 
             if (note.Files != null && note.Files.Any())
             {
