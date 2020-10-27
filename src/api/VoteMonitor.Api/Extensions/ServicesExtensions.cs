@@ -106,8 +106,6 @@ namespace VoteMonitor.Api.Extensions
                     new CultureInfo("hu")
                 };
 
-                options.DefaultRequestCulture = new RequestCulture(culture: "en", uiCulture: "en-US");
-
                 options.SupportedCultures = supportedCultures;
                 options.SupportedUICultures = supportedCultures;
             });
