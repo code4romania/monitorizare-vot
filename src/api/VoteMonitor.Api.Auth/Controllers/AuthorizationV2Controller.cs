@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
@@ -20,15 +21,21 @@ namespace VoteMonitor.Api.Auth.Controllers
     {
         private readonly ILogger _logger;
         private readonly IMediator _mediator;
+        private readonly IStringLocalizer<AuthorizationV2Controller> _localizer;
         private readonly MobileSecurityOptions _mobileSecurityOptions;
         private readonly JwtIssuerOptions _jwtOptions;
 
         /// <inheritdoc />
-        public AuthorizationV2Controller(IOptions<JwtIssuerOptions> jwtOptions, ILogger<AuthorizationV2Controller> logger, IMediator mediator, IOptions<MobileSecurityOptions> mobileSecurityOptions)
+        public AuthorizationV2Controller(IOptions<JwtIssuerOptions> jwtOptions, 
+            ILogger<AuthorizationV2Controller> logger, 
+            IMediator mediator, 
+            IOptions<MobileSecurityOptions> mobileSecurityOptions,
+            IStringLocalizer<AuthorizationV2Controller> localizer)
             : base(jwtOptions, mediator, mobileSecurityOptions)
         {
             _logger = logger;
             _mediator = mediator;
+            _localizer = localizer;
             _mobileSecurityOptions = mobileSecurityOptions.Value;
             _jwtOptions = jwtOptions.Value;
         }
@@ -83,6 +90,25 @@ namespace VoteMonitor.Api.Auth.Controllers
             };
 
             return Ok(response);
+        }
+
+        /// <summary>
+        /// This method is used for test. will be removed after this approch is approved;
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet("test-localization")]
+        public IActionResult TestLocalization(string name)
+        {
+            string text = string.Format(_localizer["greeting"].Value, name);
+            string noValue = _localizer["no-translation"].Value;
+            string onlyEnglish = _localizer["greeting-only-en"].Value;
+
+            return Ok(new { 
+                formattedText= text ,
+                noValue,
+                onlyEnglish
+            });
         }
     }
 }

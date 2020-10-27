@@ -1,6 +1,10 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Localization.Routing;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Globalization;
 using System.IO;
 using VoteMonitor.Api.Core.Extensions;
 using VoteMonitor.Api.Core.Options;
@@ -89,5 +93,27 @@ namespace VoteMonitor.Api.Extensions
 
             return services;
         }
+
+        public static IServiceCollection AddAppLocalization(this IServiceCollection services)
+        {
+            services.AddLocalization(options => options.ResourcesPath = "Resources");
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                var supportedCultures = new[]
+                 {
+                    new CultureInfo("en"),
+                    new CultureInfo("ro"),
+                    new CultureInfo("hu")
+                };
+
+                options.DefaultRequestCulture = new RequestCulture(culture: "en", uiCulture: "en-US");
+
+                options.SupportedCultures = supportedCultures;
+                options.SupportedUICultures = supportedCultures;
+            });
+
+            return services;
+        }
+
     }
 }

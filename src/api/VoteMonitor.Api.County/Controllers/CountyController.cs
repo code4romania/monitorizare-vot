@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using VoteMonitor.Api.County.Commands;
 using VoteMonitor.Api.County.Queries;
+using Microsoft.Extensions.Localization;
+using System.ComponentModel.DataAnnotations;
 
 namespace VoteMonitor.Api.County.Controllers
 {
@@ -16,9 +18,12 @@ namespace VoteMonitor.Api.County.Controllers
     public class CountyController : Controller
     {
         private readonly IMediator _mediator;
-        public CountyController(IMediator mediator)
+        private readonly IStringLocalizer<CountyController> _localizer;
+
+        public CountyController(IMediator mediator, IStringLocalizer<CountyController> localizer)
         {
             _mediator = mediator;
+            _localizer = localizer;
         }
 
         [HttpGet]
@@ -114,6 +119,27 @@ namespace VoteMonitor.Api.County.Controllers
             }
 
             return BadRequest(new ErrorModel { Message = response.Error });
+        }
+
+        /// <summary>
+        /// This method is used for test. will be removed after this approch is approved;
+        /// </summary>
+        /// <returns></returns>
+
+        [AllowAnonymous]
+        [HttpGet("test-localization")]
+        public IActionResult TestLocalization([Required] string name)
+        {
+            string text = string.Format(_localizer["hello"].Value, name);
+            string noValue = _localizer["no-translation"].Value;
+            string onlyEnglish = _localizer["only-english"].Value;
+
+            return Ok(new
+            {
+                formattedText = text,
+                noValue,
+                onlyEnglish
+            });
         }
     }
 }
