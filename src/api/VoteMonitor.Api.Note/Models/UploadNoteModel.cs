@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 using VoteMonitor.Api.Core.Attributes;
 
@@ -18,6 +19,6 @@ namespace VoteMonitor.Api.Note.Models
 
         //[Required(ErrorMessage = "Please select a file.")]
         [DataType(DataType.Upload)]
-        public IFormFile File { get; set; }
+        public List<IFormFile> Files { get; set; }
     }
 }

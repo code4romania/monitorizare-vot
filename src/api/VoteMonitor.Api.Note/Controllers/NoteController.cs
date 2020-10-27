@@ -55,7 +55,7 @@ namespace VoteMonitor.Api.Note.Controllers
         /// <returns></returns>
         [HttpPost("upload")]
         [Authorize("Observer")]
-        public async Task<dynamic> Upload([FromForm]UploadNoteModel note)
+        public async Task<dynamic> Upload([FromForm] UploadNoteModel note)
         {
             if (!ModelState.IsValid)
             {
@@ -76,10 +76,10 @@ namespace VoteMonitor.Api.Note.Controllers
             command.IdObserver = int.Parse(User.Claims.First(c => c.Type == ClaimsHelper.ObserverIdProperty).Value);
             command.IdPollingStation = idSectie;
 
-            if (note.File != null) 
+            if (note.Files != null && note.Files.Any())
             {
-                var fileAddress = await _mediator.Send(new UploadFileCommand { File = note.File, UploadType = UploadType.Notes });
-                command.AttachementPath = fileAddress;
+                var files = await _mediator.Send(new UploadFileCommand { Files = note.Files, UploadType = UploadType.Notes });
+                command.AttachementPaths = files;
             }
 
             var result = await _mediator.Send(command);
@@ -89,7 +89,7 @@ namespace VoteMonitor.Api.Note.Controllers
                 return this.ResultAsync(HttpStatusCode.NotFound);
             }
 
-            return await Task.FromResult(new { FileAddress = command.AttachementPath, note });
+            return await Task.FromResult(new { FilesAddress = command.AttachementPaths, note });
         }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using MediatR;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using VoteMonitor.Api.Core.Commands;
@@ -7,7 +9,7 @@ using VoteMonitor.Api.Core.Services;
 
 namespace VoteMonitor.Api.Core.Handlers
 {
-    public class UploadFileHandler : IRequestHandler<UploadFileCommand, string>
+    public class UploadFileHandler : IRequestHandler<UploadFileCommand, string[]>
     {
         private readonly IFileService _fileService;
 
@@ -17,20 +19,31 @@ namespace VoteMonitor.Api.Core.Handlers
         }
 
         /// <summary>
-        ///  Uploads a file in azure blob storage
+        ///  Uploads a list of files in blob storage
         /// </summary>
         /// <returns>The url of the blob</returns>
-        public async Task<string> Handle(UploadFileCommand message, CancellationToken cancellationToken)
+        public async Task<string[]> Handle(UploadFileCommand message, CancellationToken cancellationToken)
         {
-            if (message.File != null)
+            if (message.Files != null && message.Files.Any())
             {
-                return await _fileService.UploadFromStreamAsync(message.File.OpenReadStream(),
-                    message.File.ContentType,
-                    Path.GetExtension(message.File.FileName),
+                List<Task<string>> uploadTasks = new List<Task<string>>();
+
+                foreach (var file in message.Files)
+                {
+                    var uploadTask =  _fileService.UploadFromStreamAsync(file.OpenReadStream(),
+                    file.ContentType,
+                    Path.GetExtension(file.FileName),
                     message.UploadType);
+
+                    uploadTasks.Add(uploadTask);
+                }
+
+                string[] files = await Task.WhenAll(uploadTasks);
+
+                return files;
             }
 
-            return string.Empty;
+            return new string[0];
         }
     }
 }
