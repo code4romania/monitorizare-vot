@@ -24,9 +24,12 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
 
+      - name: Save branch name
+        run: echo "##[set-output name=BRANCH;]$(if [ ${GITHUB_REF#refs/heads/} == "master" ]; then echo "prod"; else echo "dev"; fi)"
+        id: branch
+
       - name: Push to Docker Hub
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: ${{ secrets.ORGANIZATION }}/${{ secrets.REPO }}:latest
-
+          tags: ${{ secrets.ORGANIZATION }}/${{ secrets.REPO }}:${{ steps.branch.outputs.BRANCH }}
