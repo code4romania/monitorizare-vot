@@ -47,7 +47,10 @@ namespace VoteMonitor.Api.Note.Handlers
                     AttachmentsPaths = n.Attachments.Select(x => x.Path).ToArray(),
                     Text = n.Text,
                     FormCode = n.Question.FormSection.Form.Code,
-                    QuestionId = n.Question.Id
+                    FormId = n.Question.FormSection.Form.Id,
+                    QuestionId = n.Question.Id,
+                    CountyCode = n.PollingStation.County.Code,
+                    PollingStationNumber = n.PollingStation.Number
                 })
                 .ToListAsync(cancellationToken: token);
         }
