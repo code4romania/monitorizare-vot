@@ -41,9 +41,10 @@ namespace VoteMonitor.Api.Note.Handlers
 
             return await query
                 .OrderBy(n => n.LastModified)
+                .Include(n => n.Attachments)
                 .Select(n => new NoteModel
                 {
-                    AttachmentPath = n.AttachementPath,
+                    AttachmentsPaths = n.Attachments.Select(x => x.Path).ToArray(),
                     Text = n.Text,
                     FormCode = n.Question.FormSection.Form.Code,
                     QuestionId = n.Question.Id

@@ -68,7 +68,6 @@ namespace VoteMonitor.Entities
                 entity.HasIndex(e => e.IdPollingStation)
                     .HasName("IX_Note_IdPollingStation");
 
-                entity.Property(e => e.AttachementPath).HasMaxLength(1000);
 
                 entity.Property(e => e.LastModified).HasColumnType("datetime");
 
@@ -85,6 +84,19 @@ namespace VoteMonitor.Entities
                 entity.HasOne(d => d.PollingStation)
                     .WithMany(p => p.Notes)
                     .HasForeignKey(d => d.IdPollingStation)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<NotesAttachments>(entity =>
+            {
+                entity.HasKey(e => e.Id)
+                    .HasName("PK_NoteAttachment");
+
+                entity.Property(e => e.Path).HasMaxLength(1000);
+
+                entity.HasOne(d => d.Note)
+                    .WithMany(p => p.Attachments)
+                    .HasForeignKey(d => d.NoteId)
                     .OnDelete(DeleteBehavior.Restrict);
             });
 

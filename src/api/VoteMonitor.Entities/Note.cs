@@ -1,11 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace VoteMonitor.Entities
 {
     public partial class Note : IIdentifiableEntity
     {
         public int Id { get; set; }
-        public string AttachementPath { get; set; }
         public DateTime LastModified { get; set; }
         public int? IdQuestion { get; set; }
         public int IdObserver { get; set; }
@@ -15,5 +15,7 @@ namespace VoteMonitor.Entities
         public virtual Question Question { get; set; }
         public virtual Observer Observer { get; set; }
         public virtual PollingStation PollingStation { get; set; }
+        public virtual ICollection<NotesAttachments> Attachments { get; set; }
+
     }
 }
