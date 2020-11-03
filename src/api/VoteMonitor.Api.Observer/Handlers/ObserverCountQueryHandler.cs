@@ -24,7 +24,7 @@ namespace VoteMonitor.Api.Observer.Handlers
 
             IQueryable<Entities.Observer> observers = _context.Observers;
 
-            if (request.IdNgo > 0)
+            if (request.IsCallerOrganizer == false && request.IdNgo > 0)
             {
                 observers = observers.Where(o => o.IdNgo == request.IdNgo);
             }

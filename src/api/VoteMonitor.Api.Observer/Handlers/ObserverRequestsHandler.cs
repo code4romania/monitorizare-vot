@@ -93,8 +93,20 @@ namespace VoteMonitor.Api.Observer.Handlers
                 return -1;
             }
 
-            observer.Name = request.Name;
-            observer.Phone = request.Phone;
+            if (!string.IsNullOrWhiteSpace(request.Name))
+            {
+                observer.Name = request.Name;
+            }
+
+            if (!string.IsNullOrWhiteSpace(request.Phone))
+            {
+                observer.Phone = request.Phone;
+            }
+
+            if (!string.IsNullOrWhiteSpace(request.Pin))
+            {
+                observer.Pin = _hashService.GetHash(request.Pin);
+            }
 
             return await _context.SaveChangesAsync();
         }

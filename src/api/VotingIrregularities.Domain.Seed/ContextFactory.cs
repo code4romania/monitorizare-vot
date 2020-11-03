@@ -13,7 +13,7 @@ namespace VotingIrregularities.Domain.Seed
             var optionsBuilder = new DbContextOptionsBuilder<VoteMonitorContext>();
 
             optionsBuilder.UseSqlServer("Server=myServerAddress;Database=myDataBase;Trusted_Connection=True;",
-                x => x.MigrationsAssembly("VoteMonitor.Entities"));
+                x => x.MigrationsAssembly("VotingIrregularities.Domain.Seed"));
 
             return new VoteMonitorContext(optionsBuilder.Options);
         }

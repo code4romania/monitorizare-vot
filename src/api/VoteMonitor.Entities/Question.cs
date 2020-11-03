@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VoteMonitor.Entities
 {
-    public partial class Question
+    public partial class Question : IHierarchicalEntity<OptionToQuestion>, IIdentifiableEntity
     {
         public Question()
         {
@@ -27,5 +27,7 @@ namespace VoteMonitor.Entities
         public virtual ICollection<Note> Notes { get; set; }
         public virtual ICollection<OptionToQuestion> OptionsToQuestions { get; set; }
         public virtual FormSection FormSection { get; set; }
+
+        ICollection<OptionToQuestion> IHierarchicalEntity<OptionToQuestion>.Children { get => OptionsToQuestions; set => OptionsToQuestions = value; }
     }
 }

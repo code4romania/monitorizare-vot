@@ -37,9 +37,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoteMonitor.Api", "api\Vote
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoteMonitor.Api.Auth", "api\VoteMonitor.Api.Auth\VoteMonitor.Api.Auth.csproj", "{9AE873EE-2FA4-4C0E-9DDB-BB0B3C7A4004}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoteMonitor.Api.PollingStation", "api\VoteMonitor.Api.PollingStation\VoteMonitor.Api.PollingStation.csproj", "{DD341123-8FD7-4506-AA0D-4280A5112A6F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoteMonitor.Api.PollingStation", "api\VoteMonitor.Api.PollingStation\VoteMonitor.Api.PollingStation.csproj", "{DD341123-8FD7-4506-AA0D-4280A5112A6F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoteMonitor.Api.PollingStation.Tests", "test\VoteMonitor.Api.PollingStation.Tests\VoteMonitor.Api.PollingStation.Tests.csproj", "{C7767496-1BC5-41AD-98D1-439BAA2ACEAE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoteMonitor.Api.PollingStation.Tests", "test\VoteMonitor.Api.PollingStation.Tests\VoteMonitor.Api.PollingStation.Tests.csproj", "{C7767496-1BC5-41AD-98D1-439BAA2ACEAE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoteMonitor.Api.Ngo", "api\VoteMonitor.Api.Ngo\VoteMonitor.Api.Ngo.csproj", "{674C9094-58B8-4749-9EB1-2FFD054B8D7D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -115,6 +117,10 @@ Global
 		{C7767496-1BC5-41AD-98D1-439BAA2ACEAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C7767496-1BC5-41AD-98D1-439BAA2ACEAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C7767496-1BC5-41AD-98D1-439BAA2ACEAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{674C9094-58B8-4749-9EB1-2FFD054B8D7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{674C9094-58B8-4749-9EB1-2FFD054B8D7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{674C9094-58B8-4749-9EB1-2FFD054B8D7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{674C9094-58B8-4749-9EB1-2FFD054B8D7D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -137,6 +143,7 @@ Global
 		{9AE873EE-2FA4-4C0E-9DDB-BB0B3C7A4004} = {8A09B442-FB79-4293-BF9B-E34DD3AE70F3}
 		{DD341123-8FD7-4506-AA0D-4280A5112A6F} = {8A09B442-FB79-4293-BF9B-E34DD3AE70F3}
 		{C7767496-1BC5-41AD-98D1-439BAA2ACEAE} = {388C55EB-26FF-46AB-9395-549E1A7A99AD}
+		{674C9094-58B8-4749-9EB1-2FFD054B8D7D} = {8A09B442-FB79-4293-BF9B-E34DD3AE70F3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AF1523BC-7F31-4564-8E1B-D2DB4552FFCB}

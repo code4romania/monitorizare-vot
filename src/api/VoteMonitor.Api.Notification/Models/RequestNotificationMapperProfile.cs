@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using System;
 using System.Linq;
+using VoteMonitor.Api.Core.Commands;
 using VoteMonitor.Api.Notification.Commands;
 using VoteMonitor.Entities;
 

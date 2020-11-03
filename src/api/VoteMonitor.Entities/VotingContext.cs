@@ -96,6 +96,9 @@ namespace VoteMonitor.Entities
                 entity.HasIndex(e => e.IdNgo)
                     .HasName("IX_Observer_IdNgo");
 
+                entity.HasIndex(e => e.MobileDeviceId);
+                entity.HasIndex(e => e.MobileDeviceIdType);
+
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.Property(e => e.DeviceRegisterDate).HasColumnType("datetime");
@@ -114,6 +117,9 @@ namespace VoteMonitor.Entities
 
                 entity.Property(e => e.IsTestObserver)
                     .HasDefaultValueSql("0");
+
+                entity.Property(e => e.MobileDeviceIdType)
+                    .HasDefaultValue(MobileDeviceIdType.UserGeneratedGuid);
 
                 entity.Property(e => e.Pin)
                     .IsRequired()
@@ -158,6 +164,9 @@ namespace VoteMonitor.Entities
 
                 entity.HasIndex(e => e.IdPollingStation)
                     .HasName("IX_Answer_IdPollingStation");
+
+                entity.HasIndex(e => new { e.IdObserver, e.CountyCode, e.PollingStationNumber, e.LastModified })
+                    .HasName("IX_Answer_IdObserver_CountyCode_PollingStationNumber_LastModified");
 
                 entity.Property(e => e.LastModified)
                     .HasColumnType("datetime")

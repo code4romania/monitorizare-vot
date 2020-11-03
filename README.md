@@ -19,7 +19,7 @@ The app also has a web version, available for every citizen who wants to report 
 
 ## Contributing
 
-This project is built by amazing volunteers and you can be one of them! Here's a list of ways in [which you can contribute to this project](.github/CONTRIBUTING.MD).
+This project is built by amazing volunteers and you can be one of them! Here's a list of ways in [which you can contribute to this project](https://github.com/code4romania/.github/blob/master/CONTRIBUTING.md).
 
 ## Built With
 

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using VoteMonitor.Api.Core;
+using VoteMonitor.Api.Form.Commands;
 using VoteMonitor.Api.Form.Models;
 using VoteMonitor.Api.Form.Models.Options;
 using VoteMonitor.Api.Form.Queries;
@@ -33,7 +34,7 @@ namespace VoteMonitor.Api.Form.Controllers
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
         public async Task<List<OptionModel>> GetAll()
         {
-            var options = await _mediator.Send(new FetchAllOptionsCommand());
+            var options = await _mediator.Send(new FetchAllOptionsQuery());
             var mappedResult = options.Select(dto => _mapper.Map<OptionModel>(dto)).ToList();
 
             return mappedResult;
@@ -46,7 +47,7 @@ namespace VoteMonitor.Api.Form.Controllers
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
         public async Task<OptionModel> GetByOptionId([FromRoute] int id)
         {
-            var optionDto = await _mediator.Send(new GetOptionByIdCommand(id));
+            var optionDto = await _mediator.Send(new GetOptionByIdQuery(id));
             var result = _mapper.Map<OptionModel>(optionDto);
             return result;
         }
@@ -64,8 +65,8 @@ namespace VoteMonitor.Api.Form.Controllers
                 return BadRequest(ModelState);
             }
 
-            var dto = _mapper.Map<OptionDto>(model);
-            var optionDto = await _mediator.Send(new AddOptionCommand(dto));
+            var dto = _mapper.Map<OptionDTO>(model);
+            var optionDto = await _mediator.Send(new AddOptionCommand() { Option = dto });
 
             var result = _mapper.Map<OptionModel>(optionDto);
 
@@ -86,8 +87,8 @@ namespace VoteMonitor.Api.Form.Controllers
                 return this.ResultAsync(HttpStatusCode.BadRequest, ModelState);
             }
 
-            var dto = _mapper.Map<OptionDto>(model);
-            var result = await _mediator.Send(new UpdateOptionCommand(dto));
+            var dto = _mapper.Map<OptionDTO>(model);
+            var result = await _mediator.Send(new UpdateOptionCommand() { Option = dto });
 
 
             return this.ResultAsync(result < 0 ? HttpStatusCode.NotFound : HttpStatusCode.OK);
