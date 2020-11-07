@@ -1,0 +1,4 @@
+Id,IsFreeText,Text,Hint,OrderNumber
+1,0,Option one,NULL,1
+2,0,Option two,NULL,2
+3,1,Other,NULL,3

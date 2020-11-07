@@ -1,0 +1,4 @@
+Id,Address,Coordinates,AdministrativeTerritoryCode,IdCounty,TerritoryCode,Number
+1,"Some Address 1",NULL,111,1,123,1
+2,"Some Address 2",NULL,222,1,234,2
+3,"Some Address 3",NULL,333,2,345,1
