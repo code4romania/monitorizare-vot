@@ -1,0 +1,7 @@
+Id,Code,IdSection,QuestionType,Text,Hint,OrderNumber
+1,A1,1,0,"Multiple choice question?",NULL,1
+2,A2,1,1,"Single choice question?",NULL,2
+3,B1,2,2,"Single choice question with free text option?",NULL,1
+4,B2,2,3,"Multiple choice question with free text option?",NULL,2
+5,C1,3,1,"Single choice question?",NULL,1
+6,C2,4,0,"Multiple choice question?",NULL,1

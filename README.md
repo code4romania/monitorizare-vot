@@ -58,6 +58,8 @@ src\api\VotingIrregularities.Domain.Seed> dotnet run
 - to test admin features, you will need to add a test NGO and a test NGO admin linked to that NGO
 - to test observer features, you will need to add observer accounts
 
+- some dummy db data can be found [here](https://github.com/code4romania/monitorizare-vot/tree/develop/docs/dummy db data/)
+
 ## Deployment
 
 1. install .NetCore (refer to the [Built With](#built-with) section for the proper version) (Open Source/Free/Multiplatform) from [here](https://www.microsoft.com/net/core#windows)
