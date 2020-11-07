@@ -40,7 +40,7 @@ namespace VoteMonitor.Api.Statistics.Handlers
                   INNER JOIN Options AS O ON O.Id = OQ.IdOption
                   INNER JOIN Observers Obs ON Obs.Id = A.IdObserver
                   INNER JOIN Ngos N ON O.IdNgo = N.Id
-                  WHERE OQ.Id = {message.QuestionId} AND N.IsActive =1",
+                  WHERE OQ.Id = {message.QuestionId} AND N.IsActive =1 AND Obs.IsTestObserver = 0",
                 CacheKey = $"StatisticiOptiuni-{message.QuestionId}"
             };
 
@@ -83,7 +83,7 @@ namespace VoteMonitor.Api.Statistics.Handlers
                           FROM Answers a (nolock) 
                           INNER JOIN Observers o on a.IdObserver = o.Id
                           INNER JOIN Ngos N ON O.IdNgo = N.Id
-                          WHERE N.IsActive = 1",
+                          WHERE N.IsActive = 1 AND o.IsTestObserver = 0",
                 CacheKey = "StatisticiObservatori"
             };
 
@@ -133,7 +133,7 @@ namespace VoteMonitor.Api.Statistics.Handlers
                   INNER JOIN Ngos N ON O.IdNgo = N.Id
                   INNER JOIN FormSections fs on i.IdSection = fs.Id
                   INNER JOIN Forms f on fs.IdForm = f.Id
-                  WHERE RD.Flagged = 1 AND N.IsActive = 1",
+                  WHERE RD.Flagged = 1 AND N.IsActive = 1 AND O.IsTestObserver = 0",
                 CacheKey = "StatisticiJudete"
             };
 
@@ -176,7 +176,7 @@ namespace VoteMonitor.Api.Statistics.Handlers
                   INNER JOIN Questions I ON I.Id = RD.IdQuestion
                   INNER JOIN FormSections fs on i.IdSection = fs.Id
                   INNER JOIN Forms f on fs.IdForm = f.Id
-                  WHERE RD.Flagged = 1 AND N.IsActive =1",
+                  WHERE RD.Flagged = 1 AND N.IsActive =1 AND O.IsTestObserver = 0",
                 CacheKey = "StatisticiSectii"
             };
 
