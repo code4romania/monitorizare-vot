@@ -29,7 +29,6 @@ namespace VoteMonitor.Api.Note.Controllers
 
 
         [HttpGet]
-        [Obsolete("Will be removed when ui will use multiple files upload")]
         [Produces(type: typeof(List<NoteModel>))]
         public async Task<IActionResult> GetNotes(NoteQuery filter)
         {
