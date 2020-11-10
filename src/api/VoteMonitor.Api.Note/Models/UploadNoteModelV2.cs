@@ -1,16 +1,15 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 
 namespace VoteMonitor.Api.Note.Models
 {
-    [Obsolete("Will be removed when ui will use multiple files upload")]
-    public class UploadNoteModel
+    public class UploadNoteModelV2
     {
-        [Required(AllowEmptyStrings = false)]
+        [Required(AllowEmptyStrings = false)] 
         public string CountyCode { get; set; }
 
-        [Required]
+        [Required] 
         public int PollingStationNumber { get; set; }
 
         public int? QuestionId { get; set; }
@@ -18,6 +17,6 @@ namespace VoteMonitor.Api.Note.Models
         public string Text { get; set; }
 
         [DataType(DataType.Upload)]
-        public IFormFile File { get; set; }
+        public List<IFormFile> Files { get; set; }
     }
 }

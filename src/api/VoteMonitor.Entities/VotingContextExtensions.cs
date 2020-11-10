@@ -120,6 +120,7 @@ namespace VoteMonitor.Entities
 
         private static void DataCleanUp(this VoteMonitorContext context)
         {
+            context.Database.ExecuteSqlRaw("delete from NotesAttachments");
             context.Database.ExecuteSqlRaw("delete from OptionsToQuestions");
             context.Database.ExecuteSqlRaw("delete from Questions");
             context.Database.ExecuteSqlRaw("delete from FormSections");
