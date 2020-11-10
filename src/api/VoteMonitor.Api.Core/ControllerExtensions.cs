@@ -53,6 +53,7 @@ namespace VoteMonitor.Api.Core
             return null;
         }
 
+        [Obsolete("Please use methods available from controller")]
         public static IAsyncResult ResultAsync(this Controller controller, HttpStatusCode statusCode, ModelStateDictionary modelState = null)
         {
             controller.Response.StatusCode = (int)statusCode;

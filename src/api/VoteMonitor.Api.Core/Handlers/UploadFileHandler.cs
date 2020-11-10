@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,7 +10,8 @@ using VoteMonitor.Api.Core.Services;
 
 namespace VoteMonitor.Api.Core.Handlers
 {
-    public class UploadFileHandler : IRequestHandler<UploadFileCommand, string[]>
+    public class UploadFileHandler : IRequestHandler<UploadFileCommandV2, string[]>,
+        IRequestHandler<UploadFileCommand, string>
     {
         private readonly IFileService _fileService;
 
@@ -22,7 +24,7 @@ namespace VoteMonitor.Api.Core.Handlers
         ///  Uploads a list of files in blob storage
         /// </summary>
         /// <returns>The url of the blob</returns>
-        public async Task<string[]> Handle(UploadFileCommand message, CancellationToken cancellationToken)
+        public async Task<string[]> Handle(UploadFileCommandV2 message, CancellationToken cancellationToken)
         {
             if (message.Files != null && message.Files.Any())
             {
@@ -44,6 +46,20 @@ namespace VoteMonitor.Api.Core.Handlers
             }
 
             return new string[0];
+        }
+
+        [Obsolete("Will be removed when ui will use multiple files upload")]
+        public async Task<string> Handle(UploadFileCommand message, CancellationToken cancellationToken)
+        {
+            if (message.File != null)
+            {
+                return await _fileService.UploadFromStreamAsync(message.File.OpenReadStream(),
+                    message.File.ContentType,
+                    Path.GetExtension(message.File.FileName),
+                    message.UploadType);
+            }
+
+            return string.Empty;
         }
     }
 }
