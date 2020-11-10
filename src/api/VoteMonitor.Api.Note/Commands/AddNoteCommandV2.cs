@@ -8,6 +8,6 @@ namespace VoteMonitor.Api.Note.Commands
         public int IdPollingStation { get; set; }
         public int? IdQuestion { get; set; }
         public string Text { get; set; }
-        public string[] AttachementPaths { get; set; }
+        public string[] AttachmentPaths { get; set; }
     }
 }

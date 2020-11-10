@@ -16,7 +16,6 @@ namespace VoteMonitor.Api.Note.Models
 
         public string Text { get; set; }
 
-        //[Required(ErrorMessage = "Please select a file.")]
         [DataType(DataType.Upload)]
         public List<IFormFile> Files { get; set; }
     }

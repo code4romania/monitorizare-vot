@@ -44,21 +44,6 @@ namespace VoteMonitor.Api.Note.Controllers
             return Ok(await _mediator.Send(filter));
         }
 
-        [HttpGet("all")]
-        [Produces(type: typeof(List<NoteModelV2>))]
-        public async Task<IActionResult> GetNotesV2(NoteQueryV2 filter)
-        {
-            if (filter.IdQuestion.HasValue && !filter.IdPollingStation.HasValue)
-                return BadRequest($"If the {nameof(filter.IdQuestion)} param is provided then the {nameof(filter.IdPollingStation)} param is required !");
-
-            if (!filter.IdObserver.HasValue)
-            {
-                filter.IdObserver = this.GetIdObserver();
-            }
-
-            return Ok(await _mediator.Send(filter));
-        }
-
         [HttpPost]
         [Authorize("Observer")]
         [Produces(type: typeof(UploadNoteResultV2))]
@@ -86,7 +71,7 @@ namespace VoteMonitor.Api.Note.Controllers
             if (note.Files != null && note.Files.Any())
             {
                 var files = await _mediator.Send(new UploadFileCommandV2 { Files = note.Files, UploadType = UploadType.Notes });
-                command.AttachementPaths = files;
+                command.AttachmentPaths = files;
             }
 
             var result = await _mediator.Send(command);
@@ -96,7 +81,7 @@ namespace VoteMonitor.Api.Note.Controllers
                 return NotFound();
             }
 
-            return Ok(new UploadNoteResultV2 { FilesAddress = command.AttachementPaths, Note = note });
+            return Ok(new UploadNoteResultV2 { FilesAddress = command.AttachmentPaths, Note = note });
         }
 
 

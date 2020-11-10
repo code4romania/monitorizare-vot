@@ -28,7 +28,7 @@ namespace VoteMonitor.Api.Note.Mapping
 
             CreateMap<AddNoteCommandV2, Entities.Note>(MemberList.Destination)
                 .ForMember(dest => dest.LastModified, c => c.MapFrom(src => DateTime.UtcNow))
-                .ForMember(dest => dest.Attachments, c => c.MapFrom(src => src.AttachementPaths.Select(x => new NotesAttachments()
+                .ForMember(dest => dest.Attachments, c => c.MapFrom(src => src.AttachmentPaths.Select(x => new NotesAttachments()
                 {
                     Path = x
                 }).ToList()));
