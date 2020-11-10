@@ -35,10 +35,22 @@ namespace VoteMonitor.Api.Note.Mapping
 
             CreateMap<AddNoteCommand, Entities.Note>(MemberList.Destination)
                 .ForMember(dest => dest.LastModified, c => c.MapFrom(src => DateTime.UtcNow))
-                .ForMember(dest => dest.Attachments, c => c.MapFrom(src => new[]{new NotesAttachments()
+                .ForMember(dest => dest.Attachments, c => c.MapFrom(src => MapAttachments(src.AttachementPath)));
+        }
+
+        private static NotesAttachments[] MapAttachments(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+            {
+                return new NotesAttachments[0];
+            }
+
+            return new[]{
+                new NotesAttachments()
                 {
-                    Path = src.AttachementPath
-                }}));
+                    Path = path
+                }
+            };
         }
     }
 }
