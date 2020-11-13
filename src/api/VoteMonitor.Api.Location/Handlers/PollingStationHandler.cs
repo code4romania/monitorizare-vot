@@ -8,73 +8,92 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using VoteMonitor.Api.Location.Commands;
+using VoteMonitor.Api.Location.Exceptions;
+using VoteMonitor.Api.Location.Models;
+using VoteMonitor.Api.Location.Models.ResultValues;
 using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Location.Handlers
 {
-    public class PollingStationHandler : IRequestHandler<PollingStationCommand, int>
+    public class PollingStationHandler : IRequestHandler<PollingStationCommand, PollingStationImportResultValue>
     {
-        private VoteMonitorContext _context;
-        private IMapper _mapper;
-        private ILogger _logger;
+        private readonly VoteMonitorContext _context;
+        private readonly IMapper _mapper;
+        private readonly ILogger _logger;
 
-        public PollingStationHandler(VoteMonitorContext context, IMapper mapper, ILogger logger)
+        public PollingStationHandler(VoteMonitorContext context, IMapper mapper, ILogger<PollingStationHandler> logger)
         {
-            this._context = context;
-            this._mapper = mapper;
-            this._logger = logger;
+            _context = context;
+            _mapper = mapper;
+            _logger = logger;
         }
 
-        public async Task<int> Handle(PollingStationCommand request, CancellationToken cancellationToken)
+        public async Task<PollingStationImportResultValue> Handle(PollingStationCommand request, CancellationToken cancellationToken)
         {
-            var random = new Random();
 
             try
             {
-                //import the new entities
-                using (var transaction = await _context.Database.BeginTransactionAsync())
+                using (var transaction = await _context.Database.BeginTransactionAsync(cancellationToken))
                 {
-                    var id = 100;
-                    var newPollingStations = new List<PollingStation>();
-                    var counties = _context.Counties.ToDictionary(c => c.Code, c => c.Id);
+                    var countiesFromDatabase = _context.Counties.ToList();
 
-                    foreach (var record in request.PollingStationsDTOs)
-                    {
-                        var pollingStation = _mapper.Map<PollingStation>(record);
-                        pollingStation.Id = id++;
-                        pollingStation.IdCounty = counties[record.CodJudet];//county.Id;
-                        pollingStation.Coordinates = null;
-                        pollingStation.TerritoryCode = random.Next(10000).ToString();
-
-                        newPollingStations.Add(pollingStation);
-                    }
-
+                    List<PollingStation> newPollingStations = CreatePollingStationEntitiesFromDto(request.PollingStationsDTOs, countiesFromDatabase);
                     _context.BulkInsert(newPollingStations);
 
-                    foreach (var county in _context.Counties)
-                    {
-                        if (!_context.PollingStations.Any(p => p.IdCounty == county.Id))
-                            continue;
+                    UpdateCountiesPollingStationCounter(countiesFromDatabase, newPollingStations);
 
-                        var maxPollingStation = _context.PollingStations
-                            .Where(p => p.IdCounty == county.Id)
-                            .Max(p => p.Number);
-                        county.NumberOfPollingStations = maxPollingStation;
-                        _context.Counties.Update(county);
-                    }
-
-                    var result = await _context.SaveChangesAsync();
+                    var result = await _context.SaveChangesAsync(cancellationToken);
 
                     transaction.Commit();
-                    return result;
+                    return PollingStationImportResultValue.SuccessValue;
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError("Error while importing polling station information ", ex);
+                return new PollingStationImportResultValue(ex);
+            }
+        }
+
+        private void UpdateCountiesPollingStationCounter(List<County> countiesFromDatabase, List<PollingStation> newPollingStations)
+        {
+            var idsOfCountiesToBeUpdated = newPollingStations.Select(x => x.IdCounty).Distinct();
+            var countiesToBeUpdated = countiesFromDatabase.Where(c => idsOfCountiesToBeUpdated.Any(id => c.Id == id));
+
+            foreach (var county in countiesToBeUpdated)
+            {
+                county.NumberOfPollingStations = _context.PollingStations
+                    .Where(p => p.IdCounty == county.Id)
+                    .Count();
+                _context.Counties.Update(county);
+            }
+        }
+
+        private List<PollingStation> CreatePollingStationEntitiesFromDto(List<PollingStationDTO> pollingStationDtos, List<County> countiesFromDatabase)
+        {
+            var random = new Random();
+            var id = 100;
+
+            var newPollingStations = new List<PollingStation>();
+            foreach (var record in pollingStationDtos)
+            {
+                var countyForPollingStation = countiesFromDatabase.FirstOrDefault(x => x.Code.Equals(record.CodJudet, StringComparison.OrdinalIgnoreCase));
+                if (countyForPollingStation == null)
+                {
+                    throw new PollingStationImportException($"County {record.CodJudet} not found in the database");
+                }
+
+                var pollingStation = _mapper.Map<PollingStation>(record);
+                pollingStation.Id = id++;
+                pollingStation.IdCounty = countyForPollingStation.Id;
+                pollingStation.Coordinates = null;
+                pollingStation.TerritoryCode = random.Next(10000).ToString();
+
+                newPollingStations.Add(pollingStation);
+
             }
 
-            return -1;
+            return newPollingStations;
         }
     }
 }

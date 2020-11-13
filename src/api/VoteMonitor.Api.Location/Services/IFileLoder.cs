@@ -10,5 +10,7 @@ namespace VoteMonitor.Api.Location.Services
         Task<List<PollingStationDTO>> ImportFileAsync(IFormFile file);
 
         bool ValidateFile(IFormFile file);
+
+        byte[] ExportHeaderInformation();
     }
-} 
+}

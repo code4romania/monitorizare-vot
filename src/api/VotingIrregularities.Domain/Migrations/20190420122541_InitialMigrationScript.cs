@@ -16,7 +16,8 @@ namespace VoteMonitor.Entities
 					Code = table.Column<string>(maxLength: 20, nullable: false),
 					Name = table.Column<string>(maxLength: 100, nullable: false),
 					NumberOfPollingStations = table.Column<int>(nullable: false),
-					Diaspora = table.Column<bool>(nullable: false, defaultValueSql: "0")
+					Diaspora = table.Column<bool>(nullable: false, defaultValueSql: "0"),
+					Order = table.Column<int>(nullable: false, defaultValueSql: "0")
 				},
 				constraints: table =>
 				{
@@ -32,7 +33,8 @@ namespace VoteMonitor.Entities
 					Id = table.Column<int>(nullable: false),
 					ShortName = table.Column<string>(maxLength: 10, nullable: false),
 					Name = table.Column<string>(maxLength: 200, nullable: false),
-					Organizer = table.Column<bool>(nullable: false, defaultValueSql: "0")
+					Organizer = table.Column<bool>(nullable: false, defaultValueSql: "0"),
+					IsActive = table.Column<bool>(nullable: false, defaultValueSql: "0")
 				},
 				constraints: table =>
 				{
@@ -329,11 +331,6 @@ namespace VoteMonitor.Entities
 							onDelete: ReferentialAction.Restrict);
 					});
 
-			migrationBuilder.CreateIndex(
-				name: "IX_NotificationRegistrationData_ObserverId_ChannelName",
-				table: "NotificationRegistrationData",
-				columns: new String[] { "ObserverId", "ChannelName" },
-				unique: true);
             migrationBuilder.CreateTable(
             name: "Notifications",
             columns: table => new

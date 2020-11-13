@@ -1,11 +1,11 @@
-﻿using System;
+﻿using AutoMapper;
+using MediatR;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
-using MediatR;
-using Microsoft.Extensions.Logging;
 using VoteMonitor.Api.Core.Services;
 using VoteMonitor.Api.Observer.Commands;
 using VoteMonitor.Api.Observer.Models;
@@ -14,14 +14,14 @@ using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Observer.Handlers
 {
-    public class GenerateObserversHandler: IRequestHandler<ObserverGenerateCommand, List<GeneratedObserver>>
+    public class GenerateObserversHandler : IRequestHandler<ObserverGenerateCommand, List<GeneratedObserver>>
     {
         private readonly VoteMonitorContext _voteMonitorContext;
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
         private readonly IHashService _hashService;
 
-        public GenerateObserversHandler(VoteMonitorContext voteMonitorContext, ILogger logger, IMapper mapper, IHashService hashService)
+        public GenerateObserversHandler(VoteMonitorContext voteMonitorContext, ILogger<GenerateObserversHandler> logger, IMapper mapper, IHashService hashService)
         {
             _voteMonitorContext = voteMonitorContext;
             _logger = logger;
@@ -44,17 +44,19 @@ namespace VoteMonitor.Api.Observer.Handlers
             {
                 using (var tran = await _voteMonitorContext.Database.BeginTransactionAsync(cancellationToken))
                 {
-                    int latestId = _voteMonitorContext.Observers
-                        .OrderByDescending(o => o.Id)
-                        .First()
-                        .Id;
+                    int latestId = _voteMonitorContext.Observers.Count() > 0 ?
+                                    _voteMonitorContext.Observers
+                                    .OrderByDescending(o => o.Id)
+                                    .First()
+                                    .Id
+                                    : 0;
 
                     dbObservers = dbObservers
                         .Select(o => { o.Id = ++latestId; return o; })
                         .ToList();
 
                     _voteMonitorContext.Observers.AddRange(dbObservers.ToArray());
-                    var result = await _voteMonitorContext.SaveChangesAsync(cancellationToken);
+                    await _voteMonitorContext.SaveChangesAsync(cancellationToken);
                     tran.Commit();
 
                     return dbObservers

@@ -40,7 +40,7 @@ namespace VoteMonitor.Api.Statistics.Handlers
                   INNER JOIN Options AS O ON O.Id = OQ.IdOption
                   INNER JOIN Observers Obs ON Obs.Id = A.IdObserver
                   INNER JOIN Ngos N ON O.IdNgo = N.Id
-                  WHERE OQ.Id = {message.QuestionId} AND N.IsActive =1",
+                  WHERE OQ.Id = {message.QuestionId} AND N.IsActive =1 AND Obs.IsTestObserver = 0",
                 CacheKey = $"StatisticiOptiuni-{message.QuestionId}"
             };
 
@@ -51,7 +51,7 @@ namespace VoteMonitor.Api.Statistics.Handlers
                 async () =>
                 {
                     var records = await _context.OptionsStatistics
-                        .FromSql(queryBuilder.Query)
+                        .FromSqlRaw(queryBuilder.Query)
                         .ToListAsync(cancellationToken: token);
 
                     return new StatisticsOptionsModel
@@ -83,22 +83,19 @@ namespace VoteMonitor.Api.Statistics.Handlers
                           FROM Answers a (nolock) 
                           INNER JOIN Observers o on a.IdObserver = o.Id
                           INNER JOIN Ngos N ON O.IdNgo = N.Id
-                          WHERE N.IsActive = 1",
+                          WHERE N.IsActive = 1 AND o.IsTestObserver = 0",
                 CacheKey = "StatisticiObservatori"
             };
 
-            queryBuilder.WhereOngFilter(message.Organizator, message.IdONG);
+            queryBuilder.AndOngFilter(message.Organizator, message.IdONG);
             //queryBuilder.Append("GROUP BY J.Name ORDER BY Value DESC");            
             queryBuilder.Append("group by CountyCode order by [Value] desc");
 
             // get or save all records in cache
             var records = await _cacheService.GetOrSaveDataInCacheAsync(queryBuilder.CacheKey,
-                async () =>
-                {
-                    return await _context.SimpleStatistics
-                    .FromSql(queryBuilder.Query)
-                    .ToListAsync();
-                },
+                async () => await _context.SimpleStatistics
+                    .FromSqlRaw(queryBuilder.Query)
+                    .ToListAsync(cancellationToken: token),
                 new DistributedCacheEntryOptions
                 {
                     AbsoluteExpirationRelativeToNow = new TimeSpan(message.CacheHours, message.CacheMinutes, message.CacheMinutes)
@@ -136,7 +133,7 @@ namespace VoteMonitor.Api.Statistics.Handlers
                   INNER JOIN Ngos N ON O.IdNgo = N.Id
                   INNER JOIN FormSections fs on i.IdSection = fs.Id
                   INNER JOIN Forms f on fs.IdForm = f.Id
-                  WHERE RD.Flagged = 1 AND N.IsActive = 1",
+                  WHERE RD.Flagged = 1 AND N.IsActive = 1 AND O.IsTestObserver = 0",
                 CacheKey = "StatisticiJudete"
             };
 
@@ -147,8 +144,8 @@ namespace VoteMonitor.Api.Statistics.Handlers
             // get or save all records in cache
             var records = await _cacheService.GetOrSaveDataInCacheAsync(queryBuilder.CacheKey,
                 async () => await _context.SimpleStatistics
-                    .FromSql(queryBuilder.Query)
-                    .ToListAsync(),
+                    .FromSqlRaw(queryBuilder.Query)
+                    .ToListAsync(cancellationToken: token),
                 new DistributedCacheEntryOptions
                 {
                     AbsoluteExpirationRelativeToNow = new TimeSpan(message.CacheHours, message.CacheMinutes, message.CacheMinutes)
@@ -163,7 +160,7 @@ namespace VoteMonitor.Api.Statistics.Handlers
                 Data = pagedList.Select(x => _mapper.Map<SimpleStatisticsModel>(x)).ToList(),
                 Page = message.Page,
                 PageSize = message.PageSize,
-                TotalItems = records.Count()
+                TotalItems = records.Count
             };
         }
 
@@ -179,7 +176,7 @@ namespace VoteMonitor.Api.Statistics.Handlers
                   INNER JOIN Questions I ON I.Id = RD.IdQuestion
                   INNER JOIN FormSections fs on i.IdSection = fs.Id
                   INNER JOIN Forms f on fs.IdForm = f.Id
-                  WHERE RD.Flagged = 1 AND N.IsActive =1",
+                  WHERE RD.Flagged = 1 AND N.IsActive =1 AND O.IsTestObserver = 0",
                 CacheKey = "StatisticiSectii"
             };
 
@@ -193,15 +190,15 @@ namespace VoteMonitor.Api.Statistics.Handlers
                 async () =>
                 {
                     var records = await _context.ComposedStatistics
-                        .FromSql(queryBuilder.GetPaginatedQuery(message.Page, message.PageSize))
-                        .ToListAsync();
+                        .FromSqlRaw(queryBuilder.GetPaginatedQuery(message.Page, message.PageSize))
+                        .ToListAsync(cancellationToken: token);
 
                     return new ApiListResponse<SimpleStatisticsModel>
                     {
                         Data = records.Select(x => _mapper.Map<SimpleStatisticsModel>(x)).ToList(),
                         Page = message.Page,
                         PageSize = message.PageSize,
-                        TotalItems = await _context.ComposedStatistics.FromSql(queryBuilder.Query).CountAsync()
+                        TotalItems = await _context.ComposedStatistics.FromSqlRaw(queryBuilder.Query).CountAsync(cancellationToken: token)
                     };
                 },
                 new DistributedCacheEntryOptions

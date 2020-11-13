@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using VoteMonitor.Api.Core;
 using VoteMonitor.Api.Location.Commands;
 using VoteMonitor.Api.Location.Models;
+using VoteMonitor.Api.Location.Models.ResultValues;
 using VoteMonitor.Api.Location.Queries;
 using VoteMonitor.Api.Location.Services;
 
@@ -42,7 +43,9 @@ namespace VoteMonitor.Api.Location.Controllers
         public async Task<IAsyncResult> Register([FromBody] AddPollingStationInfo pollingStationInfo)
         {
             if (!ModelState.IsValid)
+            {
                 return this.ResultAsync(HttpStatusCode.BadRequest, ModelState);
+            }
 
             var command = _mapper.Map<RegisterPollingStationCommand>(pollingStationInfo);
 
@@ -64,11 +67,15 @@ namespace VoteMonitor.Api.Location.Controllers
         public async Task<IAsyncResult> Update([FromBody] UpdatePollingStationInfo pollingStationInfo)
         {
             if (!ModelState.IsValid)
+            {
                 return this.ResultAsync(HttpStatusCode.BadRequest, ModelState);
+            }
 
             var idSectie = await _mediator.Send(_mapper.Map<PollingStationQuery>(pollingStationInfo));
             if (idSectie < 0)
+            {
                 return this.ResultAsync(HttpStatusCode.NotFound);
+            }
 
             var command = _mapper.Map<UpdatePollingSectionCommand>(pollingStationInfo);
 
@@ -96,15 +103,35 @@ namespace VoteMonitor.Api.Location.Controllers
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> ImportFormatFile(IFormFile file)
         {
-            if(!_fileLoader.ValidateFile(file))
+            if (!_fileLoader.ValidateFile(file))
+            {
                 return UnprocessableEntity();
+            }
 
             var result = await _mediator.Send(new PollingStationCommand(_fileLoader.ImportFileAsync(file).Result));
 
-            if(result == -1)
+            if (result.Success)
+            {
+                return Ok();
+            }
+            else if (result.Error.ErrorCode == PollingStationImportErrorCode.CountyNotFound)
+            {
+                return BadRequest(result.Error.Exception.Message);
+            }
+            else
+            {
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
 
-            return Ok();
+        }
+
+        [HttpGet]
+        [Route("excelHeaderFile")]
+        [ProducesResponseType(typeof(byte[]), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult ExcelHeaderFile()
+        {
+            return File(_fileLoader.ExportHeaderInformation(), "application/octet-stream", "pollingStationHeader.xlsx");
         }
     }
 }

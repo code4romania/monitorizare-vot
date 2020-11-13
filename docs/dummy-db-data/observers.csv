@@ -1,0 +1,4 @@
+Id,FromTeam,IdNgo,Phone,Name,Pin,MobileDeviceId,DeviceRegisterDate,IsTestObserver,MobileDeviceIdType
+1,0,1,0123456789,Observer 1,1234,none,2020-10-21 17:35:44.830,0,0
+2,0,2,9876543210,Observer 2,1234,none,2020-10-21 17:35:44.830,0,0
+3,0,1,12345678,Test Observer,1234,none,2020-10-21 17:35:44.830,1,0

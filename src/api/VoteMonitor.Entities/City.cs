@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace VoteMonitor.Entities
 {
-    public partial class City
+    public partial class City : IIdentifiableEntity
     {
         public City()
         {

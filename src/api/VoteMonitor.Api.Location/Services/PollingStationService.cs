@@ -16,7 +16,7 @@ namespace VoteMonitor.Api.Location.Services
         private readonly ICacheService _cacheService;
         private readonly ILogger _logger;
 
-        public PollingStationService(VoteMonitorContext context, ICacheService cacheService, ILogger logger)
+        public PollingStationService(VoteMonitorContext context, ICacheService cacheService, ILogger<PollingStationService> logger)
         {
             _context = context;
             _cacheService = cacheService;
@@ -29,7 +29,7 @@ namespace VoteMonitor.Api.Location.Services
             {
                 var cacheKey = $"polling-station-countyCode-{pollingStationNumber}-{countyCode}";
 
-                var pollingStation = await _cacheService.GetOrSaveDataInCacheAsync(cacheKey, async () =>
+                return await _cacheService.GetOrSaveDataInCacheAsync(cacheKey, async () =>
                  {
                      var countyId = _context.Counties.FirstOrDefault(c => c.Code == countyCode)?.Id;
                      if (countyId == null)
@@ -87,9 +87,17 @@ namespace VoteMonitor.Api.Location.Services
 
             var data = await _cacheService
                  .GetOrSaveDataInCacheAsync(cacheKey, async () => await _context.Counties
-                 .Where(c => diaspora == null || c.Diaspora == diaspora)
-                 .Select(c => new CountyPollingStationLimit { Name = c.Name, Code = c.Code, Limit = c.NumberOfPollingStations, Id = c.Id, Diaspora = c.Diaspora })
-                 .ToListAsync());
+                     .Where(c => diaspora == null || c.Diaspora == diaspora)
+                     .OrderBy(c => c.Order)
+                     .Select(c => new CountyPollingStationLimit
+                     {
+                         Name = c.Name,
+                         Code = c.Code,
+                         Limit = c.NumberOfPollingStations,
+                         Id = c.Id,
+                         Diaspora = c.Diaspora,
+                         Order = c.Order
+                     }).ToListAsync());
 
             return data;
         }

@@ -1,0 +1,44 @@
+# https://aka.ms/yaml
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  BuildConfiguration: Release
+
+steps:
+- task: DotNetCoreCLI@2
+  displayName: 'restore packages'
+  inputs:
+    command: 'restore'
+    projects: '**/*.sln'
+    feedsToUse: 'select'
+
+- task: DotNetCoreCLI@2
+  displayName: 'build solution'
+  inputs:
+    command: 'build'
+    projects: '**/*.sln'
+    arguments: '--configuration $(BuildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  displayName: 'publish web project(s)'
+  inputs:
+    command: 'publish'
+    publishWebProjects: true
+    arguments: '--no-restore  --no-build --configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)'
+
+- task: PublishPipelineArtifact@1
+  displayName: 'Upload artifact'
+  inputs:
+    targetPath: '$(Build.ArtifactStagingDirectory)'
+    artifact: 'drop'
+    publishLocation: 'pipeline'
+
+
+- task: PublishBuildArtifacts@1
+  enabled: false
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'

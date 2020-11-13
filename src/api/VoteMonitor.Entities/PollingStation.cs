@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace VoteMonitor.Entities
 {
-    public partial class PollingStation
+    public partial class PollingStation : IIdentifiableEntity
     {
         public PollingStation()
         {

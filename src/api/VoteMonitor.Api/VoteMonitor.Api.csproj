@@ -1,0 +1,50 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <IncludeOpenAPIAnalyzers>true</IncludeOpenAPIAnalyzers>
+    <ApplicationInsightsResourceId>/subscriptions/8ad78fbb-bdc8-408b-ac97-bab673b57011/resourcegroups/rg-mv-ngo-dev/providers/microsoft.insights/components/mv-mobile-dev</ApplicationInsightsResourceId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="9.0.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="MediatR" Version="7.0.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.13.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.2" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Redis" Version="2.2.0" />
+    <PackageReference Include="StackExchange.Redis" Version="2.0.601" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="5.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="5.0.2" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="5.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\VoteMonitor.Api.County\VoteMonitor.Api.County.csproj" />
+    <ProjectReference Include="..\VoteMonitor.Api.Answer\VoteMonitor.Api.Answer.csproj" />
+    <ProjectReference Include="..\VoteMonitor.Api.Auth\VoteMonitor.Api.Auth.csproj" />
+    <ProjectReference Include="..\VoteMonitor.Api.Core\VoteMonitor.Api.Core.csproj" />
+    <ProjectReference Include="..\VoteMonitor.Api.DataExport\VoteMonitor.Api.DataExport.csproj" />
+    <ProjectReference Include="..\VoteMonitor.Api.Form\VoteMonitor.Api.Form.csproj" />
+    <ProjectReference Include="..\VoteMonitor.Api.Location\VoteMonitor.Api.Location.csproj" />
+    <ProjectReference Include="..\VoteMonitor.Api.Ngo\VoteMonitor.Api.Ngo.csproj" />
+    <ProjectReference Include="..\VoteMonitor.Api.Note\VoteMonitor.Api.Note.csproj" />
+    <ProjectReference Include="..\VoteMonitor.Api.Notification\VoteMonitor.Api.Notification.csproj" />
+    <ProjectReference Include="..\VoteMonitor.Api.Observer\VoteMonitor.Api.Observer.csproj" />
+    <ProjectReference Include="..\VoteMonitor.Api.Statistics\VoteMonitor.Api.Statistics.csproj" />
+    <ProjectReference Include="..\VoteMonitor.Api.PollingStation\VoteMonitor.Api.PollingStation.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services" />
+  </ItemGroup>
+
+  <!-- <Target Name="PostBuild" AfterTargets="PostBuildEvent" >
+    <Exec Command="xcopy $(SolutionDir)api-docs $(TargetDir)api-docs /i /f /y" />
+  </Target> -->
+
+</Project>

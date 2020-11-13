@@ -9,37 +9,29 @@
     <UserSecretsId>TBRWithASecretkey</UserSecretsId>
     <ProjectGuid>{61445EF2-8644-4832-BF05-60900CF76BD3}</ProjectGuid>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <NoWarn>1701;1702;1591</NoWarn>
-  </PropertyGroup>
+
   <ItemGroup>
     <Compile Remove="api-docs\**" />
     <Compile Remove="etc\**" />
     <Compile Remove="Helpers\**" />
-    <Compile Remove="Models\PollingStation\**" />
     <Content Remove="api-docs\**" />
     <Content Remove="etc\**" />
     <Content Remove="Helpers\**" />
-    <Content Remove="Models\PollingStation\**" />
     <EmbeddedResource Remove="api-docs\**" />
     <EmbeddedResource Remove="etc\**" />
     <EmbeddedResource Remove="Helpers\**" />
-    <EmbeddedResource Remove="Models\PollingStation\**" />
     <None Remove="api-docs\**" />
     <None Remove="etc\**" />
     <None Remove="Helpers\**" />
-    <None Remove="Models\PollingStation\**" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\VoteMonitor.Api.DataExport\VoteMonitor.Api.DataExport.csproj" />
-    <ProjectReference Include="..\VoteMonitor.Api.Answer\VoteMonitor.Api.Answer.csproj" />
     <ProjectReference Include="..\VoteMonitor.Api.Core\VoteMonitor.Api.Core.csproj" />
     <ProjectReference Include="..\VoteMonitor.Api.Form\VoteMonitor.Api.Form.csproj" />
     <ProjectReference Include="..\VoteMonitor.Api.Location\VoteMonitor.Api.Location.csproj" />
     <ProjectReference Include="..\VoteMonitor.Api.Note\VoteMonitor.Api.Note.csproj" />
     <ProjectReference Include="..\VoteMonitor.Api.Notification\VoteMonitor.Api.Notification.csproj" />
     <ProjectReference Include="..\VoteMonitor.Api.Observer\VoteMonitor.Api.Observer.csproj" />
+    <ProjectReference Include="..\VoteMonitor.Api.PollingStation\VoteMonitor.Api.PollingStation.csproj" />
     <ProjectReference Include="..\VoteMonitor.Api.Statistics\VoteMonitor.Api.Statistics.csproj" />
     <ProjectReference Include="..\VotingIrregularities.Domain\VotingIrregularities.Domain.csproj" />
   </ItemGroup>
@@ -56,8 +48,8 @@
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="4.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="4.0.1" />
     <PackageReference Include="System.Linq.Queryable" Version="4.3.0" />
-    <PackageReference Include="AutoMapper" Version="7.0.1" />
-    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.8.2" />
+    <PackageReference Include="AutoMapper" Version="9.0.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.13.1" />
     <PackageReference Include="StackExchange.Redis" Version="1.2.6" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="3.0.1" />
     <PackageReference Include="SimpleInjector" Version="4.3.0" />
@@ -65,7 +57,7 @@
     <PackageReference Include="SimpleInjector.Integration.AspNetCore.Mvc" Version="4.3.1" />
     <PackageReference Include="WebApiContrib.Core" Version="2.2.1" />
     <PackageReference Include="FluentValidation" Version="7.6.105" />
-    <PackageReference Include="System.Collections.Immutable" Version="1.6.0" />
+    <PackageReference Include="System.Collections.Immutable" Version="1.7.0" />
     <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
   </ItemGroup>
 </Project>

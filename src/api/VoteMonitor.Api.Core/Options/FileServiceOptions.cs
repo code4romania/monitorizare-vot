@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace VotingIrregularities.Api.Options
+namespace VoteMonitor.Api.Core.Options
 {
     /// <summary>
     /// Options for defining the FileService implementation
