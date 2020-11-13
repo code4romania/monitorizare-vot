@@ -1,4 +1,4 @@
-﻿using VoteMonitor.Api.Core;
+using VoteMonitor.Api.Core;
 
 namespace VoteMonitor.Api.Answer.Models
 {
@@ -6,12 +6,6 @@ namespace VoteMonitor.Api.Answer.Models
     {
         public bool Urgent { get; set; }
         public string County { get; set; }
-        public int PollingStationNumber { get; set; }
-        public int ObserverId { get; set; }
-    }
-
-    public class ObserverAnswersRequest
-    {
         public int PollingStationNumber { get; set; }
         public int ObserverId { get; set; }
     }

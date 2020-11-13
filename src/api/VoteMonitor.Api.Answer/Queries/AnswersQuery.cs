@@ -4,9 +4,9 @@ using VoteMonitor.Api.Core;
 
 namespace VoteMonitor.Api.Answer.Queries
 {
-    public class AnswersQuery : PagingModel, IRequest<ApiListResponse<AnswerQueryDTO>>
+    public class AnswersQuery : PagingModel, IRequest<ApiListResponse<AnswerQueryDto>>
     {
-        public int IdONG { get; set; }
+        public int NgoId { get; set; }
         public bool Urgent { get; set; }
         public bool Organizer { get; set; }
         public string County { get; set; }

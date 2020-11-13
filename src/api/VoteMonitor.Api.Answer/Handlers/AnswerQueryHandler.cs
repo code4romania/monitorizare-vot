@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading;
@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 using VoteMonitor.Api.Answer.Commands;
 using VoteMonitor.Api.Answer.Models;
 using VoteMonitor.Entities;
+using BulkAnswers = VoteMonitor.Api.Answer.Commands.BulkAnswers;
 
 namespace VoteMonitor.Api.Answer.Handlers
 {
     public class AnswerQueryHandler :
-        IRequestHandler<BulkAnswers, CompleteazaRaspunsCommand>
+        IRequestHandler<BulkAnswers, FillInAnswerCommand>
     {
         private readonly VoteMonitorContext _context;
 
@@ -19,31 +20,29 @@ namespace VoteMonitor.Api.Answer.Handlers
             _context = context;
         }
 
-        public async Task<CompleteazaRaspunsCommand> Handle(BulkAnswers message, CancellationToken cancellationToken)
+        public async Task<FillInAnswerCommand> Handle(BulkAnswers message, CancellationToken cancellationToken)
         {
-            // se identifica sectiile in care observatorul a raspuns
-            var sectii = message.Answers
+            var countyPollingStations = message.Answers
                 .Select(a => new { a.PollingStationNumber, a.CountyCode })
                 .Distinct()
                 .ToList();
 
-            var command = new CompleteazaRaspunsCommand { ObserverId = message.ObserverId };
+            var command = new FillInAnswerCommand { ObserverId = message.ObserverId };
 
 
-            foreach (var sectie in sectii)
+            foreach (var pollingStation in countyPollingStations)
             {
-                var idSectie = (await _context
+                var pollingStationId = (await _context
                     .PollingStations
-                    .FirstOrDefaultAsync(p => p.County.Code == sectie.CountyCode && p.Number == sectie.PollingStationNumber))
+                    .FirstOrDefaultAsync(p => p.County.Code == pollingStation.CountyCode && p.Number == pollingStation.PollingStationNumber))
                     .Id;
-                //(sectie.PollingStationNumber, sectie.CountyCode);
 
                 command.Answers.AddRange(message.Answers
-                    .Where(a => a.PollingStationNumber == sectie.PollingStationNumber && a.CountyCode == sectie.CountyCode)
-                    .Select(a => new AnswerDTO
+                    .Where(a => a.PollingStationNumber == pollingStation.PollingStationNumber && a.CountyCode == pollingStation.CountyCode)
+                    .Select(a => new AnswerDto
                     {
                         QuestionId = a.QuestionId,
-                        PollingSectionId = idSectie,
+                        PollingStationId = pollingStationId,
                         Options = a.Options,
                         PollingStationNumber = a.PollingStationNumber,
                         CountyCode = a.CountyCode

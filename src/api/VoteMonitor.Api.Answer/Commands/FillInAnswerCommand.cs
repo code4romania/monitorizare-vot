@@ -4,14 +4,13 @@ using VoteMonitor.Api.Answer.Models;
 
 namespace VoteMonitor.Api.Answer.Commands
 {
-    public class CompleteazaRaspunsCommand : IRequest<int>
+    public class FillInAnswerCommand : IRequest<int>
     {
-        public CompleteazaRaspunsCommand()
+        public FillInAnswerCommand()
         {
-            Answers = new List<AnswerDTO>();
+            Answers = new List<AnswerDto>();
         }
         public int ObserverId { get; set; }
-        public List<AnswerDTO> Answers { get; set; }
-
+        public List<AnswerDto> Answers { get; set; }
     }
 }
