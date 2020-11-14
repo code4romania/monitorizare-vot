@@ -70,6 +70,7 @@ namespace VoteMonitor.Api.County.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         [ProducesResponseType(typeof(List<CountyModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
