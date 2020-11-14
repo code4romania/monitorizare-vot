@@ -30,7 +30,7 @@ namespace VoteMonitor.Api.Answer.Handlers
         {
             var query = _context.Answers.Where(a => a.OptionAnswered.Flagged == message.Urgent);
 
-            // Filter by the organizer flag if specified
+            // Filter by the ngo id if the user is not of type organizer
             if (!message.Organizer)
             {
                 query = query.Where(a => a.Observer.IdNgo == message.IdONG);
@@ -54,13 +54,20 @@ namespace VoteMonitor.Api.Answer.Handlers
                 query = query.Where(a => a.IdObserver == message.ObserverId);
             }
 
-            var answerQueryInfosQuery = query.GroupBy(a => new { a.IdPollingStation, a.CountyCode, a.PollingStationNumber, a.IdObserver, ObserverName = a.Observer.Name })
+            // Filter by observer phone number if specified
+            if (!string.IsNullOrEmpty(message.ObserverPhoneNumber))
+            {
+                query = query.Where(a => a.Observer.Phone.Contains(message.ObserverPhoneNumber));
+            }
+
+            var answerQueryInfosQuery = query.GroupBy(a => new { a.IdPollingStation, a.CountyCode, a.PollingStationNumber, a.IdObserver, ObserverPhoneNumber = a.Observer.Phone, ObserverName = a.Observer.Name })
                 .Select(x => new VoteMonitorContext.AnswerQueryInfo
                 {
                     IdObserver = x.Key.IdObserver,
                     IdPollingStation = x.Key.IdPollingStation,
                     PollingStation = x.Key.CountyCode + " " + x.Key.PollingStationNumber.ToString(),
                     ObserverName = x.Key.ObserverName,
+                    ObserverPhoneNumber = x.Key.ObserverPhoneNumber,
                     LastModified = x.Max(a => a.LastModified)
                 });
 
