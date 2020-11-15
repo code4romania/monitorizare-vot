@@ -2,7 +2,7 @@
 
 namespace VoteMonitor.Api.County.Models
 {
-    public class UpdateCountyModel
+    public class UpdateCountyRequest
     {
         [Required]
         [StringLength(100)]

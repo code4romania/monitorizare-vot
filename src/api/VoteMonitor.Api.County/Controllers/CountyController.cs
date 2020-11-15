@@ -53,7 +53,7 @@ namespace VoteMonitor.Api.County.Controllers
         [HttpPost]
         [Route("import")]
         [Authorize("Organizer")]
-        public async Task<IActionResult> ImportAsync(CountiesUploadModel request)
+        public async Task<IActionResult> ImportAsync(CountiesUploadRequest request)
         {
             if (!ModelState.IsValid)
             {
@@ -106,7 +106,7 @@ namespace VoteMonitor.Api.County.Controllers
         [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> UpdateCountyAsync(int countyId, [FromBody] UpdateCountyModel county)
+        public async Task<IActionResult> UpdateCountyAsync(int countyId, [FromBody] UpdateCountyRequest county)
         {
             var response = await _mediator.Send(new UpdateCounty(countyId, county));
             if (response.IsSuccess)
