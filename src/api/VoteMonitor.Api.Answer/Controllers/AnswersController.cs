@@ -42,7 +42,8 @@ namespace VoteMonitor.Api.Answer.Controllers
                 Urgent = model.IsUrgent,
                 County = model.County,
                 PollingStationNumber = model.PollingStationNumber,
-                ObserverId = model.ObserverId
+                ObserverId = model.ObserverId,
+                ObserverPhoneNumber = model.ObserverPhoneNumber
             });
         }
 

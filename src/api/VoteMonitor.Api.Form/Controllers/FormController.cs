@@ -55,6 +55,7 @@ namespace VoteMonitor.Api.Form.Controllers
         /// Daca versiunea returnata difera de cea din aplicatie, atunci trebuie incarcat formularul din nou 
         /// </summary>
         /// <returns></returns>
+        [Authorize]
         [HttpGet("versions")]
         [Produces(typeof(Dictionary<string, int>))]
         public async Task<IActionResult> GetFormVersions()
@@ -69,6 +70,7 @@ namespace VoteMonitor.Api.Form.Controllers
         /// Returns an array of forms
         /// </summary>
         /// <returns></returns>
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetFormsAsync(bool? diaspora, bool? draft)
             => Ok(new FormVersionsModel { FormVersions = await _mediator.Send(new FormVersionQuery(diaspora, draft)) });
@@ -80,6 +82,7 @@ namespace VoteMonitor.Api.Form.Controllers
         /// </summary>
         /// <param name="formId">Id-ul formularului pentru care trebuie preluata definitia</param>
         /// <returns></returns>
+        [Authorize]
         [HttpGet("{formId}")]
         public async Task<IEnumerable<FormSectionDTO>> GetFormAsync(int formId)
         {

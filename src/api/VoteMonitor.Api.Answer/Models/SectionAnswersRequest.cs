@@ -8,5 +8,6 @@ namespace VoteMonitor.Api.Answer.Models
         public string County { get; set; }
         public int PollingStationNumber { get; set; }
         public int ObserverId { get; set; }
+        public string ObserverPhoneNumber { get; set; }
     }
 }
