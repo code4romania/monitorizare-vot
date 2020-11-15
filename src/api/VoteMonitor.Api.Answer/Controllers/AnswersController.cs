@@ -24,7 +24,7 @@ namespace VoteMonitor.Api.Answer.Controllers
 
         /// <summary>
         /// Returns a list of polling stations where observers from the given NGO have submitted answers
-        /// to the questions marked as Flagged=Urgent, ordered by ModifiedDate descending
+        /// to the questions marked as IsFlagged=IsUrgent, ordered by ModifiedDate descending
         /// </summary>
         /// <param name="model">SectionAnswersRequest</param>
         /// <returns></returns>
@@ -40,7 +40,7 @@ namespace VoteMonitor.Api.Answer.Controllers
                 Organizer = organizer,
                 Page = model.Page,
                 PageSize = model.PageSize,
-                Urgent = model.Urgent,
+                Urgent = model.IsUrgent,
                 County = model.County,
                 PollingStationNumber = model.PollingStationNumber,
                 ObserverId = model.ObserverId

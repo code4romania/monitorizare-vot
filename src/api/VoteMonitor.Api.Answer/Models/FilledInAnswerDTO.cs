@@ -6,6 +6,6 @@ namespace VoteMonitor.Api.Answer.Models
         public string Text { get; set; }
         public bool IsFreeText { get; set; }
         public string Value { get; set; }
-        public bool Flagged { get; set; }
+        public bool IsFlagged { get; set; }
     }
 }

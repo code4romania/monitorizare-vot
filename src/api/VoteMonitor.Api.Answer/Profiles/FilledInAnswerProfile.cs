@@ -22,7 +22,7 @@ namespace VoteMonitor.Api.Answer.Profiles
                 .ForMember(dest => dest.Text, c => c.MapFrom(src => src.Option.Text))
                 .ForMember(dest => dest.IsFreeText, c => c.MapFrom(src => src.Option.IsFreeText))
                 .ForMember(dest => dest.OptionId, c => c.MapFrom(src => src.Id))
-                .ForMember(dest => dest.Flagged, c => c.MapFrom(src => src.Flagged))
+                .ForMember(dest => dest.IsFlagged, c => c.MapFrom(src => src.Flagged))
                 .ForMember(dest => dest.Value, c => c.MapFrom(src => src.Answers.First().Value));
         }
     }

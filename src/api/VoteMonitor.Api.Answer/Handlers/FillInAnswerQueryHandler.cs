@@ -32,7 +32,7 @@ namespace VoteMonitor.Api.Answer.Handlers
 
                 var pollingStationIds = message.Answers.Select(a => a.PollingStationId).Distinct().ToList();
 
-                using (var tran = await _context.Database.BeginTransactionAsync())
+                using (var tran = await _context.Database.BeginTransactionAsync(cancellationToken))
                 {
                     foreach (var pollingStationId in pollingStationIds)
                     {
@@ -48,14 +48,14 @@ namespace VoteMonitor.Api.Answer.Handlers
                             ;
                         _context.Answers.RemoveRange(oldAnswersToBeDeleted);
 
-                        await _context.SaveChangesAsync();
+                        await _context.SaveChangesAsync(cancellationToken);
                     }
 
-                    await _context.Answers.AddRangeAsync(newAnswers);
+                    await _context.Answers.AddRangeAsync(newAnswers, cancellationToken);
 
-                    var result = await _context.SaveChangesAsync();
+                    var result = await _context.SaveChangesAsync(cancellationToken);
 
-                    tran.Commit();
+                    await tran.CommitAsync(cancellationToken);
 
                     return result;
                 }
