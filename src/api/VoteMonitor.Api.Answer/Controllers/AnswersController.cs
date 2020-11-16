@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using VoteMonitor.Api.Answer.Models;
 using VoteMonitor.Api.Answer.Queries;
 using VoteMonitor.Api.Core;
@@ -84,7 +85,7 @@ namespace VoteMonitor.Api.Answer.Controllers
         /// <code>IsFreeText = true</code></param>
         /// <returns></returns>
         [HttpPost]
-        //[Authorize("Observer")]
+        [Authorize("Observer")]
         public async Task<IActionResult> PostAnswer([FromBody] BulkAnswersRequest answerModel)
         {
             if (!ModelState.IsValid)
