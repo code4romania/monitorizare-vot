@@ -58,6 +58,7 @@ namespace VoteMonitor.Api.Notification.Handlers
                     .Select(observer => _context.NotificationRegistrationData.AsQueryable().Where(regData => regData.ObserverId == int.Parse(observer))
                     .First(regData => regData.ChannelName == request.Channel))
                     .Select(regDataResult => regDataResult.Token)
+                    .Where(token => !string.IsNullOrWhiteSpace(token))
                     .ToList();
 
             var response = 0;
