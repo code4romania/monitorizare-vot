@@ -41,11 +41,12 @@ namespace VoteMonitor.Api.Form.CommandHandlers
                 var sectionsIds = sections.Select(s => s.Id);
                 var questions = _context.Questions.Where(q => sectionsIds.Contains(q.IdSection));
                 var questionsIds = questions.Select(q => q.Id);
-                var optionsToQuestions = _context.OptionsToQuestions.Where(o => questionsIds.Contains(o.IdQuestion));
+                var optionsToQuestions = _context.OptionsToQuestions.Where(o => questionsIds.Contains(o.IdQuestion)).ToList();
                 var optionsIds = optionsToQuestions.Select(o => o.IdOption);
+                var optionsToQuestionsIds = optionsToQuestions.Select(o => o.Id);
 
                 // check if there are already saved answers
-                var haveAnswers = await _context.Answers.AnyAsync(a => optionsIds.Contains(a.IdOptionToQuestion), cancellationToken);
+                var haveAnswers = await _context.Answers.AnyAsync(a => optionsToQuestionsIds.Contains(a.IdOptionToQuestion), cancellationToken);
                 if (haveAnswers)
                 {
                     return DeleteFormErrorType.FormHasAnswers;
