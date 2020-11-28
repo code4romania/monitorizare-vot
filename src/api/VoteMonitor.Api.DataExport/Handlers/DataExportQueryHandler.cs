@@ -58,7 +58,7 @@ namespace VoteMonitor.Api.DataExport.Handlers
 				on na.NoteId = n.Id
 		WHERE
 			a.LastModified >= @from
-            AND obs.Id = 0
+                        AND obs.IsTestObserver = 0
             ";
 
             var parameters = new DynamicParameters();
