@@ -1,8 +1,16 @@
-﻿using MediatR;
+﻿using CSharpFunctionalExtensions;
+using MediatR;
 
 namespace VoteMonitor.Api.Form.Commands
 {
-    public class DeleteFormCommand : IRequest<bool>
+    public enum DeleteFormErrorType
+    {
+        FormNotFound,
+        FormHasAnswers,
+        ErrorOccured
+    }
+
+    public class DeleteFormCommand : IRequest<Result<bool, DeleteFormErrorType>>
     {
         public int FormId { get; set; }
     }
