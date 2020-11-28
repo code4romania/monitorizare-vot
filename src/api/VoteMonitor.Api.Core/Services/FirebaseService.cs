@@ -24,7 +24,7 @@ namespace VoteMonitor.Api.Core.Services
             {
                 return successCount;
             }
-
+            recipients = recipients.Where(token => !string.IsNullOrWhiteSpace(token)).ToList();
             while (recipients.Any())
             {
                 var registrationTokens = recipients.Take(100).ToList().AsReadOnly();

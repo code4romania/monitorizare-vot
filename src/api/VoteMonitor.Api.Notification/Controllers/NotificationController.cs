@@ -14,6 +14,7 @@ using VoteMonitor.Api.Notification.Queries;
 namespace VoteMonitor.Api.Notification.Controllers
 {
     [Route("api/v1/notification")]
+    [ApiController]
     public class NotificationController : Controller
     {
         private readonly IMediator _mediator;
