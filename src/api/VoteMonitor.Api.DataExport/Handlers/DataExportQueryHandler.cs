@@ -34,7 +34,7 @@ namespace VoteMonitor.Api.DataExport.Handlers
 			o.Text as [OptionText],
 			a.[Value] as [AnswerFreeText],
 			n.Text as NoteText,
-			n.AttachementPath as [NoteAttachmentPath],
+			na.Path as [NoteAttachmentPath],
 			a.LastModified,
 			a.CountyCode,
 			a.PollingStationNumber
@@ -54,9 +54,11 @@ namespace VoteMonitor.Api.DataExport.Handlers
 				ON fs.IdForm = f.Id)
 			LEFT JOIN Notes n
 				ON n.IdQuestion = q.Id AND n.IdObserver = obs.Id AND n.IdPollingStation = a.IdPollingStation
+			LEFT JOIN NotesAttachments na
+				on na.NoteId = n.Id
 		WHERE
 			a.LastModified >= @from
-            AND obs.IsTestObserver = 0
+                        AND obs.IsTestObserver = 0
             ";
 
             var parameters = new DynamicParameters();
