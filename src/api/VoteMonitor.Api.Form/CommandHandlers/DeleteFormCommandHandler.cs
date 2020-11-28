@@ -32,6 +32,11 @@ namespace VoteMonitor.Api.Form.CommandHandlers
                     return DeleteFormErrorType.FormNotFound;
                 }
 
+                if (form.Draft == false)
+                {
+                    return DeleteFormErrorType.FormNotDraft;
+                }
+
                 var sections = _context.FormSections.Where(s => s.IdForm == form.Id);
                 var sectionsIds = sections.Select(s => s.Id);
                 var questions = _context.Questions.Where(q => sectionsIds.Contains(q.IdSection));

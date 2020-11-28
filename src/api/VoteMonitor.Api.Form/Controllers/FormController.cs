@@ -118,6 +118,8 @@ namespace VoteMonitor.Api.Form.Controllers
                         return BadRequest("Could not delete with form that has answers.");
                     case DeleteFormErrorType.FormNotFound:
                         return BadRequest("Could not find form with requested id.");
+                    case DeleteFormErrorType.FormNotDraft:
+                        return BadRequest("Could not delete a non draft form.");
                     default:
                         return BadRequest("An error occured when deleting form.");
                 }
