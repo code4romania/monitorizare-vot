@@ -7,6 +7,7 @@ namespace VoteMonitor.Api.Form.Commands
     {
         FormNotFound,
         FormHasAnswers,
+        FormNotDraft,
         ErrorOccured
     }
 
