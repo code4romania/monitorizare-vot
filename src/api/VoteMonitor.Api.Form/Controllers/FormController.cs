@@ -108,11 +108,21 @@ namespace VoteMonitor.Api.Form.Controllers
                 return BadRequest(ModelState);
             }
 
-            var formDeleted = await _mediator.Send(new DeleteFormCommand { FormId = formId });
+            var result = await _mediator.Send(new DeleteFormCommand { FormId = formId });
 
-            if (!formDeleted)
+            if (result.IsFailure)
             {
-                return BadRequest("The form could not be deleted. Make sure the form exists and it doesn't already have saved answers.");
+                switch (result.Error)
+                {
+                    case DeleteFormErrorType.FormHasAnswers:
+                        return BadRequest("Could not delete with form that has answers.");
+                    case DeleteFormErrorType.FormNotFound:
+                        return BadRequest("Could not find form with requested id.");
+                    case DeleteFormErrorType.FormNotDraft:
+                        return BadRequest("Could not delete a non draft form.");
+                    default:
+                        return BadRequest("An error occured when deleting form.");
+                }
             }
 
             return Ok();
