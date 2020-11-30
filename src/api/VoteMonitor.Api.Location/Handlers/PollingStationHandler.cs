@@ -72,7 +72,7 @@ namespace VoteMonitor.Api.Location.Handlers
         private List<PollingStation> CreatePollingStationEntitiesFromDto(List<PollingStationDTO> pollingStationDtos, List<County> countiesFromDatabase)
         {
             var random = new Random();
-            var id = 100;
+            var startingId = countiesFromDatabase.Any() ? countiesFromDatabase.Max(county => county.Id) + 1 : 1;
 
             var newPollingStations = new List<PollingStation>();
             foreach (var record in pollingStationDtos)
