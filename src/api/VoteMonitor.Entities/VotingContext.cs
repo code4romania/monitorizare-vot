@@ -430,6 +430,7 @@ namespace VoteMonitor.Entities
         public virtual DbSet<Question> Questions { get; set; }
         public virtual DbSet<County> Counties { get; set; }
         public virtual DbSet<Note> Notes { get; set; }
+        public virtual DbSet<NotesAttachments> NotesAttachments { get; set; }
         public virtual DbSet<Observer> Observers { get; set; }
         public virtual DbSet<NotificationRegistrationData> NotificationRegistrationData { get; set; }
         public virtual DbSet<Ngo> Ngos { get; set; }
