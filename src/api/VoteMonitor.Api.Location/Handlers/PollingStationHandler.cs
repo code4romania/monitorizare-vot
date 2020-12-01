@@ -72,7 +72,7 @@ namespace VoteMonitor.Api.Location.Handlers
         private List<PollingStation> CreatePollingStationEntitiesFromDto(List<PollingStationDTO> pollingStationDtos, List<County> countiesFromDatabase)
         {
             var random = new Random();
-            var id = 100;
+            var startingPsId = _context.PollingStations.Any() ? _context.PollingStations.Max(ps => ps.Id) + 1 : 1;
 
             var newPollingStations = new List<PollingStation>();
             foreach (var record in pollingStationDtos)
@@ -84,7 +84,7 @@ namespace VoteMonitor.Api.Location.Handlers
                 }
 
                 var pollingStation = _mapper.Map<PollingStation>(record);
-                pollingStation.Id = id++;
+                pollingStation.Id = startingPsId++;
                 pollingStation.IdCounty = countyForPollingStation.Id;
                 pollingStation.Coordinates = null;
                 pollingStation.TerritoryCode = random.Next(10000).ToString();
