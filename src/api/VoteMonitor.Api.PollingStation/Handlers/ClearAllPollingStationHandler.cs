@@ -30,6 +30,7 @@ namespace VoteMonitor.Api.PollingStation.Handlers
                     if (request.IncludeRelatedData)
                     {
                         await DeleteAnswersData(cancellationToken);
+                        await DeleteNotesAttachments(cancellationToken);
                         await DeleteNotes(cancellationToken);
                         await DeletePollingStationsInfo(cancellationToken);
                     }
@@ -52,6 +53,10 @@ namespace VoteMonitor.Api.PollingStation.Handlers
         private async Task DeleteAnswersData(CancellationToken cancellationToken)
         {
             await DeleteDataFromTable(nameof(_context.Answers), cancellationToken);
+        }
+        private async Task DeleteNotesAttachments(CancellationToken cancellationToken)
+        {
+            await DeleteDataFromTable(nameof(_context.NotesAttachments), cancellationToken);
         }
         private async Task DeleteNotes(CancellationToken cancellationToken)
         {
