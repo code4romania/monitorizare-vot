@@ -41,7 +41,7 @@ namespace VoteMonitor.Api.Location.Controllers
         /// <param name="pollingStationInfo">Info about the polling station and its' allocated observer</param>
         /// <returns></returns>
         [HttpPost]
-        [Authorize("Organizer")]
+        [Authorize]
         public async Task<IAsyncResult> Register([FromBody] AddPollingStationInfo pollingStationInfo)
         {
             if (!ModelState.IsValid)
@@ -66,7 +66,7 @@ namespace VoteMonitor.Api.Location.Controllers
         /// <param name="pollingStationInfo">Polling station id, county code, leave time</param>
         /// <returns></returns>
         [HttpPut]
-        [Authorize("Organizer")]
+        [Authorize]
         public async Task<IAsyncResult> Update([FromBody] UpdatePollingStationInfo pollingStationInfo)
         {
             if (!ModelState.IsValid)
