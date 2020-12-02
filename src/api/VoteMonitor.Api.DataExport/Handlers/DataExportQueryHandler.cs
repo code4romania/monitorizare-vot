@@ -33,11 +33,11 @@ namespace VoteMonitor.Api.DataExport.Handlers
 			q.Text as QuestionText,
 			o.Text as [OptionText],
 			a.[Value] as [AnswerFreeText],
-			n.Text as NoteText,
-			na.Path as [NoteAttachmentPath],
 			a.LastModified,
 			a.CountyCode,
-			a.PollingStationNumber
+			a.PollingStationNumber,
+			count(n.Text) as NumberOfNotes,
+			count(na.Path) as NumberOfAttachments
 		FROM 
 			(Answers a 
 			INNER JOIN Observers obs
@@ -96,6 +96,17 @@ namespace VoteMonitor.Api.DataExport.Handlers
                     parameters.Add("PollingStationNumber", request.PollingStationNumber);
                 }
             }
+
+            query = query + @"
+                group by obs.Phone ,
+                        obs.IdNgo,
+                        f.Code,
+                        q.Text,
+                        o.Text,
+                        a.[Value],
+                        a.LastModified,
+                        a.CountyCode,
+                        a.PollingStationNumber";
 
             IEnumerable<ExportModelDto> data = Enumerable.Empty<ExportModelDto>();
             using (var db = _context.Database.GetDbConnection())
