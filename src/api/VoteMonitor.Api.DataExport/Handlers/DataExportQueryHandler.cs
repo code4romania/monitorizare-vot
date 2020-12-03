@@ -240,7 +240,7 @@ namespace VoteMonitor.Api.DataExport.Handlers
                     queryNotesForAnsweredQuestions += " AND a.PollingStationNumber = @PollingStationNumber ";
 
                     // PollingStationNumber is for answers only if note does not lead to an answer do not use it
-                    queryForNotesAttachedToQuestionsButNoAnswers += " AND AND 1=2 ";
+                    queryForNotesAttachedToQuestionsButNoAnswers += " AND 1=2 ";
 
                     parameters.Add("PollingStationNumber", request.PollingStationNumber);
                 }
