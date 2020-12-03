@@ -12,7 +12,8 @@ namespace VoteMonitor.Api.Ngo.Controllers
 {
     [Route("api/v1/ngo")]
     [Authorize("Organizer")]
-    public class NgoController : Controller
+    [ApiController]
+    public class NgoController : ControllerBase
     {
         private readonly IMediator _mediator;
 
@@ -29,9 +30,9 @@ namespace VoteMonitor.Api.Ngo.Controllers
         [ProducesResponseType(typeof(List<NgoModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetAllNgosAsync()
+        public async Task<IActionResult> GetNgosAsync([FromQuery] string name)
         {
-            var ngosListResult = await _mediator.Send(new GetAllNgos());
+            var ngosListResult = await _mediator.Send(new GetNgos(name));
 
             if (ngosListResult.IsFailure)
             {

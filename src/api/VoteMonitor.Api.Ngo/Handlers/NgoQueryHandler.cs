@@ -14,7 +14,7 @@ using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Ngo.Handlers
 {
-    public class NgoQueryHandler : IRequestHandler<GetAllNgos, Result<List<NgoModel>>>,
+    public class NgoQueryHandler : IRequestHandler<GetNgos, Result<List<NgoModel>>>,
         IRequestHandler<GetNgoDetails, Result<NgoModel>>
     {
         private readonly VoteMonitorContext _context;
@@ -28,11 +28,15 @@ namespace VoteMonitor.Api.Ngo.Handlers
             _logger = logger;
         }
 
-        public async Task<Result<List<NgoModel>>> Handle(GetAllNgos request, CancellationToken cancellationToken)
+        public async Task<Result<List<NgoModel>>> Handle(GetNgos request, CancellationToken cancellationToken)
         {
             try
             {
-                var listAsync = await _context.Ngos.Select(x => _mapper.Map<NgoModel>(x)).ToListAsync(cancellationToken);
+                var listAsync = await _context.Ngos
+                    .Where(ngo=> string.IsNullOrWhiteSpace(request.Name) || request.Name.ToLower() == request.Name.ToLower())
+                    .Select(x => _mapper.Map<NgoModel>(x))
+                    .ToListAsync(cancellationToken);
+
                 return Result.Success(listAsync);
             }
             catch (Exception e)
