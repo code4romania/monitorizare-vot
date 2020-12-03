@@ -131,11 +131,13 @@ namespace VoteMonitor.Api.DataExport.Handlers
                 n.Text AS NoteText,
                 na.Path AS [NoteAttachmentPath],
                 NULL AS LastModified,
-                NULL AS CountyCode,
-                NULL AS PollingStationNumber
+                cc.Code AS CountyCode,
+                ps.Number AS PollingStationNumber
             FROM Notes n
             INNER JOIN Observers obs ON n.IdObserver = obs.Id
             LEFT JOIN NotesAttachments na ON na.NoteId = n.Id
+            INNER JOIN PollingStations ps ON n.IdPollingStation = ps.Id
+            INNER JOIN Counties cc ON ps.IdCounty = cc.Id
             WHERE obs.IsTestObserver = 0
             AND n.IdQuestion IS NULL
             AND n.LastModified >= @from
@@ -178,14 +180,16 @@ namespace VoteMonitor.Api.DataExport.Handlers
                    n.Text AS NoteText,
                    na.Path AS [NoteAttachmentPath],
                    '' AS LastModified,
-                   '' AS CountyCode,
-                   '' AS PollingStationNumber
+                   cc.Code AS CountyCode,
+                   ps.Number AS PollingStationNumber
             FROM Notes n
             INNER JOIN Observers obs ON n.IdObserver = obs.Id
             INNER JOIN Questions q ON n.IdQuestion = q.Id
             INNER JOIN FormSections fs ON q.IdSection = fs.Id
             INNER JOIN Forms f ON fs.IdForm = f.Id
             LEFT JOIN NotesAttachments na ON na.NoteId = n.Id
+            INNER JOIN PollingStations ps ON n.IdPollingStation = ps.Id
+            INNER JOIN Counties cc ON ps.IdCounty = cc.Id
             WHERE NOT EXISTS
                 (SELECT *
                  FROM Answers a
