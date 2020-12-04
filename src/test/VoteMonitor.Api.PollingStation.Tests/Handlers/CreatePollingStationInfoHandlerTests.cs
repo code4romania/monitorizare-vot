@@ -44,7 +44,7 @@ namespace VoteMonitor.Api.PollingStation.Tests.Handlers
             {
                 var sut = new CreatePollingStationInfoHandler(context, new Mapper(_mapperConfiguration), _mockLogger.Object);
 
-                var createPollingStationInfo = new CreatePollingStationInfo()
+                var createPollingStationInfo = new CreatePollingStationInfo
                 {
                     PollingStationId = 3
                 };
