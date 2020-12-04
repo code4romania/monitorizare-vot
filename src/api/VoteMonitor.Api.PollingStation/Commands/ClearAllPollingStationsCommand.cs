@@ -1,6 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
 using MediatR;
-using VoteMonitor.Api.PollingStation.Models;
 
 namespace VoteMonitor.Api.PollingStation.Commands
 {
@@ -10,7 +9,7 @@ namespace VoteMonitor.Api.PollingStation.Commands
 
         public ClearAllPollingStationsCommand(bool includeRelatedData)
         {
-            this.IncludeRelatedData = includeRelatedData;
+            IncludeRelatedData = includeRelatedData;
         }
     }
 }

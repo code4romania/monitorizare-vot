@@ -44,7 +44,7 @@ namespace VoteMonitor.Api.PollingStation.Tests.Handlers
                 var sut = new CheckPollingStationExistsHandler(context, _mockLogger.Object);
                 var checkPollingStationExists = new CheckPollingStationExists()
                 {
-                    Id = 3
+                    PollingStationId = 3
                 };
 
                 var result = await sut.Handle(checkPollingStationExists, new CancellationToken());
@@ -61,7 +61,7 @@ namespace VoteMonitor.Api.PollingStation.Tests.Handlers
                 var sut = new CheckPollingStationExistsHandler(context, _mockLogger.Object);
                 var checkPollingStationExists = new CheckPollingStationExists()
                 {
-                    Id = 3
+                    PollingStationId = 3
                 };
 
                 var result = await sut.Handle(checkPollingStationExists, new CancellationToken());

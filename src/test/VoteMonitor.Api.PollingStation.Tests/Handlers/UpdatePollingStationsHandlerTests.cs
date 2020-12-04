@@ -38,7 +38,7 @@ namespace VoteMonitor.Api.PollingStation.Tests.Handlers
 
                 var requestNonExistingPollingStation = new UpdatePollingStation
                 {
-                    Id = 5
+                    PollingStationId = 5
                 };
                 var result = await sut.Handle(requestNonExistingPollingStation, new CancellationToken());
 
@@ -57,7 +57,7 @@ namespace VoteMonitor.Api.PollingStation.Tests.Handlers
 
                 var requestExistingPollingStation = new UpdatePollingStation
                 {
-                    Id = 5
+                    PollingStationId = 5
                 };
                 var result = await sut.Handle(requestExistingPollingStation, new CancellationToken());
 
@@ -75,7 +75,7 @@ namespace VoteMonitor.Api.PollingStation.Tests.Handlers
 
             var requestNonExistingPollingStation = new UpdatePollingStation
             {
-                Id = 5
+                PollingStationId = 5
             };
 
             bool? result = false;
@@ -94,7 +94,7 @@ namespace VoteMonitor.Api.PollingStation.Tests.Handlers
 
             var requestNonExistingPollingStation = new UpdatePollingStation
             {
-                Id = 5
+                PollingStationId = 5
             };
 
             await Record.ExceptionAsync(async () => await sut.Handle(requestNonExistingPollingStation, new CancellationToken()));
@@ -119,7 +119,7 @@ namespace VoteMonitor.Api.PollingStation.Tests.Handlers
 
                 var requestExistingPollingStation = new UpdatePollingStation
                 {
-                    Id = id,
+                    PollingStationId = id,
                     Address = "new address"
                 };
                 await sut.Handle(requestExistingPollingStation, new CancellationToken());
@@ -141,7 +141,7 @@ namespace VoteMonitor.Api.PollingStation.Tests.Handlers
 
                 var requestExistingPollingStation = new UpdatePollingStation
                 {
-                    Id = id,
+                    PollingStationId = id,
                     Coordinates = "11.23"
                 };
                 await sut.Handle(requestExistingPollingStation, new CancellationToken());
@@ -163,7 +163,7 @@ namespace VoteMonitor.Api.PollingStation.Tests.Handlers
 
                 var requestExistingPollingStation = new UpdatePollingStation
                 {
-                    Id = id,
+                    PollingStationId = id,
                     TerritoryCode = "new code IS"
                 };
                 await sut.Handle(requestExistingPollingStation, new CancellationToken());
@@ -185,7 +185,7 @@ namespace VoteMonitor.Api.PollingStation.Tests.Handlers
 
                 var requestExistingPollingStation = new UpdatePollingStation
                 {
-                    Id = id,
+                    PollingStationId = id,
                     AdministrativeTerritoryCode = "IS"
                 };
                 await sut.Handle(requestExistingPollingStation, new CancellationToken());
@@ -207,7 +207,7 @@ namespace VoteMonitor.Api.PollingStation.Tests.Handlers
 
                 var requestExistingPollingStation = new UpdatePollingStation
                 {
-                    Id = id,
+                    PollingStationId = id,
                     Number = 27
                 };
                 await sut.Handle(requestExistingPollingStation, new CancellationToken());

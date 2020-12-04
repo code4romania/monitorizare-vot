@@ -24,7 +24,7 @@ namespace VoteMonitor.Api.PollingStation.Handlers
         {
             try
             {
-                var existingPollingStation = _context.PollingStations.FirstOrDefault(p => p.Id == request.Id);
+                var existingPollingStation = _context.PollingStations.FirstOrDefault(p => p.Id == request.PollingStationId);
                 if (existingPollingStation == null)
                 {
                     return false;
@@ -39,7 +39,7 @@ namespace VoteMonitor.Api.PollingStation.Handlers
             }
             catch (Exception ex)
             {
-                _logger.Log(LogLevel.Error, $"Error updating polling station: {request.Id}",  ex);
+                _logger.Log(LogLevel.Error, $"Error updating polling station: {request.PollingStationId}",  ex);
                 return null;
             }
             return true;
