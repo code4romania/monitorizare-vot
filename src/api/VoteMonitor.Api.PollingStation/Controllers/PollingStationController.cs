@@ -15,12 +15,12 @@ namespace VoteMonitor.Api.PollingStation.Controllers
     /// Controller responsible for interacting with the polling stations - PollingStationInfo
     /// </summary> 
     [Route("api/v2/polling-station")]
-    public class PollingStationV2Controller : Controller
+    public class PollingStationController : Controller
     {
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
 
-        public PollingStationV2Controller(IMediator mediator, IMapper mapper)
+        public PollingStationController(IMediator mediator, IMapper mapper)
         {
             _mediator = mediator;
             _mapper = mapper;
