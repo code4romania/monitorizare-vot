@@ -5,7 +5,7 @@ using VoteMonitor.Api.DataExport.Models;
 
 namespace VoteMonitor.Api.DataExport.Queries
 {
-    public class GetDataForExport : IRequest<IEnumerable<ExportModelDto>>
+    public class GetNotesForExport : IRequest<IEnumerable<NotesExportModel>>
     {
         public int? NgoId { get; set; }
         public int? ObserverId { get; set; }
@@ -16,5 +16,5 @@ namespace VoteMonitor.Api.DataExport.Queries
 
         public bool ApplyFilters => NgoId.HasValue || ObserverId.HasValue || PollingStationNumber.HasValue ||
                                     From.HasValue || To.HasValue || !string.IsNullOrEmpty(County);
-    } 
+    }
 }

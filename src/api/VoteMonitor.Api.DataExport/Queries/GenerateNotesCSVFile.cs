@@ -4,11 +4,11 @@ using VoteMonitor.Api.DataExport.Models;
 
 namespace VoteMonitor.Api.DataExport.Queries
 {
-    public class GenerateCSVFile : IRequest<byte[]>
+    public class GenerateNotesCSVFile : IRequest<byte[]>
     {
-        public IEnumerable<ExportModelDto> Data { get; }
+        public IEnumerable<NotesExportModel> Data { get; }
 
-        public GenerateCSVFile(IEnumerable<ExportModelDto> data)
+        public GenerateNotesCSVFile(IEnumerable<NotesExportModel> data)
         {
             Data = data;
         }
