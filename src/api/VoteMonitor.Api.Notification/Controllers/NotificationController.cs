@@ -48,7 +48,7 @@ namespace VoteMonitor.Api.Notification.Controllers
         }
 
         [HttpPost]
-        [Authorize("Organizer")]
+        [Authorize("NgoAdmin")]
         [Route("send")]
         public async Task<dynamic> Send([FromBody]NotificationNewModel newNotificationModel)
         {
@@ -60,7 +60,7 @@ namespace VoteMonitor.Api.Notification.Controllers
         }
 
         [HttpPost]
-        [Authorize("Organizer")]
+        [Authorize("NgoAdmin")]
         [Route("send/all")]
         public async Task<dynamic> SendToAll([FromBody]NotificationForAllNewModel model)
         {

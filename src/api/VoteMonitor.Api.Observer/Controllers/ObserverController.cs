@@ -93,7 +93,7 @@ namespace VoteMonitor.Api.Observer.Controllers
         /// <param name="model"></param>
         /// <returns>Boolean indicating whether or not the observer was added successfully.</returns>
         [HttpPost]
-        [Authorize("Organizer")]
+        [Authorize("NgoAdmin")]
         [Produces(type: typeof(int))]
         public async Task<IActionResult> NewObserver(NewObserverModel model)
         {
@@ -115,7 +115,7 @@ namespace VoteMonitor.Api.Observer.Controllers
         /// <param name="model"></param>
         /// <returns>Boolean indicating whether or not the observer was changed successfully</returns>
         [HttpPut]
-        [Authorize("Organizer")]
+        [Authorize("NgoAdmin")]
         [Produces(type: typeof(bool))]
         public async Task<IActionResult> EditObserver([FromBody] EditObserverModel model)
         {
@@ -148,7 +148,7 @@ namespace VoteMonitor.Api.Observer.Controllers
         /// <param name="id">The Observer id</param>
         /// <returns>Boolean indicating whether or not the observer was deleted successfully</returns>
         [HttpDelete]
-        [Authorize("Organizer")]
+        [Authorize("NgoAdmin")]
         [Produces(type: typeof(bool))]
         public async Task<IActionResult> DeleteObserver(int id)
         {
@@ -212,7 +212,7 @@ namespace VoteMonitor.Api.Observer.Controllers
 
         [HttpPost]
         [Route("reset")]
-        [Authorize("Organizer")]
+        [Authorize("NgoAdmin")]
         public async Task<IActionResult> Reset([FromBody] ResetModel model)
         {
             if (string.IsNullOrEmpty(model.Action) || string.IsNullOrEmpty(model.PhoneNumber))
