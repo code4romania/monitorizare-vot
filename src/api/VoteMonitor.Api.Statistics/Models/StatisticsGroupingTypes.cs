@@ -2,7 +2,7 @@
 {
     public enum StatisticsGroupingTypes
     {
-        Judet,
-        Sectie
+        County,
+        PollingStation
     }
 }
