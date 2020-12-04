@@ -26,16 +26,16 @@ namespace VoteMonitor.Api.Observer.Handlers
         }
         public async Task<ApiListResponse<ObserverModel>> Handle(ObserverListCommand request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation($"Searching for Observers with the following filters (IdNgo, Name, Phone): {request.IdNgo}, {request.Name}, {request.Number}");
+            _logger.LogInformation($"Searching for Observers with the following filters (NgoId, Name, Phone): {request.NgoId}, {request.Name}, {request.Number}");
 
             IQueryable<Entities.Observer> observers = _context.Observers
                 .Include(o => o.Ngo)
                 .Include(o => o.Notes)
                 .Include(o => o.PollingStationInfos);
 
-            if (request.IdNgo > 0)
+            if (request.NgoId > 0)
             {
-                observers = observers.Where(o => o.IdNgo == request.IdNgo);
+                observers = observers.Where(o => o.IdNgo == request.NgoId);
             }
 
             if (!string.IsNullOrEmpty(request.Name))

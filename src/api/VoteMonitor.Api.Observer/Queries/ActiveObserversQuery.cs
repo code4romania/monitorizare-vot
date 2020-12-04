@@ -10,6 +10,6 @@ namespace VoteMonitor.Api.Observer.Queries
         public int FromPollingStationNumber { get; set; }
         public int ToPollingStationNumber { get; set; }
         public bool CurrentlyCheckedIn { get; set; }
-        public int IdNgo { get; set; }
+        public int NgoId { get; set; }
     }
 }

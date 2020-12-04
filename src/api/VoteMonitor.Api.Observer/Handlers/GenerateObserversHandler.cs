@@ -35,9 +35,9 @@ namespace VoteMonitor.Api.Observer.Handlers
             List<GeneratedObserver> generatedObservers = new List<GeneratedObserver>();
 
 
-            for (int i = 0; i < request.NrObservers; ++i)
+            for (int i = 0; i < request.NumberOfObservers; ++i)
             {
-                dbObservers.Add(RandomObserverBuilder.Instance(_hashService).Build(request.IdNgo));
+                dbObservers.Add(RandomObserverBuilder.Instance(_hashService).Build(request.NgoId));
             }
 
             try

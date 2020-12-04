@@ -6,13 +6,13 @@ namespace VoteMonitor.Api.Observer.Commands
 {
     public class ObserverGenerateCommand : IRequest<List<GeneratedObserver>>
     {
-        public ObserverGenerateCommand(int nrObs, int id)
+        public ObserverGenerateCommand(int numberOfObservers, int ngoId)
         {
-            NrObservers = nrObs;
-            IdNgo = id;
+            NumberOfObservers = numberOfObservers;
+            NgoId = ngoId;
         }
 
-        public int NrObservers { get; set; }
-        public int IdNgo { get; set; }
+        public int NumberOfObservers { get; set; }
+        public int NgoId { get; set; }
     }
 }

@@ -64,29 +64,4 @@ namespace VoteMonitor.Api.Observer.Utils
             _observer.Name = name;
         }
     }
-
-    public class RandomNumberGenerator
-    {
-        public static string Generate(int digits)
-        {
-            Random random = new Random();
-            string number = "";
-            for (int i = 1; i < digits + 1; i++)
-            {
-                number += random.Next(0, 9).ToString();
-            }
-            return number;
-        }
-
-        public static string GenerateWithPadding(int digits, string prefix)
-        {
-            Random random = new Random();
-            string number = prefix;
-            for (int i = 1 + prefix.Length; i < digits + 1; i++)
-            {
-                number += random.Next(0, 9).ToString();
-            }
-            return number;
-        }
-    }
 }

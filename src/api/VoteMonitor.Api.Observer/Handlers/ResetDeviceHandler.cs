@@ -29,7 +29,7 @@ namespace VoteMonitor.Api.Observer.Handlers
 
                 if (!request.Organizer)
                 {
-                    observerQuery = observerQuery.Where(o => o.IdNgo == request.IdNgo);
+                    observerQuery = observerQuery.Where(o => o.IdNgo == request.NgoId);
                 }
 
                 var observer = observerQuery.FirstOrDefault();
