@@ -26,28 +26,25 @@ namespace VoteMonitor.Entities
                 return;
             }
 
-            //means we have data
-            //if (context.Counties.Count() > 0)
-            //    return;
+            using var tran = context.Database.BeginTransaction();
+            context.DataCleanUp();
+            context.SeedData();
+            tran.Commit();
+        }
 
-            using (var tran = context.Database.BeginTransaction())
+        public static void SeedData(this VoteMonitorContext context)
+        {
+            context.SeedNGOs();
+            context.SeedCounties();
+
+            context.SeedOptions();
+            foreach (var form in FormsArray)
             {
-                context.DataCleanUp(); // why cleanup if we return when we have data? y tho.
-
-                context.SeedNGOs();
-                context.SeedCounties();
-
-                context.SeedOptions();
-                foreach (var form in FormsArray)
-                {
-                    context.SeedForms(form.Key, form.Value);
-                    context.SeedFormSections(form.Key);
-                    context.SeedQuestions(form.Key, form.Value);
-                }
-                context.SeedObservers();
-
-                tran.Commit();
+                context.SeedForms(form.Key, form.Value);
+                context.SeedFormSections(form.Key);
+                context.SeedQuestions(form.Key, form.Value);
             }
+            context.SeedObservers();
         }
 
         private static void SeedObservers(this VoteMonitorContext context)

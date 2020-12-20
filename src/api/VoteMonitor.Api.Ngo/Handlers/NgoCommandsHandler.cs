@@ -7,11 +7,12 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using VoteMonitor.Api.Ngo.Commands;
+using VoteMonitor.Api.Ngo.Models;
 using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Ngo.Handlers
 {
-    public class NgoCommandsHandler : IRequestHandler<CreateNgo, Result>
+    public class NgoCommandsHandler : IRequestHandler<CreateNgo, Result<NgoModel>>
         , IRequestHandler<UpdateNgo, Result>
         , IRequestHandler<DeleteNgo, Result>
         , IRequestHandler<SetNgoStatusFlag, Result>
@@ -28,7 +29,7 @@ namespace VoteMonitor.Api.Ngo.Handlers
             _context = context;
         }
 
-        public async Task<Result> Handle(CreateNgo request, CancellationToken cancellationToken)
+        public async Task<Result<NgoModel>> Handle(CreateNgo request, CancellationToken cancellationToken)
         {
             try
             {
@@ -39,12 +40,13 @@ namespace VoteMonitor.Api.Ngo.Handlers
                 await _context.Ngos.AddAsync(newNgo, cancellationToken);
                 await _context.SaveChangesAsync(cancellationToken);
 
-                return Result.Success();
+                var model = _mapper.Map<NgoModel>(newNgo);
+                return Result.Success(model);
             }
             catch (Exception e)
             {
                 _logger.LogError(e, "Could not create ngo", request.Ngo);
-                return Result.Failure("Could not create ngo");
+                return Result.Failure<NgoModel>("Could not create ngo");
             }
         }
 

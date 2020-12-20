@@ -4,7 +4,7 @@ using VoteMonitor.Api.Ngo.Models;
 
 namespace VoteMonitor.Api.Ngo.Commands
 {
-    public class CreateNgo : IRequest<Result>
+    public class CreateNgo : IRequest<Result<NgoModel>>
     {
         public NgoModel Ngo { get; }
 

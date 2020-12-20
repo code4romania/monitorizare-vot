@@ -103,7 +103,7 @@ namespace VoteMonitor.Api.Ngo.Controllers
                 return Problem(detail: result.Error, statusCode: StatusCodes.Status400BadRequest);
             }
 
-            return Ok();
+            return Ok(result.Value);
         }
 
         [HttpDelete]

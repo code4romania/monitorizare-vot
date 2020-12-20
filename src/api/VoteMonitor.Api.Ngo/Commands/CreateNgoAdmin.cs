@@ -4,16 +4,16 @@ using VoteMonitor.Api.Ngo.Models;
 
 namespace VoteMonitor.Api.Ngo.Commands
 {
-    public class CreateNgoAdmin : IRequest<Result>
+    public class CreateNgoAdmin : IRequest<Result<NgoAdminModel>>
     {
         public NgoAdminModel NgoAdmin { get; }
         public CreateNgoAdmin(int idNgo, CreateUpdateNgoAdminModel admin)
         {
             NgoAdmin = new NgoAdminModel
             {
-               Account = admin.Account,
-               IdNgo = idNgo,
-               Password = admin.Password
+                Account = admin.Account,
+                IdNgo = idNgo,
+                Password = admin.Password
             };
         }
     }

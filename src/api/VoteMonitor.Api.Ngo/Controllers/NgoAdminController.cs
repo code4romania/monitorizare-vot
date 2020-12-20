@@ -4,7 +4,6 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using VoteMonitor.Api.Core;
 using VoteMonitor.Api.Ngo.Commands;
 using VoteMonitor.Api.Ngo.Models;
@@ -33,7 +32,7 @@ namespace VoteMonitor.Api.Ngo.Controllers
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> GetAllNgosAsync(int idNgo)
         {
-            if(NgoId != idNgo)
+            if (NgoId != idNgo)
             {
                 return Problem(detail: "Cannot edit that are not in your Ngo", statusCode: StatusCodes.Status400BadRequest);
             }
@@ -111,7 +110,7 @@ namespace VoteMonitor.Api.Ngo.Controllers
                 return Problem(detail: result.Error, statusCode: StatusCodes.Status400BadRequest);
             }
 
-            return Ok();
+            return Ok(result.Value);
         }
 
         [HttpDelete]

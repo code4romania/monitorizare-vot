@@ -8,11 +8,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using VoteMonitor.Api.Core.Services;
 using VoteMonitor.Api.Ngo.Commands;
+using VoteMonitor.Api.Ngo.Models;
 using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Ngo.Handlers
 {
-    public class NgoAdminCommandsHandler : IRequestHandler<CreateNgoAdmin, Result>
+    public class NgoAdminCommandsHandler : IRequestHandler<CreateNgoAdmin, Result<NgoAdminModel>>
         , IRequestHandler<UpdateNgoAdmin, Result>
         , IRequestHandler<DeleteNgoAdmin, Result>
 
@@ -20,22 +21,24 @@ namespace VoteMonitor.Api.Ngo.Handlers
         private readonly VoteMonitorContext _context;
         private readonly IHashService _hashService;
         private readonly ILogger<NgoAdminCommandsHandler> _logger;
+        private readonly IMapper _mapper;
 
-        public NgoAdminCommandsHandler(ILogger<NgoAdminCommandsHandler> logger, VoteMonitorContext context, IHashService hashService)
+        public NgoAdminCommandsHandler(ILogger<NgoAdminCommandsHandler> logger, VoteMonitorContext context, IHashService hashService, IMapper mapper)
         {
             _logger = logger;
             _context = context;
             _hashService = hashService;
+            _mapper = mapper;
         }
 
-        public async Task<Result> Handle(CreateNgoAdmin request, CancellationToken cancellationToken)
+        public async Task<Result<NgoAdminModel>> Handle(CreateNgoAdmin request, CancellationToken cancellationToken)
         {
             try
             {
-                var maxNgoAdminId = await _context.NgoAdmins.MaxAsync(x => x.Id, cancellationToken);
+                var maxNgoAdminId = await _context.NgoAdmins.MaxAsync(x => (int?)x.Id, cancellationToken);
                 var ngoAdmin = new Entities.NgoAdmin()
                 {
-                    Id = maxNgoAdminId + 1,
+                    Id = maxNgoAdminId.GetValueOrDefault(0) + 1,
                     Account = request.NgoAdmin.Account,
                     IdNgo = request.NgoAdmin.IdNgo,
                     Password = _hashService.GetHash(request.NgoAdmin.Password)
@@ -44,12 +47,13 @@ namespace VoteMonitor.Api.Ngo.Handlers
                 await _context.NgoAdmins.AddAsync(ngoAdmin, cancellationToken);
                 await _context.SaveChangesAsync(cancellationToken);
 
-                return Result.Success();
+                var model = _mapper.Map<NgoAdminModel>(ngoAdmin);
+                return Result.Success(model);
             }
             catch (Exception e)
             {
                 _logger.LogError(e, "Could not create ngo admin", request.NgoAdmin);
-                return Result.Failure("Could not create ngo admin");
+                return Result.Failure<NgoAdminModel>("Could not create ngo admin");
             }
         }
 
