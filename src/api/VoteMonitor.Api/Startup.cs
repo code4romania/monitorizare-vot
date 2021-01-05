@@ -15,6 +15,7 @@ using VoteMonitor.Api.Extensions;
 using VoteMonitor.Api.Location.Services;
 using VoteMonitor.Entities;
 using VoteMonitor.Api.Form;
+using Microsoft.Extensions.Options;
 
 namespace VoteMonitor.Api
 {
@@ -49,6 +50,8 @@ namespace VoteMonitor.Api
             services.ConfigureSwagger();
             services.AddApplicationInsightsTelemetry();
             services.AddCachingService(Configuration);
+
+            services.AddAppLocalization();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -62,6 +65,8 @@ namespace VoteMonitor.Api
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            app.UseAppLocalization();
+
             app.UseAuthentication();
             app.UseAuthorization();
 
