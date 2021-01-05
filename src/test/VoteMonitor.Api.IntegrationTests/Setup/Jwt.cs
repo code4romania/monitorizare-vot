@@ -17,7 +17,7 @@ namespace VoteMonitor.Api.IntegrationTests.Setup
             {Policy.Organizer, new[]{new Claim("Organizer", "true")}}
         };
 
-        public static string CreateJwt(Policy policy, params (string type, string value)[] otherClaims)
+        public static string CreateJwt(Policy policy, params JwtClaim[] otherClaims)
         {
             var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("super-signing-secret"));
             var now = DateTime.UtcNow;
@@ -32,8 +32,8 @@ namespace VoteMonitor.Api.IntegrationTests.Setup
 
             if (otherClaims != null)
             {
-                claims.RemoveAll(c => otherClaims.Any(o => o.type == c.Type));
-                claims = claims.Concat(otherClaims.Select(c1 => new Claim(c1.type, c1.value))).ToList();
+                claims.RemoveAll(c => otherClaims.Any(o => o.Type == c.Type));
+                claims = claims.Concat(otherClaims.Select(c => new Claim(c.Type, c.Value))).ToList();
             }
 
             var handler = new JwtSecurityTokenHandler();
