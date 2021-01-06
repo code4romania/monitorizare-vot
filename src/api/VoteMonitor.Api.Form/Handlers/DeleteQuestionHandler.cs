@@ -29,6 +29,11 @@ namespace VoteMonitor.Api.Form.Handlers
                     return false;
                 }
 
+                if (await QuestionHasAnswers(questionToBeRemoved.Id) || await QuestionHasNotes(questionToBeRemoved.Id))
+                {
+                    return false;
+                }
+
                 DeleteOptionsToQuestion(questionToBeRemoved.Id);
                 DeleteOptionsWithNoRelatedQuestions(questionToBeRemoved.Id);
                 DeleteQuestion(questionToBeRemoved);
@@ -37,6 +42,18 @@ namespace VoteMonitor.Api.Form.Handlers
                 await transaction.CommitAsync(cancellationToken);
                 return true;
             }
+        }
+
+        private async Task<bool> QuestionHasAnswers(int questionId)
+        {
+            var answersForQuestion = _context.Answers.Where(a => a.OptionAnswered.Question.Id == questionId);
+            return await answersForQuestion.AnyAsync();
+        }
+
+        private async Task<bool> QuestionHasNotes(int questionId)
+        {
+            var notes = _context.Notes.Where(n => n.IdQuestion == questionId);
+            return await notes.AnyAsync();
         }
 
         private void DeleteOptionsWithNoRelatedQuestions(int questionID)
