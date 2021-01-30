@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -12,78 +12,70 @@ using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Answer.Handlers
 {
-    public class FillInAnswerQueryHandler : IRequestHandler<CompleteazaRaspunsCommand, int>
+    public class FillInAnswerQueryHandler : IRequestHandler<FillInAnswerCommand, int>
     {
         private readonly VoteMonitorContext _context;
-        private readonly IMapper _mapper;
         private readonly ILogger _logger;
 
         public FillInAnswerQueryHandler(VoteMonitorContext context, IMapper mapper, ILogger<FillInAnswerQueryHandler> logger)
         {
             _context = context;
-            _mapper = mapper;
             _logger = logger;
         }
 
-        public async Task<int> Handle(CompleteazaRaspunsCommand message, CancellationToken cancellationToken)
+        public async Task<int> Handle(FillInAnswerCommand message, CancellationToken cancellationToken)
         {
             try
             {
-                //flat answers
                 var lastModified = DateTime.UtcNow;
+                var newAnswers = GetFlatListOfAnswers(message, lastModified);
 
-                var raspunsuriNoi = GetFlatListOfAnswers(message, lastModified);
+                var pollingStationIds = message.Answers.Select(a => a.PollingStationId).Distinct().ToList();
 
-                // stergerea este pe fiecare sectie
-                var sectii = message.Answers.Select(a => a.PollingSectionId).Distinct().ToList();
-
-                using (var tran = await _context.Database.BeginTransactionAsync())
+                using (var tran = await _context.Database.BeginTransactionAsync(cancellationToken))
                 {
-                    foreach (var sectie in sectii)
+                    foreach (var pollingStationId in pollingStationIds)
                     {
-                        var intrebari = message.Answers.Select(a => a.QuestionId).Distinct().ToList();
+                        var questionIds = message.Answers.Select(a => a.QuestionId).Distinct().ToList();
 
-                        // delete existing answers for posted questions on this 'sectie'
-                        var todelete = _context.Answers
+                        var oldAnswersToBeDeleted = _context.Answers
                                 .Include(a => a.OptionAnswered)
                                 .Where(
                                     a =>
                                         a.IdObserver == message.ObserverId &&
-                                        a.IdPollingStation == sectie)
-                                //.Where(a => intrebari.Contains(a.OptionAnswered.IdQuestion))
-                                .WhereRaspunsContains(intrebari)
+                                        a.IdPollingStation == pollingStationId)
+                                .WhereRaspunsContains(questionIds)
                             ;
-                        //.Delete();
-                        _context.Answers.RemoveRange(todelete);
+                        _context.Answers.RemoveRange(oldAnswersToBeDeleted);
 
-                        await _context.SaveChangesAsync();
+                        await _context.SaveChangesAsync(cancellationToken);
                     }
 
-                    _context.Answers.AddRange(raspunsuriNoi);
+                    await _context.Answers.AddRangeAsync(newAnswers, cancellationToken);
 
-                    var result = await _context.SaveChangesAsync();
+                    var result = await _context.SaveChangesAsync(cancellationToken);
 
-                    tran.Commit();
+                    await tran.CommitAsync(cancellationToken);
 
                     return result;
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(typeof(CompleteazaRaspunsCommand).GetHashCode(), ex, ex.Message);
+                _logger.LogError(typeof(FillInAnswerCommand).GetHashCode(), ex, ex.Message);
             }
 
             return await Task.FromResult(-1);
         }
 
-        public static List<Entities.Answer> GetFlatListOfAnswers(CompleteazaRaspunsCommand command, DateTime lastModified)
+        public static List<Entities.Answer> GetFlatListOfAnswers(FillInAnswerCommand command, DateTime lastModified)
         {
             var list = command.Answers.Select(a => new
             {
                 flat = a.Options.Select(o => new Entities.Answer
                 {
                     IdObserver = command.ObserverId,
-                    IdPollingStation = a.PollingSectionId,
+                    IdPollingStation = a.PollingStationId,
                     IdOptionToQuestion = o.OptionId,
                     Value = o.Value,
                     CountyCode = a.CountyCode,

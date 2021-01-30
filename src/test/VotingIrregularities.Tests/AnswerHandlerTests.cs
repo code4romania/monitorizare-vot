@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
@@ -10,56 +10,50 @@ namespace VotingIrregularities.Tests
 {
     public class AnswerHandlerTests
     {
-
         [Fact]
         public void CanHandlerReduceAnswers()
         {
-            //var handler = new CompleteazaRaspunsHandler(new VotingContext(), new Mapper(), null);
-            var codJudet = "B";
-            var idSectie = 1;
-            var nrSectie = 1;
-            //var codFormular = "T";
+            var countyCode = "B";
+            var pollingStationId = 1;
+            var pollingStationNumber = 1;
             var lastModified = DateTime.Now;
 
-            var message = new CompleteazaRaspunsCommand
+            var message = new FillInAnswerCommand
             {
                 ObserverId = 1,
-                Answers = new List<AnswerDTO>()
+                Answers = new List<AnswerDto>()
             };
 
-            message.Answers.Add(new AnswerDTO
+            message.Answers.Add(new AnswerDto
             {
-                CountyCode = codJudet,
-                PollingStationNumber = nrSectie,
-                PollingSectionId = idSectie,
-                //CodFormular = codFormular,
+                CountyCode = countyCode,
+                PollingStationNumber = pollingStationNumber,
+                PollingStationId = pollingStationId,
                 QuestionId = 1,
-                Options = new List<SelectedOptionModel>
+                Options = new List<SelectedOptionDto>
                 {
-                    new SelectedOptionModel{OptionId  = 11, Value = "val0"},
-                    new SelectedOptionModel{OptionId = 11, Value = "val234"},
-                    new SelectedOptionModel{OptionId = 11, Value = "val2s34"},
-                    new SelectedOptionModel{OptionId = 11, Value = "varl234"},
-                    new SelectedOptionModel{OptionId = 11, Value = "varl234"},
-                    new SelectedOptionModel{OptionId = 11, Value = "ok"},
-                    new SelectedOptionModel{OptionId = 21, Value = "1"}
-                    
+                    new SelectedOptionDto{OptionId  = 11, Value = "val0"},
+                    new SelectedOptionDto{OptionId = 11, Value = "val234"},
+                    new SelectedOptionDto{OptionId = 11, Value = "val2s34"},
+                    new SelectedOptionDto{OptionId = 11, Value = "varl234"},
+                    new SelectedOptionDto{OptionId = 11, Value = "varl234"},
+                    new SelectedOptionDto{OptionId = 11, Value = "ok"},
+                    new SelectedOptionDto{OptionId = 21, Value = "1"}
                 }
             });
-            message.Answers.Add(new AnswerDTO
+            message.Answers.Add(new AnswerDto
             {
-                CountyCode = codJudet,
-                PollingStationNumber = nrSectie,
-                PollingSectionId = idSectie,
-               // CodFormular = codFormular,
+                CountyCode = countyCode,
+                PollingStationNumber = pollingStationNumber,
+                PollingStationId = pollingStationId,
                 QuestionId = 2,
-                Options = new List<SelectedOptionModel>
+                Options = new List<SelectedOptionDto>
                 {
-                    new SelectedOptionModel{OptionId = 21, Value = "val0"},
-                    new SelectedOptionModel{OptionId = 21, Value = "val234"},
-                    new SelectedOptionModel{OptionId = 21, Value = "ok"},
-                    new SelectedOptionModel{OptionId = 22, Value = "ok"},
-                    new SelectedOptionModel{OptionId = 23, Value = "ok"}
+                    new SelectedOptionDto{OptionId = 21, Value = "val0"},
+                    new SelectedOptionDto{OptionId = 21, Value = "val234"},
+                    new SelectedOptionDto{OptionId = 21, Value = "ok"},
+                    new SelectedOptionDto{OptionId = 22, Value = "ok"},
+                    new SelectedOptionDto{OptionId = 23, Value = "ok"}
                 }
             });
 

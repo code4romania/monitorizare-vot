@@ -1,9 +1,9 @@
-﻿namespace VoteMonitor.Api.Answer.Models
+namespace VoteMonitor.Api.Answer.Models
 {
-    public class AnswerQueryDTO
+    public class AnswerQueryDto
     {
-        public int IdObserver { get; set; }
-        public int IdPollingStation { get; set; }
+        public int ObserverId { get; set; }
+        public int PollingStationId { get; set; }
         public string ObserverName { get; set; }
         public string ObserverPhoneNumber { get; set; }
         public string PollingStationName { get; set; }

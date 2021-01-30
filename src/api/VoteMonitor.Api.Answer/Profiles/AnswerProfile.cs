@@ -1,34 +1,24 @@
-﻿using AutoMapper;
-using System;
+using AutoMapper;
+using VoteMonitor.Api.Answer.Models;
 using VoteMonitor.Entities;
-using static VoteMonitor.Entities.VoteMonitorContext;
 
-namespace VoteMonitor.Api.Answer.Models
+namespace VoteMonitor.Api.Answer.Profiles
 {
-    public class PollingStationInfosDTO
+    public class AnswerProfile : Profile
     {
-        public DateTime LastModified { get; set; }
-        public bool? UrbanArea { get; set; }
-        public DateTime? ObserverLeaveTime { get; set; }
-        public DateTime? ObserverArrivalTime { get; set; }
-        public bool? IsPollingStationPresidentFemale { get; set; }
-    }
-
-    public class RaspunsFomularProfile : Profile
-    {
-        public RaspunsFomularProfile()
+        public AnswerProfile()
         {
-            CreateMap<PollingStationInfo, PollingStationInfosDTO>()
+            CreateMap<PollingStationInfo, PollingStationInfoDto>()
                 .ForMember(dest => dest.LastModified, o => o.MapFrom(src => src.LastModified))
                 .ForMember(dest => dest.UrbanArea, o => o.MapFrom(src => src.UrbanArea))
                 .ForMember(dest => dest.ObserverLeaveTime, o => o.MapFrom(src => src.ObserverLeaveTime))
                 .ForMember(dest => dest.ObserverArrivalTime, o => o.MapFrom(src => src.ObserverArrivalTime))
                 .ForMember(dest => dest.IsPollingStationPresidentFemale, o => o.MapFrom(src => src.IsPollingStationPresidentFemale))
                 ;
-            CreateMap<AnswerQueryInfo, AnswerQueryDTO>()
-                .ForMember(dest => dest.IdObserver, o => o.MapFrom(src => src.IdObserver))
+            CreateMap<VoteMonitorContext.AnswerQueryInfo, AnswerQueryDto>()
+                .ForMember(dest => dest.ObserverId, o => o.MapFrom(src => src.IdObserver))
                 .ForMember(dest => dest.ObserverPhoneNumber, o => o.MapFrom(src => src.ObserverPhoneNumber))
-                .ForMember(dest => dest.IdPollingStation, o => o.MapFrom(src => src.IdPollingStation))
+                .ForMember(dest => dest.PollingStationId, o => o.MapFrom(src => src.IdPollingStation))
                 .ForMember(dest => dest.ObserverName, o => o.MapFrom(src => src.ObserverName))
                 .ForMember(dest => dest.PollingStationName, o => o.MapFrom(src => src.PollingStation))
                 ;
