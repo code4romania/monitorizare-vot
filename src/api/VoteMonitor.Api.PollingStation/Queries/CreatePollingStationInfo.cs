@@ -5,8 +5,8 @@ namespace VoteMonitor.Api.PollingStation.Queries
 {
     public class CreatePollingStationInfo : IRequest
     {
-        public int IdObserver { get; set; }
-        public int IdPollingStation { get; set; }
+        public int ObserverId { get; set; }
+        public int PollingStationId { get; set; }
         public string CountyCode { get; set; }
         public bool? UrbanArea { get; set; }
         public DateTime? ObserverLeaveTime { get; set; }

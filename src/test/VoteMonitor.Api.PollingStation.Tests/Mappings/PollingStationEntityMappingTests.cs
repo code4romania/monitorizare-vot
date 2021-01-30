@@ -30,7 +30,7 @@ namespace VoteMonitor.Api.PollingStation.Tests.Mappings
         {
             var pollingStationEntity = new Entities.PollingStation();
 
-            var pollingStationModel = _mapper.Map<Models.GetPollingStation>(pollingStationEntity);
+            var pollingStationModel = _mapper.Map<Models.GetPollingStationModel>(pollingStationEntity);
 
             pollingStationModel.Should().NotBeNull();
         }
@@ -43,7 +43,7 @@ namespace VoteMonitor.Api.PollingStation.Tests.Mappings
                 Id = 1
             };
 
-            var pollingStationModel = _mapper.Map<Models.GetPollingStation>(pollingStationEntity);
+            var pollingStationModel = _mapper.Map<Models.GetPollingStationModel>(pollingStationEntity);
 
             pollingStationModel.Id.Should().Be(1);
         }
@@ -56,7 +56,7 @@ namespace VoteMonitor.Api.PollingStation.Tests.Mappings
                 Address = "str X bloc 4"
             };
 
-            var pollingStationModel = _mapper.Map<Models.GetPollingStation>(pollingStationEntity);
+            var pollingStationModel = _mapper.Map<Models.GetPollingStationModel>(pollingStationEntity);
 
             pollingStationModel.Address.Should().Be("str X bloc 4");
         }
@@ -69,7 +69,7 @@ namespace VoteMonitor.Api.PollingStation.Tests.Mappings
                 AdministrativeTerritoryCode = "IS"
             };
 
-            var pollingStationModel = _mapper.Map<Models.GetPollingStation>(pollingStationEntity);
+            var pollingStationModel = _mapper.Map<Models.GetPollingStationModel>(pollingStationEntity);
 
             pollingStationModel.AdministrativeTerritoryCode.Should().Be("IS");
         }
@@ -82,7 +82,7 @@ namespace VoteMonitor.Api.PollingStation.Tests.Mappings
                 TerritoryCode = "code"
             };
 
-            var pollingStationModel = _mapper.Map<Models.GetPollingStation>(pollingStationEntity);
+            var pollingStationModel = _mapper.Map<Models.GetPollingStationModel>(pollingStationEntity);
 
             pollingStationModel.TerritoryCode.Should().Be("code");
         }
@@ -95,7 +95,7 @@ namespace VoteMonitor.Api.PollingStation.Tests.Mappings
                 Coordinates = "90.91"
             };
 
-            var pollingStationModel = _mapper.Map<Models.GetPollingStation>(pollingStationEntity);
+            var pollingStationModel = _mapper.Map<Models.GetPollingStationModel>(pollingStationEntity);
 
             pollingStationModel.Coordinates.Should().Be("90.91");
         }
@@ -108,7 +108,7 @@ namespace VoteMonitor.Api.PollingStation.Tests.Mappings
                 Number = 5
             };
 
-            var pollingStationModel = _mapper.Map<Models.GetPollingStation>(pollingStationEntity);
+            var pollingStationModel = _mapper.Map<Models.GetPollingStationModel>(pollingStationEntity);
 
             pollingStationModel.Number.Should().Be(5);
         }
@@ -121,7 +121,7 @@ namespace VoteMonitor.Api.PollingStation.Tests.Mappings
                 IdCounty = 3
             };
 
-            var pollingStationModel = _mapper.Map<Models.GetPollingStation>(pollingStationEntity);
+            var pollingStationModel = _mapper.Map<Models.GetPollingStationModel>(pollingStationEntity);
 
             pollingStationModel.IdCounty.Should().Be(3);
         }

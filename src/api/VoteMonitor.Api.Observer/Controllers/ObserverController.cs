@@ -38,7 +38,7 @@ namespace VoteMonitor.Api.Observer.Controllers
         {
             var command = _mapper.Map<ObserverListCommand>(query);
 
-            command.IdNgo = IsOrganizer ? -1 : NgoId;
+            command.NgoId = IsOrganizer ? -1 : NgoId;
 
             var result = await _mediator.Send(command);
             return result;
@@ -52,7 +52,7 @@ namespace VoteMonitor.Api.Observer.Controllers
         {
             var command = _mapper.Map<ActiveObserversQuery>(query);
 
-            command.IdNgo = IsOrganizer ? -1 : NgoId;
+            command.NgoId = IsOrganizer ? -1 : NgoId;
 
             var result = await _mediator.Send(command);
             return result;
@@ -81,7 +81,7 @@ namespace VoteMonitor.Api.Observer.Controllers
             var counter = await _mediator.Send(new ImportObserversRequest
             {
                 File = file,
-                IdOng = ongId
+                NgoId = ongId
             });
 
             return counter;
@@ -103,7 +103,7 @@ namespace VoteMonitor.Api.Observer.Controllers
             }
 
             var newObsCommand = _mapper.Map<NewObserverCommand>(model);
-            newObsCommand.IdNgo = NgoId;
+            newObsCommand.NgoId = NgoId;
             var newId = await _mediator.Send(newObsCommand);
 
             return Ok(newId);
@@ -131,7 +131,7 @@ namespace VoteMonitor.Api.Observer.Controllers
                 return BadRequest("Invalid request");
             }
 
-            var isActionAllowed = await IsActionAllowed(model.IdObserver);
+            var isActionAllowed = await IsActionAllowed(model.ObserverId);
             if (!isActionAllowed)
             {
                 return Problem("Action not allowed", statusCode: (int)HttpStatusCode.BadRequest);
@@ -224,7 +224,7 @@ namespace VoteMonitor.Api.Observer.Controllers
             {
                 var result = await _mediator.Send(new ResetDeviceCommand
                 {
-                    IdNgo = NgoId,
+                    NgoId = NgoId,
                     PhoneNumber = model.PhoneNumber,
                     Organizer = this.GetOrganizatorOrDefault(false)
                 });
@@ -242,10 +242,10 @@ namespace VoteMonitor.Api.Observer.Controllers
             {
                 var result = await _mediator.Send(new ResetPasswordCommand
                 {
-                    IdNgo = NgoId,
+                    NgoId = NgoId,
                     PhoneNumber = model.PhoneNumber,
                     Pin = model.Pin,
-                    Organizer = this.GetOrganizatorOrDefault(false)
+                    IsOrganizer = this.GetOrganizatorOrDefault(false)
                 });
                 if (result == false)
                 {

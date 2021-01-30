@@ -21,7 +21,7 @@ namespace VoteMonitor.Api.PollingStation.Tests.Mappings
         [Fact]
         public void UpdatePollingStations_WhenMappingToUpdatePollingStationQuery_ReturnsNotNull()
         {
-            var updatePollingStations = new Models.UpdatePollingStation();
+            var updatePollingStations = new Models.UpdatePollingStationModel();
 
             var result = _mapper.Map<Queries.UpdatePollingStation>(updatePollingStations);
 
@@ -32,7 +32,7 @@ namespace VoteMonitor.Api.PollingStation.Tests.Mappings
         [Fact]
         public void UpdatePollingStations_WhenMappingToUpdatePollingStationQuery_MapsAddress()
         {
-            var updatePollingStations = new Models.UpdatePollingStation
+            var updatePollingStations = new Models.UpdatePollingStationModel
             {
                 Address = "street x"
             };
@@ -45,7 +45,7 @@ namespace VoteMonitor.Api.PollingStation.Tests.Mappings
         [Fact]
         public void UpdatePollingStations_WhenMappingToUpdatePollingStationQuery_MapsCoordinates()
         {
-            var updatePollingStations = new Models.UpdatePollingStation
+            var updatePollingStations = new Models.UpdatePollingStationModel
             {
                 Coordinates = "90.99"
             };
@@ -60,7 +60,7 @@ namespace VoteMonitor.Api.PollingStation.Tests.Mappings
         [Fact]
         public void UpdatePollingStations_WhenMappingToUpdatePollingStationQuery_MapsAdministrativeTerritoryCode()
         {
-            var updatePollingStations = new Models.UpdatePollingStation
+            var updatePollingStations = new Models.UpdatePollingStationModel
             {
                 AdministrativeTerritoryCode = "IS"
             };
@@ -73,7 +73,7 @@ namespace VoteMonitor.Api.PollingStation.Tests.Mappings
         [Fact]
         public void UpdatePollingStations_WhenMappingToUpdatePollingStationQuery_MapsTerritoryCode()
         {
-            var updatePollingStations = new Models.UpdatePollingStation
+            var updatePollingStations = new Models.UpdatePollingStationModel
             {
                 TerritoryCode = "code IS"
             };
@@ -86,7 +86,7 @@ namespace VoteMonitor.Api.PollingStation.Tests.Mappings
         [Fact]
         public void UpdatePollingStations_WhenMappingToUpdatePollingStationQuery_MapsNumber()
         {
-            var updatePollingStations = new Models.UpdatePollingStation
+            var updatePollingStations = new Models.UpdatePollingStationModel
             {
                 Number = 11
             };

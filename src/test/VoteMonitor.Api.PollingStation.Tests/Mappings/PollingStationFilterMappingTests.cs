@@ -23,7 +23,7 @@ namespace VoteMonitor.Api.PollingStation.Tests.Mappings
         [Fact]
         public void PollingStationsFilter_WhenMappingToGetPollingStations_ReturnsNonNull()
         {
-            var pollingStationFilter = new PollingStationsFilter();
+            var pollingStationFilter = new PollingStationsFilterModel();
 
             var getPollingStations = _mapper.Map<GetPollingStations>(pollingStationFilter);
 
@@ -33,20 +33,20 @@ namespace VoteMonitor.Api.PollingStation.Tests.Mappings
         [Fact]
         public void PollingStationsFilter_WhenMappingToGetPollingStations_MapsIdCountyCorrectly()
         {
-            var pollingStationFilter = new PollingStationsFilter
+            var pollingStationFilter = new PollingStationsFilterModel
             {
-                IdCounty = 15
+                CountyId = 15
             };
 
             var getPollingStations = _mapper.Map<GetPollingStations>(pollingStationFilter);
 
-            getPollingStations.IdCounty.Should().Be(15);
+            getPollingStations.CountyId.Should().Be(15);
         }
 
         [Fact]
         public void PollingStationsFilter_WhenMappingToGetPollingStations_MapsPageCorrectly()
         {
-            var pollingStationFilter = new PollingStationsFilter
+            var pollingStationFilter = new PollingStationsFilterModel
             {
                 Page = 2
             };
@@ -59,7 +59,7 @@ namespace VoteMonitor.Api.PollingStation.Tests.Mappings
         [Fact]
         public void PollingStationsFilter_WhenMappingToGetPollingStations_MapsPageSizeCorrectly()
         {
-            var pollingStationFilter = new PollingStationsFilter
+            var pollingStationFilter = new PollingStationsFilterModel
             {
                 PageSize = 20
             };

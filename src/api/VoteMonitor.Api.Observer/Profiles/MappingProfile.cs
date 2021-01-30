@@ -3,7 +3,7 @@ using VoteMonitor.Api.Observer.Commands;
 using VoteMonitor.Api.Observer.Models;
 using VoteMonitor.Api.Observer.Queries;
 
-namespace VoteMonitor.Api.Observer.Mapping
+namespace VoteMonitor.Api.Observer.Profiles
 {
     public class MappingProfile : Profile
     {

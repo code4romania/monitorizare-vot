@@ -20,13 +20,13 @@ namespace VoteMonitor.Api.Observer.Handlers
         }
         public async Task<int> Handle(ObserverCountCommand request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation($"Getting the total Observer count for the ngo with the id {request.IdNgo}");
+            _logger.LogInformation($"Getting the total Observer count for the ngo with the id {request.NgoId}");
 
             IQueryable<Entities.Observer> observers = _context.Observers;
 
-            if (request.IsCallerOrganizer == false && request.IdNgo > 0)
+            if (request.IsCallerOrganizer == false && request.NgoId > 0)
             {
-                observers = observers.Where(o => o.IdNgo == request.IdNgo);
+                observers = observers.Where(o => o.IdNgo == request.NgoId);
             }
 
             return await observers.CountAsync(cancellationToken);

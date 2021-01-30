@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -27,21 +26,21 @@ namespace VoteMonitor.Api.PollingStation.Controllers
         [Authorize("Observer")]
         [ProducesResponseType(StatusCodes.Status202Accepted)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> CreatePollingStationInfo([FromBody] Models.CreatePollingStationInfo pollingStationInfo)
+        public async Task<IActionResult> CreatePollingStationInfo([FromBody] CreatePollingStationInfoModel pollingStationInfoModel)
         {
-            var pollingStationRequest = new Queries.CheckPollingStationExists
+            var pollingStationRequest = new CheckPollingStationExists
             {
-                Id = pollingStationInfo.IdPollingStation
+                PollingStationId = pollingStationInfoModel.PollingStationId
             };
 
             var foundPollingStation = await _mediator.Send(pollingStationRequest);
             if (!foundPollingStation)
             {
-                return NotFound(pollingStationInfo.IdPollingStation);
+                return NotFound(pollingStationInfoModel.PollingStationId);
             }
             
-            var request = _mapper.Map<Queries.CreatePollingStationInfo>(pollingStationInfo);
-            request.IdObserver = this.GetIdObserver();
+            var request = _mapper.Map<CreatePollingStationInfo>(pollingStationInfoModel);
+            request.ObserverId = this.GetIdObserver();
             await _mediator.Send(request);
             return Accepted();
         }
@@ -52,9 +51,9 @@ namespace VoteMonitor.Api.PollingStation.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> UpdatePollingStationInfo([FromRoute]int id, [FromBody]EditPollingStationInfo pollingStationInfo)
         {
-            var pollingStationRequest = new Queries.CheckPollingStationExists
+            var pollingStationRequest = new CheckPollingStationExists
             {
-                Id = id
+                PollingStationId = id
             };
 
             var foundPollingStation = await _mediator.Send(pollingStationRequest);
@@ -64,8 +63,8 @@ namespace VoteMonitor.Api.PollingStation.Controllers
             }
 
             var request = _mapper.Map<UpdatePollingStationInfo>(pollingStationInfo);
-            request.IdObserver = this.GetIdObserver();
-            request.IdPollingStation = id;
+            request.ObserverId = this.GetIdObserver();
+            request.PollingStationId = id;
 
             await _mediator.Send(request);
 

@@ -15,12 +15,12 @@ namespace VoteMonitor.Api.PollingStation.Controllers
     /// Controller responsible for interacting with the polling stations - PollingStationInfo
     /// </summary> 
     [Route("api/v2/polling-station")]
-    public class PollingStationV2Controller : Controller
+    public class PollingStationController : Controller
     {
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
 
-        public PollingStationV2Controller(IMediator mediator, IMapper mapper)
+        public PollingStationController(IMediator mediator, IMapper mapper)
         {
             _mediator = mediator;
             _mapper = mapper;
@@ -28,10 +28,10 @@ namespace VoteMonitor.Api.PollingStation.Controllers
 
         /// Retrieves all of the polling stations matching a certain filter.
         [HttpGet]
-        [Produces(typeof(IEnumerable<GetPollingStation>))]
-        public async Task<IActionResult> GetAllPollingStations([FromQuery] PollingStationsFilter pollingStationsFilter)
+        [Produces(typeof(IEnumerable<GetPollingStationModel>))]
+        public async Task<IActionResult> GetAllPollingStations([FromQuery] PollingStationsFilterModel pollingStationsFilterModel)
         {
-            var request = _mapper.Map<GetPollingStations>(pollingStationsFilter);
+            var request = _mapper.Map<GetPollingStations>(pollingStationsFilterModel);
 
             var result = await _mediator.Send(request);
 
@@ -41,13 +41,13 @@ namespace VoteMonitor.Api.PollingStation.Controllers
         /// Retrieves a polling station with the given ID.
         [HttpGet("{id}")]
         [Authorize("Organizer")]
-        [Produces(typeof(GetPollingStation))]
+        [Produces(typeof(GetPollingStationModel))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetPollingStation(int id)
         {
-            var request = new GetPollingStationById { Id = id };
+            var request = new GetPollingStationById { PollingStationId = id };
 
             var result = await _mediator.Send(request);
             if (result == null)
@@ -64,10 +64,10 @@ namespace VoteMonitor.Api.PollingStation.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> EditPollingStation([FromRoute] int id, [FromBody] Models.UpdatePollingStation pollingStation)
+        public async Task<IActionResult> EditPollingStation([FromRoute] int id, [FromBody] UpdatePollingStationModel pollingStationModel)
         {
-            var request = _mapper.Map<Queries.UpdatePollingStation>(pollingStation);
-            request.Id = id;
+            var request = _mapper.Map<UpdatePollingStation>(pollingStationModel);
+            request.PollingStationId = id;
 
             var updated = await _mediator.Send(request);
             if (updated.HasValue && !updated.Value)

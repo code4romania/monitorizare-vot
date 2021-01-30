@@ -7,12 +7,13 @@ using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using VoteMonitor.Api.PollingStation.Models;
 using VoteMonitor.Api.PollingStation.Queries;
 using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.PollingStation.Handlers
 {
-    public class GetPollingStationsHandler : IRequestHandler<GetPollingStations, IEnumerable<Models.GetPollingStation>>
+    public class GetPollingStationsHandler : IRequestHandler<GetPollingStations, IEnumerable<GetPollingStationModel>>
     {
         private readonly VoteMonitorContext _context;
         private readonly IMapper _mapper;
@@ -25,7 +26,7 @@ namespace VoteMonitor.Api.PollingStation.Handlers
             _logger = logger;
         }
 
-        public async Task<IEnumerable<Models.GetPollingStation>> Handle(GetPollingStations request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<GetPollingStationModel>> Handle(GetPollingStations request, CancellationToken cancellationToken)
         {
             var skip = (request.Page - 1) * request.PageSize;
             var take = request.PageSize;
@@ -37,7 +38,7 @@ namespace VoteMonitor.Api.PollingStation.Handlers
                 var pollingStations = await iQueryable
                     .Skip(skip)
                     .Take(take)
-                    .Select(m => _mapper.Map<Models.GetPollingStation>(m))
+                    .Select(m => _mapper.Map<GetPollingStationModel>(m))
                     .ToListAsync(cancellationToken);
 
                 return pollingStations;
@@ -53,9 +54,9 @@ namespace VoteMonitor.Api.PollingStation.Handlers
         {
             IQueryable<Entities.PollingStation> iQueryable = _context.PollingStations;
 
-            if (request.IdCounty > 0)
+            if (request.CountyId > 0)
             {
-                iQueryable = iQueryable.Where(p => p.IdCounty == request.IdCounty);
+                iQueryable = iQueryable.Where(p => p.IdCounty == request.CountyId);
             }
 
             return iQueryable;

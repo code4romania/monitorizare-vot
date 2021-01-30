@@ -101,7 +101,7 @@ namespace VoteMonitor.Api.PollingStation.Tests.Handlers
 
                 var getPollingStations = new GetPollingStations
                 {
-                    IdCounty = 20,
+                    CountyId = 20,
                     Page = 1,
                     PageSize = 1
                 };

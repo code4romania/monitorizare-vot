@@ -31,9 +31,9 @@ namespace VoteMonitor.Api.Observer.Handlers
                 .Where(i => i.PollingStation.Number >= request.FromPollingStationNumber)
                 .Where(i => i.PollingStation.Number <= request.ToPollingStationNumber);
 
-            if (request.IdNgo > 0)
+            if (request.NgoId > 0)
             {
-                results = results.Where(i => i.Observer.IdNgo == request.IdNgo);
+                results = results.Where(i => i.Observer.IdNgo == request.NgoId);
             }
 
             var observers = results

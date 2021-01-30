@@ -44,13 +44,13 @@ namespace VoteMonitor.Api.PollingStation.Tests.Handlers
             {
                 var sut = new CreatePollingStationInfoHandler(context, new Mapper(_mapperConfiguration), _mockLogger.Object);
 
-                var createPollingStationInfo = new CreatePollingStationInfo()
+                var createPollingStationInfo = new CreatePollingStationInfo
                 {
-                    IdPollingStation = 3
+                    PollingStationId = 3
                 };
                 await sut.Handle(createPollingStationInfo, new CancellationToken());
 
-                var savedPollingStationInfo = context.PollingStationInfos.FirstOrDefault(p => p.IdPollingStation == createPollingStationInfo.IdPollingStation);
+                var savedPollingStationInfo = context.PollingStationInfos.FirstOrDefault(p => p.IdPollingStation == createPollingStationInfo.PollingStationId);
                 savedPollingStationInfo.Should().NotBeNull();
             }
 

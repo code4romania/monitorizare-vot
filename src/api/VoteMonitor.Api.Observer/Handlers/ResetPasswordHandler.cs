@@ -29,9 +29,9 @@ namespace VoteMonitor.Api.Observer.Handlers
                 var observerQuery = _voteMonitorContext.Observers
                     .Where(o => o.Phone == request.PhoneNumber);
 
-                if (!request.Organizer)
+                if (!request.IsOrganizer)
                 {
-                    observerQuery = observerQuery.Where(o => o.IdNgo == request.IdNgo);
+                    observerQuery = observerQuery.Where(o => o.IdNgo == request.NgoId);
                 }
 
                 var observer = observerQuery.FirstOrDefault();
