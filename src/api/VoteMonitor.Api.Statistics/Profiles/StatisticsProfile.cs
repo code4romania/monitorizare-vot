@@ -1,15 +1,9 @@
 ﻿using AutoMapper;
-using VoteMonitor.Api.Core;
+using VoteMonitor.Api.Statistics.Models;
 using VoteMonitor.Entities;
 
-namespace VoteMonitor.Api.Statistics.Models
+namespace VoteMonitor.Api.Statistics.Profiles
 {
-    public class SimpleStatisticsFilter : PagingModel
-    {
-        public string FormCode { get; set; }
-        public StatisticsGroupingTypes GroupingType { get; set; }
-    }
-
     public class StatisticsProfile : Profile
     {
         public StatisticsProfile()
@@ -19,7 +13,7 @@ namespace VoteMonitor.Api.Statistics.Models
                 .ForMember(dest => dest.Value, c => c.MapFrom(src => src.Value.ToString()));
 
             CreateMap<SimpleStatistics, SimpleStatisticsModel>()
-               .ForMember(dest => dest.Value, c => c.MapFrom(src => src.Value.ToString()));
+                .ForMember(dest => dest.Value, c => c.MapFrom(src => src.Value.ToString()));
         }
     }
 }

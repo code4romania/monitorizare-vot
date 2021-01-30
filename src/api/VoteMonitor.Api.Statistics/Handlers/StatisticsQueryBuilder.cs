@@ -25,42 +25,25 @@
         /// Adds an AND condition to the WHERE clause
         /// Filters statistics by FormCode
         /// </summary>
-        public void AndFormularFilter(string formular)
+        public void AndFormCodeFilter(string formCode)
         {
-            if (!string.IsNullOrEmpty(formular))
+            if (!string.IsNullOrEmpty(formCode))
             {
-                Query = $"{Query} AND f.Code = '{formular}'";
-                CacheKey = $"{CacheKey}-{formular}";
+                Query = $"{Query} AND f.Code = '{formCode}'";
+                CacheKey = $"{CacheKey}-{formCode}";
             }
         }
 
         /// <summary>
         /// Adds an AND condition to the WHERE clause
-        /// Filters statistics by IdNgo if the ong is admin
+        /// Filters statistics by gnoId if the ngo is admin
         /// </summary>
-        public void AndOngFilter(bool organizator, int idONG)
+        public void AndOngFilter(bool isOrganizer, int ngoId)
         {
-            if (!organizator)
+            if (!isOrganizer)
             {
-                Query = $"{Query} AND O.IdNgo = {idONG}";
-                CacheKey = $"{CacheKey}-{idONG}";
-            }
-            else
-            {
-                CacheKey = $"{CacheKey}-Organizer";
-            }
-        }
-
-        /// <summary>
-        /// Adds a WHERE clause
-        /// Filters statistics by IdNgo if the ong is admin
-        /// </summary>
-        public void WhereOngFilter(bool organizator, int idONG)
-        {
-            if (!organizator)
-            {
-                Query = $"{Query} WHERE O.IdNgo = {idONG}";
-                CacheKey = $"{CacheKey}-{idONG}";
+                Query = $"{Query} AND O.IdNgo = {ngoId}";
+                CacheKey = $"{CacheKey}-{ngoId}";
             }
             else
             {

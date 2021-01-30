@@ -15,8 +15,8 @@ using VoteMonitor.Entities;
 namespace VoteMonitor.Api.Statistics.Handlers
 {
     public class StatisticsQueryHandler :
-        IRequestHandler<StatisticsObserversNumberQuery, ApiListResponse<SimpleStatisticsModel>>,
-        IRequestHandler<StatisticiTopSesizariQuery, ApiListResponse<SimpleStatisticsModel>>,
+        IRequestHandler<StatisticsObserverNumberQuery, ApiListResponse<SimpleStatisticsModel>>,
+        IRequestHandler<StatisticsTopIrregularitiesQuery, ApiListResponse<SimpleStatisticsModel>>,
         IRequestHandler<StatisticsOptionsQuery, StatisticsOptionsModel>
     {
         private readonly VoteMonitorContext _context;
@@ -44,7 +44,7 @@ namespace VoteMonitor.Api.Statistics.Handlers
                 CacheKey = $"StatisticiOptiuni-{message.QuestionId}"
             };
 
-            queryBuilder.AndOngFilter(message.Organizator, message.IdONG);
+            queryBuilder.AndOngFilter(message.IsOrganizer, message.NgoId);
             queryBuilder.Append("GROUP BY O.Text, O.Id, OQ.Flagged");
 
             return await _cacheService.GetOrSaveDataInCacheAsync(queryBuilder.CacheKey,
@@ -57,12 +57,12 @@ namespace VoteMonitor.Api.Statistics.Handlers
                     return new StatisticsOptionsModel
                     {
                         QuestionId = message.QuestionId,
-                        Options = records.Select(s => new OptiuniStatisticsModel
+                        Options = records.Select(s => new OptionStatisticsModel
                         {
                             OptionId = s.Code,
                             Label = s.Label,
                             Value = s.Value.ToString(),
-                            Flagged = s.Flagged
+                            IsFlagged = s.Flagged
                         })
                         .ToList(),
                         Total = records.Sum(s => s.Value)
@@ -75,7 +75,7 @@ namespace VoteMonitor.Api.Statistics.Handlers
             );
         }
 
-        public async Task<ApiListResponse<SimpleStatisticsModel>> Handle(StatisticsObserversNumberQuery message, CancellationToken token)
+        public async Task<ApiListResponse<SimpleStatisticsModel>> Handle(StatisticsObserverNumberQuery message, CancellationToken token)
         {
             var queryBuilder = new StatisticsQueryBuilder
             {
@@ -87,12 +87,11 @@ namespace VoteMonitor.Api.Statistics.Handlers
                 CacheKey = "StatisticiObservatori"
             };
 
-            queryBuilder.AndOngFilter(message.Organizator, message.IdONG);
-            //queryBuilder.Append("GROUP BY J.Name ORDER BY Value DESC");            
+            queryBuilder.AndOngFilter(message.IsOrganizer, message.NgoId);
             queryBuilder.Append("group by CountyCode order by [Value] desc");
 
-            // get or save all records in cache
-            var records = await _cacheService.GetOrSaveDataInCacheAsync(queryBuilder.CacheKey,
+            var records = await _cacheService.GetOrSaveDataInCacheAsync(
+                queryBuilder.CacheKey,
                 async () => await _context.SimpleStatistics
                     .FromSqlRaw(queryBuilder.Query)
                     .ToListAsync(cancellationToken: token),
@@ -102,7 +101,6 @@ namespace VoteMonitor.Api.Statistics.Handlers
                 }
             );
 
-            // perform count and pagination on the records retrieved from the cache 
             var pagedList = records.Paginate(message.Page, message.PageSize);
 
             return new ApiListResponse<SimpleStatisticsModel>
@@ -110,18 +108,18 @@ namespace VoteMonitor.Api.Statistics.Handlers
                 Data = pagedList.Select(x => _mapper.Map<SimpleStatisticsModel>(x)).ToList(),
                 Page = message.Page,
                 PageSize = message.PageSize,
-                TotalItems = records.Count()
+                TotalItems = records.Count
             };
         }
 
-        public async Task<ApiListResponse<SimpleStatisticsModel>> Handle(StatisticiTopSesizariQuery message, CancellationToken token)
+        public async Task<ApiListResponse<SimpleStatisticsModel>> Handle(StatisticsTopIrregularitiesQuery message, CancellationToken token)
         {
-            return message.Grupare == StatisticsGroupingTypes.Judet
-                ? await GetSesizariJudete(message, token)
-                : await GetSesizariSectii(message, token);
+            return message.GroupType == StatisticsGroupingTypes.County
+                ? await GetCountyIrregularities(message, token)
+                : await GetPollingStationIrregularities(message, token);
         }
 
-        private async Task<ApiListResponse<SimpleStatisticsModel>> GetSesizariJudete(StatisticiTopSesizariQuery message, CancellationToken token)
+        private async Task<ApiListResponse<SimpleStatisticsModel>> GetCountyIrregularities(StatisticsTopIrregularitiesQuery message, CancellationToken token)
         {
             var queryBuilder = new StatisticsQueryBuilder
             {
@@ -137,11 +135,10 @@ namespace VoteMonitor.Api.Statistics.Handlers
                 CacheKey = "StatisticiJudete"
             };
 
-            queryBuilder.AndOngFilter(message.Organizator, message.IdONG);
-            queryBuilder.AndFormularFilter(message.Formular);
+            queryBuilder.AndOngFilter(message.IsOrganizer, message.NgoId);
+            queryBuilder.AndFormCodeFilter(message.FormCode);
             queryBuilder.Append("GROUP BY R.CountyCode ORDER BY Value DESC");
 
-            // get or save all records in cache
             var records = await _cacheService.GetOrSaveDataInCacheAsync(queryBuilder.CacheKey,
                 async () => await _context.SimpleStatistics
                     .FromSqlRaw(queryBuilder.Query)
@@ -152,7 +149,6 @@ namespace VoteMonitor.Api.Statistics.Handlers
                 }
             );
 
-            // perform count and pagination on the records retrieved from the cache 
             var pagedList = records.Paginate(message.Page, message.PageSize);
 
             return new ApiListResponse<SimpleStatisticsModel>
@@ -164,7 +160,7 @@ namespace VoteMonitor.Api.Statistics.Handlers
             };
         }
 
-        private async Task<ApiListResponse<SimpleStatisticsModel>> GetSesizariSectii(StatisticiTopSesizariQuery message, CancellationToken token)
+        private async Task<ApiListResponse<SimpleStatisticsModel>> GetPollingStationIrregularities(StatisticsTopIrregularitiesQuery message, CancellationToken token)
         {
             var queryBuilder = new StatisticsQueryBuilder
             {
@@ -180,11 +176,10 @@ namespace VoteMonitor.Api.Statistics.Handlers
                 CacheKey = "StatisticiSectii"
             };
 
-            queryBuilder.AndOngFilter(message.Organizator, message.IdONG);
-            queryBuilder.AndFormularFilter(message.Formular);
+            queryBuilder.AndOngFilter(message.IsOrganizer, message.NgoId);
+            queryBuilder.AndFormCodeFilter(message.FormCode);
             queryBuilder.Append("GROUP BY R.CountyCode, R.PollingStationNumber");
 
-            // get or save paginated response in cache
 
             return await _cacheService.GetOrSaveDataInCacheAsync($"{queryBuilder.CacheKey}-{message.Page}",
                 async () =>
