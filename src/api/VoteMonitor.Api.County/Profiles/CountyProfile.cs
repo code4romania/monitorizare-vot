@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using VoteMonitor.Api.County.Models;
 
-namespace VoteMonitor.Api.County.Mappers
+namespace VoteMonitor.Api.County.Profiles
 {
-    public class CountyMapping : Profile
+    public class CountyProfile : Profile
     {
-        public CountyMapping()
+        public CountyProfile()
         {
             _ = CreateMap<Entities.County, CountyModel>()
                 .ForMember(dest => dest.Id, x => x.MapFrom(src => src.Id))

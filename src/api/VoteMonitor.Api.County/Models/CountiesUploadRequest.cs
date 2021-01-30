@@ -4,7 +4,7 @@ using VoteMonitor.Api.Core.Attributes;
 
 namespace VoteMonitor.Api.County.Models
 {
-    public class CountiesUploadModel
+    public class CountiesUploadRequest
     {
         [Required(ErrorMessage = "Please select a file.")]
         [DataType(DataType.Upload)]

@@ -29,6 +29,9 @@ namespace VoteMonitor.Api.County.Handlers
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
 
+        private const int NameMaxLength = 100;
+        private const int CodeMaxLength = 20;
+
         public CountiesCommandHandler(VoteMonitorContext context, ILogger<CountiesCommandHandler> logger, IMapper mapper)
         {
             _context = context;
@@ -124,12 +127,11 @@ namespace VoteMonitor.Api.County.Handlers
                 x == null
                 || string.IsNullOrEmpty(x.Code)
                 || string.IsNullOrEmpty(x.Name)
-                || x.Name.Length > 100
-                || x.Code.Length > 20);
+                || x.Name.Length > NameMaxLength
+                || x.Code.Length > CodeMaxLength);
 
             if (invalidCounty == null)
             {
-
                 return Result.Success(counties);
             }
 

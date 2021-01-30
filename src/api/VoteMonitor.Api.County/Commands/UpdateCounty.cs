@@ -8,7 +8,7 @@ namespace VoteMonitor.Api.County.Commands
     {
         public CountyModel County { get; }
 
-        public UpdateCounty(int countyId, UpdateCountyModel county)
+        public UpdateCounty(int countyId, UpdateCountyRequest county)
         {
             County = new CountyModel
             {
