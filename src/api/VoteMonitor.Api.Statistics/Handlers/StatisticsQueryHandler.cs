@@ -172,7 +172,7 @@ namespace VoteMonitor.Api.Statistics.Handlers
                   INNER JOIN Questions I ON I.Id = RD.IdQuestion
                   INNER JOIN FormSections fs on i.IdSection = fs.Id
                   INNER JOIN Forms f on fs.IdForm = f.Id
-                  WHERE RD.IsFlagged = 1 AND N.IsActive =1 AND O.IsTestObserver = 0",
+                  WHERE RD.Flagged = 1 AND N.IsActive =1 AND O.IsTestObserver = 0",
                 CacheKey = "StatisticiSectii"
             };
 
