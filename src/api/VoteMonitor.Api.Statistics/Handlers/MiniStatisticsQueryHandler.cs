@@ -4,17 +4,18 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using VoteMonitor.Api.Statistics.Models;
+using VoteMonitor.Api.Statistics.Queries;
 using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Statistics.Handlers
 {
     public class MiniStatisticsQueryHandler :
-        IRequestHandler<AnswersRequest, SimpleStatisticsModel>,
-        IRequestHandler<StationsVisitedRequest, SimpleStatisticsModel>,
-        IRequestHandler<FlaggedAnswersRequest, SimpleStatisticsModel>,
-        IRequestHandler<CountiesVisitedRequest, SimpleStatisticsModel>,
-        IRequestHandler<NotesUploadedRequest, SimpleStatisticsModel>,
-        IRequestHandler<LoggedInObserversRequest, SimpleStatisticsModel>
+        IRequestHandler<AnswersQuery, SimpleStatisticsModel>,
+        IRequestHandler<StationsVisitedQuery, SimpleStatisticsModel>,
+        IRequestHandler<FlaggedAnswersQuery, SimpleStatisticsModel>,
+        IRequestHandler<CountiesVisitedQuery, SimpleStatisticsModel>,
+        IRequestHandler<NotesUploadedQuery, SimpleStatisticsModel>,
+        IRequestHandler<LoggedInObserversQuery, SimpleStatisticsModel>
     {
         private readonly VoteMonitorContext _context;
 
@@ -23,7 +24,7 @@ namespace VoteMonitor.Api.Statistics.Handlers
             _context = context;
         }
 
-        public async Task<SimpleStatisticsModel> Handle(AnswersRequest message, CancellationToken token)
+        public async Task<SimpleStatisticsModel> Handle(AnswersQuery message, CancellationToken token)
         {
             var number = await _context.Answers
                 .Include(a => a.Observer)
@@ -38,7 +39,7 @@ namespace VoteMonitor.Api.Statistics.Handlers
                 Value = number.ToString()
             };
         }
-        public async Task<SimpleStatisticsModel> Handle(StationsVisitedRequest message, CancellationToken token)
+        public async Task<SimpleStatisticsModel> Handle(StationsVisitedQuery message, CancellationToken token)
         {
             var number = await _context.Answers
                 .Include(a => a.Observer)
@@ -55,7 +56,7 @@ namespace VoteMonitor.Api.Statistics.Handlers
                 Value = number.ToString()
             };
         }
-        public async Task<SimpleStatisticsModel> Handle(CountiesVisitedRequest message, CancellationToken token)
+        public async Task<SimpleStatisticsModel> Handle(CountiesVisitedQuery message, CancellationToken token)
         {
             var number = await _context.Answers
                 .Include(a => a.Observer)
@@ -72,7 +73,7 @@ namespace VoteMonitor.Api.Statistics.Handlers
                 Value = number.ToString()
             };
         }
-        public async Task<SimpleStatisticsModel> Handle(NotesUploadedRequest message, CancellationToken token)
+        public async Task<SimpleStatisticsModel> Handle(NotesUploadedQuery message, CancellationToken token)
         {
             var number = await _context.Notes
                 .Include(n => n.Observer)
@@ -87,7 +88,7 @@ namespace VoteMonitor.Api.Statistics.Handlers
                 Value = number.ToString()
             };
         }
-        public async Task<SimpleStatisticsModel> Handle(LoggedInObserversRequest message, CancellationToken token)
+        public async Task<SimpleStatisticsModel> Handle(LoggedInObserversQuery message, CancellationToken token)
         {
             var number = await _context.PollingStationInfos
                 .Include(a => a.Observer)
@@ -104,7 +105,7 @@ namespace VoteMonitor.Api.Statistics.Handlers
                 Value = number.ToString()
             };
         }
-        public async Task<SimpleStatisticsModel> Handle(FlaggedAnswersRequest message, CancellationToken token)
+        public async Task<SimpleStatisticsModel> Handle(FlaggedAnswersQuery message, CancellationToken token)
         {
             var number = await _context.Answers
                 .Include(a => a.Observer)

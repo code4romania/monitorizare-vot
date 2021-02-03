@@ -1,13 +1,13 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace VoteMonitor.Api.Answer.Models
 {
-    public class AnswerDTO
+    public class AnswerDto
     {
         public int QuestionId { get; set; }
-        public int PollingSectionId { get; set; }
+        public int PollingStationId { get; set; }
         public string CountyCode { get; set; }
         public int PollingStationNumber { get; set; }
-        public List<SelectedOptionModel> Options { get; set; }
+        public List<SelectedOptionDto> Options { get; set; }
     }
 }

@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using VoteMonitor.Api.Core;
 using VoteMonitor.Api.Core.Options;
-using VoteMonitor.Api.Statistics.Handlers;
 using VoteMonitor.Api.Statistics.Models;
 using VoteMonitor.Api.Statistics.Queries;
 
@@ -29,7 +28,7 @@ namespace VoteMonitor.Api.Statistics.Controllers
         }
 
         private int NgoId => this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
-        private bool Organizer => this.GetOrganizatorOrDefault(_configuration.GetValue<bool>("DefaultOrganizator"));
+        private bool IsOrganizer => this.GetOrganizatorOrDefault(_configuration.GetValue<bool>("DefaultOrganizator"));
 
         /// <summary>
         /// Returns top counties by observer number
@@ -39,12 +38,12 @@ namespace VoteMonitor.Api.Statistics.Controllers
         [HttpGet]
         [Route("observerNumber")]
         [Authorize("NgoAdmin")]
-        public async Task<ApiListResponse<SimpleStatisticsModel>> NumarObservatori(PagingModel model)
+        public async Task<ApiListResponse<SimpleStatisticsModel>> ObserverNumber(PagingModel model)
         {
-            return await _mediator.Send(new StatisticsObserversNumberQuery
+            return await _mediator.Send(new StatisticsObserverNumberQuery
             {
-                IdONG = NgoId,
-                Organizator = Organizer,
+                NgoId = NgoId,
+                IsOrganizer = IsOrganizer,
                 PageSize = model.PageSize,
                 Page = model.Page,
                 CacheHours = _cacheOptions.Hours,
@@ -57,26 +56,26 @@ namespace VoteMonitor.Api.Statistics.Controllers
         /// Returns top counties or polling stations by number of irregularities
         /// </summary>
         /// <param name="model">  Pagination details (default Page=1, PageSize=20)
-        /// Grouping (0 - County | 1 - PollingStation)
-        /// FormCode (formeCode for which you want to retrieve statistics, use empty string "" for all forms)
+        /// GroupingType (0 - County | 1 - PollingStation)
+        /// FormCode (formCode for which you want to retrieve statistics, use empty string "" for all forms)
         /// </param>
         /// <returns></returns>
         [HttpGet]
         [Route("irregularities")]
         [Authorize("NgoAdmin")]
-        public async Task<ApiListResponse<SimpleStatisticsModel>> Irregularities(SimpleStatisticsFilter model)
+        public async Task<ApiListResponse<SimpleStatisticsModel>> Irregularities(FilterStatisticsModel model)
         {
-            if (model.GroupingType == StatisticsGroupingTypes.Sectie)
+            if (model.GroupingType == StatisticsGroupingTypes.PollingStation)
             {
                 model.PageSize = PagingDefaultsConstants.DEFAULT_PAGE_SIZE;
             }
 
-            return await _mediator.Send(new StatisticiTopSesizariQuery
+            return await _mediator.Send(new StatisticsTopIrregularitiesQuery
             {
-                IdONG = NgoId,
-                Organizator = Organizer,
-                Grupare = model.GroupingType,
-                Formular = model.FormCode,
+                NgoId = NgoId,
+                IsOrganizer = IsOrganizer,
+                GroupType = model.GroupingType,
+                FormCode = model.FormCode,
                 Page = model.Page,
                 PageSize = model.PageSize,
                 CacheHours = _cacheOptions.Hours,
@@ -95,12 +94,12 @@ namespace VoteMonitor.Api.Statistics.Controllers
         [Authorize("NgoAdmin")]
         public async Task<ApiListResponse<SimpleStatisticsModel>> CountiesIrregularities(PagingModel model)
         {
-            return await _mediator.Send(new StatisticiTopSesizariQuery
+            return await _mediator.Send(new StatisticsTopIrregularitiesQuery
             {
-                IdONG = NgoId,
-                Organizator = Organizer,
-                Grupare = StatisticsGroupingTypes.Judet,
-                Formular = null,
+                NgoId = NgoId,
+                IsOrganizer = IsOrganizer,
+                GroupType = StatisticsGroupingTypes.County,
+                FormCode = null,
                 Page = model.Page,
                 PageSize = model.PageSize,
                 CacheHours = _cacheOptions.Hours,
@@ -119,16 +118,12 @@ namespace VoteMonitor.Api.Statistics.Controllers
         [Authorize("NgoAdmin")]
         public async Task<ApiListResponse<SimpleStatisticsModel>> PollingStationIrregularities(PagingModel model)
         {
-            var idONG = this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
-            var organizator = this.GetOrganizatorOrDefault(_configuration.GetValue<bool>("DefaultOrganizator"));
-            model.PageSize = PagingDefaultsConstants.DEFAULT_PAGE_SIZE;
-
-            return await _mediator.Send(new StatisticiTopSesizariQuery
+            return await _mediator.Send(new StatisticsTopIrregularitiesQuery
             {
-                IdONG = NgoId,
-                Organizator = Organizer,
-                Grupare = StatisticsGroupingTypes.Sectie,
-                Formular = null,
+                NgoId = NgoId,
+                IsOrganizer = IsOrganizer,
+                GroupType = StatisticsGroupingTypes.PollingStation,
+                FormCode = null,
                 Page = model.Page,
                 PageSize = model.PageSize,
                 CacheHours = _cacheOptions.Hours,
@@ -147,12 +142,12 @@ namespace VoteMonitor.Api.Statistics.Controllers
         [Authorize("NgoAdmin")]
         public async Task<ApiListResponse<SimpleStatisticsModel>> CountiesOpeningIrregularities(PagingModel model)
         {
-            return await _mediator.Send(new StatisticiTopSesizariQuery
+            return await _mediator.Send(new StatisticsTopIrregularitiesQuery
             {
-                IdONG = NgoId,
-                Organizator = Organizer,
-                Grupare = StatisticsGroupingTypes.Judet,
-                Formular = "A",
+                NgoId = NgoId,
+                IsOrganizer = IsOrganizer,
+                GroupType = StatisticsGroupingTypes.County,
+                FormCode = "A",
                 Page = model.Page,
                 PageSize = model.PageSize,
                 CacheHours = _cacheOptions.Hours,
@@ -169,18 +164,14 @@ namespace VoteMonitor.Api.Statistics.Controllers
         [HttpGet]
         [Route("pollingStationOpeningIrregularities")]
         [Authorize("NgoAdmin")]
-        public async Task<ApiListResponse<SimpleStatisticsModel>> PollingStationOpeningIrregularities(PagingModel model)
+        public async Task<ApiListResponse<SimpleStatisticsModel>> PollingStationsOpeningIrregularities(PagingModel model)
         {
-            var idONG = this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
-            var organizator = this.GetOrganizatorOrDefault(_configuration.GetValue<bool>("DefaultOrganizator"));
-            model.PageSize = PagingDefaultsConstants.DEFAULT_PAGE_SIZE;
-
-            return await _mediator.Send(new StatisticiTopSesizariQuery
+            return await _mediator.Send(new StatisticsTopIrregularitiesQuery
             {
-                IdONG = NgoId,
-                Organizator = Organizer,
-                Grupare = StatisticsGroupingTypes.Sectie,
-                Formular = "A",
+                NgoId = NgoId,
+                IsOrganizer = IsOrganizer,
+                GroupType = StatisticsGroupingTypes.PollingStation,
+                FormCode = "A",
                 Page = model.Page,
                 PageSize = model.PageSize,
                 CacheHours = _cacheOptions.Hours,
@@ -199,12 +190,12 @@ namespace VoteMonitor.Api.Statistics.Controllers
         [Authorize("NgoAdmin")]
         public async Task<ApiListResponse<SimpleStatisticsModel>> CountiesByCountingIrregularities(PagingModel model)
         {
-            return await _mediator.Send(new StatisticiTopSesizariQuery
+            return await _mediator.Send(new StatisticsTopIrregularitiesQuery
             {
-                IdONG = NgoId,
-                Organizator = Organizer,
-                Grupare = StatisticsGroupingTypes.Judet,
-                Formular = "C",
+                NgoId = NgoId,
+                IsOrganizer = IsOrganizer,
+                GroupType = StatisticsGroupingTypes.County,
+                FormCode = "C",
                 Page = model.Page,
                 PageSize = model.PageSize,
                 CacheHours = _cacheOptions.Hours,
@@ -223,16 +214,12 @@ namespace VoteMonitor.Api.Statistics.Controllers
         [Authorize("NgoAdmin")]
         public async Task<ApiListResponse<SimpleStatisticsModel>> PollingStationsByCountingIrregularities(PagingModel model)
         {
-            var idONG = this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
-            var organizator = this.GetOrganizatorOrDefault(_configuration.GetValue<bool>("DefaultOrganizator"));
-            model.PageSize = PagingDefaultsConstants.DEFAULT_PAGE_SIZE;
-
-            return await _mediator.Send(new StatisticiTopSesizariQuery
+            return await _mediator.Send(new StatisticsTopIrregularitiesQuery
             {
-                IdONG = NgoId,
-                Organizator = Organizer,
-                Grupare = StatisticsGroupingTypes.Sectie,
-                Formular = "C",
+                NgoId = NgoId,
+                IsOrganizer = IsOrganizer,
+                GroupType = StatisticsGroupingTypes.PollingStation,
+                FormCode = "C",
                 Page = model.Page,
                 PageSize = model.PageSize,
                 CacheHours = _cacheOptions.Hours,
@@ -248,15 +235,15 @@ namespace VoteMonitor.Api.Statistics.Controllers
         /// <param name="model">Id - the questionId to retrieve statistics for</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("RaspunsuriNumarareOptiuni")]
+        [Route("countAnswersByQuestion")]
         [Authorize("NgoAdmin")]
         public async Task<StatisticsOptionsModel> CountAnswersForQuestion(OptionsFilterModel model)
         {
             return await _mediator.Send(new StatisticsOptionsQuery
             {
                 QuestionId = model.QuestionId,
-                IdONG = NgoId,
-                Organizator = Organizer,
+                NgoId = NgoId,
+                IsOrganizer = IsOrganizer,
                 CacheHours = _cacheOptions.Hours,
                 CacheMinutes = _cacheOptions.Minutes,
                 CacheSeconds = _cacheOptions.Seconds
@@ -268,42 +255,42 @@ namespace VoteMonitor.Api.Statistics.Controllers
         [Route("mini/answers")]
         public async Task<SimpleStatisticsModel> Answers()
         {
-            return await _mediator.Send(new AnswersRequest());
+            return await _mediator.Send(new AnswersQuery());
         }
         [HttpGet]
         [AllowAnonymous]
         [Route("mini/stations")]
         public async Task<SimpleStatisticsModel> StationsVisited()
         {
-            return await _mediator.Send(new StationsVisitedRequest());
+            return await _mediator.Send(new StationsVisitedQuery());
         }
         [HttpGet]
         [AllowAnonymous]
         [Route("mini/counties")]
         public async Task<SimpleStatisticsModel> Counties()
         {
-            return await _mediator.Send(new CountiesVisitedRequest());
+            return await _mediator.Send(new CountiesVisitedQuery());
         }
         [HttpGet]
         [AllowAnonymous]
         [Route("mini/notes")]
         public async Task<SimpleStatisticsModel> Notes()
         {
-            return await _mediator.Send(new NotesUploadedRequest());
+            return await _mediator.Send(new NotesUploadedQuery());
         }
         [HttpGet]
         [AllowAnonymous]
         [Route("mini/loggedinobservers")]
         public async Task<SimpleStatisticsModel> LoggedInObservers()
         {
-            return await _mediator.Send(new LoggedInObserversRequest());
+            return await _mediator.Send(new LoggedInObserversQuery());
         }
         [HttpGet]
         [AllowAnonymous]
         [Route("mini/flaggedanswers")]
         public async Task<SimpleStatisticsModel> FlaggedAnswers()
         {
-            return await _mediator.Send(new FlaggedAnswersRequest());
+            return await _mediator.Send(new FlaggedAnswersQuery());
         }
         [HttpGet]
         [AllowAnonymous]
@@ -312,12 +299,12 @@ namespace VoteMonitor.Api.Statistics.Controllers
         {
             var list = new List<SimpleStatisticsModel>
             {
-                await _mediator.Send(new AnswersRequest()),
-                await _mediator.Send(new StationsVisitedRequest()),
-                await _mediator.Send(new CountiesVisitedRequest()),
-                await _mediator.Send(new NotesUploadedRequest()),
-                await _mediator.Send(new LoggedInObserversRequest()),
-                await _mediator.Send(new FlaggedAnswersRequest())
+                await _mediator.Send(new AnswersQuery()),
+                await _mediator.Send(new StationsVisitedQuery()),
+                await _mediator.Send(new CountiesVisitedQuery()),
+                await _mediator.Send(new NotesUploadedQuery()),
+                await _mediator.Send(new LoggedInObserversQuery()),
+                await _mediator.Send(new FlaggedAnswersQuery())
             };
 
             return list;

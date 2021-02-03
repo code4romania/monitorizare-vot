@@ -16,5 +16,5 @@ namespace VoteMonitor.Api.DataExport.Queries
 
         public bool ApplyFilters => NgoId.HasValue || ObserverId.HasValue || PollingStationNumber.HasValue ||
                                     From.HasValue || To.HasValue || !string.IsNullOrEmpty(County);
-    }
+    } 
 }

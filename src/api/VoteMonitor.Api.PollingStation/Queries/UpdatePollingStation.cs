@@ -4,7 +4,7 @@ namespace VoteMonitor.Api.PollingStation.Queries
 {
     public class UpdatePollingStation : IRequest<bool?>
     {
-        public int Id { get; set; }
+        public int PollingStationId { get; set; }
         public string Address { get; set; }
         public string Coordinates { get; set; }
         public string AdministrativeTerritoryCode { get; set; }

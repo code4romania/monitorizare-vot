@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
@@ -13,13 +12,11 @@ namespace VoteMonitor.Api.PollingStation.Handlers
     public class UpdatePollingStationInfoHandler : IRequestHandler<UpdatePollingStationInfo, Unit>
     {
         private readonly VoteMonitorContext _context;
-        private readonly IMapper _mapper;
         private readonly ILogger _logger;
 
-        public UpdatePollingStationInfoHandler(VoteMonitorContext context, IMapper mapper, ILogger<UpdatePollingStationInfoHandler> logger)
+        public UpdatePollingStationInfoHandler(VoteMonitorContext context, ILogger<UpdatePollingStationInfoHandler> logger)
         {
             _context = context;
-            _mapper = mapper;
             _logger = logger;
         }
 
@@ -28,8 +25,8 @@ namespace VoteMonitor.Api.PollingStation.Handlers
             try
             {
                 var pollingStationInfo = _context.PollingStationInfos.FirstOrDefault(
-                    p => p.IdObserver == request.IdObserver &&
-                    p.IdPollingStation == request.IdPollingStation);
+                    p => p.IdObserver == request.ObserverId &&
+                    p.IdPollingStation == request.PollingStationId);
 
                 if(pollingStationInfo == null)
                 {

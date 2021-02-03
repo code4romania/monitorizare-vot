@@ -51,7 +51,7 @@ namespace VoteMonitor.Api.Location.Services
                 using (var excelPackage = new ExcelPackage(memoryStream))
                 {
                     ExcelWorksheet workSheet = excelPackage.Workbook.Worksheets[0];
-                    for (int index = 2; index < workSheet.Dimension.Rows; ++index)
+                    for (int index = 2; index <= workSheet.Dimension.Rows; ++index)
                     {
                         if (workSheet.Cells[index, header[nameof(PollingStationDTO.NrSV)].Index].Text.Length == 0)
                         {

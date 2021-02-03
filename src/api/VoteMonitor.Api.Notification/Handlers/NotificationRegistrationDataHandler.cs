@@ -54,11 +54,14 @@ namespace VoteMonitor.Api.Notification.Handlers
 
         public async Task<int> Handle(NewNotificationCommand request, CancellationToken cancellationToken)
         {
-            var targetFcmTokens = request.Recipients
-                    .Select(observer => _context.NotificationRegistrationData.AsQueryable().Where(regData => regData.ObserverId == int.Parse(observer))
-                    .First(regData => regData.ChannelName == request.Channel))
-                    .Select(regDataResult => regDataResult.Token)
-                    .ToList();
+            var observerIds = request.Recipients.Select(observer => int.Parse(observer)).ToList();
+            
+            var targetFcmTokens =_context.NotificationRegistrationData
+                        .Where(regData => observerIds.Contains(regData.ObserverId))
+                        .Where(regData => regData.ChannelName.ToLower() == request.Channel.ToLower())
+                        .Select(regDataResult => regDataResult.Token)
+                        .Where(token => !string.IsNullOrWhiteSpace(token))
+                        .ToList();
 
             var response = 0;
 

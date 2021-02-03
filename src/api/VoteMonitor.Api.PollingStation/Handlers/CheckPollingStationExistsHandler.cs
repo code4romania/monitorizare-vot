@@ -24,7 +24,7 @@ namespace VoteMonitor.Api.PollingStation.Handlers
         {
             try
             {
-                return await _context.PollingStations.AnyAsync(p => p.Id == request.Id, cancellationToken);
+                return await _context.PollingStations.AnyAsync(p => p.Id == request.PollingStationId, cancellationToken);
             }
             catch (Exception ex)
             {

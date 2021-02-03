@@ -1,10 +1,9 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Authorization;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using VoteMonitor.Api.Answer.Commands;
+using Microsoft.AspNetCore.Authorization;
 using VoteMonitor.Api.Answer.Models;
 using VoteMonitor.Api.Answer.Queries;
 using VoteMonitor.Api.Core;
@@ -25,24 +24,23 @@ namespace VoteMonitor.Api.Answer.Controllers
 
         /// <summary>
         /// Returns a list of polling stations where observers from the given NGO have submitted answers
-        /// to the questions marked as Flagged=Urgent, ordered by ModifiedDate descending
+        /// to the questions marked as IsFlagged=IsUrgent, ordered by ModifiedDate descending
         /// </summary>
-        /// <param name="model"> Pagination details(default Page=1, PageSize=20)
-        /// Urgent (Flagged)
-        /// </param>
+        /// <param name="model">SectionAnswersRequest</param>
+        /// <returns></returns>
         [HttpGet]
-        public async Task<ApiListResponse<AnswerQueryDTO>> Get(SectionAnswersRequest model)
+        public async Task<ApiListResponse<AnswerQueryDto>> Get(SectionAnswersRequest model)
         {
-            var organizator = this.GetOrganizatorOrDefault(_configuration.GetValue<bool>("DefaultOrganizator"));
-            var idOng = this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
+            var organizer = this.GetOrganizatorOrDefault(_configuration.GetValue<bool>("DefaultOrganizator"));
+            var ngoId = this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
 
             return await _mediator.Send(new AnswersQuery
             {
-                IdONG = idOng,
-                Organizer = organizator,
+                NgoId = ngoId,
+                Organizer = organizer,
                 Page = model.Page,
                 PageSize = model.PageSize,
-                Urgent = model.Urgent,
+                Urgent = model.IsUrgent,
                 County = model.County,
                 PollingStationNumber = model.PollingStationNumber,
                 ObserverId = model.ObserverId,
@@ -54,23 +52,23 @@ namespace VoteMonitor.Api.Answer.Controllers
         /// Returns answers given by the specified observer at the specified polling station
         /// </summary>
         [HttpGet("filledIn")]
-        public async Task<List<QuestionDTO<FilledInAnswerDTO>>> Get(int idPollingStation, int idObserver)
+        public async Task<List<QuestionDto<FilledInAnswerDto>>> Get(int pollingStationId, int observerId)
         {
             return await _mediator.Send(new FilledInAnswersQuery
             {
-                ObserverId = idObserver,
-                PollingStationId = idPollingStation
+                ObserverId = observerId,
+                PollingStationId = pollingStationId
             });
         }
 
         /// <summary>
         /// Returns the polling station information filled in by the given observer at the given polling station
         /// </summary>
-        /// <param name="model"> "IdSectieDeVotare" - Id-ul sectiei unde s-au completat raspunsurile
-        /// "IdObservator" - Id-ul observatorului care a dat raspunsurile
+        /// <param name="model"> "PollingStationId" - Id of the given polling station
+        /// "ObserverId" - Id of the observer
         /// </param>
         [HttpGet("pollingStationInfo")]
-        public async Task<PollingStationInfosDTO> GetRaspunsuriFormular(ObserverAnswersRequest model)
+        public async Task<PollingStationInfoDto> GetObserverAnswers(ObserverAnswersRequest model)
         {
             return await _mediator.Send(new FormAnswersQuery
             {
@@ -78,8 +76,7 @@ namespace VoteMonitor.Api.Answer.Controllers
                 PollingStationId = model.PollingStationNumber
             });
         }
-
-
+        
         /// <summary>
         /// Saves the answers to one or more questions, at a given polling station
         /// An answer can have multiple options (OptionId) and potentially a free text (Value).
@@ -89,7 +86,7 @@ namespace VoteMonitor.Api.Answer.Controllers
         /// <returns></returns>
         [HttpPost]
         [Authorize("Observer")]
-        public async Task<IActionResult> PostAnswer([FromBody] AnswerModelWrapper answerModel)
+        public async Task<IActionResult> PostAnswer([FromBody] BulkAnswersRequest answerModel)
         {
             if (!ModelState.IsValid)
             {
@@ -97,7 +94,7 @@ namespace VoteMonitor.Api.Answer.Controllers
             }
 
             // TODO[DH] use a pipeline instead of separate Send commands
-            var command = await _mediator.Send(new BulkAnswers(answerModel.Answers));
+            var command = await _mediator.Send(new Commands.BulkAnswers(answerModel.Answers));
 
             command.ObserverId = this.GetIdObserver();
 

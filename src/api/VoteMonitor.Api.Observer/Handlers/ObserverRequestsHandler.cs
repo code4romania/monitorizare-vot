@@ -54,7 +54,7 @@ namespace VoteMonitor.Api.Observer.Handlers
                     var observer = new Entities.Observer
                     {
                         Id = startId + counter,
-                        IdNgo = message.IdOng,
+                        IdNgo = message.NgoId,
                         Phone = data[0],
                         Name = data[2],
                         Pin = hashed
@@ -74,7 +74,7 @@ namespace VoteMonitor.Api.Observer.Handlers
             var observer = new Entities.Observer
             {
                 Id = id,
-                IdNgo = message.IdNgo,
+                IdNgo = message.NgoId,
                 Phone = message.Phone,
                 Name = message.Name,
                 Pin = _hashService.GetHash(message.Pin)
@@ -87,7 +87,7 @@ namespace VoteMonitor.Api.Observer.Handlers
         public async Task<int> Handle(EditObserverCommand request, CancellationToken cancellationToken)
         {
 
-            var observer = await _context.Observers.FirstOrDefaultAsync(o => o.Id == request.IdObserver);
+            var observer = await _context.Observers.FirstOrDefaultAsync(o => o.Id == request.ObserverId);
             if (observer == null)
             {
                 return -1;
@@ -113,7 +113,7 @@ namespace VoteMonitor.Api.Observer.Handlers
 
         public async Task<bool> Handle(DeleteObserverCommand request, CancellationToken cancellationToken)
         {
-            var observer = await _context.Observers.FirstOrDefaultAsync(o => o.Id == request.IdObserver);
+            var observer = await _context.Observers.FirstOrDefaultAsync(o => o.Id == request.ObserverId);
             if (observer == null)
             {
                 return false;

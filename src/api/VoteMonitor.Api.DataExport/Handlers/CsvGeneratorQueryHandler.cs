@@ -7,7 +7,8 @@ using VoteMonitor.Api.DataExport.Queries;
 
 namespace VoteMonitor.Api.DataExport.Handlers
 {
-    public class CsvGeneratorQueryHandler : IRequestHandler<GenerateCSVFile, byte[]>
+    public class CsvGeneratorQueryHandler : IRequestHandler<GenerateCSVFile, byte[]>,
+         IRequestHandler<GenerateNotesCSVFile, byte[]>
     {
         private readonly ICsvGenerator _csvGenerator;
         private readonly ILogger _logger;
@@ -21,6 +22,13 @@ namespace VoteMonitor.Api.DataExport.Handlers
         public Task<byte[]> Handle(GenerateCSVFile request, CancellationToken cancellationToken)
         {
             var fileContents = _csvGenerator.Export(request.Data, "myData");
+
+            return Task.FromResult(fileContents);
+        }
+
+        public Task<byte[]> Handle(GenerateNotesCSVFile request, CancellationToken cancellationToken)
+        {
+            var fileContents = _csvGenerator.Export(request.Data, "notes");
 
             return Task.FromResult(fileContents);
         }

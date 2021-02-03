@@ -4,12 +4,12 @@ namespace VoteMonitor.Api.Observer.Commands
 {
     public class ObserverCountCommand : IRequest<int>
     {
-        public int IdNgo { get; }
+        public int NgoId { get; }
         public bool IsCallerOrganizer { get; }
 
-        public ObserverCountCommand(int idNgo, bool isCallerOrganizer)
+        public ObserverCountCommand(int ngoId, bool isCallerOrganizer)
         {
-            IdNgo = idNgo;
+            NgoId = ngoId;
             IsCallerOrganizer = isCallerOrganizer;
         }
     }

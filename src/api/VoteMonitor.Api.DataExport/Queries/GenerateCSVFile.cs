@@ -13,4 +13,5 @@ namespace VoteMonitor.Api.DataExport.Queries
             Data = data;
         }
     }
+
 }

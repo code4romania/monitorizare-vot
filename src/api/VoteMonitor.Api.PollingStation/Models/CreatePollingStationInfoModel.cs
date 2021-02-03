@@ -3,10 +3,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace VoteMonitor.Api.PollingStation.Models
 {
-    public class CreatePollingStationInfo
+    public class CreatePollingStationInfoModel
     {
         [Required(AllowEmptyStrings = false)]
-        public int IdPollingStation { get; set; }
+        public int PollingStationId { get; set; }
 
         [Required(AllowEmptyStrings = false)]
         public string CountyCode { get; set; }

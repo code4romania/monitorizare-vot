@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -40,6 +41,7 @@ namespace VoteMonitor.Api.Location.Controllers
         /// <param name="pollingStationInfo">Info about the polling station and its' allocated observer</param>
         /// <returns></returns>
         [HttpPost]
+        [Authorize]
         public async Task<IAsyncResult> Register([FromBody] AddPollingStationInfo pollingStationInfo)
         {
             if (!ModelState.IsValid)
@@ -64,6 +66,7 @@ namespace VoteMonitor.Api.Location.Controllers
         /// <param name="pollingStationInfo">Polling station id, county code, leave time</param>
         /// <returns></returns>
         [HttpPut]
+        [Authorize]
         public async Task<IAsyncResult> Update([FromBody] UpdatePollingStationInfo pollingStationInfo)
         {
             if (!ModelState.IsValid)
@@ -100,6 +103,7 @@ namespace VoteMonitor.Api.Location.Controllers
         }
 
         [HttpPost("import")]
+        [Authorize("Organizer")]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> ImportFormatFile(IFormFile file)
         {

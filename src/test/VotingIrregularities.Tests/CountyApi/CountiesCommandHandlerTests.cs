@@ -13,8 +13,8 @@ using Moq;
 using Shouldly;
 using VoteMonitor.Api.County.Commands;
 using VoteMonitor.Api.County.Handlers;
-using VoteMonitor.Api.County.Mappers;
 using VoteMonitor.Api.County.Models;
+using VoteMonitor.Api.County.Profiles;
 using VoteMonitor.Api.County.Queries;
 using VoteMonitor.Entities;
 using Xunit;
@@ -23,11 +23,11 @@ namespace VotingIrregularities.Tests.CountyApi
 {
     public class CountiesCommandHandlerTests
     {
-        Mock<ILogger<CountiesCommandHandler>> _fakeLogger = new Mock<ILogger<CountiesCommandHandler>>();
+        readonly Mock<ILogger<CountiesCommandHandler>> _fakeLogger = new Mock<ILogger<CountiesCommandHandler>>();
         private readonly DbContextOptions<VoteMonitorContext> _dbContextOptions;
         private readonly IMapper _mapper;
         private readonly MapperConfiguration _configuration = new MapperConfiguration(cfg =>
-            cfg.AddProfile(new CountyMapping()));
+            cfg.AddProfile(new CountyProfile()));
 
         public CountiesCommandHandlerTests()
         {
@@ -477,7 +477,7 @@ namespace VotingIrregularities.Tests.CountyApi
             {
                 var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object, _mapper);
                 var county =
-                    await countiesCommandHandler.Handle(new UpdateCounty(588, new UpdateCountyModel()), new CancellationToken(false));
+                    await countiesCommandHandler.Handle(new UpdateCounty(588, new UpdateCountyRequest()), new CancellationToken(false));
 
                 county.IsFailure.ShouldBeTrue();
                 county.Error.ShouldBe("Could not find county with id = 588");
@@ -498,7 +498,7 @@ namespace VotingIrregularities.Tests.CountyApi
             using (var context = new VoteMonitorContext(_dbContextOptions))
             {
                 var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object, _mapper);
-                var updateCountyModel = new UpdateCountyModel(){
+                var updateCountyModel = new UpdateCountyRequest(){
                     Name = "Super Iasi",
                     Code = "IS",
                     Order = 33,
