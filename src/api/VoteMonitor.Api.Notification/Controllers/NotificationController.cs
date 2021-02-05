@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using VoteMonitor.Api.Core;
 using VoteMonitor.Api.Core.Commands;
 using VoteMonitor.Api.Notification.Commands;
@@ -33,7 +34,8 @@ namespace VoteMonitor.Api.Notification.Controllers
         [HttpPost]
         [Route("register")]
         [Authorize("Observer")]
-        public async Task<dynamic> RegisterTokenAsync(NotificationRegistrationDataModel tokenRegistrationModel)
+        [ProducesResponseType(StatusCodes.Status202Accepted)]
+        public async Task<IActionResult> RegisterTokenAsync(NotificationRegistrationDataModel tokenRegistrationModel)
         {
             if (!tokenRegistrationModel.ObserverId.HasValue)
             {
@@ -44,7 +46,7 @@ namespace VoteMonitor.Api.Notification.Controllers
 
             _logger.LogInformation($"Observer {tokenRegistrationModel.ObserverId} registered for notifications");
 
-            return Task.FromResult(new { });
+            return Accepted();
         }
 
         [HttpPost]

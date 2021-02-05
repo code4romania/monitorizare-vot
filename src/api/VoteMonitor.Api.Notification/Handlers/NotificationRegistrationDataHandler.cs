@@ -1,9 +1,11 @@
-﻿using AutoMapper;
+using System;
+using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using VoteMonitor.Api.Core.Commands;
 using VoteMonitor.Api.Core.Services;
 using VoteMonitor.Api.Notification.Commands;
@@ -19,37 +21,44 @@ namespace VoteMonitor.Api.Notification.Handlers
         private readonly VoteMonitorContext _context;
         private readonly IFirebaseService _firebaseService;
         private readonly IMapper _mapper;
+        private readonly ILogger<NotificationRegistrationDataHandler> _logger;
 
-        public NotificationRegistrationDataHandler(VoteMonitorContext context, IFirebaseService firebaseService, IMapper mapper)
+        public NotificationRegistrationDataHandler(VoteMonitorContext context, IFirebaseService firebaseService, IMapper mapper, ILogger<NotificationRegistrationDataHandler> logger)
         {
             _context = context;
             _firebaseService = firebaseService;
             _mapper = mapper;
+            _logger = logger;
         }
 
-        public Task<int> Handle(NotificationRegistrationDataCommand request, CancellationToken cancellationToken)
+        public async Task<int> Handle(NotificationRegistrationDataCommand request, CancellationToken cancellationToken)
         {
-            var existingRegistration =
-                _context.NotificationRegistrationData
-                .FirstOrDefault(data => data.ObserverId == request.ObserverId && data.ChannelName == request.ChannelName);
-
-            if (existingRegistration != null)
+            try
             {
-                existingRegistration.Token = request.Token;
-            }
-            else
-            {
-                var notificationReg = new NotificationRegistrationData
+                var existingRegistration =
+                    _context.NotificationRegistrationData
+                        .FirstOrDefault(data =>
+                            data.ObserverId == request.ObserverId && data.ChannelName == request.ChannelName);
+                if (existingRegistration != null)
                 {
-                    ObserverId = request.ObserverId,
-                    ChannelName = request.ChannelName,
-                    Token = request.Token
-                };
+                    existingRegistration.Token = request.Token;
+                }
+                else
+                {
+                    var notificationRegistration = new NotificationRegistrationData
+                    {
+                        ObserverId = request.ObserverId, ChannelName = request.ChannelName, Token = request.Token
+                    };
+                    await _context.NotificationRegistrationData.AddAsync(notificationRegistration, cancellationToken);
+                }
 
-                _context.NotificationRegistrationData.Add(notificationReg);
+                return await _context.SaveChangesAsync(cancellationToken);
             }
-
-            return _context.SaveChangesAsync(cancellationToken);
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error saving notification registration data for Observer: {request.ObserverId}");
+                throw;
+            }
         }
 
         public async Task<int> Handle(NewNotificationCommand request, CancellationToken cancellationToken)

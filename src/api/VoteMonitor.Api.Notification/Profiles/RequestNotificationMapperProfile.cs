@@ -1,11 +1,12 @@
-﻿using AutoMapper;
 using System;
 using System.Linq;
+using AutoMapper;
 using VoteMonitor.Api.Core.Commands;
 using VoteMonitor.Api.Notification.Commands;
+using VoteMonitor.Api.Notification.Models;
 using VoteMonitor.Entities;
 
-namespace VoteMonitor.Api.Notification.Models
+namespace VoteMonitor.Api.Notification.Profiles
 {
     public class RequestNotificationMapperProfile : Profile
     {
