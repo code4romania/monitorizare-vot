@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Filters;
 using VoteMonitor.Api.Core;
 using VoteMonitor.Api.Core.Commands;
 using VoteMonitor.Api.Notification.Commands;
@@ -66,13 +67,15 @@ namespace VoteMonitor.Api.Notification.Controllers
         [HttpPost]
         [Authorize("Organizer")]
         [Route("send/all")]
-        public async Task<dynamic> SendToAll([FromBody]NotificationForAllNewModel model)
+        [ProducesResponseType(StatusCodes.Status202Accepted)]
+        public async Task<IActionResult> SendToAll([FromBody]SendNotificationToAllModel model)
         {
-            var command = new SendNotificationToAll(this.GetNgoAdminId(), model.Channel, model.From, model.Title, model.Message);
+            var command = _mapper.Map<SendNotificationToAllCommand>(model);
+            command.SenderAdminId = this.GetNgoAdminId();
 
             var result = await _mediator.Send(command);
 
-            return Task.FromResult(result);
+            return Accepted(result);
         }
 
         [HttpGet]

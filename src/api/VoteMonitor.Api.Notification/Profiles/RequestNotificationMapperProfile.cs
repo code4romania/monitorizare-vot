@@ -20,6 +20,8 @@ namespace VoteMonitor.Api.Notification.Profiles
                 .ForMember(dest => dest.InsertedAt, c => c.MapFrom(src => DateTime.Now))
                 .ForMember(dest => dest.SenderAdminId, c => c.MapFrom(src => src.SenderAdminId));
 
+            CreateMap<SendNotificationToAllCommand, Entities.Notification>()
+                .ForMember(dest => dest.Body, c => c.MapFrom(src => src.Message));
 
             CreateMap<NotificationRegistrationDataModel, NotificationRegistrationDataCommand>()
                 .ForMember(dest => dest.ObserverId, c => c.MapFrom(src => src.ObserverId))
@@ -27,6 +29,7 @@ namespace VoteMonitor.Api.Notification.Profiles
                 .ForMember(dest => dest.Token, c => c.MapFrom(src => src.Token));
 
             CreateMap<SendNotificationModel, SendNotificationCommand>();
+            CreateMap<SendNotificationToAllModel, SendNotificationToAllCommand>();
         }
     }
 }

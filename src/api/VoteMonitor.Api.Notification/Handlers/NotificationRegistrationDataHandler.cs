@@ -16,7 +16,7 @@ namespace VoteMonitor.Api.Notification.Handlers
     public class NotificationRegistrationDataHandler :
         IRequestHandler<NotificationRegistrationDataCommand, int>,
         IRequestHandler<SendNotificationCommand, int>,
-        IRequestHandler<SendNotificationToAll, int>
+        IRequestHandler<SendNotificationToAllCommand, int>
     {
         private readonly VoteMonitorContext _context;
         private readonly IFirebaseService _firebaseService;
@@ -47,7 +47,9 @@ namespace VoteMonitor.Api.Notification.Handlers
                 {
                     var notificationRegistration = new NotificationRegistrationData
                     {
-                        ObserverId = request.ObserverId, ChannelName = request.ChannelName, Token = request.Token
+                        ObserverId = request.ObserverId,
+                        ChannelName = request.ChannelName,
+                        Token = request.Token
                     };
                     await _context.NotificationRegistrationData.AddAsync(notificationRegistration, cancellationToken);
                 }
@@ -93,7 +95,7 @@ namespace VoteMonitor.Api.Notification.Handlers
             }
         }
 
-        public async Task<int> Handle(SendNotificationToAll request, CancellationToken cancellationToken)
+        public async Task<int> Handle(SendNotificationToAllCommand request, CancellationToken cancellationToken)
         {
             var targetFcmTokens = _context.NotificationRegistrationData
                 .AsNoTracking()
@@ -114,16 +116,10 @@ namespace VoteMonitor.Api.Notification.Handlers
                 .Select(regDataResult => regDataResult.ObserverId)
                 .ToList();
 
-            var notification = _mapper.Map<Entities.Notification>(new SendNotificationCommand
-            {
-                Channel = request.Channel,
-                Title = request.Title,
-                Message = request.Message,
-                From = request.From,
-                Recipients = observerIds,
-                SenderAdminId = request.SenderAdminId
-            });
-
+            var notification = _mapper.Map<Entities.Notification>(request);
+            notification.NotificationRecipients = observerIds.Select(id => new NotificationRecipient { ObserverId = id })
+                .ToList();
+            
             await _context.Notifications.AddAsync(notification, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
             return response;
