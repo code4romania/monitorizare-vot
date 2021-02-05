@@ -12,6 +12,8 @@ namespace VoteMonitor.Api.Notification.Profiles
     {
         public RequestNotificationMapperProfile()
         {
+            CreateMap<NotificationRegistrationDataModel, NotificationRegistrationDataCommand>();
+
             CreateMap<SendNotificationCommand, Entities.Notification>()
                 .ForMember(dest => dest.Body, c => c.MapFrom(src => src.Message))
                 .ForMember(dest => dest.NotificationRecipients,
@@ -23,10 +25,6 @@ namespace VoteMonitor.Api.Notification.Profiles
             CreateMap<SendNotificationToAllCommand, Entities.Notification>()
                 .ForMember(dest => dest.Body, c => c.MapFrom(src => src.Message));
 
-            CreateMap<NotificationRegistrationDataModel, NotificationRegistrationDataCommand>()
-                .ForMember(dest => dest.ObserverId, c => c.MapFrom(src => src.ObserverId))
-                .ForMember(dest => dest.ChannelName, c => c.MapFrom(src => src.ChannelName))
-                .ForMember(dest => dest.Token, c => c.MapFrom(src => src.Token));
 
             CreateMap<SendNotificationModel, SendNotificationCommand>();
             CreateMap<SendNotificationToAllModel, SendNotificationToAllCommand>();

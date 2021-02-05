@@ -54,7 +54,7 @@ namespace VoteMonitor.Api.Notification.Controllers
         [Authorize("Organizer")]
         [Route("send")]
         [ProducesResponseType(StatusCodes.Status202Accepted)]
-        public async Task<IActionResult> Send([FromBody]SendNotificationModel sendNotificationModel)
+        public async Task<IActionResult> Send([FromBody] SendNotificationModel sendNotificationModel)
         {
             var command = _mapper.Map<SendNotificationCommand>(sendNotificationModel);
             command.SenderAdminId = this.GetNgoAdminId();
@@ -68,7 +68,7 @@ namespace VoteMonitor.Api.Notification.Controllers
         [Authorize("Organizer")]
         [Route("send/all")]
         [ProducesResponseType(StatusCodes.Status202Accepted)]
-        public async Task<IActionResult> SendToAll([FromBody]SendNotificationToAllModel model)
+        public async Task<IActionResult> SendToAll([FromBody] SendNotificationToAllModel model)
         {
             var command = _mapper.Map<SendNotificationToAllCommand>(model);
             command.SenderAdminId = this.GetNgoAdminId();
@@ -81,19 +81,22 @@ namespace VoteMonitor.Api.Notification.Controllers
         [HttpGet]
         [Authorize("NgoAdmin")]
         [Route("get/all")]
-        public async Task<IActionResult> GetAll(PagingModel query)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAll([FromQuery]PagingModel model)
         {
-            var idNgo = this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
-            var organizer = this.GetOrganizatorOrDefault(false);
-            if (!organizer && idNgo == _configuration.GetValue<int>("DefaultIdOng"))
+            var ngoId = this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
+            var isOrganizer = this.GetOrganizatorOrDefault(false);
+            if (!isOrganizer && ngoId == _configuration.GetValue<int>("DefaultIdOng"))
                 return BadRequest();
 
-            var command = _mapper.Map<NotificationListCommand>(new NotificationListQuery {
-                IdNgo = idNgo != _configuration.GetValue<int>("DefaultIdOng") ? idNgo : (int?)null,
-                Organizer = organizer,
-                Page = query.Page,
-                PageSize = query.PageSize
-            });
+            var query = new NotificationListQuery
+            {
+                NgoId = ngoId != _configuration.GetValue<int>("DefaultIdOng") ? ngoId : (int?)null,
+                IsOrganizer = isOrganizer,
+                Page = model.Page,
+                PageSize = model.PageSize
+            };
+            var command = _mapper.Map<NotificationListCommand>(query);
 
             var result = await _mediator.Send(command);
             return Ok(result);
