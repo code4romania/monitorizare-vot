@@ -52,13 +52,15 @@ namespace VoteMonitor.Api.Notification.Controllers
         [HttpPost]
         [Authorize("Organizer")]
         [Route("send")]
-        public async Task<dynamic> Send([FromBody]NotificationNewModel newNotificationModel)
+        [ProducesResponseType(StatusCodes.Status202Accepted)]
+        public async Task<IActionResult> Send([FromBody]SendNotificationModel sendNotificationModel)
         {
-            NewNotificationCommand command = _mapper.Map<NewNotificationCommand>(newNotificationModel);
+            var command = _mapper.Map<SendNotificationCommand>(sendNotificationModel);
             command.SenderAdminId = this.GetNgoAdminId();
+
             var result = await _mediator.Send(command);
 
-            return Task.FromResult(result);
+            return Accepted(result);
         }
 
         [HttpPost]

@@ -15,7 +15,7 @@ namespace VoteMonitor.Api.Notification.Handlers
 {
     public class NotificationRegistrationDataHandler :
         IRequestHandler<NotificationRegistrationDataCommand, int>,
-        IRequestHandler<NewNotificationCommand, int>,
+        IRequestHandler<SendNotificationCommand, int>,
         IRequestHandler<SendNotificationToAll, int>
     {
         private readonly VoteMonitorContext _context;
@@ -61,29 +61,36 @@ namespace VoteMonitor.Api.Notification.Handlers
             }
         }
 
-        public async Task<int> Handle(NewNotificationCommand request, CancellationToken cancellationToken)
+        public async Task<int> Handle(SendNotificationCommand request, CancellationToken cancellationToken)
         {
-            var observerIds = request.Recipients.Select(observer => int.Parse(observer)).ToList();
-            
-            var targetFcmTokens =_context.NotificationRegistrationData
-                        .Where(regData => observerIds.Contains(regData.ObserverId))
-                        .Where(regData => regData.ChannelName.ToLower() == request.Channel.ToLower())
-                        .Select(regDataResult => regDataResult.Token)
-                        .Where(token => !string.IsNullOrWhiteSpace(token))
-                        .ToList();
-
-            var response = 0;
-
-            if (targetFcmTokens.Count > 0)
+            try
             {
-                response = _firebaseService.SendAsync(request.From, request.Title, request.Message, targetFcmTokens);
+                var targetFcmTokens = _context.NotificationRegistrationData
+                    .Where(regData => request.Recipients.Contains(regData.ObserverId))
+                    .Where(regData => regData.ChannelName.ToLower() == request.Channel.ToLower())
+                    .Select(regDataResult => regDataResult.Token)
+                    .Where(token => !string.IsNullOrWhiteSpace(token))
+                    .ToList();
+
+                var response = 0;
+
+                if (targetFcmTokens.Count > 0)
+                {
+                    response = _firebaseService.Send(request.From, request.Title, request.Message,
+                        targetFcmTokens);
+                }
+
+                var notification = _mapper.Map<Entities.Notification>(request);
+
+                await _context.Notifications.AddAsync(notification, cancellationToken);
+                await _context.SaveChangesAsync(cancellationToken);
+                return response;
             }
-
-            var notification = _mapper.Map<Entities.Notification>(request);
-
-            _context.Notifications.AddRange(notification);
-            await _context.SaveChangesAsync(cancellationToken);
-            return response;
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error sending notification from Admin: {request.SenderAdminId}");
+                throw;
+            }
         }
 
         public async Task<int> Handle(SendNotificationToAll request, CancellationToken cancellationToken)
@@ -98,16 +105,16 @@ namespace VoteMonitor.Api.Notification.Handlers
 
             if (targetFcmTokens.Count > 0)
             {
-                response = _firebaseService.SendAsync(request.From, request.Title, request.Message, targetFcmTokens);
+                response = _firebaseService.Send(request.From, request.Title, request.Message, targetFcmTokens);
             }
 
             var observerIds = _context.NotificationRegistrationData
                 .AsNoTracking()
                 .Where(x => x.ChannelName == request.Channel)
-                .Select(regDataResult => regDataResult.ObserverId.ToString())
+                .Select(regDataResult => regDataResult.ObserverId)
                 .ToList();
 
-            var notification = _mapper.Map<Entities.Notification>(new NewNotificationCommand
+            var notification = _mapper.Map<Entities.Notification>(new SendNotificationCommand
             {
                 Channel = request.Channel,
                 Title = request.Title,
@@ -117,7 +124,7 @@ namespace VoteMonitor.Api.Notification.Handlers
                 SenderAdminId = request.SenderAdminId
             });
 
-            _context.Notifications.AddRange(notification);
+            await _context.Notifications.AddAsync(notification, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
             return response;
         }
