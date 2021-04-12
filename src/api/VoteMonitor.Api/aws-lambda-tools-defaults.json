@@ -1,0 +1,10 @@
+{
+  "profile": "default",
+  "region": "eu-west-1",
+  "configuration": "Release",
+  "framework": "netcoreapp3.1",
+  "s3-prefix": "MonitorizareVot/",
+  "s3-bucket": "lambda-artifact-deploys",
+  "template": "serverless.yaml",
+  "template-parameters": ""
+}

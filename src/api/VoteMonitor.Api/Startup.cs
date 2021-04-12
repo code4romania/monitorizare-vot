@@ -49,11 +49,18 @@ namespace VoteMonitor.Api
             services.ConfigureSwagger();
             services.AddApplicationInsightsTelemetry();
             services.AddCachingService(Configuration);
+            services.AddCors(options => options.AddPolicy("Permissive", builder =>
+            {
+                builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+            }));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
+            app.UseCors("Permissive");
             app.UseStaticFiles();
             if (env.IsDevelopment())
             {

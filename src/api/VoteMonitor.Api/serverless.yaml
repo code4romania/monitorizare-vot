@@ -1,0 +1,35 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: Monitorizare Vot is a mobile app for monitoring elections by authorized observers.
+Parameters: {}
+Conditions: {}
+Resources:
+  AspNetCoreFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: VoteMonitor.Api::VoteMonitor.Api.LambdaEntryPoint::FunctionHandlerAsync
+      Runtime: dotnetcore3.1
+      CodeUri: ""
+      MemorySize: 512
+      Timeout: 30
+      Policies:
+        - AWSLambda_FullAccess
+      Environment:
+        Variables: {}
+      Events:
+        ProxyResource:
+          Type: Api
+          Properties:
+            Path: "/{proxy+}"
+            Method: ANY
+        RootResource:
+          Type: Api
+          Properties:
+            Path: "/"
+            Method: ANY
+Outputs:
+  ApiURL:
+    Description: API endpoint URL for Prod environment
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/

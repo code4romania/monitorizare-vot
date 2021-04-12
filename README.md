@@ -23,9 +23,9 @@ This project is built by amazing volunteers and you can be one of them! Here's a
 
 ## Built With
 
- .Net Core 3.1
- 
- Swagger docs for the API are available [here](https://app-vmon-api-dev.azurewebsites.net/swagger/index.html).
+.Net Core 3.1
+
+Swagger docs for the API are available [here](https://app-vmon-api-dev.azurewebsites.net/swagger/index.html).
 
 ## Repos and projects
 
@@ -47,7 +47,7 @@ Fill-in `appsetings.json` OR add in a new `appsettings.target.json` file the con
 
 Run the following console command from the `VotingIrregularities.Domain.Seed` folder:
 
- ```sh
+```sh
 src\api\VotingIrregularities.Domain.Seed> dotnet run
 ```
 
@@ -60,28 +60,37 @@ src\api\VotingIrregularities.Domain.Seed> dotnet run
 
 - some dummy db data can be found [here](https://github.com/code4romania/monitorizare-vot/tree/develop/docs/dummy-db-data/)
 
-## Deployment
+## Development
 
 1. install .NetCore (refer to the [Built With](#built-with) section for the proper version) (Open Source/Free/Multiplatform) from [here](https://www.microsoft.com/net/core#windows)
 
 2. run the following console command from the `src` folder:
-    ```sh
-    src> dotnet restore
-    ```
-  
+
+   ```sh
+   src> dotnet restore
+   ```
+
 3. run the following console command from the `VoteMonitor.Api` folder:
-    ```sh
-    src\api\VoteMonitor.Api> dotnet run
-    ```
-  
+
+   ```sh
+   src\api\VoteMonitor.Api> dotnet run
+   ```
+
 4. browse to indicated address: <http://localhost:5000/swagger>
+
+## Deployment
+
+```sh
+$ dotnet tool install -g Amazon.Lambda.Tools
+$ dotnet lambda deploy-serverless MonitorizareVot
+```
 
 ## Testing out the API
 
 Use the swagger UI to understand the endpoints and routes; you can also use the UI for token generation (testing out the `POST /api/v1/access/token` route)
 For the rest of the endpoints you will need to use this token and inject a header (this is not currently possible using the swagger UI - it is probably a configuration effort - any hints are welcome)
 
-The auth header is 
+The auth header is
 
 ```
 Authorization: Bearer {token}
@@ -91,10 +100,10 @@ and it needs to be injected into each request.
 
 ## Feedback
 
-* Request a new feature on GitHub.
-* Vote for popular feature requests.
-* File a bug in GitHub Issues.
-* Email us with other feedback contact@code4.ro
+- Request a new feature on GitHub.
+- Vote for popular feature requests.
+- File a bug in GitHub Issues.
+- Email us with other feedback contact@code4.ro
 
 ## License
 
