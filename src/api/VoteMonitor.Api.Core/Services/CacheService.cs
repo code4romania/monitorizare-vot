@@ -12,7 +12,7 @@ namespace VoteMonitor.Api.Core.Services
         private readonly IDistributedCache _cache;
         private readonly ILogger _logger;
 
-        public CacheService(IDistributedCache cache, ILogger logger)
+        public CacheService(IDistributedCache cache, ILogger<CacheService> logger)
         {
             _cache = cache;
             _logger = logger;
