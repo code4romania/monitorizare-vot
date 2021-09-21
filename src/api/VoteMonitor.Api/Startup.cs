@@ -1,21 +1,24 @@
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Microsoft.Extensions.Logging;
+using System.Runtime.CompilerServices;
 using VoteMonitor.Api.Core.Extensions;
 using VoteMonitor.Api.Extensions;
+using VoteMonitor.Api.Form;
 using VoteMonitor.Api.Location.Services;
 using VoteMonitor.Entities;
-using VoteMonitor.Api.Form;
 
+[assembly: InternalsVisibleTo("VoteMonitor.Api.Tests")]
 namespace VoteMonitor.Api
 {
     public class Startup
@@ -49,6 +52,7 @@ namespace VoteMonitor.Api
             services.ConfigureSwagger();
             services.AddApplicationInsightsTelemetry();
             services.AddCachingService(Configuration);
+            services.AddHealthChecks(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -69,6 +73,10 @@ namespace VoteMonitor.Api
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHealthChecks("/health", new HealthCheckOptions
+                {
+                    ResponseWriter = async (context, result) => await HealthChecksConfiguration.WriteResponse(context, result, env)
+                });
                 endpoints.MapControllers();
             });
         }
@@ -84,7 +92,7 @@ namespace VoteMonitor.Api
             yield return typeof(Form.Controllers.FormController).GetTypeInfo().Assembly;
             yield return typeof(Location.Controllers.PollingStationController).GetTypeInfo().Assembly;
             yield return typeof(Note.Controllers.NoteController).GetTypeInfo().Assembly;
-            yield return typeof(Notification.Controllers.NotificationController).GetTypeInfo().Assembly;            
+            yield return typeof(Notification.Controllers.NotificationController).GetTypeInfo().Assembly;
             yield return typeof(Observer.Controllers.ObserverController).GetTypeInfo().Assembly;
             yield return typeof(Statistics.Controllers.StatisticsController).GetTypeInfo().Assembly;
             yield return typeof(PollingStation.Controllers.PollingStationController).GetTypeInfo().Assembly;
