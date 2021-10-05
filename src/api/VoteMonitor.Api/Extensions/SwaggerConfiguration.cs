@@ -45,7 +45,8 @@ namespace VoteMonitor.Api.Extensions
                             new[] {"readAccess", "writeAccess"}
 
                         }
-                    });
+                    }
+                );
                 //options.OperationFilter<AddFileUploadParams>();
 
                 var baseDocPath = Directory.GetCurrentDirectory();
