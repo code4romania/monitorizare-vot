@@ -29,25 +29,23 @@ namespace VoteMonitor.Api.Extensions
                         },
                 });
 
-                var securitySchema= new OpenApiSecurityScheme{
-                                Name="Authorization",
-                                In = ParameterLocation.Header,
-                                Type = SecuritySchemeType.Http,
-                                Scheme = "bearer",
-                                Reference = new OpenApiReference {Type = ReferenceType.SecurityScheme, Id = "Bearer"}
-                };
-
-                options.AddSecurityDefinition("Bearer",securitySchema);
-
+                options.AddSecurityDefinition("bearer", new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey
+                });
                 options.AddSecurityRequirement(new OpenApiSecurityRequirement
                     {
                         {
-                            securitySchema,
-                            new[] {"Bearer","readAccess", "writeAccess"}
+                            new OpenApiSecurityScheme
+                            {
+                                Reference = new OpenApiReference {Type = ReferenceType.SecurityScheme, Id = "bearer"}
+                            },
+                            new[] {"readAccess", "writeAccess"}
 
                         }
                     }
-                );
                 //options.OperationFilter<AddFileUploadParams>();
 
                 var baseDocPath = Directory.GetCurrentDirectory();
