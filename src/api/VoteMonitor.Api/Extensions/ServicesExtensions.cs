@@ -5,6 +5,8 @@ using System.IO;
 using VoteMonitor.Api.Core.Extensions;
 using VoteMonitor.Api.Core.Options;
 using VoteMonitor.Api.Core.Services;
+using VoteMonitor.Api.Extensions.HealthChecks;
+using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Extensions
 {
@@ -87,6 +89,20 @@ namespace VoteMonitor.Api.Extensions
 
             services.AddSingleton<IFirebaseService, FirebaseService>();
 
+            return services;
+        }
+
+        public static IServiceCollection AddHealthChecks(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddHealthChecks()
+                .AddDbContextCheck<VoteMonitorContext>()
+                .AddRedis(configuration["RedisCacheOptions:Configuration"], "Redis")
+                    .CheckOnlyWhen("Redis", () => configuration["ApplicationCacheOptions:Implementation"] == "RedisCache")
+                .AddAzureBlobStorage("AzureBlobStorage")
+                    .CheckOnlyWhen("AzureBlobStorage", () => !(configuration["FileServiceOptions:Type"] == "LocalFileService"))
+                .AddFirebase("Firebase")
+                    .CheckOnlyWhen("Firebase", () => !string.IsNullOrEmpty(configuration["FirebaseServiceOptions:ServerKey"]))
+                .AddApplicationInsightsPublisher();
             return services;
         }
     }
