@@ -74,7 +74,7 @@ namespace VoteMonitor.Api.Notification.Controllers
         [HttpGet]
         [Authorize("NgoAdmin")]
         [Route("get/all")]
-        public async Task<IActionResult> GetAll(PagingModel query)
+        public async Task<IActionResult> GetAll([FromQuery]PagingModel query)
         {
             var idNgo = this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
             var organizer = this.GetOrganizatorOrDefault(false);
