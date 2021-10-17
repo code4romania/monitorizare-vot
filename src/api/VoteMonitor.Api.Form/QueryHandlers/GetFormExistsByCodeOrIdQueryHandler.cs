@@ -17,7 +17,7 @@ namespace VoteMonitor.Api.Form.QueryHandlers
 
         public async Task<bool> Handle(ExistsFormByCodeOrIdQuery request, CancellationToken cancellationToken)
         {
-           return await _context.Forms.AnyAsync(form => form.Code == request.Code || form.Id == request.Id);
+            return await _context.Forms.AnyAsync(form => form.Code == request.Code || form.Id == request.Id);
         }
     }
 }
