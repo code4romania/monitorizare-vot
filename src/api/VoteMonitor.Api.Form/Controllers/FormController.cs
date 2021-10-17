@@ -31,8 +31,19 @@ namespace VoteMonitor.Api.Form.Controllers
 
         [HttpPost]
         [Authorize("Organizer")]
-        public async Task<int> AddForm([FromBody] FormDTO newForm)
+        public async Task<ActionResult<int>> AddForm([FromBody] FormDTO newForm)
         {
+            var formExists = await _mediator.Send(new ExistsFormByCodeOrIdQuery()
+            {
+                Id = newForm.Id,
+                Code = newForm.Code
+            });
+
+            if (formExists)
+            {
+                return BadRequest($"The form with the given code/id already exists");
+            }
+
             var result = await _mediator.Send(new AddFormCommand { Form = newForm });
             return result.Id;
         }
