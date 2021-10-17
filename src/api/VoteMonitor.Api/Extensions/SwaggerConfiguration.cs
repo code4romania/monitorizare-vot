@@ -46,6 +46,7 @@ namespace VoteMonitor.Api.Extensions
 
                         }
                     }
+                );
                 //options.OperationFilter<AddFileUploadParams>();
 
                 var baseDocPath = Directory.GetCurrentDirectory();
