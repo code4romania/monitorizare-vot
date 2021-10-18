@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.IO;
@@ -94,14 +94,16 @@ namespace VoteMonitor.Api.Extensions
 
         public static IServiceCollection AddHealthChecks(this IServiceCollection services, IConfiguration configuration)
         {
+            var enableHealthChecks = configuration.GetValue<bool>("EnableHealthChecks");
+
             services.AddHealthChecks()
                 .AddDbContextCheck<VoteMonitorContext>()
                 .AddRedis(configuration["RedisCacheOptions:Configuration"], "Redis")
-                    .CheckOnlyWhen("Redis", () => configuration["ApplicationCacheOptions:Implementation"] == "RedisCache")
+                    .CheckOnlyWhen("Redis", () => enableHealthChecks && configuration["ApplicationCacheOptions:Implementation"] == "RedisCache")
                 .AddAzureBlobStorage("AzureBlobStorage")
-                    .CheckOnlyWhen("AzureBlobStorage", () => !(configuration["FileServiceOptions:Type"] == "LocalFileService"))
+                    .CheckOnlyWhen("AzureBlobStorage", () => enableHealthChecks && !(configuration["FileServiceOptions:Type"] == "LocalFileService"))
                 .AddFirebase("Firebase")
-                    .CheckOnlyWhen("Firebase", () => !string.IsNullOrEmpty(configuration["FirebaseServiceOptions:ServerKey"]))
+                    .CheckOnlyWhen("Firebase", () => enableHealthChecks && !string.IsNullOrEmpty(configuration["FirebaseServiceOptions:ServerKey"]))
                 .AddApplicationInsightsPublisher();
             return services;
         }
