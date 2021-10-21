@@ -30,7 +30,7 @@ namespace VoteMonitor.Api.Form.Controllers
         }
 
         [HttpPost]
-        [Authorize("Organizer")]
+        [Authorize("NgoAdmin")]
         public async Task<int> AddForm([FromBody] FormDTO newForm)
         {
             var result = await _mediator.Send(new AddFormCommand { Form = newForm });
