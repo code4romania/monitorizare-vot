@@ -148,7 +148,7 @@ namespace VoteMonitor.Api.Observer.Controllers
         /// <param name="id">The Observer id</param>
         /// <returns>Boolean indicating whether or not the observer was deleted successfully</returns>
         [HttpDelete]
-        [Authorize("Organizer")]
+        [Authorize("NgoAdmin")]
         [Produces(type: typeof(bool))]
         public async Task<IActionResult> DeleteObserver(int id)
         {
