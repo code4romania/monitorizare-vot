@@ -9,7 +9,7 @@ namespace VoteMonitor.Api.Form.QueryHandlers
 {
     public class GetFormExistsByIdQueryHandler : IRequestHandler<GetFormExistsByIdQuery, bool>
     {
-        private VoteMonitorContext _context;
+        private readonly VoteMonitorContext _context;
 
         public GetFormExistsByIdQueryHandler(VoteMonitorContext voteMonitorContext)
         {
