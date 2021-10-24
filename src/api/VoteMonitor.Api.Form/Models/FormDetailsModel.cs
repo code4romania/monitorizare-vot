@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
+using System;
 
 namespace VoteMonitor.Api.Form.Models
 {
@@ -24,5 +25,11 @@ namespace VoteMonitor.Api.Form.Models
 
         [JsonProperty(PropertyName = "draft")]
         public bool Draft { get; set; }
+
+        [JsonProperty(PropertyName = "questionNo")]
+        public int QuestionNo { get; set; }
+
+        [JsonProperty(PropertyName = "lastEditedOn")]
+        public DateTime LastEditedOn { get; set; }
     }
 }
