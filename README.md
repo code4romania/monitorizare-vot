@@ -25,7 +25,7 @@ This project is built by amazing volunteers and you can be one of them! Here's a
 
  .Net Core 3.1
  
- Swagger docs for the API are available [here](https://app-vmon-api-dev.azurewebsites.net/swagger/index.html).
+ Swagger docs for the API are available [here](https://app-vmon-api-dev.azurewebsites.net/swagger/index.html). To authenticate please login using the test credentials via the `POST/api/v2/access/authorize` endpoint. Add the received auth token to authorize calls in Swagger, in the format: `Bearer AUTH_CODE_HERE`. 
 
 ## Repos and projects
 
