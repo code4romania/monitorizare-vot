@@ -102,7 +102,7 @@ namespace VoteMonitor.Api.County.Controllers
         }
 
         [HttpPost("{countyId}")]
-        [Authorize("Organizer")]
+        [Authorize("NgoAdmin")]
         [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
