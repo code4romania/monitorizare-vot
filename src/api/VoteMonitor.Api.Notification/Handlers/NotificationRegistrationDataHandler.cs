@@ -1,9 +1,11 @@
-﻿using AutoMapper;
+using System;
+using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using VoteMonitor.Api.Core.Commands;
 using VoteMonitor.Api.Core.Services;
 using VoteMonitor.Api.Notification.Commands;
@@ -13,71 +15,87 @@ namespace VoteMonitor.Api.Notification.Handlers
 {
     public class NotificationRegistrationDataHandler :
         IRequestHandler<NotificationRegistrationDataCommand, int>,
-        IRequestHandler<NewNotificationCommand, int>,
-        IRequestHandler<SendNotificationToAll, int>
+        IRequestHandler<SendNotificationCommand, int>,
+        IRequestHandler<SendNotificationToAllCommand, int>
     {
         private readonly VoteMonitorContext _context;
         private readonly IFirebaseService _firebaseService;
         private readonly IMapper _mapper;
+        private readonly ILogger<NotificationRegistrationDataHandler> _logger;
 
-        public NotificationRegistrationDataHandler(VoteMonitorContext context, IFirebaseService firebaseService, IMapper mapper)
+        public NotificationRegistrationDataHandler(VoteMonitorContext context, IFirebaseService firebaseService, IMapper mapper, ILogger<NotificationRegistrationDataHandler> logger)
         {
             _context = context;
             _firebaseService = firebaseService;
             _mapper = mapper;
+            _logger = logger;
         }
 
-        public Task<int> Handle(NotificationRegistrationDataCommand request, CancellationToken cancellationToken)
+        public async Task<int> Handle(NotificationRegistrationDataCommand request, CancellationToken cancellationToken)
         {
-            var existingRegistration =
-                _context.NotificationRegistrationData
-                .FirstOrDefault(data => data.ObserverId == request.ObserverId && data.ChannelName == request.ChannelName);
-
-            if (existingRegistration != null)
+            try
             {
-                existingRegistration.Token = request.Token;
-            }
-            else
-            {
-                var notificationReg = new NotificationRegistrationData
+                var existingRegistration =
+                    _context.NotificationRegistrationData
+                        .FirstOrDefault(data =>
+                            data.ObserverId == request.ObserverId && data.ChannelName == request.ChannelName);
+                if (existingRegistration != null)
                 {
-                    ObserverId = request.ObserverId,
-                    ChannelName = request.ChannelName,
-                    Token = request.Token
-                };
+                    existingRegistration.Token = request.Token;
+                }
+                else
+                {
+                    var notificationRegistration = new NotificationRegistrationData
+                    {
+                        ObserverId = request.ObserverId,
+                        ChannelName = request.ChannelName,
+                        Token = request.Token
+                    };
+                    await _context.NotificationRegistrationData.AddAsync(notificationRegistration, cancellationToken);
+                }
 
-                _context.NotificationRegistrationData.Add(notificationReg);
+                return await _context.SaveChangesAsync(cancellationToken);
             }
-
-            return _context.SaveChangesAsync(cancellationToken);
-        }
-
-        public async Task<int> Handle(NewNotificationCommand request, CancellationToken cancellationToken)
-        {
-            var observerIds = request.Recipients.Select(observer => int.Parse(observer)).ToList();
-            
-            var targetFcmTokens =_context.NotificationRegistrationData
-                        .Where(regData => observerIds.Contains(regData.ObserverId))
-                        .Where(regData => regData.ChannelName.ToLower() == request.Channel.ToLower())
-                        .Select(regDataResult => regDataResult.Token)
-                        .Where(token => !string.IsNullOrWhiteSpace(token))
-                        .ToList();
-
-            var response = 0;
-
-            if (targetFcmTokens.Count > 0)
+            catch (Exception e)
             {
-                response = _firebaseService.SendAsync(request.From, request.Title, request.Message, targetFcmTokens);
+                _logger.LogError(e, $"Error saving notification registration data for Observer: {request.ObserverId}");
+                throw;
             }
-
-            var notification = _mapper.Map<Entities.Notification>(request);
-
-            _context.Notifications.AddRange(notification);
-            await _context.SaveChangesAsync(cancellationToken);
-            return response;
         }
 
-        public async Task<int> Handle(SendNotificationToAll request, CancellationToken cancellationToken)
+        public async Task<int> Handle(SendNotificationCommand request, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var targetFcmTokens = _context.NotificationRegistrationData
+                    .Where(regData => request.Recipients.Contains(regData.ObserverId))
+                    .Where(regData => regData.ChannelName.ToLower() == request.Channel.ToLower())
+                    .Select(regDataResult => regDataResult.Token)
+                    .Where(token => !string.IsNullOrWhiteSpace(token))
+                    .ToList();
+
+                var response = 0;
+
+                if (targetFcmTokens.Count > 0)
+                {
+                    response = _firebaseService.Send(request.From, request.Title, request.Message,
+                        targetFcmTokens);
+                }
+
+                var notification = _mapper.Map<Entities.Notification>(request);
+
+                await _context.Notifications.AddAsync(notification, cancellationToken);
+                await _context.SaveChangesAsync(cancellationToken);
+                return response;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error sending notification from Admin: {request.SenderAdminId}");
+                throw;
+            }
+        }
+
+        public async Task<int> Handle(SendNotificationToAllCommand request, CancellationToken cancellationToken)
         {
             var targetFcmTokens = _context.NotificationRegistrationData
                 .AsNoTracking()
@@ -89,26 +107,20 @@ namespace VoteMonitor.Api.Notification.Handlers
 
             if (targetFcmTokens.Count > 0)
             {
-                response = _firebaseService.SendAsync(request.From, request.Title, request.Message, targetFcmTokens);
+                response = _firebaseService.Send(request.From, request.Title, request.Message, targetFcmTokens);
             }
 
             var observerIds = _context.NotificationRegistrationData
                 .AsNoTracking()
                 .Where(x => x.ChannelName == request.Channel)
-                .Select(regDataResult => regDataResult.ObserverId.ToString())
+                .Select(regDataResult => regDataResult.ObserverId)
                 .ToList();
 
-            var notification = _mapper.Map<Entities.Notification>(new NewNotificationCommand
-            {
-                Channel = request.Channel,
-                Title = request.Title,
-                Message = request.Message,
-                From = request.From,
-                Recipients = observerIds,
-                SenderAdminId = request.SenderAdminId
-            });
-
-            _context.Notifications.AddRange(notification);
+            var notification = _mapper.Map<Entities.Notification>(request);
+            notification.NotificationRecipients = observerIds.Select(id => new NotificationRecipient { ObserverId = id })
+                .ToList();
+            
+            await _context.Notifications.AddAsync(notification, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
             return response;
         }
