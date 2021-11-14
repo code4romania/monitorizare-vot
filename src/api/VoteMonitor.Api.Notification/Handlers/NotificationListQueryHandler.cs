@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -28,15 +28,15 @@ namespace VoteMonitor.Api.Notification.Handlers
 
         public async Task<ApiListResponse<NotificationModel>> Handle(NotificationListCommand request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation($"Searching for Notifications with the following filters (Organizer, IdNgo): {request.Organizer}, {request.IdNgo}");
+            _logger.LogInformation($"Searching for Notifications with the following filters (IsOrganizer, NgoId): {request.IsOrganizer}, {request.NgoId}");
 
             IQueryable<Entities.Notification> notifications = _context.Notifications
                 .Include(o => o.SenderAdmin).ThenInclude(o => o.Ngo)
                 .Include(o => o.NotificationRecipients);
 
-            if (!request.Organizer)
+            if (!request.IsOrganizer)
             {
-                notifications = notifications.Where(o => o.SenderAdmin.IdNgo == request.IdNgo);
+                notifications = notifications.Where(o => o.SenderAdmin.IdNgo == request.NgoId);
             }
 
             var count = await notifications.CountAsync(cancellationToken);

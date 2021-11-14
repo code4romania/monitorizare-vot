@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using VoteMonitor.Api.Core;
 using VoteMonitor.Api.Core.Commands;
 using VoteMonitor.Api.Notification.Commands;
@@ -33,7 +34,8 @@ namespace VoteMonitor.Api.Notification.Controllers
         [HttpPost]
         [Route("register")]
         [Authorize("Observer")]
-        public async Task<dynamic> RegisterTokenAsync(NotificationRegistrationDataModel tokenRegistrationModel)
+        [ProducesResponseType(StatusCodes.Status202Accepted)]
+        public async Task<IActionResult> RegisterTokenAsync(NotificationRegistrationDataModel tokenRegistrationModel)
         {
             if (!tokenRegistrationModel.ObserverId.HasValue)
             {
@@ -44,49 +46,56 @@ namespace VoteMonitor.Api.Notification.Controllers
 
             _logger.LogInformation($"Observer {tokenRegistrationModel.ObserverId} registered for notifications");
 
-            return Task.FromResult(new { });
+            return Accepted();
         }
 
         [HttpPost]
         [Authorize("Organizer")]
         [Route("send")]
-        public async Task<dynamic> Send([FromBody]NotificationNewModel newNotificationModel)
+        [ProducesResponseType(StatusCodes.Status202Accepted)]
+        public async Task<IActionResult> Send([FromBody] SendNotificationModel sendNotificationModel)
         {
-            NewNotificationCommand command = _mapper.Map<NewNotificationCommand>(newNotificationModel);
+            var command = _mapper.Map<SendNotificationCommand>(sendNotificationModel);
             command.SenderAdminId = this.GetNgoAdminId();
+
             var result = await _mediator.Send(command);
 
-            return Task.FromResult(result);
+            return Accepted(result);
         }
 
         [HttpPost]
         [Authorize("Organizer")]
         [Route("send/all")]
-        public async Task<dynamic> SendToAll([FromBody]NotificationForAllNewModel model)
+        [ProducesResponseType(StatusCodes.Status202Accepted)]
+        public async Task<IActionResult> SendToAll([FromBody] SendNotificationToAllModel model)
         {
-            var command = new SendNotificationToAll(this.GetNgoAdminId(), model.Channel, model.From, model.Title, model.Message);
+            var command = _mapper.Map<SendNotificationToAllCommand>(model);
+            command.SenderAdminId = this.GetNgoAdminId();
 
             var result = await _mediator.Send(command);
 
-            return Task.FromResult(result);
+            return Accepted(result);
         }
 
         [HttpGet]
         [Authorize("NgoAdmin")]
         [Route("get/all")]
-        public async Task<IActionResult> GetAll([FromQuery]PagingModel query)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAll([FromQuery]PagingModel model)
         {
-            var idNgo = this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
-            var organizer = this.GetOrganizatorOrDefault(false);
-            if (!organizer && idNgo == _configuration.GetValue<int>("DefaultIdOng"))
+            var ngoId = this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
+            var isOrganizer = this.GetOrganizatorOrDefault(false);
+            if (!isOrganizer && ngoId == _configuration.GetValue<int>("DefaultIdOng"))
                 return BadRequest();
 
-            var command = _mapper.Map<NotificationListCommand>(new NotificationListQuery {
-                IdNgo = idNgo != _configuration.GetValue<int>("DefaultIdOng") ? idNgo : (int?)null,
-                Organizer = organizer,
-                Page = query.Page,
-                PageSize = query.PageSize
-            });
+            var query = new NotificationListQuery
+            {
+                NgoId = ngoId != _configuration.GetValue<int>("DefaultIdOng") ? ngoId : (int?)null,
+                IsOrganizer = isOrganizer,
+                Page = model.Page,
+                PageSize = model.PageSize
+            };
+            var command = _mapper.Map<NotificationListCommand>(query);
 
             var result = await _mediator.Send(command);
             return Ok(result);
