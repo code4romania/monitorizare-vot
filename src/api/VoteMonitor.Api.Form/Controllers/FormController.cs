@@ -174,5 +174,28 @@ namespace VoteMonitor.Api.Form.Controllers
 
             return Ok();
         }
+
+        [HttpDelete("section/{sectionId}/question/{questionId}/option/{optionId}")]
+        [Authorize("Organizer")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DeleteQuestionOptionAsync(int sectionId, int questionId, int optionId)
+        {
+
+            var deleted = await _mediator.Send(new DeleteQuestionOptionCommand()
+            {
+                QuestionId = questionId,
+                SectionId = sectionId,
+                OptionId = optionId
+            });
+
+            if (!deleted)
+            {
+                return BadRequest("The option could not be deleted. Make sure the option exists.");
+            }
+
+            return Ok();
+        }
+
     }
 }
