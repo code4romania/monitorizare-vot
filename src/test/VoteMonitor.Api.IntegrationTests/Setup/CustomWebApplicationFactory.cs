@@ -1,58 +1,73 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Respawn;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using VoteMonitor.Entities;
+using Xunit;
 
 namespace VoteMonitor.Api.IntegrationTests.Setup
 {
+    [CollectionDefinition("Endpoints tests")]
+    public class DatabaseCollection : ICollectionFixture<CustomWebApplicationFactory>
+    {
+        // This class has no code, and is never created. Its purpose is simply
+        // to be the place to apply [CollectionDefinition] and all the
+        // ICollectionFixture<> interfaces.
+    }
+
+
     public class CustomWebApplicationFactory
         : WebApplicationFactory<Startup>
     {
-        private readonly string _database;
-        private readonly SqliteConnection _connection;
+        private readonly Checkpoint _checkpoint;
 
         public CustomWebApplicationFactory()
         {
-            var database = $"{Guid.NewGuid()}.db";
-            _database = database;
-
-            _connection = new SqliteConnection($"DataSource={database}");
-            _connection.Open();
+            _checkpoint = new Checkpoint
+            {
+                WithReseed = true
+            };
         }
+
+
+
+        public async Task Respawn()
+        {
+            using var scope = Services.GetService<IServiceScopeFactory>().CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<VoteMonitorContext>();
+            var con = db.Database.GetDbConnection();
+            await con.OpenAsync();
+            await _checkpoint.Reset(con);
+            db.SeedData();
+        }
+
+
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder.ConfigureAppConfiguration((context, configBuilder) =>
             {
-                configBuilder.AddInMemoryCollection(
-                    new Dictionary<string, string>
-                    {
-                        ["SecretKey"] = "super-signing-secret"
-                    });
+                configBuilder
+                    .AddInMemoryCollection(
+                        new Dictionary<string, string>
+                        {
+                            ["SecretKey"] = "super-signing-secret"
+                        });
             });
 
             builder.ConfigureServices(services =>
             {
-                services
-                    .AddEntityFrameworkSqlite()
-                    .AddDbContext<VoteMonitorContext>(options =>
-                    {
-                        options.UseSqlite(_connection);
-                        options.UseInternalServiceProvider(services.BuildServiceProvider());
-                    });
+                var configuration = services.BuildServiceProvider().GetRequiredService<IConfiguration>();
+                services.AddDbContext<VoteMonitorContext>(o => o.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
-                using var scope = services.BuildServiceProvider().CreateScope();
-                var scopedServices = scope.ServiceProvider;
-                var db = scopedServices.GetRequiredService<VoteMonitorContext>();
+                var scope = services.BuildServiceProvider().CreateScope();
+                var db = scope.ServiceProvider.GetRequiredService<VoteMonitorContext>();
                 db.Database.EnsureCreated();
-                db.SeedData();
             });
         }
 
@@ -60,12 +75,5 @@ namespace VoteMonitor.Api.IntegrationTests.Setup
             => WebHost.CreateDefaultBuilder(null).UseStartup<Startup>();
 
         protected override IHostBuilder CreateHostBuilder() => null;
-
-        protected override void Dispose(bool disposing)
-        {
-            base.Dispose(disposing);
-            _connection.Close();
-            File.Delete(_database);
-        }
     }
 }

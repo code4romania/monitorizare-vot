@@ -1,13 +1,14 @@
-﻿using System.Collections.Generic;
+using FluentAssertions;
+using System.Collections.Generic;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Xunit;
 
 namespace VoteMonitor.Api.IntegrationTests.Setup
 {
-    public class EndpointsTests : IClassFixture<CustomWebApplicationFactory>
+    [Collection("Endpoints tests")]
+    public class EndpointsTests : IAsyncLifetime
     {
         protected readonly CustomWebApplicationFactory Factory;
 
@@ -15,6 +16,8 @@ namespace VoteMonitor.Api.IntegrationTests.Setup
         {
             Factory = factory;
         }
+
+        public Task InitializeAsync() => Factory.Respawn();
 
         protected async Task<int> WithNgo(object payload)
         {
@@ -41,5 +44,7 @@ namespace VoteMonitor.Api.IntegrationTests.Setup
 
             return ((JsonElement)model!["id"]).GetInt32();
         }
+
+        public Task DisposeAsync() => Task.CompletedTask;
     }
 }
