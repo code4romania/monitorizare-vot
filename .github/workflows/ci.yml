@@ -1,0 +1,57 @@
+name: .NET CI
+
+on:
+  push:
+    branches: [develop, master]
+  pull_request:
+    branches: [develop, master]
+
+defaults:
+  run: 
+    working-directory: src
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+        DB_USER: SA
+        DB_PASSWORD: yourStrongP@ssword
+        DB_NAME: monitorizare-vot 
+    # Service containers to run with `container-job`
+    services:
+      # Label used to access the service container
+      mssql:
+        # Docker Hub image
+        image: mcr.microsoft.com/mssql/server:2019-latest
+        # Provide the password for sql
+        env:
+            ACCEPT_EULA: Y
+            SA_PASSWORD: ${{ env.DB_PASSWORD }}
+            MSSQL_PID: Express
+            DB_USER: ${{ env.DB_USER }}
+            DB_NAME: ${{ env.DB_NAME }}
+        ports:
+          - 1433/tcp
+        # Set health checks to wait until sql has started
+        options: >-
+            --health-cmd "/opt/mssql-tools/bin/sqlcmd -U $DB_USER -P $SA_PASSWORD -Q 'select 1' -b -o /dev/null"
+            --health-interval 60s
+            --health-timeout 30s
+            --health-start-period 20s
+            --health-retries 3
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --no-restore
+    - name: Run unit & integration tests
+      run: dotnet test --no-build
+      env:
+        # Connection string
+        ConnectionStrings__DefaultConnection: Server=localhost,${{ job.services.mssql.ports[1433] }};Database=${{ env.DB_NAME }};TrustServerCertificate=true;User Id=${{ env.DB_USER }};Password=${{ env.DB_PASSWORD }}
+        EnableHealthChecks: false

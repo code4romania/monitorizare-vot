@@ -48,9 +48,18 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6C726ABE-29DA-4B94-A18A-C926FD93406A}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		..\azure-pipelines.yml = ..\azure-pipelines.yml
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoteMonitor.Api.Tests", "test\VoteMonitor.Api.Tests\VoteMonitor.Api.Tests.csproj", "{C19B6C2B-D63C-426A-ADED-00C4F5B78929}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{5F43E0AF-E1D0-4C85-83B5-325D3EE8229F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{4542ACB2-C5C5-408D-860F-A369A87BAA13}"
+	ProjectSection(SolutionItems) = preProject
+		..\.github\workflows\ci.yml = ..\.github\workflows\ci.yml
+		..\.github\workflows\codeql-analysis.yml = ..\.github\workflows\codeql-analysis.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -130,14 +139,14 @@ Global
 		{674C9094-58B8-4749-9EB1-2FFD054B8D7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{674C9094-58B8-4749-9EB1-2FFD054B8D7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{674C9094-58B8-4749-9EB1-2FFD054B8D7D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C19B6C2B-D63C-426A-ADED-00C4F5B78929}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C19B6C2B-D63C-426A-ADED-00C4F5B78929}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C19B6C2B-D63C-426A-ADED-00C4F5B78929}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C19B6C2B-D63C-426A-ADED-00C4F5B78929}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0E63CB9A-486A-48F7-91B2-B1E2766088D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0E63CB9A-486A-48F7-91B2-B1E2766088D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E63CB9A-486A-48F7-91B2-B1E2766088D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E63CB9A-486A-48F7-91B2-B1E2766088D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C19B6C2B-D63C-426A-ADED-00C4F5B78929}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C19B6C2B-D63C-426A-ADED-00C4F5B78929}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C19B6C2B-D63C-426A-ADED-00C4F5B78929}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C19B6C2B-D63C-426A-ADED-00C4F5B78929}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -161,8 +170,10 @@ Global
 		{DD341123-8FD7-4506-AA0D-4280A5112A6F} = {8A09B442-FB79-4293-BF9B-E34DD3AE70F3}
 		{C7767496-1BC5-41AD-98D1-439BAA2ACEAE} = {388C55EB-26FF-46AB-9395-549E1A7A99AD}
 		{674C9094-58B8-4749-9EB1-2FFD054B8D7D} = {8A09B442-FB79-4293-BF9B-E34DD3AE70F3}
-		{C19B6C2B-D63C-426A-ADED-00C4F5B78929} = {388C55EB-26FF-46AB-9395-549E1A7A99AD}
 		{0E63CB9A-486A-48F7-91B2-B1E2766088D3} = {388C55EB-26FF-46AB-9395-549E1A7A99AD}
+		{C19B6C2B-D63C-426A-ADED-00C4F5B78929} = {388C55EB-26FF-46AB-9395-549E1A7A99AD}
+		{5F43E0AF-E1D0-4C85-83B5-325D3EE8229F} = {6C726ABE-29DA-4B94-A18A-C926FD93406A}
+		{4542ACB2-C5C5-408D-860F-A369A87BAA13} = {5F43E0AF-E1D0-4C85-83B5-325D3EE8229F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AF1523BC-7F31-4564-8E1B-D2DB4552FFCB}
