@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VoteMonitor.Entities
 {
-    public partial class Form : IHierarchicalEntity<FormSection>, IIdentifiableEntity
+    public class Form : IHierarchicalEntity<FormSection>, IIdentifiableEntity
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -20,9 +21,10 @@ namespace VoteMonitor.Entities
 
         public bool Draft { get; set; }
 
-		public int Order { get; set; }
+        public int Order { get; set; }
+        public DateTime LastUpdatedOn { get; set; }
 
-		public virtual ICollection<FormSection> FormSections { get; set; }
+        public virtual ICollection<FormSection> FormSections { get; set; }
 
         ICollection<FormSection> IHierarchicalEntity<FormSection>.Children { get => FormSections; set => FormSections = value; }
     }

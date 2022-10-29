@@ -1,4 +1,5 @@
-﻿using MediatR;
+using MediatR;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using VoteMonitor.Api.Form.Commands;
@@ -21,14 +22,21 @@ namespace VoteMonitor.Api.Form.CommandHandlers
 
         public async Task<FormDTO> Handle(AddFormCommand message, CancellationToken cancellationToken)
         {
-            Entities.Form form = null;
-            _entityMapper.Map(ref form, message.Form);
+            try
+            {
+                Entities.Form form = null;
+                _entityMapper.Map(ref form, message.Form);
 
-            _context.Forms.Add(form);
+                _context.Forms.Add(form);
 
-            await _context.SaveChangesAsync();
-            message.Form.Id = form.Id;
-            return message.Form;
+                await _context.SaveChangesAsync();
+                message.Form.Id = form.Id;
+                return message.Form;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
         }
     }
 }
