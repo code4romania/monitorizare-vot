@@ -1,10 +1,18 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace VoteMonitor.Entities
 {
-    public partial class VoteMonitorContext : DbContext
+    public class VoteMonitorContext : DbContext
     {
+        public VoteMonitorContext(DbContextOptions<VoteMonitorContext> options)
+            : base(options)
+        {
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<NgoAdmin>(entity =>
@@ -47,8 +55,8 @@ namespace VoteMonitor.Entities
                     .IsRequired()
                     .HasMaxLength(100);
 
-				entity.Property(x=>x.Diaspora)
-					.HasDefaultValueSql("0"); // should this be required?
+                entity.Property(x => x.Diaspora)
+                    .HasDefaultValueSql("0"); // should this be required?
 
                 entity.Property(x => x.Order)
                     .HasDefaultValueSql("0");
@@ -284,7 +292,6 @@ namespace VoteMonitor.Entities
 
                 entity.Property(x => x.Order)
                     .HasDefaultValueSql("0");
-
             });
 
             modelBuilder.Entity<AnswerQueryInfo>(entity =>
@@ -413,8 +420,8 @@ namespace VoteMonitor.Entities
                     .WithMany(p => p.Notifications)
                     .HasForeignKey(d => d.ObserverId)
                     .OnDelete(DeleteBehavior.Restrict);
-            });           
-            
+            });
+
             modelBuilder.Entity<Notification>(entity =>
             {
                 entity.HasOne(d => d.SenderAdmin)
@@ -451,15 +458,40 @@ namespace VoteMonitor.Entities
         public virtual DbSet<OptionsStatistics> OptionsStatistics { get; set; }
         public virtual DbSet<ExportModel> ExportModels { get; set; }
 
-
-        public class AnswerQueryInfo
+        public override int SaveChanges()
         {
-            public int IdPollingStation { get; set; }
-            public int IdObserver { get; set; }
-            public string ObserverPhoneNumber { get; set; }
-            public string ObserverName { get; set; }
-            public string PollingStation { get; set; }
-            public DateTime LastModified { get; set; }
+            UpdateTimestamp();
+            return base.SaveChanges();
+        }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+            UpdateTimestamp();
+            return base.SaveChangesAsync(cancellationToken);
+        }
+
+        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = new CancellationToken())
+        {
+            UpdateTimestamp();
+            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        }
+
+        private void UpdateTimestamp()
+        {
+            var changedEntriesCopy = ChangeTracker.Entries()
+                .Where(e => e.State == EntityState.Added ||
+                            e.State == EntityState.Modified ||
+                            e.State == EntityState.Deleted)
+                .ToList();
+            var saveTime = DateTime.UtcNow;
+
+            foreach (var entityEntry in changedEntriesCopy)
+            {
+                if (entityEntry.Metadata.FindProperty("LastUpdatedOn") != null)
+                {
+                    entityEntry.Property("LastUpdatedOn").CurrentValue = saveTime;
+                }
+            }
         }
     }
 }

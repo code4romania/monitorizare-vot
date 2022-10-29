@@ -58,7 +58,7 @@ namespace VoteMonitor.Api.Answer.Handlers
             }
 
             var answerQueryInfosQuery = query.GroupBy(a => new { a.IdPollingStation, a.CountyCode, a.PollingStationNumber, a.IdObserver, ObserverPhoneNumber = a.Observer.Phone, ObserverName = a.Observer.Name })
-                .Select(x => new VoteMonitorContext.AnswerQueryInfo
+                .Select(x => new AnswerQueryInfo
                 {
                     IdObserver = x.Key.IdObserver,
                     IdPollingStation = x.Key.IdPollingStation,
