@@ -1,8 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace VoteMonitor.Api.County.Models
 {
-    public class UpdateCountyRequest
+    public class AddOrUpdateCountyRequest
     {
         [Required]
         [StringLength(100)]

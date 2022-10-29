@@ -1,18 +1,17 @@
-using CSharpFunctionalExtensions;
+﻿using CSharpFunctionalExtensions;
 using MediatR;
 using VoteMonitor.Api.County.Models;
 
 namespace VoteMonitor.Api.County.Commands
 {
-    public class UpdateCounty : IRequest<Result>
+    public class CreateCounty : IRequest<Result>
     {
         public CountyModel County { get; }
 
-        public UpdateCounty(int countyId, AddOrUpdateCountyRequest county)
+        public CreateCounty(AddOrUpdateCountyRequest county)
         {
             County = new CountyModel
             {
-                Id = countyId,
                 Name = county.Name,
                 Code = county.Code,
                 Diaspora = county.Diaspora,

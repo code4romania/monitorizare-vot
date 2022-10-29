@@ -477,7 +477,7 @@ namespace VotingIrregularities.Tests.CountyApi
             {
                 var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object, _mapper);
                 var county =
-                    await countiesCommandHandler.Handle(new UpdateCounty(588, new UpdateCountyRequest()), new CancellationToken(false));
+                    await countiesCommandHandler.Handle(new UpdateCounty(588, new AddOrUpdateCountyRequest()), new CancellationToken(false));
 
                 county.IsFailure.ShouldBeTrue();
                 county.Error.ShouldBe("Could not find county with id = 588");
@@ -498,7 +498,7 @@ namespace VotingIrregularities.Tests.CountyApi
             using (var context = new VoteMonitorContext(_dbContextOptions))
             {
                 var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object, _mapper);
-                var updateCountyModel = new UpdateCountyRequest(){
+                var updateCountyModel = new AddOrUpdateCountyRequest(){
                     Name = "Super Iasi",
                     Code = "IS",
                     Order = 33,
