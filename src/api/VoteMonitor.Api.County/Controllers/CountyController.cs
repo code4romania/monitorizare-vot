@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.IO;
@@ -101,17 +101,50 @@ namespace VoteMonitor.Api.County.Controllers
             return BadRequest(new ErrorModel { Message = response.Error });
         }
 
-        [HttpPost("{countyId}")]
-        [Authorize("NgoAdmin")]
+        [HttpPut("{countyId}")]
+        [Authorize("Organizer")]
         [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> UpdateCountyAsync(int countyId, [FromBody] UpdateCountyRequest county)
+        public async Task<IActionResult> UpdateCountyAsync(int countyId, [FromBody] AddOrUpdateCountyRequest county)
         {
             var response = await _mediator.Send(new UpdateCounty(countyId, county));
             if (response.IsSuccess)
             {
                 return Ok();
+            }
+
+            return BadRequest(new ErrorModel { Message = response.Error });
+        }
+
+        [HttpPost]
+        [Authorize("Organizer")]
+        [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> CreateCountyAsync([FromBody] AddOrUpdateCountyRequest county)
+        {
+            var response = await _mediator.Send(new CreateCounty(county));
+            if (response.IsSuccess)
+            {
+                return Ok();
+            }
+
+            return BadRequest(new ErrorModel { Message = response.Error });
+        }
+
+
+        [HttpDelete("{countyId}")]
+        [Authorize("Organizer")]
+        [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> DeleteCountyAsync([FromRoute]int countyId)
+        {
+            var response = await _mediator.Send(new DeleteCounty(countyId));
+            if (response.IsSuccess)
+            {
+                return NoContent();
             }
 
             return BadRequest(new ErrorModel { Message = response.Error });

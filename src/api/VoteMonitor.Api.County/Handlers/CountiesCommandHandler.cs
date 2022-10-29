@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -22,7 +22,9 @@ namespace VoteMonitor.Api.County.Handlers
         IRequestHandler<CreateOrUpdateCounties, Result>,
         IRequestHandler<GetAllCounties, Result<List<CountyModel>>>,
         IRequestHandler<GetCounty, Result<CountyModel>>,
-        IRequestHandler<UpdateCounty, Result>
+        IRequestHandler<UpdateCounty, Result>,
+        IRequestHandler<CreateCounty, Result>,
+        IRequestHandler<DeleteCounty, Result>
 
     {
         private readonly VoteMonitorContext _context;
@@ -223,6 +225,66 @@ namespace VoteMonitor.Api.County.Handlers
             {
                 _logger.LogError($"Unable to update county {request.County.Id}", e);
                 return Result.Failure($"Unable to update county {request.County.Id}");
+            }
+        }
+
+        public async Task<Result> Handle(CreateCounty request, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var county = new Entities.County();
+                if (await _context.Counties.AnyAsync(cancellationToken))
+                {
+                    var maxCountyId = await _context.Counties.MaxAsync(x => x.Id, cancellationToken);
+                    county.Id = maxCountyId + 1;
+                }
+                else
+                {
+                    county.Id = 1;
+                }
+
+                county.Code = request.County.Code;
+                county.Name = request.County.Name;
+                county.NumberOfPollingStations = request.County.NumberOfPollingStations;
+                county.Diaspora = request.County.Diaspora;
+                county.Order = request.County.Order;
+                _context.Counties.Add(county);
+
+                await _context.SaveChangesAsync(cancellationToken);
+
+                return Result.Success();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Unable to add county {request.County.Id}", e);
+                return Result.Failure($"Unable to add county {request.County.Id}");
+            }
+        }
+
+        public async Task<Result> Handle(DeleteCounty request, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var county = await _context.Counties.FirstOrDefaultAsync(x => x.Id == request.CountyId, cancellationToken);
+                if (county == null)
+                {
+                    return Result.Failure($"Could not find county with id = {request.CountyId}");
+                }
+
+                if (await _context.PollingStations.AnyAsync(ps => ps.IdCounty == request.CountyId, cancellationToken))
+                {
+                    return Result.Failure($"Could not delete county. There are polling stations assigned to it.");
+                }
+
+                _context.Counties.Remove(county);
+                await _context.SaveChangesAsync(cancellationToken);
+
+                return Result.Success();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Unable to delete county {request.CountyId}", e);
+                return Result.Failure($"Unable to delete county {request.CountyId}");
             }
         }
     }
