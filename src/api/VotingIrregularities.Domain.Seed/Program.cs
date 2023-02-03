@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console.Cli;
 using System.IO;
+using System.Reflection;
 using VoteMonitor.Api.HashingService;
 using VoteMonitor.Entities;
 using VotingIrregularities.Domain.Seed.Commands;
@@ -38,7 +39,7 @@ namespace VotingIrregularities.Domain.Seed
         private static IConfiguration BuildConfiguration()
         {
             return new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
+                .SetBasePath(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location))
                 .AddJsonFile("appsettings.json")
                 .AddEnvironmentVariables()
                 .Build();

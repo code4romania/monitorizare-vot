@@ -37,19 +37,31 @@ Client apps:
 - iOS - https://github.com/code4romania/monitorizare-vot-ios
 - Web admin for NGOs - https://github.com/code4romania/monitorizare-vot-ong
 
-## Creating the database --- WIP you might encounter issues here.
+## Interacting with database
 
-The Assembly VotingIrregularities.Domain has EF Migrations configured and can generate a database complete with test data.
+The Assembly VotingIrregularities.Domain has EF Migrations configured.
 
-To do this, follow the steps bellow:
-
-Fill-in `appsetings.json` OR add in a new `appsettings.target.json` file the connectionstring to the SQL instance where the DB should be created.
-
-Run the following console command from the `VotingIrregularities.Domain.Seed` folder:
+Run the following console command from the `VotingIrregularities.Domain.Seed` folder to see available options
 
  ```sh
+src\api\VotingIrregularities.Domain.Seed> dotnet build
 src\api\VotingIrregularities.Domain.Seed> dotnet run
 ```
+
+### Migrating database 
+```sh
+src\api\VotingIrregularities.Domain.Seed> dotnet run migrate
+```
+### Seed data 
+```sh
+src\api\VotingIrregularities.Domain.Seed> dotnet run seed
+```
+
+### Add new migration 
+```sh
+src\api\VotingIrregularities.Domain.Seed> dotnet run seed
+```
+
 
 **Important:** the migrate action with delete the data from the following tables: `Answers`, `Questions`, `FormSections`, `Options`.
 
