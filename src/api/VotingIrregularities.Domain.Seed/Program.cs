@@ -1,75 +1,65 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using System;
+using Spectre.Console.Cli;
 using System.IO;
-using System.Linq;
+using VoteMonitor.Api.HashingService;
 using VoteMonitor.Entities;
+using VotingIrregularities.Domain.Seed.Commands;
+using VotingIrregularities.Domain.Seed.IoC;
 
 namespace VotingIrregularities.Domain.Seed
 {
     public class Program
     {
-        private static IConfigurationRoot _configuration;
-        private static ILogger _logger;
-
         public static void Main(string[] args)
         {
-            BuildConfiguration();
+            var configuration = BuildConfiguration();
+            var registrations = ConfigureServices(configuration);
 
-            IServiceCollection services = new ServiceCollection();
+            // Create a type registrar and register any dependencies.
+            // A type registrar is an adapter for a DI framework.
+            var registrar = new TypeRegistrar(registrations);
 
-            ConfigureServices(services);
-
-            IServiceProvider provider = services.BuildServiceProvider();
-            _logger = provider.GetService<ILogger<Program>>();
-
-            using (var serviceScope = provider.GetService<IServiceScopeFactory>().CreateScope())
+            var app = new CommandApp(registrar);
+            app.Configure(config =>
             {
-                var context = serviceScope.ServiceProvider.GetService<VoteMonitorContext>();
-                _logger.LogDebug("Initializing Database for VotingContext...");
-                context.Database.Migrate();
-                _logger.LogDebug("Database created");
+                config.AddCommand<ApplyMigrationsCommand>("migrate");
+                config.AddCommand<SeedCommand>("seed");
+                config.AddCommand<ListNgoCommand>("list-ngos");
+                config.AddCommand<ListNgoAdmins>("list-admins");
+                config.AddCommand<AddNgoCommand>("add-ngo");
+                config.AddCommand<AddNgoAdminCommand>("add-admin");
+            });
 
-                if (!args.Contains("-seed"))
-                {
-                    return;
-                }
-
-                _logger.LogDebug("Initializing data seeding...");
-                context.EnsureSeedData();
-                _logger.LogDebug("Data seeded.");
-            }
+            app.Run(args);
         }
 
-        private static void BuildConfiguration()
+        private static IConfiguration BuildConfiguration()
         {
-            _configuration = new ConfigurationBuilder()
+            return new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                .AddJsonFile("appsettings.development.json", optional: true)
+                .AddJsonFile("appsettings.json")
                 .AddEnvironmentVariables()
                 .Build();
         }
 
-        private static void ConfigureServices(IServiceCollection services)
+        private static IServiceCollection ConfigureServices(IConfiguration configuration)
         {
-            // Logging
-            services.AddLogging(configure =>
-            {
-                configure.AddConfiguration(_configuration.GetSection("Logging"));
-                configure.AddConsole();
-                configure.AddDebug();
-            });
+            var registrations = new ServiceCollection();
 
             // DB Context
-            var conn = _configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<VoteMonitorContext>(options =>
+            var conn = configuration.GetConnectionString("DefaultConnection");
+            registrations.AddDbContext<VoteMonitorContext>(options =>
             {
                 options.UseSqlServer(conn,
                     x => x.MigrationsAssembly("VotingIrregularities.Domain.Seed"));
             });
+
+            // Hashing
+            registrations.AddHashService(configuration);
+
+            return registrations;
         }
     }
 }

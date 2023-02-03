@@ -1,8 +1,8 @@
-﻿namespace VoteMonitor.Api.Core.Services
+namespace VoteMonitor.Api.HashingService
 {
     public interface IHashService
     {
-        string Salt { get; set; }
+        string Salt { get; }
         string GetHash(string clearString);
     }
 }

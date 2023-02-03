@@ -1,8 +1,7 @@
-﻿using System.IO;
+using System.IO;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
-using VoteMonitor.Api.Core.Options;
-using VoteMonitor.Api.Core.Services;
+using VoteMonitor.Api.HashingService;
 using Xunit;
 
 namespace VotingIrregularities.Tests

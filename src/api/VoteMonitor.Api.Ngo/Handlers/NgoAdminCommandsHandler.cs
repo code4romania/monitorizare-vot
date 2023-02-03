@@ -1,12 +1,11 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
 using CSharpFunctionalExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using VoteMonitor.Api.Core.Services;
+using VoteMonitor.Api.HashingService;
 using VoteMonitor.Api.Ngo.Commands;
 using VoteMonitor.Entities;
 

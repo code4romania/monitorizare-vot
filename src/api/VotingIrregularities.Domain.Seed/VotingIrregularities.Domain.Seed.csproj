@@ -5,6 +5,11 @@
     <ProjectGuid>{EBCE8818-41D9-4089-98F4-A03BAA909210}</ProjectGuid>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="..\VoteMonitor.Api\appsettings.json" Link="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.2">
       <PrivateAssets>all</PrivateAssets>
@@ -15,17 +20,16 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.2" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.1.2" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.2" />
-    <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="3.1.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="3.1.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.2" />
+    <PackageReference Include="Spectre.Console.Cli" Version="0.46.0" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\VoteMonitor.Api.HashingService\VoteMonitor.Api.HashingService.csproj" />
     <ProjectReference Include="..\VoteMonitor.Entities\VoteMonitor.Entities.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="appsettings.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <Folder Include="IoC\" />
   </ItemGroup>
 </Project>

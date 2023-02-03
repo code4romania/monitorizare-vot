@@ -1,11 +1,11 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using VoteMonitor.Api.Core.Services;
+using VoteMonitor.Api.HashingService;
 using VoteMonitor.Api.Observer.Commands;
 using VoteMonitor.Entities;
 
@@ -19,7 +19,7 @@ namespace VoteMonitor.Api.Observer.Handlers
     {
         private readonly VoteMonitorContext _context;
         private readonly ILogger _logger;
-        private IHashService _hashService;
+        private readonly IHashService _hashService;
 
         public ObserverRequestsHandler(VoteMonitorContext context, ILogger<ObserverRequestsHandler> logger, IHashService hashService)
         {

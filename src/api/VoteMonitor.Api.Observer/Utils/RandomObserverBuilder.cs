@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using VoteMonitor.Api.Core.Services;
+using VoteMonitor.Api.HashingService;
 
 namespace VoteMonitor.Api.Observer.Utils
 {

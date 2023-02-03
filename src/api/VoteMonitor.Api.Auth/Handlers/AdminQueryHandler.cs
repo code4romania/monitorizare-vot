@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using VoteMonitor.Api.Auth.Models;
 using VoteMonitor.Api.Auth.Queries;
-using VoteMonitor.Api.Core.Services;
+using VoteMonitor.Api.HashingService;
 using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Auth.Handlers

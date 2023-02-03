@@ -1,12 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using VoteMonitor.Entities;
 
-
-namespace VoteMonitor.Entities
+namespace VotingIrregularities.Domain.Seed
 {
     public static class VotingContextExtensions
     {
@@ -19,17 +19,8 @@ namespace VoteMonitor.Entities
             { "E",false }
     };
 
-        public static void EnsureSeedData(this VoteMonitorContext context)
+        public static void SeedData(this VoteMonitorContext context)
         {
-            if (!context.AllMigrationsApplied())
-            {
-                return;
-            }
-
-            //means we have data
-            //if (context.Counties.Count() > 0)
-            //    return;
-
             using (var tran = context.Database.BeginTransaction())
             {
                 context.DataCleanUp(); // why cleanup if we return when we have data? y tho.
@@ -49,7 +40,6 @@ namespace VoteMonitor.Entities
                 tran.Commit();
             }
         }
-
         private static void SeedObservers(this VoteMonitorContext context)
         {
             if (context.Observers.Any())
@@ -274,21 +264,24 @@ namespace VoteMonitor.Entities
                 Id = 1,
                 Name = "Code4Romania",
                 Organizer = true,
-                ShortName = "C4R"
+                ShortName = "C4R",
+                IsActive = true
             });
+
             context.Ngos.Add(new Ngo
             {
                 Id = 2,
                 Name = "Guest NGO",
                 Organizer = false,
-                ShortName = "GUE"
+                ShortName = "GUE",
+                IsActive = true
             });
+
             context.SaveChanges();
 
         }
 
-
-        private static bool AllMigrationsApplied(this DbContext context)
+        public static bool AllMigrationsApplied(this VoteMonitorContext context)
         {
             var applied = context.GetService<IHistoryRepository>()
                 .GetAppliedMigrations()

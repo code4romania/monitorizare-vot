@@ -2,7 +2,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.IO;
-using VoteMonitor.Api.Core.Extensions;
 using VoteMonitor.Api.Core.Options;
 using VoteMonitor.Api.Core.Services;
 using VoteMonitor.Api.Extensions.HealthChecks;
@@ -12,22 +11,6 @@ namespace VoteMonitor.Api.Extensions
 {
     public static class ServicesExtensions
     {
-        public static IServiceCollection AddHashService(this IServiceCollection services, IConfiguration configuration)
-        {
-            var hashOptions = configuration.GetHashOptions().Get<HashOptions>();
-
-            if (hashOptions.ServiceType == nameof(HashServiceType.ClearText))
-            {
-                services.AddSingleton<IHashService, ClearTextService>();
-            }
-            else
-            {
-                services.AddSingleton<IHashService, HashService>();
-            }
-
-            return services;
-        }
-
         public static IServiceCollection AddCachingService(this IServiceCollection services,
             IConfiguration configuration)
         {

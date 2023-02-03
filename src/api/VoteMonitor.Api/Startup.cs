@@ -15,6 +15,7 @@ using System.Runtime.CompilerServices;
 using VoteMonitor.Api.Core.Extensions;
 using VoteMonitor.Api.Extensions;
 using VoteMonitor.Api.Form;
+using VoteMonitor.Api.HashingService;
 using VoteMonitor.Api.Location.Services;
 using VoteMonitor.Entities;
 

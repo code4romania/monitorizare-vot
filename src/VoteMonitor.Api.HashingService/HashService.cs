@@ -1,10 +1,9 @@
-﻿using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Options;
 using System;
 using System.Security.Cryptography;
 using System.Text;
-using VoteMonitor.Api.Core.Options;
 
-namespace VoteMonitor.Api.Core.Services
+namespace VoteMonitor.Api.HashingService
 {
     /// <inheritdoc />
     public class HashService : IHashService
@@ -14,7 +13,7 @@ namespace VoteMonitor.Api.Core.Services
             Salt = options.Value.Salt;
         }
 
-        public string Salt { get; set; }
+        public string Salt { get; }
         public string GetHash(string clearString)
         {
             // SHA512 is disposable by inheritance.  
