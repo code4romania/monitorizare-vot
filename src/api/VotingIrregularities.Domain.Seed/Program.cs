@@ -24,12 +24,12 @@ namespace VotingIrregularities.Domain.Seed
             var app = new CommandApp(registrar);
             app.Configure(config =>
             {
-                config.AddCommand<ApplyMigrationsCommand>("migrate");
-                config.AddCommand<SeedCommand>("seed");
-                config.AddCommand<ListNgoCommand>("list-ngos");
-                config.AddCommand<ListNgoAdmins>("list-admins");
-                config.AddCommand<AddNgoCommand>("add-ngo");
-                config.AddCommand<AddNgoAdminCommand>("add-admin");
+                config.AddCommand<ApplyMigrationsCommand>("migrate").WithDescription("Applies database migrations");
+                config.AddCommand<SeedCommand>("seed").WithDescription("Seeds database with dummy data");
+                config.AddCommand<ListNgoCommand>("list-ngos").WithDescription("Lists ngos in database");
+                config.AddCommand<ListNgoAdmins>("list-admins").WithDescription("Lists ngo admins");
+                config.AddCommand<AddNgoCommand>("add-ngo").WithDescription("Adds a ngo");
+                config.AddCommand<AddNgoAdminCommand>("add-admin").WithDescription("Adds an admin to a ngo");
             });
 
             app.Run(args);
