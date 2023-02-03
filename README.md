@@ -59,7 +59,7 @@ src\api\VotingIrregularities.Domain.Seed> dotnet run seed
 
 ### Add new migration 
 ```sh
-src\api\VotingIrregularities.Domain.Seed> dotnet run seed
+src\api\VotingIrregularities.Domain.Seed>dotnet ef migrations add <Your-Migration-Name> --context VoteMonitorContext --project VotingIrregularities.Domain.Seed
 ```
 
 

@@ -2,8 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console.Cli;
-using System.IO;
-using System.Reflection;
 using VoteMonitor.Api.HashingService;
 using VoteMonitor.Entities;
 using VotingIrregularities.Domain.Seed.Commands;
@@ -15,8 +13,7 @@ namespace VotingIrregularities.Domain.Seed
     {
         public static void Main(string[] args)
         {
-            var configuration = BuildConfiguration();
-            var registrations = ConfigureServices(configuration);
+            var registrations = ConfigureServices(Settings.Configuration);
 
             // Create a type registrar and register any dependencies.
             // A type registrar is an adapter for a DI framework.
@@ -34,15 +31,6 @@ namespace VotingIrregularities.Domain.Seed
             });
 
             app.Run(args);
-        }
-
-        private static IConfiguration BuildConfiguration()
-        {
-            return new ConfigurationBuilder()
-                .SetBasePath(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location))
-                .AddJsonFile("appsettings.json")
-                .AddEnvironmentVariables()
-                .Build();
         }
 
         private static IServiceCollection ConfigureServices(IConfiguration configuration)
