@@ -18,7 +18,7 @@ namespace VoteMonitor.Api.Form.Controllers
         }
 
         [HttpPost("forms")]
-        //[Authorize("Organizer")]
+        [Authorize("Organizer")]
         public async Task<IReadOnlyList<FormResponseModel>> ExportFormsAsync()
         {
             var filledInForms = await _mediator.Send(new GetFormsQuery());
@@ -26,7 +26,7 @@ namespace VoteMonitor.Api.Form.Controllers
         }
 
         [HttpPost("filled-forms")]
-        //[Authorize("Organizer")]
+        [Authorize("Organizer")]
         public async Task<IReadOnlyList<FilledFormResponseModel>> ExportFilledFormsAsync()
         {
             var filledInForms = await _mediator.Send(new GetFilledFormsQuery());
