@@ -1,0 +1,98 @@
+# @name getJwtToken
+POST https://localhost:44335/api/v2/access/authorize
+Content-Type: application/json
+
+{
+  "user": "075",
+  "password": "1234",
+  "channelName": "string",
+  "fcmToken": "string"
+}
+
+###
+# @name exportForms
+POST https://localhost:44335/api/v1/export/forms
+Content-Type: application/json
+Authorization: Bearer {{getJwtToken.response.body.$.access_token}}
+###
+
+# @name exportFilledInForms
+POST https://localhost:44335/api/v1/export/filled-forms
+Content-Type: application/json
+Authorization: Bearer {{getJwtToken.response.body.$.access_token}}
+###
+
+# @name getCounties
+GET https://localhost:44335/api/v1/county
+Content-Type: application/json
+Authorization: Bearer {{getJwtToken.response.body.$.access_token}}
+###
+
+# @name getPollingStations
+GET https://localhost:44335/api/v2/polling-station
+Content-Type: application/json
+Authorization: Bearer {{getJwtToken.response.body.$.access_token}}
+###
+
+# @name addAnswer
+
+@countyCode = AR
+@pollingStationNumber = 1
+
+POST https://localhost:44335/api/v1/answers
+Content-Type: application/json
+Authorization: Bearer {{getJwtToken.response.body.$.access_token}}
+
+{
+  "answers": [
+    {
+      "questionId": 53,
+      "countyCode": "{{countyCode}}",
+      "pollingStationNumber": "{{pollingStationNumber}}",
+      "options": [
+        {
+          "optionId": 178
+        }
+      ]
+    },
+    {
+      "questionId": 54,
+      "countyCode": "{{countyCode}}",
+      "pollingStationNumber": "{{pollingStationNumber}}",
+      "options": [
+        {
+          "optionId": 196,
+          "value": "Nemteana"
+        }
+      ]
+    },
+    {
+      "questionId": 55,
+      "countyCode": "{{countyCode}}",
+      "pollingStationNumber": "{{pollingStationNumber}}",
+      "options": [
+        {
+          "optionId": 194,
+        },
+        {
+          "optionId": 193,
+        },
+      ]
+    },
+    {
+      "questionId": 56,
+      "countyCode": "{{countyCode}}",
+      "pollingStationNumber": "{{pollingStationNumber}}",
+      "options": [
+        {
+          "optionId": 190,
+        },
+        {
+          "optionId": 188,
+          "value": "Bike"
+        },
+      ]
+    },
+  ]
+}
+###
