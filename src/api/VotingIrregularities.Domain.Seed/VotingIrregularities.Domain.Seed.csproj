@@ -29,7 +29,4 @@
     <ProjectReference Include="..\VoteMonitor.Api.HashingService\VoteMonitor.Api.HashingService.csproj" />
     <ProjectReference Include="..\VoteMonitor.Entities\VoteMonitor.Entities.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="IoC\" />
-  </ItemGroup>
 </Project>
