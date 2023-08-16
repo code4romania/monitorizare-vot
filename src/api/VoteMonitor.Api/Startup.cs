@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -34,7 +35,7 @@ namespace VoteMonitor.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddControllers().AddNewtonsoftJson();
+            services.AddControllers().AddNewtonsoftJson(opt=>opt.SerializerSettings.NullValueHandling = NullValueHandling.Ignore);
             services.ConfigureCustomOptions(Configuration);
             services.AddHashService(Configuration);
             services.AddFileService(Configuration);

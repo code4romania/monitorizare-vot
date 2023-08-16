@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
@@ -44,7 +44,7 @@ namespace VoteMonitor.Api.Form.QueryHandlers
                         .Include(a => a.FormSection)
                         .Include(a => a.OptionsToQuestions)
                         .ThenInclude(a => a.Option)
-                        .Where(a => a.FormSection.Form.Id == message.FormId) // todo: FormCode might not be unique anymore - maybe we should query by FormId?
+                        .Where(a => a.FormSection.Form.Id == message.FormId)
                         .ToListAsync();
 
                     var sections = questions.Select(q => new { q.IdSection, q.FormSection.Code, q.FormSection.Description, q.FormSection.OrderNumber })
