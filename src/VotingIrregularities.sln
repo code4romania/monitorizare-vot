@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28803.352
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33516.290
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "api", "api", "{8A09B442-FB79-4293-BF9B-E34DD3AE70F3}"
 EndProject
@@ -49,6 +49,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoteMonitor.Api.Tests", "test\VoteMonitor.Api.Tests\VoteMonitor.Api.Tests.csproj", "{C19B6C2B-D63C-426A-ADED-00C4F5B78929}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VotingIrregularities.Domain.Migrator", "api\VotingIrregularities.Domain.Migrator\VotingIrregularities.Domain.Migrator.csproj", "{301FF355-574A-477B-BD04-E00DFA591427}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -132,6 +134,10 @@ Global
 		{C19B6C2B-D63C-426A-ADED-00C4F5B78929}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C19B6C2B-D63C-426A-ADED-00C4F5B78929}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C19B6C2B-D63C-426A-ADED-00C4F5B78929}.Release|Any CPU.Build.0 = Release|Any CPU
+		{301FF355-574A-477B-BD04-E00DFA591427}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{301FF355-574A-477B-BD04-E00DFA591427}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{301FF355-574A-477B-BD04-E00DFA591427}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{301FF355-574A-477B-BD04-E00DFA591427}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -156,6 +162,7 @@ Global
 		{C7767496-1BC5-41AD-98D1-439BAA2ACEAE} = {388C55EB-26FF-46AB-9395-549E1A7A99AD}
 		{674C9094-58B8-4749-9EB1-2FFD054B8D7D} = {8A09B442-FB79-4293-BF9B-E34DD3AE70F3}
 		{C19B6C2B-D63C-426A-ADED-00C4F5B78929} = {388C55EB-26FF-46AB-9395-549E1A7A99AD}
+		{301FF355-574A-477B-BD04-E00DFA591427} = {8A09B442-FB79-4293-BF9B-E34DD3AE70F3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AF1523BC-7F31-4564-8E1B-D2DB4552FFCB}

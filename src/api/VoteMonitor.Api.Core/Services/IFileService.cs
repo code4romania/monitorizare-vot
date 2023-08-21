@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace VoteMonitor.Api.Core.Services
@@ -16,11 +16,5 @@ namespace VoteMonitor.Api.Core.Services
         /// <param name="extension"></param>
         /// <returns>the reference to the resource just uploaded</returns>
         Task<string> UploadFromStreamAsync(Stream sourceStream, string mimeType, string extension, UploadType uploadType);
-
-        /// <summary>
-        /// Initialize the file system before first usage
-        /// </summary>
-        /// <returns></returns>
-        Task Initialize();
     }
 }

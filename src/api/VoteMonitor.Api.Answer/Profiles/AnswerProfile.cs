@@ -15,7 +15,7 @@ namespace VoteMonitor.Api.Answer.Profiles
                 .ForMember(dest => dest.ObserverArrivalTime, o => o.MapFrom(src => src.ObserverArrivalTime))
                 .ForMember(dest => dest.IsPollingStationPresidentFemale, o => o.MapFrom(src => src.IsPollingStationPresidentFemale))
                 ;
-            CreateMap<VoteMonitorContext.AnswerQueryInfo, AnswerQueryDto>()
+            CreateMap<AnswerQueryInfo, AnswerQueryDto>()
                 .ForMember(dest => dest.ObserverId, o => o.MapFrom(src => src.IdObserver))
                 .ForMember(dest => dest.ObserverPhoneNumber, o => o.MapFrom(src => src.ObserverPhoneNumber))
                 .ForMember(dest => dest.PollingStationId, o => o.MapFrom(src => src.IdPollingStation))

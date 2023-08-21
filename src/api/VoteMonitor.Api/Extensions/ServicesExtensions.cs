@@ -1,7 +1,11 @@
+using Amazon;
+using Amazon.S3;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using System;
 using System.IO;
+using System.Linq;
 using VoteMonitor.Api.Core.Extensions;
 using VoteMonitor.Api.Core.Options;
 using VoteMonitor.Api.Core.Services;
@@ -16,7 +20,7 @@ namespace VoteMonitor.Api.Extensions
         {
             var hashOptions = configuration.GetHashOptions().Get<HashOptions>();
 
-            if (hashOptions.ServiceType == nameof(HashServiceType.ClearText))
+            if (hashOptions.ServiceType == HashServiceType.ClearText)
             {
                 services.AddSingleton<IHashService, ClearTextService>();
             }
@@ -36,12 +40,12 @@ namespace VoteMonitor.Api.Extensions
 
             switch (cacheOptions.Implementation)
             {
-                case "NoCache":
+                case ApplicationCacheImplementationType.NoCache:
                     {
                         services.AddSingleton<ICacheService, NoCacheService>();
                         break;
                     }
-                case "RedisCache":
+                case ApplicationCacheImplementationType.RedisCache:
                     {
                         services.AddSingleton<ICacheService, CacheService>();
                         services.AddDistributedRedisCache(options =>
@@ -51,7 +55,7 @@ namespace VoteMonitor.Api.Extensions
 
                         break;
                     }
-                case "MemoryDistributedCache":
+                case ApplicationCacheImplementationType.MemoryDistributedCache:
                     {
                         services.AddSingleton<ICacheService, CacheService>();
                         services.AddDistributedMemoryCache();
@@ -65,16 +69,47 @@ namespace VoteMonitor.Api.Extensions
         public static IServiceCollection AddFileService(this IServiceCollection services,
             IConfiguration configuration)
         {
-            var fileServiceOptions = new FileServiceOptions();
-            configuration.GetSection(nameof(FileServiceOptions)).Bind(fileServiceOptions);
+            var fileStorageType = configuration.GetValue<FileStorageType>("FileStorageType");
 
-            if (fileServiceOptions.Type == "LocalFileService")
+            if (fileStorageType == FileStorageType.LocalFileService)
             {
+                services.Configure<LocalFileStorageOptions>(configuration.GetSection(nameof(LocalFileStorageOptions)));
                 services.AddSingleton<IFileService, LocalFileService>();
             }
-            else
+            if (fileStorageType == FileStorageType.BlobService)
             {
+                services.Configure<BlobStorageOptions>(configuration.GetSection(nameof(BlobStorageOptions)));
                 services.AddSingleton<IFileService, BlobService>();
+            }
+            if (fileStorageType == FileStorageType.S3Service)
+            {
+                services.AddSingleton<IAmazonS3>(p =>
+                {
+                    var config = new AmazonS3Config
+                    {
+                        RegionEndpoint = RegionEndpoint.EnumerableAllRegions
+                            .FirstOrDefault(r => r.DisplayName == configuration.GetValue<string>("AWS:Region"))
+                    };
+
+                    if (p.GetService<IHostEnvironment>().IsDevelopment())
+                    {
+                        //settings to use with localstack S3 service
+                        var serviceUrl = configuration.GetValue<string>("AWS:ServiceURL");
+                        if (!string.IsNullOrEmpty(serviceUrl))
+                        {
+                            config.ServiceURL = configuration.GetValue<string>("AWS:ServiceURL");
+                        }
+                        config.ForcePathStyle = true;
+                    }
+
+                    var awsAccessKeyId = configuration.GetValue<string>("AWS:AWS_ACCESS_KEY_ID");
+                    var awsSecretAccessKey = configuration.GetValue<string>("AWS:AWS_SECRET_ACCESS_KEY");
+                    return new AmazonS3Client(awsAccessKeyId, awsSecretAccessKey, config);
+                });
+
+                services.Configure<S3StorageOptions>(configuration.GetSection(nameof(S3StorageOptions)));
+
+                services.AddSingleton<IFileService, S3Service>();
             }
 
             return services;
@@ -101,7 +136,7 @@ namespace VoteMonitor.Api.Extensions
                 .AddRedis(configuration["RedisCacheOptions:Configuration"], "Redis")
                     .CheckOnlyWhen("Redis", () => enableHealthChecks && configuration["ApplicationCacheOptions:Implementation"] == "RedisCache")
                 .AddAzureBlobStorage("AzureBlobStorage")
-                    .CheckOnlyWhen("AzureBlobStorage", () => enableHealthChecks && !(configuration["FileServiceOptions:Type"] == "LocalFileService"))
+                    .CheckOnlyWhen("AzureBlobStorage", () => enableHealthChecks && configuration["FileServiceOptions:Type"] == "BlobService")
                 .AddFirebase("Firebase")
                     .CheckOnlyWhen("Firebase", () => enableHealthChecks && !string.IsNullOrEmpty(configuration["FirebaseServiceOptions:ServerKey"]))
                 .AddApplicationInsightsPublisher();

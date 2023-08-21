@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.Options;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Auth;
-using Microsoft.WindowsAzure.Storage.Blob;
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Specialized;
+using Azure.Storage.Sas;
+using Microsoft.Extensions.Options;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -12,18 +12,27 @@ namespace VoteMonitor.Api.Core.Services
     /// <inheritdoc />
     public class BlobService : IFileService
     {
-        private CloudBlobClient _client;
-        private IOptions<BlobStorageOptions> _storageOptions;
-        /// <summary>
-        /// 
-        /// </summary>
-        public StorageCredentials Credentials => new StorageCredentials(_storageOptions.Value.AccountName, _storageOptions.Value.AccountKey);
+        private BlobContainerClient _blobContainerClient;
+        private BlobStorageOptions _storageOptions;
 
         /// <inheritdoc />
         public BlobService(IOptions<BlobStorageOptions> storageOptions)
         {
-            _storageOptions = storageOptions;
-            _client = new CloudStorageAccount(Credentials, _storageOptions.Value.UseHttps).CreateCloudBlobClient();
+            _storageOptions = storageOptions.Value;
+            _blobContainerClient = GetOrCreateContainerClient();
+        }
+
+        private BlobContainerClient GetOrCreateContainerClient()
+        {
+            var blobServiceClient = new BlobServiceClient(_storageOptions.ConnectionString);
+            var blobContainerClient = blobServiceClient.GetBlobContainerClient(_storageOptions.ContainerName);
+
+            if (!blobContainerClient.Exists())
+            {
+                blobServiceClient.CreateBlobContainer(_storageOptions.ContainerName);
+            }
+
+            return blobContainerClient;
         }
 
         /// <summary>
@@ -31,30 +40,36 @@ namespace VoteMonitor.Api.Core.Services
         /// </summary>
         public async Task<string> UploadFromStreamAsync(Stream sourceStream, string mimeType, string extension, UploadType uploadType)
         {
-            // Get a reference to the container.
-            var container = _client.GetContainerReference(_storageOptions.Value.Container);
+            // Get a reference to a blob
+            BlobClient blobClient = _blobContainerClient.GetBlobClient(Guid.NewGuid().ToString("N") + extension);
+            await blobClient.UploadAsync(sourceStream);
 
-            // Retrieve reference to a blob.
-            var blockBlob = container.GetBlockBlobReference(Guid.NewGuid().ToString("N") + extension);
-
-            // Create or overwrite the previous created blob with contents from stream.
-            blockBlob.Properties.ContentType = mimeType;
-
-            await blockBlob.UploadFromStreamAsync(sourceStream, sourceStream.Length);
-
-
-            await blockBlob.SetPropertiesAsync();
-
-            return blockBlob.Uri.ToString();
+            var blobUri = GetBlobURI(blobClient);
+            return blobUri.ToString();
         }
 
-        public async Task Initialize()
+        private Uri GetBlobURI(BlobClient blobClient)
         {
-            // Get a reference to the container.
-            var container = _client.GetContainerReference(_storageOptions.Value.Container);
+            // Check if BlobContainerClient object has been authorized with Shared Key
+            if (blobClient.CanGenerateSasUri)
+            {
+                // Create a SAS token that's valid for 30 days
+                BlobSasBuilder sasBuilder = new BlobSasBuilder
+                {
+                    BlobContainerName = blobClient.GetParentBlobContainerClient().Name,
+                    BlobName = blobClient.Name,
+                    Resource = "b",
+                    ExpiresOn = DateTimeOffset.UtcNow.AddMinutes(_storageOptions.SASBlobAvailabilityInMinutes)
+                };
 
-            // Create the container if it doesn't already exist.
-            await container.CreateIfNotExistsAsync();
+                sasBuilder.SetPermissions(BlobContainerSasPermissions.Read);
+
+                var sasURI = blobClient.GenerateSasUri(sasBuilder);
+
+                return sasURI;
+            }
+
+            throw new ApplicationException("Cannot create SAS token for requested blob");
         }
     }
 }

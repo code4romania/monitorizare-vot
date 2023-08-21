@@ -1,10 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
+using Microsoft.EntityFrameworkCore;
 
 namespace VoteMonitor.Entities
 {
-    public partial class VoteMonitorContext : DbContext
+    public class VoteMonitorContext : DbContext
     {
+        public VoteMonitorContext(DbContextOptions<VoteMonitorContext> options)
+            : base(options)
+        {
+
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<NgoAdmin>(entity =>
@@ -47,11 +52,13 @@ namespace VoteMonitor.Entities
                     .IsRequired()
                     .HasMaxLength(100);
 
-				entity.Property(x=>x.Diaspora)
-					.HasDefaultValueSql("0"); // should this be required?
+                entity
+                    .Property(x => x.Diaspora)
+                    .HasDefaultValue(false);
 
-                entity.Property(x => x.Order)
-                    .HasDefaultValueSql("0");
+                entity
+                    .Property(x => x.Order)
+                    .HasDefaultValue(0);
             });
 
             modelBuilder.Entity<Note>(entity =>
@@ -68,8 +75,7 @@ namespace VoteMonitor.Entities
                 entity.HasIndex(e => e.IdPollingStation)
                     .HasName("IX_Note_IdPollingStation");
 
-
-                entity.Property(e => e.LastModified).HasColumnType("datetime");
+                entity.Property(e => e.LastModified);
 
                 entity.HasOne(d => d.Question)
                     .WithMany(p => p.Notes)
@@ -111,13 +117,15 @@ namespace VoteMonitor.Entities
                 entity.HasIndex(e => e.MobileDeviceId);
                 entity.HasIndex(e => e.MobileDeviceIdType);
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id)
+                    .ValueGeneratedNever();
 
-                entity.Property(e => e.DeviceRegisterDate).HasColumnType("datetime");
+                entity.Property(e => e.DeviceRegisterDate);
 
-                entity.Property(e => e.FromTeam).HasDefaultValueSql("0");
+                entity.Property(e => e.FromTeam)
+                    .HasDefaultValue(false);
 
-                entity.Property(e => e.MobileDeviceId).HasColumnType("varchar(500)");
+                entity.Property(e => e.MobileDeviceId).HasMaxLength(500);
 
                 entity.Property(e => e.Phone)
                     .IsRequired()
@@ -127,8 +135,9 @@ namespace VoteMonitor.Entities
                     .IsRequired()
                     .HasMaxLength(200);
 
-                entity.Property(e => e.IsTestObserver)
-                    .HasDefaultValueSql("0");
+                entity
+                    .Property(e => e.IsTestObserver)
+                    .HasDefaultValue(false);
 
                 entity.Property(e => e.MobileDeviceIdType)
                     .HasDefaultValue(MobileDeviceIdType.UserGeneratedGuid);
@@ -158,8 +167,13 @@ namespace VoteMonitor.Entities
                     .IsRequired()
                     .HasMaxLength(200);
 
-                entity.Property(e => e.Organizer).HasDefaultValueSql("0");
-                entity.Property(e => e.IsActive).HasDefaultValueSql("0");
+                entity
+                    .Property(e => e.Organizer)
+                    .HasDefaultValue(false);
+
+                entity
+                    .Property(e => e.IsActive)
+                    .HasDefaultValue(false);
 
             });
 
@@ -181,12 +195,13 @@ namespace VoteMonitor.Entities
                     .HasName("IX_Answer_IdObserver_CountyCode_PollingStationNumber_LastModified");
 
                 entity.Property(e => e.LastModified)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("getdate()");
+                    .HasDefaultValueSql("timezone('utc', now())");
 
-                entity.Property(e => e.Value).HasMaxLength(1000);
+                entity.Property(e => e.Value)
+                    .HasMaxLength(1000);
 
-                entity.Property(e => e.CountyCode).HasMaxLength(2);
+                entity.Property(e => e.CountyCode)
+                    .HasMaxLength(2);
 
                 entity.HasOne(d => d.Observer)
                     .WithMany(p => p.Answers)
@@ -218,12 +233,11 @@ namespace VoteMonitor.Entities
                     .HasName("IX_PollingStationInfo_IdPollingStation");
 
                 entity.Property(e => e.LastModified)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("getdate()");
+                    .HasDefaultValueSql("timezone('utc', now())");
 
-                entity.Property(e => e.ObserverLeaveTime).HasColumnType("datetime");
+                entity.Property(e => e.ObserverLeaveTime);
 
-                entity.Property(e => e.ObserverArrivalTime).HasColumnType("datetime");
+                entity.Property(e => e.ObserverArrivalTime);
 
                 entity.HasOne(d => d.Observer)
                     .WithMany(p => p.PollingStationInfos)
@@ -249,11 +263,14 @@ namespace VoteMonitor.Entities
                     .HasName("IX_Unique_IdCounty_IdPollingStation")
                     .IsUnique();
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id)
+                    .ValueGeneratedNever();
 
-                entity.Property(e => e.Address).HasMaxLength(500);
+                entity.Property(e => e.Address)
+                    .HasMaxLength(500);
 
-                entity.Property(e => e.Coordinates).HasColumnType("varchar(200)");
+                entity.Property(e => e.Coordinates)
+                    .HasMaxLength(200);
 
                 entity.Property(e => e.AdministrativeTerritoryCode).HasMaxLength(100);
 
@@ -274,16 +291,17 @@ namespace VoteMonitor.Entities
                 entity.HasKey(e => e.Id)
                     .HasName("PK_FormVersion");
 
-                entity.Property(e => e.Id).HasMaxLength(2);
+                entity.Property(e => e.Id)
+                    .HasMaxLength(2);
 
                 entity.Property(x => x.Diaspora)
-                    .HasDefaultValueSql("0"); // check this mapping
+                    .HasDefaultValue(false);
 
                 entity.Property(x => x.Draft)
-                    .HasDefaultValueSql("0"); // check this mapping 
+                    .HasDefaultValue(false);
 
                 entity.Property(x => x.Order)
-                    .HasDefaultValueSql("0");
+                    .HasDefaultValue(0);
 
             });
 
@@ -309,6 +327,7 @@ namespace VoteMonitor.Entities
                     .IsRequired()
                     .HasMaxLength(200);
             });
+
             modelBuilder.Entity<Question>(entity =>
             {
                 entity.HasKey(e => e.Id)
@@ -322,6 +341,7 @@ namespace VoteMonitor.Entities
                     .HasForeignKey(d => d.IdSection)
                     .OnDelete(DeleteBehavior.Restrict);
             });
+
             modelBuilder.Entity<OptionToQuestion>(entity =>
             {
                 entity.HasKey(e => e.Id)
@@ -337,7 +357,8 @@ namespace VoteMonitor.Entities
                     .HasName("IX_OptionToQuestion")
                     .IsUnique();
 
-                entity.Property(e => e.Flagged).HasDefaultValueSql("0");
+                entity.Property(e => e.Flagged)
+                    .HasDefaultValue(false);
 
                 entity.HasOne(d => d.Question)
                     .WithMany(p => p.OptionsToQuestions)
@@ -351,12 +372,15 @@ namespace VoteMonitor.Entities
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_OptionToQuestion_Option");
             });
+
             modelBuilder.Entity<Option>(entity =>
             {
                 entity.HasKey(e => e.Id)
                     .HasName("PK_Option");
 
-                entity.Property(e => e.IsFreeText).HasDefaultValueSql("0");
+                entity
+                    .Property(e => e.IsFreeText)
+                    .HasDefaultValue(false);
             });
 
             modelBuilder.Entity<NotificationRegistrationData>(entity =>
@@ -450,16 +474,5 @@ namespace VoteMonitor.Entities
         public virtual DbSet<ComposedStatistics> ComposedStatistics { get; set; }
         public virtual DbSet<OptionsStatistics> OptionsStatistics { get; set; }
         public virtual DbSet<ExportModel> ExportModels { get; set; }
-
-
-        public class AnswerQueryInfo
-        {
-            public int IdPollingStation { get; set; }
-            public int IdObserver { get; set; }
-            public string ObserverPhoneNumber { get; set; }
-            public string ObserverName { get; set; }
-            public string PollingStation { get; set; }
-            public DateTime LastModified { get; set; }
-        }
     }
 }

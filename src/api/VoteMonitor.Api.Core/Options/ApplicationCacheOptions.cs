@@ -1,4 +1,4 @@
-﻿namespace VoteMonitor.Api.Core.Options
+namespace VoteMonitor.Api.Core.Options
 {
     public class ApplicationCacheOptions
     {
@@ -8,7 +8,7 @@
 
         public int Seconds { get; set; }
 
-        public string Implementation { get; set; } = ApplicationCacheImplementationType.NoCache.ToString();
+        public ApplicationCacheImplementationType Implementation { get; set; } = ApplicationCacheImplementationType.NoCache;
     }
 
     public enum ApplicationCacheImplementationType
