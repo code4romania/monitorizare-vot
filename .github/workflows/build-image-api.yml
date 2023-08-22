@@ -43,7 +43,7 @@ jobs:
         with:
           builder: ${{ steps.buildx.outputs.name }}
           context: src
-          file: src/api/VoteMonitor.Api/Dockerfile
+          file: api/VoteMonitor.Api/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
