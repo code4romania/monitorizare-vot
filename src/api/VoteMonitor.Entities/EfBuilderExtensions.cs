@@ -1,5 +1,4 @@
 ﻿using LinqKit;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,15 +6,6 @@ using System.Linq.Expressions;
 
 namespace VoteMonitor.Entities
 {
-    public partial class VoteMonitorContext : DbContext
-    {
-        public VoteMonitorContext(DbContextOptions<VoteMonitorContext> options)
-            : base(options)
-        {
-
-        }
-    }
-
     public static class EfBuilderExtensions
     {
         /// <summary>

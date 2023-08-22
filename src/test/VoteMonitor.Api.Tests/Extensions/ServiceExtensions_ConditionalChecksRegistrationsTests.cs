@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -44,6 +44,7 @@ namespace VoteMonitor.Api.Tests.Extensions
             var configuration = new ConfigurationBuilder()
                 .AddInMemoryCollection(new Dictionary<string, string>()
                 {
+                     { "EnableHealthChecks", "true"},
                      { "ApplicationCacheOptions:Implementation", "RedisCache"}
                 })
                 .Build();
@@ -107,6 +108,7 @@ namespace VoteMonitor.Api.Tests.Extensions
             var configuration = new ConfigurationBuilder()
                 .AddInMemoryCollection(new Dictionary<string, string>()
                 {
+                     { "EnableHealthChecks", "true"},
                      { "FirebaseServiceOptions:ServerKey", "a valid server key"}
                 })
                 .Build();
@@ -131,6 +133,7 @@ namespace VoteMonitor.Api.Tests.Extensions
             var configuration = new ConfigurationBuilder()
                  .AddInMemoryCollection(new Dictionary<string, string>()
                 {
+                     { "EnableHealthChecks", "true"},
                      { "FileServiceOptions:Type", "LocalFileService"}
                 })
                 .Build();
@@ -153,6 +156,11 @@ namespace VoteMonitor.Api.Tests.Extensions
             var healthCheckMock = new Mock<IHealthCheck>();
             var serviceCollection = new ServiceCollection();
             var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string>()
+                {
+                    { "EnableHealthChecks", "true"},
+                    { "FileServiceOptions:Type", "BlobService"}
+                })
                 .Build();
             var (registration, conditionalHealthCheck) = ArrangeRegistration(healthCheckMock, serviceCollection, configuration, "AzureBlobStorage");
 
@@ -172,8 +180,8 @@ namespace VoteMonitor.Api.Tests.Extensions
             serviceCollection.AddHealthChecks(configuration);
 
             var sp = serviceCollection.BuildServiceProvider();
-            var regisrations = sp.GetService<IOptions<HealthCheckServiceOptions>>().Value.Registrations;
-            var registration = regisrations.First(c => c.Name == name);
+            var registrations = sp.GetService<IOptions<HealthCheckServiceOptions>>().Value.Registrations;
+            var registration = registrations.First(c => c.Name == name);
             var healthCheck = registration.Factory(sp);
             healthCheck.Should().BeOfType(typeof(ConditionalHealthCheck));
 

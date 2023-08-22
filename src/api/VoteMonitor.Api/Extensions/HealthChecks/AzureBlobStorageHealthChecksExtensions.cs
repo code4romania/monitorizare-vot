@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Auth;
-using Microsoft.WindowsAzure.Storage.Blob;
+
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,16 +32,10 @@ namespace VoteMonitor.Api.Extensions.HealthChecks
         {
             try
             {
-                var credentials = new StorageCredentials(_storageOptions.Value.AccountName, _storageOptions.Value.AccountKey);
-                var blobClient = new CloudStorageAccount(credentials, _storageOptions.Value.UseHttps).CreateCloudBlobClient();
+                var containerClient = await new BlobServiceClient(_storageOptions.Value.ConnectionString)
+                    .CreateBlobContainerAsync(_storageOptions.Value.ContainerName, cancellationToken: cancellationToken);
 
-                var serviceProperties = await blobClient.GetServicePropertiesAsync(
-                    new BlobRequestOptions(),
-                    operationContext: null,
-                    cancellationToken: cancellationToken);
-
-                var container = blobClient.GetContainerReference(_storageOptions.Value.Container);
-                await container.FetchAttributesAsync();
+                await containerClient.Value.GetPropertiesAsync(new BlobRequestConditions(), cancellationToken: cancellationToken);
 
                 return HealthCheckResult.Healthy();
             }
