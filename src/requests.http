@@ -1,5 +1,5 @@
 # @url = https://localhost:44335
-@url = https://localhost:5001
+# @url = https://localhost:5001
 @url = http://localhost:53413
 
 # @name observerJwtToken
@@ -222,4 +222,12 @@ Authorization: Bearer {{adminJwtToken.response.body.$.access_token}}
   "title": "string",
   "message": "string"
 }
+###
+# @name getFormVersions
+GET {{url}}/api/v1/form/versions
+Authorization: Bearer {{observerJwtToken.response.body.$.access_token}}
+###
+# @name getFormDetails
+GET {{url}}/api/v1/form/1
+Authorization: Bearer {{observerJwtToken.response.body.$.access_token}}
 ###

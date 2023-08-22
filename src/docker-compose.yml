@@ -122,3 +122,11 @@ services:
       - "10001:10001"
     volumes:
       - './.blobstorage:/data'
+      
+  redis:
+    image: redis:7.2-alpine
+    container_name: vote_monitor_redis
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning --requirepass redisPass
