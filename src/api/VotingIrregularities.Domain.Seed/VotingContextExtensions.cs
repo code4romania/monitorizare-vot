@@ -4,9 +4,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using VoteMonitor.Entities;
 
 
-namespace VoteMonitor.Entities
+namespace VotingIrregularities.Domain.Seed
 {
     public static class VotingContextExtensions
     {
@@ -16,7 +17,6 @@ namespace VoteMonitor.Entities
             {
                 return;
             }
-
 
             using (var tran = context.Database.BeginTransaction())
             {
@@ -156,20 +156,21 @@ namespace VoteMonitor.Entities
 
         private static void DataCleanUp(this VoteMonitorContext context)
         {
-            context.Database.ExecuteSqlRaw("delete from NotesAttachments");
-            context.Database.ExecuteSqlRaw("delete from Notes");
-            context.Database.ExecuteSqlRaw("delete from Answers");
-            context.Database.ExecuteSqlRaw("delete from OptionsToQuestions");
-            context.Database.ExecuteSqlRaw("delete from Options");
-            context.Database.ExecuteSqlRaw("DBCC CHECKIDENT (Options, RESEED, 0)"); // we need to reset autoincrement since we reference options by their id 
-            context.Database.ExecuteSqlRaw("delete from Questions");
-            context.Database.ExecuteSqlRaw("delete from FormSections");
-            context.Database.ExecuteSqlRaw("delete from Forms");
-            context.Database.ExecuteSqlRaw("delete from PollingStations");
-            context.Database.ExecuteSqlRaw("delete from Counties");
-            context.Database.ExecuteSqlRaw("delete from Observers");
-            context.Database.ExecuteSqlRaw("delete from NgoAdmin");
-            context.Database.ExecuteSqlRaw("delete from Ngos");
+            context.Database.ExecuteSqlRaw(@"delete from public.""NotificationRecipients""");
+            context.Database.ExecuteSqlRaw(@"delete from public.""Notifications""");
+            context.Database.ExecuteSqlRaw(@"delete from public.""NotesAttachments""");
+            context.Database.ExecuteSqlRaw(@"delete from public.""Notes""");
+            context.Database.ExecuteSqlRaw(@"delete from public.""Answers""");
+            context.Database.ExecuteSqlRaw(@"delete from public.""OptionsToQuestions""");
+            context.Database.ExecuteSqlRaw(@"delete from public.""Options""");
+            context.Database.ExecuteSqlRaw(@"delete from public.""Questions""");
+            context.Database.ExecuteSqlRaw(@"delete from public.""FormSections""");
+            context.Database.ExecuteSqlRaw(@"delete from public.""Forms""");
+            context.Database.ExecuteSqlRaw(@"delete from public.""PollingStations""");
+            context.Database.ExecuteSqlRaw(@"delete from public.""Counties""");
+            context.Database.ExecuteSqlRaw(@"delete from public.""Observers""");
+            context.Database.ExecuteSqlRaw(@"delete from public.""NgoAdmin""");
+            context.Database.ExecuteSqlRaw(@"delete from public.""Ngos""");
         }
 
         private static void SeedForms(this VoteMonitorContext context)

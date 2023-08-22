@@ -1,9 +1,10 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-namespace VoteMonitor.Entities.Migrations
+namespace VotingIrregularities.Domain.Seed.Migrations
 {
-    public partial class BrandNew : Migration
+    public partial class InitialPostgresMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,6 +14,7 @@ namespace VoteMonitor.Entities.Migrations
                 {
                     IdPollingStation = table.Column<int>(nullable: false),
                     IdObserver = table.Column<int>(nullable: false),
+                    ObserverPhoneNumber = table.Column<string>(nullable: true),
                     ObserverName = table.Column<string>(nullable: true),
                     PollingStation = table.Column<string>(nullable: true),
                     LastModified = table.Column<DateTime>(nullable: false)
@@ -43,8 +45,8 @@ namespace VoteMonitor.Entities.Migrations
                     Code = table.Column<string>(maxLength: 20, nullable: false),
                     Name = table.Column<string>(maxLength: 100, nullable: false),
                     NumberOfPollingStations = table.Column<int>(nullable: false),
-                    Diaspora = table.Column<bool>(nullable: false, defaultValueSql: "0"),
-                    Order = table.Column<int>(nullable: false, defaultValueSql: "0")
+                    Diaspora = table.Column<bool>(nullable: false, defaultValue: false),
+                    Order = table.Column<int>(nullable: false, defaultValue: 0)
                 },
                 constraints: table =>
                 {
@@ -78,13 +80,13 @@ namespace VoteMonitor.Entities.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(maxLength: 2, nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Code = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: false),
                     CurrentVersion = table.Column<int>(nullable: false),
-                    Diaspora = table.Column<bool>(nullable: false, defaultValueSql: "0"),
-                    Draft = table.Column<bool>(nullable: false, defaultValueSql: "0"),
-                    Order = table.Column<int>(nullable: false, defaultValueSql: "0")
+                    Diaspora = table.Column<bool>(nullable: false, defaultValue: false),
+                    Draft = table.Column<bool>(nullable: false, defaultValue: false),
+                    Order = table.Column<int>(nullable: false, defaultValue: 0)
                 },
                 constraints: table =>
                 {
@@ -98,8 +100,8 @@ namespace VoteMonitor.Entities.Migrations
                     Id = table.Column<int>(nullable: false),
                     ShortName = table.Column<string>(maxLength: 10, nullable: false),
                     Name = table.Column<string>(maxLength: 200, nullable: false),
-                    Organizer = table.Column<bool>(nullable: false, defaultValueSql: "0"),
-                    IsActive = table.Column<bool>(nullable: false, defaultValueSql: "0")
+                    Organizer = table.Column<bool>(nullable: false, defaultValue: false),
+                    IsActive = table.Column<bool>(nullable: false, defaultValue: false)
                 },
                 constraints: table =>
                 {
@@ -107,30 +109,15 @@ namespace VoteMonitor.Entities.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Notifications",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(nullable: true),
-                    Channel = table.Column<string>(nullable: true),
-                    Body = table.Column<string>(nullable: true),
-                    InsertedAt = table.Column<DateTime>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Notifications", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Options",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    IsFreeText = table.Column<bool>(nullable: false, defaultValueSql: "0"),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    IsFreeText = table.Column<bool>(nullable: false, defaultValue: false),
                     Text = table.Column<string>(maxLength: 1000, nullable: false),
-                    Hint = table.Column<string>(nullable: true)
+                    Hint = table.Column<string>(nullable: true),
+                    OrderNumber = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -169,7 +156,7 @@ namespace VoteMonitor.Entities.Migrations
                 {
                     Id = table.Column<int>(nullable: false),
                     Address = table.Column<string>(maxLength: 500, nullable: true),
-                    Coordinates = table.Column<string>(type: "varchar(200)", nullable: true),
+                    Coordinates = table.Column<string>(maxLength: 200, nullable: true),
                     AdministrativeTerritoryCode = table.Column<string>(maxLength: 100, nullable: true),
                     IdCounty = table.Column<int>(nullable: false),
                     TerritoryCode = table.Column<string>(maxLength: 100, nullable: false),
@@ -191,10 +178,11 @@ namespace VoteMonitor.Entities.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Code = table.Column<string>(maxLength: 4, nullable: false),
                     Description = table.Column<string>(maxLength: 200, nullable: false),
-                    IdForm = table.Column<int>(nullable: false)
+                    IdForm = table.Column<int>(nullable: false),
+                    OrderNumber = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -232,13 +220,15 @@ namespace VoteMonitor.Entities.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false),
-                    FromTeam = table.Column<bool>(nullable: false, defaultValueSql: "0"),
+                    FromTeam = table.Column<bool>(nullable: false, defaultValue: false),
                     IdNgo = table.Column<int>(nullable: false),
                     Phone = table.Column<string>(maxLength: 20, nullable: false),
                     Name = table.Column<string>(maxLength: 200, nullable: false),
                     Pin = table.Column<string>(maxLength: 100, nullable: false),
-                    MobileDeviceId = table.Column<string>(type: "varchar(500)", nullable: true),
-                    DeviceRegisterDate = table.Column<DateTime>(type: "datetime", nullable: true)
+                    MobileDeviceId = table.Column<string>(maxLength: 500, nullable: true),
+                    MobileDeviceIdType = table.Column<int>(nullable: false, defaultValue: 0),
+                    DeviceRegisterDate = table.Column<DateTime>(nullable: true),
+                    IsTestObserver = table.Column<bool>(nullable: false, defaultValue: false)
                 },
                 constraints: table =>
                 {
@@ -256,12 +246,13 @@ namespace VoteMonitor.Entities.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Code = table.Column<string>(nullable: true),
                     IdSection = table.Column<int>(nullable: false),
                     QuestionType = table.Column<int>(nullable: false),
-                    Text = table.Column<string>(maxLength: 200, nullable: false),
-                    Hint = table.Column<string>(nullable: true)
+                    Text = table.Column<string>(maxLength: 1000, nullable: false),
+                    Hint = table.Column<string>(nullable: true),
+                    OrderNumber = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -275,25 +266,24 @@ namespace VoteMonitor.Entities.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "NotificationRecipients",
+                name: "Notifications",
                 columns: table => new
                 {
-                    ObserverId = table.Column<int>(nullable: false),
-                    NotificationId = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Title = table.Column<string>(nullable: true),
+                    Channel = table.Column<string>(nullable: true),
+                    Body = table.Column<string>(nullable: true),
+                    InsertedAt = table.Column<DateTime>(nullable: false),
+                    SenderAdminId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_NotificationRecipients", x => new { x.ObserverId, x.NotificationId });
+                    table.PrimaryKey("PK_Notifications", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_NotificationRecipients_Notifications_NotificationId",
-                        column: x => x.NotificationId,
-                        principalTable: "Notifications",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_NotificationRecipients_Observers_ObserverId",
-                        column: x => x.ObserverId,
-                        principalTable: "Observers",
+                        name: "FK_Notifications_NgoAdmin_SenderAdminId",
+                        column: x => x.SenderAdminId,
+                        principalTable: "NgoAdmin",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -323,10 +313,10 @@ namespace VoteMonitor.Entities.Migrations
                 {
                     IdObserver = table.Column<int>(nullable: false),
                     IdPollingStation = table.Column<int>(nullable: false),
-                    LastModified = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "getdate()"),
+                    LastModified = table.Column<DateTime>(nullable: false, defaultValueSql: "timezone('utc', now())"),
                     UrbanArea = table.Column<bool>(nullable: true),
-                    ObserverLeaveTime = table.Column<DateTime>(type: "datetime", nullable: true),
-                    ObserverArrivalTime = table.Column<DateTime>(type: "datetime", nullable: true),
+                    ObserverLeaveTime = table.Column<DateTime>(nullable: true),
+                    ObserverArrivalTime = table.Column<DateTime>(nullable: true),
                     IsPollingStationPresidentFemale = table.Column<bool>(nullable: true)
                 },
                 constraints: table =>
@@ -351,9 +341,8 @@ namespace VoteMonitor.Entities.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AttachementPath = table.Column<string>(maxLength: 1000, nullable: true),
-                    LastModified = table.Column<DateTime>(type: "datetime", nullable: false),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    LastModified = table.Column<DateTime>(nullable: false),
                     IdQuestion = table.Column<int>(nullable: true),
                     IdObserver = table.Column<int>(nullable: false),
                     IdPollingStation = table.Column<int>(nullable: false),
@@ -387,10 +376,10 @@ namespace VoteMonitor.Entities.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     IdQuestion = table.Column<int>(nullable: false),
                     IdOption = table.Column<int>(nullable: false),
-                    Flagged = table.Column<bool>(nullable: false, defaultValueSql: "0")
+                    Flagged = table.Column<bool>(nullable: false, defaultValue: false)
                 },
                 constraints: table =>
                 {
@@ -410,13 +399,57 @@ namespace VoteMonitor.Entities.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "NotificationRecipients",
+                columns: table => new
+                {
+                    ObserverId = table.Column<int>(nullable: false),
+                    NotificationId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_NotificationRecipients", x => new { x.ObserverId, x.NotificationId });
+                    table.ForeignKey(
+                        name: "FK_NotificationRecipients_Notifications_NotificationId",
+                        column: x => x.NotificationId,
+                        principalTable: "Notifications",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_NotificationRecipients_Observers_ObserverId",
+                        column: x => x.ObserverId,
+                        principalTable: "Observers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "NotesAttachments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    NoteId = table.Column<int>(nullable: false),
+                    Path = table.Column<string>(maxLength: 1000, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_NoteAttachment", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_NotesAttachments_Notes_NoteId",
+                        column: x => x.NoteId,
+                        principalTable: "Notes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Answers",
                 columns: table => new
                 {
                     IdObserver = table.Column<int>(nullable: false),
                     IdOptionToQuestion = table.Column<int>(nullable: false),
                     IdPollingStation = table.Column<int>(nullable: false),
-                    LastModified = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "getdate()"),
+                    LastModified = table.Column<DateTime>(nullable: false, defaultValueSql: "timezone('utc', now())"),
                     Value = table.Column<string>(maxLength: 1000, nullable: true),
                     CountyCode = table.Column<string>(maxLength: 2, nullable: true),
                     PollingStationNumber = table.Column<int>(nullable: false)
@@ -460,6 +493,11 @@ namespace VoteMonitor.Entities.Migrations
                 column: "IdPollingStation");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Answer_IdObserver_CountyCode_PollingStationNumber_LastModified",
+                table: "Answers",
+                columns: new[] { "IdObserver", "CountyCode", "PollingStationNumber", "LastModified" });
+
+            migrationBuilder.CreateIndex(
                 name: "IX_FormSections_IdForm",
                 table: "FormSections",
                 column: "IdForm");
@@ -485,6 +523,11 @@ namespace VoteMonitor.Entities.Migrations
                 column: "IdQuestion");
 
             migrationBuilder.CreateIndex(
+                name: "IX_NotesAttachments_NoteId",
+                table: "NotesAttachments",
+                column: "NoteId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_NotificationRecipients_NotificationId",
                 table: "NotificationRecipients",
                 column: "NotificationId");
@@ -500,9 +543,24 @@ namespace VoteMonitor.Entities.Migrations
                 columns: new[] { "ObserverId", "ChannelName" });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Notifications_SenderAdminId",
+                table: "Notifications",
+                column: "SenderAdminId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Observer_IdNgo",
                 table: "Observers",
                 column: "IdNgo");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Observers_MobileDeviceId",
+                table: "Observers",
+                column: "MobileDeviceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Observers_MobileDeviceIdType",
+                table: "Observers",
+                column: "MobileDeviceIdType");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OptionToQuestion_Option",
@@ -562,10 +620,7 @@ namespace VoteMonitor.Entities.Migrations
                 name: "ExportModels");
 
             migrationBuilder.DropTable(
-                name: "NgoAdmin");
-
-            migrationBuilder.DropTable(
-                name: "Notes");
+                name: "NotesAttachments");
 
             migrationBuilder.DropTable(
                 name: "NotificationRecipients");
@@ -586,7 +641,13 @@ namespace VoteMonitor.Entities.Migrations
                 name: "OptionsToQuestions");
 
             migrationBuilder.DropTable(
+                name: "Notes");
+
+            migrationBuilder.DropTable(
                 name: "Notifications");
+
+            migrationBuilder.DropTable(
+                name: "Options");
 
             migrationBuilder.DropTable(
                 name: "Observers");
@@ -595,19 +656,19 @@ namespace VoteMonitor.Entities.Migrations
                 name: "PollingStations");
 
             migrationBuilder.DropTable(
-                name: "Options");
-
-            migrationBuilder.DropTable(
                 name: "Questions");
 
             migrationBuilder.DropTable(
-                name: "Ngos");
+                name: "NgoAdmin");
 
             migrationBuilder.DropTable(
                 name: "Counties");
 
             migrationBuilder.DropTable(
                 name: "FormSections");
+
+            migrationBuilder.DropTable(
+                name: "Ngos");
 
             migrationBuilder.DropTable(
                 name: "Forms");

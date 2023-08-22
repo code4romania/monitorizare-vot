@@ -1,37 +1,52 @@
-# @name getJwtToken
-POST https://localhost:44335/api/v2/access/authorize
+# @url = https://localhost:44335
+# @url = https://localhost:5001
+@url = http://localhost:53413
+
+# @name observerJwtToken
+POST {{url}}/api/v2/access/authorize
 Content-Type: application/json
 
 {
   "user": "075",
   "password": "1234",
-  "channelName": "string",
-  "fcmToken": "string"
+  "channelName": "a channel name",
+  "fcmToken": "fcmToken"
 }
-
 ###
-# @name exportForms
-POST https://localhost:44335/api/v1/export/forms
+
+# @name adminJwtToken
+POST {{url}}/api/v2/access/authorize
 Content-Type: application/json
-Authorization: Bearer {{getJwtToken.response.body.$.access_token}}
+
+{
+  "user": "code4roadmin",
+  "password": "password"
+}
+###
+
+
+# @name exportForms
+POST {{url}}/api/v1/export/forms
+Content-Type: application/json
+Authorization: Bearer {{observerJwtToken.response.body.$.access_token}}
 ###
 
 # @name exportFilledInForms
-POST https://localhost:44335/api/v1/export/filled-forms
+POST {{url}}/api/v1/export/filled-forms
 Content-Type: application/json
-Authorization: Bearer {{getJwtToken.response.body.$.access_token}}
+Authorization: Bearer {{observerJwtToken.response.body.$.access_token}}
 ###
 
 # @name getCounties
-GET https://localhost:44335/api/v1/county
+GET {{url}}/api/v1/county
 Content-Type: application/json
-Authorization: Bearer {{getJwtToken.response.body.$.access_token}}
+Authorization: Bearer {{observerJwtToken.response.body.$.access_token}}
 ###
 
 # @name getPollingStations
-GET https://localhost:44335/api/v2/polling-station
+GET {{url}}/api/v2/polling-station
 Content-Type: application/json
-Authorization: Bearer {{getJwtToken.response.body.$.access_token}}
+Authorization: Bearer {{observerJwtToken.response.body.$.access_token}}
 ###
 
 # @name addAnswer
@@ -39,9 +54,9 @@ Authorization: Bearer {{getJwtToken.response.body.$.access_token}}
 @countyCode = AR
 @pollingStationNumber = 1
 
-POST https://localhost:44335/api/v1/answers
+POST {{url}}/api/v1/answers
 Content-Type: application/json
-Authorization: Bearer {{getJwtToken.response.body.$.access_token}}
+Authorization: Bearer {{observerJwtToken.response.body.$.access_token}}
 
 {
   "answers": [
@@ -95,4 +110,124 @@ Authorization: Bearer {{getJwtToken.response.body.$.access_token}}
     },
   ]
 }
+###
+
+# @name statisticsMiniAll
+GET {{url}}/api/v1/statistics/mini/all
+Content-Type: application/json
+Authorization: Bearer {{observerJwtToken.response.body.$.access_token}}
+###
+
+
+# @name flaggedanswersStatistics
+GET {{url}}/api/v1/statistics/mini/flaggedanswers
+Content-Type: application/json
+Authorization: Bearer {{observerJwtToken.response.body.$.access_token}}
+###
+
+# @name loggedinobserversStatistics
+GET {{url}}/api/v1/statistics/mini/loggedinobservers
+Content-Type: application/json
+Authorization: Bearer {{observerJwtToken.response.body.$.access_token}}
+###
+
+# @name notesStatistics
+GET {{url}}/api/v1/statistics/mini/notes
+Content-Type: application/json
+Authorization: Bearer {{observerJwtToken.response.body.$.access_token}}
+###
+
+
+# @name countiesStatistics
+GET {{url}}/api/v1/statistics/mini/counties
+Content-Type: application/json
+Authorization: Bearer {{observerJwtToken.response.body.$.access_token}}
+###
+
+# @name stationsStatistics
+GET {{url}}/api/v1/statistics/mini/stations
+Content-Type: application/json
+Authorization: Bearer {{observerJwtToken.response.body.$.access_token}}
+###
+
+# @name answersStatistics
+GET {{url}}/api/v1/statistics/mini/answers
+Content-Type: application/json
+Authorization: Bearer {{observerJwtToken.response.body.$.access_token}}
+###
+
+# @name countAnswersByQuestion
+GET {{url}}/api/v1/statistics/countAnswersByQuestion
+  ?QuestionId=7
+Content-Type: application/json
+Authorization: Bearer {{observerJwtToken.response.body.$.access_token}}
+###
+
+
+# @name exportNotes
+GET {{url}}/api/v2/api/v1/export/all/notes
+  ?idNgo=1
+  &idObserver=1
+  &pollingStationNumber=1
+
+###
+
+# @name uploadNotes
+POST {{url}}/api/v2/note
+Authorization: Bearer {{observerJwtToken.response.body.$.access_token}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="CountyCode"
+
+IS
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="PollingStationNumber"
+
+23
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="QuestionId"
+
+1
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="Text"
+
+1
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="Files"; filename="1.jpg"
+Content-Type: image/jpg
+
+< ./1.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+###
+# @name registerNotification
+POST {{url}}/api/v1/notification/register
+Content-Type: application/json
+Authorization: Bearer {{observerJwtToken.response.body.$.access_token}}
+
+{
+  "observerId": 1,
+  "channelName": "string",
+  "token": "string"
+}
+###
+# @name sendNotification
+POST {{url}}/api/v1/notification/send/all
+Content-Type: application/json
+Authorization: Bearer {{adminJwtToken.response.body.$.access_token}}
+
+{
+  "channel": "string",
+  "from": "string",
+  "title": "string",
+  "message": "string"
+}
+###
+# @name getFormVersions
+GET {{url}}/api/v1/form/versions
+Authorization: Bearer {{observerJwtToken.response.body.$.access_token}}
+###
+# @name getFormDetails
+GET {{url}}/api/v1/form/1
+Authorization: Bearer {{observerJwtToken.response.body.$.access_token}}
 ###

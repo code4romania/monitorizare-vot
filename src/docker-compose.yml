@@ -1,0 +1,132 @@
+version: '3.4'
+
+services:
+  postgres:
+    image: postgres
+    container_name: vote_monitor_postgres
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - 5432:5432
+
+  migrator:
+    build:
+      context: .
+      dockerfile: api/VotingIrregularities.Domain.Migrator/Dockerfile
+    container_name: vote_monitor_migrator
+    environment:
+      ConnectionStrings__DefaultConnection: ${DB_CONNECTION_STRING}
+    depends_on:
+      - "postgres"
+
+  seed:
+    build:
+      context: .
+      dockerfile: api/VotingIrregularities.Domain.Seed/Dockerfile
+    container_name: vote_monitor_seed
+    environment:
+      ConnectionStrings__DefaultConnection: ${DB_CONNECTION_STRING}
+    depends_on:
+      - "postgres"
+      - "migrator"
+
+  api:
+    container_name: vote_monitor_api
+    depends_on:
+      - "postgres"
+      - "migrator"
+    build:
+      context: .
+      dockerfile: api/VoteMonitor.Api/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+      ASPNETCORE_URLS: ${ASPNETCORE_URLS}
+
+      ApplicationInsights__InstrumentationKey: ${APPLICATION_INSIGHTS_INSTRUMENTATION_KEY}
+
+      JwtIssuerOptions__Issuer: ${JWT_ISSUER}
+      JwtIssuerOptions__Audience: ${JWT_AUDIENCE}
+      SecretKey: ${JWT_SIGNING_KEY}
+
+      ConnectionStrings__DefaultConnection: ${DB_CONNECTION_STRING}
+
+      MobileSecurityOptions__InvalidCredentialsErrorMessage: ${INVALID_CREDENTIALS_ERROR_MESSAGE}
+      MobileSecurityOptions__LockDevice: ${MOBILESECURITY_LOCKDEVICE}
+
+      ApplicationCacheOptions__Implementation: ${CACHE_IMPLEMENTATION}
+      ApplicationCacheOptions__Hours: ${CACHE_HOURS}
+      ApplicationCacheOptions__Minutes: ${CACHE__MINUTES}
+      ApplicationCacheOptions__Seconds: ${CACHE__SECONDS}
+
+      RedisCacheOptions__Configuration: ${REDIS_CONFIGURATION}
+      RedisCacheOptions__InstanceName: ${REDIS_INSTANCE_NAME}
+
+      FirebaseServiceOptions__ServerKey: ${FIREBASESERVICE_SERVERKEY_PATH}
+
+      HashOptions__Salt: ${HASH_SALT}
+      HashOptions__ServiceType: ${HASH_SERVICE_TYPE}
+
+      FileStorageType: ${FILE_STORAGE_TYPE}
+
+      LocalFileStorageOptions__StoragePaths__Notes: ${FILESERVICE_NOTES_STORAGE_PATH}
+      LocalFileStorageOptions__StoragePaths__Observers: ${FILESERVICE_OBSERVERS_STORAGE_PATH}
+
+      BlobStorageOptions__ConnectionString: ${BLOBSTORAGE_CONNECTION_STRING}
+      BlobStorageOptions__ContainerName: ${BLOBSTORAGE_CONTAINER_NAME}
+      BlobStorageOptions__SASBlobAvailabilityInMinutes: ${BLOBSTORAGE_SAS_BLOB_AVAILABILITY}
+
+      S3StorageOptions__BucketName: ${S3_BUCKET_NAME}
+      S3StorageOptions__PresignedUrlExpirationInMinutes: ${S3_PRESIGNED_URL_EXPIRATION_IN_MINUTES}
+      AWS__ServiceURL: ${AWS_SERVICEURL}
+      AWS__AWS_ACCESS_KEY_ID: ${AWS_AWS_ACCESS_KEY_ID}
+      AWS__AWS_SECRET_ACCESS_KEY: ${AWS_AWS_SECRET_ACCESS_KEY}
+      AWS__Region: ${AWS_Region}
+      
+      DefaultNgoOptions__DefaultNgoId: ${DEFAULT_NGOID}
+      PollingStationsOptions__OverrideDefaultSorting: ${OVERRIDE_DEFAULT_SORTING}
+      PollingStationsOptions__CodeOfFirstToDisplayCounty: ${CODE_OF_FIRST_TO_DISPLAY_COUNTY}
+
+      EnableHealthChecks: ${ENABLE_HEALTHCHECKS}
+    ports:
+      - 53413:80
+    restart: unless-stopped
+    volumes:
+      - './.upload-location:/app/upload/observers'
+      - './.upload-location:/app/upload/notes'
+      - './.firebase:/app/firebase'
+
+  local-stack:
+    container_name: vote_monitor_localstack_s3
+    image: localstack/localstack:1.0.3
+    ports:
+      - '4566-4583:4566-4583'
+    environment:
+      DEBUG: 1
+      SERVICES: s3
+      EDGE_PORT: 4566
+      AWS_DEFAULT_REGION: eu-central-1
+      AWS_ACCESS_KEY_ID: key
+      AWS_SECRET_ACCESS_KEY: key
+    volumes:
+      - './.localstack:/var/lib/localstack'
+      - '/var/run/docker.sock:/var/run/docker.sock'
+
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite
+    container_name: vote_monitor_blob_storage
+    restart: always
+    ports:
+      - "10000:10000"
+      - "10001:10001"
+    volumes:
+      - './.blobstorage:/data'
+      
+  redis:
+    image: redis:7.2-alpine
+    container_name: vote_monitor_redis
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning

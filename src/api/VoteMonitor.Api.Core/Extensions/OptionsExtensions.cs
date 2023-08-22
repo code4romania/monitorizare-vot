@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using VoteMonitor.Api.Core.Options;
 
@@ -16,13 +16,11 @@ namespace VoteMonitor.Api.Core.Extensions
         public static IServiceCollection ConfigureCustomOptions(this IServiceCollection services,
             IConfiguration configuration)
         {
-            services.Configure<BlobStorageOptions>(configuration.GetSection(nameof(BlobStorageOptions)));
             services.Configure<HashOptions>(configuration.GetHashOptions());
             services.Configure<MobileSecurityOptions>(configuration.GetSection(nameof(MobileSecurityOptions)));
-            services.Configure<FileServiceOptions>(configuration.GetSection(nameof(FileServiceOptions)));
             services.Configure<FirebaseServiceOptions>(configuration.GetSection(nameof(FirebaseServiceOptions)));
             services.Configure<DefaultNgoOptions>(configuration.GetSection(nameof(DefaultNgoOptions)));
-            services.Configure<DefaultNgoOptions>(configuration.GetSection(nameof(ApplicationCacheOptions)));
+            services.Configure<ApplicationCacheOptions>(configuration.GetSection(nameof(ApplicationCacheOptions)));
             services.Configure<PollingStationsOptions>(configuration.GetSection(nameof(PollingStationsOptions)));
             return services;
         }

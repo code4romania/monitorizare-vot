@@ -1,4 +1,4 @@
-﻿namespace VoteMonitor.Api.Statistics.Handlers
+namespace VoteMonitor.Api.Statistics.Handlers
 {
     public class StatisticsQueryBuilder
     {
@@ -29,7 +29,7 @@
         {
             if (!string.IsNullOrEmpty(formCode))
             {
-                Query = $"{Query} AND f.Code = '{formCode}'";
+                Query = $"{Query} AND f.\"Code\" = '{formCode}'";
                 CacheKey = $"{CacheKey}-{formCode}";
             }
         }
@@ -42,7 +42,7 @@
         {
             if (!isOrganizer)
             {
-                Query = $"{Query} AND O.IdNgo = {ngoId}";
+                Query = $"{Query} AND O.\"IdNgo\" = {ngoId}";
                 CacheKey = $"{CacheKey}-{ngoId}";
             }
             else

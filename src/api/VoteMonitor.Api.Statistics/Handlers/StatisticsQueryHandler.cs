@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
@@ -34,18 +34,18 @@ namespace VoteMonitor.Api.Statistics.Handlers
         {
             var queryBuilder = new StatisticsQueryBuilder
             {
-                Query = $@"SELECT O.Text AS Label, O.Id AS Code, OQ.Flagged AS Flagged, COUNT(*) as Value
-                  FROM Answers AS A
-                  INNER JOIN OptionsToQuestions AS OQ ON OQ.Id = A.IdOptionToQuestion
-                  INNER JOIN Options AS O ON O.Id = OQ.IdOption
-                  INNER JOIN Observers Obs ON Obs.Id = A.IdObserver
-                  INNER JOIN Ngos N ON O.IdNgo = N.Id
-                  WHERE OQ.Id = {message.QuestionId} AND N.IsActive =1 AND Obs.IsTestObserver = 0",
+                Query = $@"SELECT O.""Text"" AS Label, O.""Id"" AS Code, OQ.""Flagged"" AS Flagged, COUNT(*) as Value
+                  FROM public.""Answers"" AS A
+                  INNER JOIN public.""OptionsToQuestions"" AS OQ ON OQ.""Id"" = A.""IdOptionToQuestion""
+                  INNER JOIN public.""Options"" AS O ON O.""Id"" = OQ.""IdOption""
+                  INNER JOIN public.""Observers"" Obs ON Obs.""Id"" = A.""IdObserver""
+                  INNER JOIN public.""Ngos"" N ON Obs.""IdNgo"" = N.""Id""
+                  WHERE OQ.""Id"" = {message.QuestionId} AND N.""IsActive"" = true AND Obs.""IsTestObserver"" = false",
                 CacheKey = $"StatisticiOptiuni-{message.QuestionId}"
             };
 
             queryBuilder.AndOngFilter(message.IsOrganizer, message.NgoId);
-            queryBuilder.Append("GROUP BY O.Text, O.Id, OQ.Flagged");
+            queryBuilder.Append(@"GROUP BY O.""Text"", O.""Id"", OQ.""Flagged""");
 
             return await _cacheService.GetOrSaveDataInCacheAsync(queryBuilder.CacheKey,
                 async () =>
@@ -79,16 +79,16 @@ namespace VoteMonitor.Api.Statistics.Handlers
         {
             var queryBuilder = new StatisticsQueryBuilder
             {
-                Query = @"SELECT COUNT(distinct a.IdObserver) as [Value], CountyCode as Label
-                          FROM Answers a (nolock) 
-                          INNER JOIN Observers o on a.IdObserver = o.Id
-                          INNER JOIN Ngos N ON O.IdNgo = N.Id
-                          WHERE N.IsActive = 1 AND o.IsTestObserver = 0",
+                Query = @"SELECT COUNT(distinct a.""IdObserver"") as Value, a.""CountyCode"" as Label
+                          FROM public.""Answers"" a
+                          INNER JOIN public.""Observers"" o on a.""IdObserver"" = o.""Id""
+                          INNER JOIN public.""Ngos"" N ON O.""IdNgo"" = N.""Id""
+                          WHERE N.""IsActive"" = true AND o.""IsTestObserver"" = false",
                 CacheKey = "StatisticiObservatori"
             };
 
             queryBuilder.AndOngFilter(message.IsOrganizer, message.NgoId);
-            queryBuilder.Append("group by CountyCode order by [Value] desc");
+            queryBuilder.Append(@"group by a.""CountyCode"" order by Value desc");
 
             var records = await _cacheService.GetOrSaveDataInCacheAsync(
                 queryBuilder.CacheKey,
@@ -123,21 +123,21 @@ namespace VoteMonitor.Api.Statistics.Handlers
         {
             var queryBuilder = new StatisticsQueryBuilder
             {
-                Query = @"SELECT R.CountyCode AS Label, COUNT(*) as Value
-                  FROM Answers AS R 
-                  INNER JOIN OptionsToQuestions AS RD ON RD.Id = R.IdOptionToQuestion
-                  INNER JOIN Observers O ON O.Id = R.IdObserver
-                  INNER JOIN Questions I ON I.Id = RD.IdQuestion
-                  INNER JOIN Ngos N ON O.IdNgo = N.Id
-                  INNER JOIN FormSections fs on i.IdSection = fs.Id
-                  INNER JOIN Forms f on fs.IdForm = f.Id
-                  WHERE RD.Flagged = 1 AND N.IsActive = 1 AND O.IsTestObserver = 0",
+                Query = @"SELECT R.""CountyCode"" AS Label, COUNT(*) as Value
+                  FROM public.""Answers"" AS R 
+                  INNER JOIN public.""OptionsToQuestions"" AS RD ON RD.""Id"" = R.""IdOptionToQuestion""
+                  INNER JOIN public.""Observers"" O ON O.""Id"" = R.""IdObserver""
+                  INNER JOIN public.""Questions"" I ON I.""Id"" = RD.""IdQuestion""
+                  INNER JOIN public.""Ngos"" N ON O.""IdNgo"" = N.""Id""
+                  INNER JOIN public.""FormSections"" fs on i.""IdSection"" = fs.""Id""
+                  INNER JOIN public.""Forms"" f on fs.""IdForm"" = f.""Id""
+                  WHERE RD.""Flagged"" = true AND N.""IsActive"" = true AND O.""IsTestObserver"" = false",
                 CacheKey = "StatisticiJudete"
             };
 
             queryBuilder.AndOngFilter(message.IsOrganizer, message.NgoId);
             queryBuilder.AndFormCodeFilter(message.FormCode);
-            queryBuilder.Append("GROUP BY R.CountyCode ORDER BY Value DESC");
+            queryBuilder.Append(@"GROUP BY R.""CountyCode"" ORDER BY Value DESC");
 
             var records = await _cacheService.GetOrSaveDataInCacheAsync(queryBuilder.CacheKey,
                 async () => await _context.SimpleStatistics
@@ -164,22 +164,21 @@ namespace VoteMonitor.Api.Statistics.Handlers
         {
             var queryBuilder = new StatisticsQueryBuilder
             {
-                Query = @"SELECT R.CountyCode AS Label, R.PollingStationNumber AS Code, COUNT(*) as Value
-                  FROM Answers AS R 
-                  INNER JOIN OptionsToQuestions AS RD ON RD.Id = R.IdOptionToQuestion
-                  INNER JOIN Observers O ON O.Id = R.IdObserver
-                  INNER JOIN Ngos N ON O.IdNgo = N.Id
-                  INNER JOIN Questions I ON I.Id = RD.IdQuestion
-                  INNER JOIN FormSections fs on i.IdSection = fs.Id
-                  INNER JOIN Forms f on fs.IdForm = f.Id
-                  WHERE RD.Flagged = 1 AND N.IsActive =1 AND O.IsTestObserver = 0",
+                Query = @"SELECT R.""CountyCode"" AS Label, R.""PollingStationNumber"" AS Code, COUNT(*) as Value
+                  FROM public.""Answers"" AS R 
+                  INNER JOIN public.""OptionsToQuestions"" AS RD ON RD.""Id"" = R.""IdOptionToQuestion""
+                  INNER JOIN public.""Observers"" O ON O.""Id"" = R.""IdObserver""
+                  INNER JOIN public.""Ngos"" N ON O.""IdNgo"" = N.""Id""
+                  INNER JOIN public.""Questions"" I ON I.""Id"" = RD.""IdQuestion""
+                  INNER JOIN public.""FormSections"" fs on i.""IdSection"" = fs.""Id""
+                  INNER JOIN public.""Forms"" f on fs.""IdForm"" = f.""Id""
+                  WHERE RD.""Flagged"" = true AND N.""IsActive"" = true AND O.IsTestObserver = false",
                 CacheKey = "StatisticiSectii"
             };
 
             queryBuilder.AndOngFilter(message.IsOrganizer, message.NgoId);
             queryBuilder.AndFormCodeFilter(message.FormCode);
             queryBuilder.Append("GROUP BY R.CountyCode, R.PollingStationNumber");
-
 
             return await _cacheService.GetOrSaveDataInCacheAsync($"{queryBuilder.CacheKey}-{message.Page}",
                 async () =>

@@ -5,14 +5,14 @@ using Microsoft.Extensions.Logging;
 using System;
 using VoteMonitor.Entities;
 
-namespace VotingIrregularities.Domain.Seed
+namespace VotingIrregularities.Domain.Migrator
 {
     public class Program
     {
         private static IConfigurationRoot _configuration;
         private static ILogger _logger;
 
-        public static void Main(string[] args)
+        public static void Main()
         {
             _configuration = ConfigurationHelper.GetConfiguration();
 
@@ -26,10 +26,9 @@ namespace VotingIrregularities.Domain.Seed
             using (var serviceScope = provider.GetService<IServiceScopeFactory>().CreateScope())
             {
                 var context = serviceScope.ServiceProvider.GetService<VoteMonitorContext>();
-  
-                _logger.LogDebug("Initializing data seeding...");
-                context.EnsureSeedData();
-                _logger.LogDebug("Data seeded.");
+                _logger.LogDebug("Initializing Database for VotingContext...");
+                context.Database.Migrate();
+                _logger.LogDebug("Database created");
             }
         }
 
@@ -48,7 +47,7 @@ namespace VotingIrregularities.Domain.Seed
             services.AddDbContext<VoteMonitorContext>(options =>
             {
                 options.UseNpgsql(connectionString,
-                    x => x.MigrationsAssembly("VotingIrregularities.Domain.Seed"));
+                    x => x.MigrationsAssembly("VotingIrregularities.Domain.Migrator"));
             });
         }
     }

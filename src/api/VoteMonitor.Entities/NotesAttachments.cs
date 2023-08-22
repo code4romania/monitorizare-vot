@@ -1,9 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VoteMonitor.Entities
 {
-    public partial class NotesAttachments : IIdentifiableEntity
+    public class NotesAttachments : IIdentifiableEntity
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
