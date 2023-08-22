@@ -24,6 +24,8 @@ namespace VoteMonitor.Api
 {
     public class Startup
     {
+        private const string CorsPolicyName = "Permissive";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -53,6 +55,13 @@ namespace VoteMonitor.Api
             services.AddApplicationInsightsTelemetry();
             services.AddCachingService(Configuration);
             services.AddHealthChecks(Configuration);
+
+            services.AddCors(options => options.AddPolicy(CorsPolicyName, builder =>
+            {
+                builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+            }));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -70,7 +79,7 @@ namespace VoteMonitor.Api
             app.UseAuthorization();
 
             app.UseSwaggerAndUi();
-
+            app.UseCors(CorsPolicyName);
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapHealthChecks("/health", new HealthCheckOptions
