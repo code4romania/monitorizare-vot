@@ -1,4 +1,4 @@
-namespace VoteMonitor.Api.Core.Services
+namespace VotingIrregularities.Domain.Seed.Services
 {
     public interface IHashService
     {

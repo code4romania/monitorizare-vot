@@ -1,96 +1,114 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
-using System;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using VoteMonitor.Entities;
+using VotingIrregularities.Domain.Seed.Options;
+using VotingIrregularities.Domain.Seed.Services;
 
 
 namespace VotingIrregularities.Domain.Seed
 {
-    public static class VotingContextExtensions
+    public class VotingContextSeeder
     {
-        public static void EnsureSeedData(this VoteMonitorContext context)
+        private readonly VoteMonitorContext _context;
+        private readonly IHashService _hashService;
+        private readonly SeedOption _options;
+        private readonly ILogger<VotingContextSeeder> _logger;
+
+        public VotingContextSeeder(VoteMonitorContext context,
+            IHashService hashService,
+            SeedOption options,
+            ILogger<VotingContextSeeder> logger)
         {
-            if (!context.AllMigrationsApplied())
+            _context = context;
+            _hashService = hashService;
+            _options = options;
+            _logger = logger;
+        }
+
+        public bool SeedData()
+        {
+            if (!AllMigrationsApplied(_context))
             {
-                return;
+                _logger.LogWarning("Not all migrations were applied please run VotingIrregularities.Domain.Migrator");
+                return false;
             }
 
-            using (var tran = context.Database.BeginTransaction())
+            if (_context.Ngos.Any()
+                || _context.NgoAdmins.Any()
+                || _context.Observers.Any()
+                || _context.Counties.Any()
+                || _context.PollingStations.Any()
+                || _context.Forms.Any()
+                || _context.FormSections.Any()
+                || _context.Questions.Any()
+                || _context.Options.Any()
+                || _context.OptionsToQuestions.Any()
+                || _context.Answers.Any()
+                || _context.Notes.Any()
+                || _context.NotesAttachments.Any()
+                || _context.Notifications.Any()
+                || _context.NotificationRecipients.Any())
             {
-                context.DataCleanUp();
+                if (!_options.OverrideExistingData)
+                {
+                    _logger.LogWarning("Data exists in DB! If you want to override existing data set OverrideExistingData=true");
+                    return false;
+                }
+            }
 
-                context.SeedNGOs();
-                context.SeedCounties();
-
-                context.SeedForms();
-
-                context.SeedObservers();
-                context.SeedAdmins();
-                context.SeedPollingStations();
+            using (var tran = _context.Database.BeginTransaction())
+            {
+                DataCleanUp();
+                SeedCounties();
+                SeedForms();
+                SeedNGOs();
+                SeedPollingStations();
 
                 tran.Commit();
             }
+
+            return true;
         }
 
-        private static void SeedObservers(this VoteMonitorContext context)
+        private bool AllMigrationsApplied(DbContext context)
         {
-            var observer1 = new Observer
-            {
-                Id = 0,
-                FromTeam = false,
-                IdNgo = 2,
-                Phone = "075",
-                Name = "Test observer 1",
-                Pin = "1234",
-                MobileDeviceId = Guid.NewGuid().ToString(),
-                DeviceRegisterDate = DateTime.Now
-            };
+            var applied = context.GetService<IHistoryRepository>()
+                .GetAppliedMigrations()
+                .Select(m => m.MigrationId);
 
-            var observer2 = new Observer
-            {
-                Id = 1,
-                FromTeam = false,
-                IdNgo = 2,
-                Phone = "074",
-                Name = "Test observer 2",
-                Pin = "1234",
-                MobileDeviceId = Guid.NewGuid().ToString(),
-                DeviceRegisterDate = DateTime.Now
-            };
+            var total = context.GetService<IMigrationsAssembly>()
+                .Migrations
+                .Select(m => m.Key);
 
-            context.Observers.AddRange(observer1, observer2);
-            context.SaveChanges();
+            return !total.Except(applied).Any();
         }
 
-        private static void SeedAdmins(this VoteMonitorContext context)
+        private void DataCleanUp()
         {
-            var admin1 = new NgoAdmin
-            {
-                Id = 0,
-                IdNgo = 1,
-                Account = "code4roadmin",
-                Password = "password"
-
-            };
-
-            var admin2 = new NgoAdmin
-            {
-                Id = 1,
-                IdNgo = 2,
-                Account = "guestngoadmin",
-                Password = "password"
-            };
-
-            context.NgoAdmins.AddRange(admin1, admin2);
-            context.SaveChanges();
+            _context.Database.ExecuteSqlRaw(@"delete from public.""NotificationRecipients""");
+            _context.Database.ExecuteSqlRaw(@"delete from public.""Notifications""");
+            _context.Database.ExecuteSqlRaw(@"delete from public.""NotesAttachments""");
+            _context.Database.ExecuteSqlRaw(@"delete from public.""Notes""");
+            _context.Database.ExecuteSqlRaw(@"delete from public.""Answers""");
+            _context.Database.ExecuteSqlRaw(@"delete from public.""OptionsToQuestions""");
+            _context.Database.ExecuteSqlRaw(@"delete from public.""Options""");
+            _context.Database.ExecuteSqlRaw(@"delete from public.""Questions""");
+            _context.Database.ExecuteSqlRaw(@"delete from public.""FormSections""");
+            _context.Database.ExecuteSqlRaw(@"delete from public.""Forms""");
+            _context.Database.ExecuteSqlRaw(@"delete from public.""PollingStations""");
+            _context.Database.ExecuteSqlRaw(@"delete from public.""Counties""");
+            _context.Database.ExecuteSqlRaw(@"delete from public.""Observers""");
+            _context.Database.ExecuteSqlRaw(@"delete from public.""NgoAdmin""");
+            _context.Database.ExecuteSqlRaw(@"delete from public.""Ngos""");
         }
 
-        private static void SeedPollingStations(this VoteMonitorContext context)
+        private void SeedPollingStations()
         {
-            var pollingStations = context.Counties.ToList().Select(x => new PollingStation()
+            var pollingStations = _context.Counties.ToList().Select(x => new PollingStation()
             {
                 Id = x.Id,
                 Address = $"{x.Name} main street",
@@ -101,13 +119,13 @@ namespace VotingIrregularities.Domain.Seed
                 AdministrativeTerritoryCode = x.Code
             }).ToList();
 
-            context.PollingStations.AddRange(pollingStations);
-            context.SaveChanges();
+            _context.PollingStations.AddRange(pollingStations);
+            _context.SaveChanges();
         }
 
-        private static void SeedCounties(this VoteMonitorContext context)
+        private void SeedCounties()
         {
-            context.Counties.AddRange(
+            _context.Counties.AddRange(
                 new County { Id = 0, NumberOfPollingStations = 1, Code = "AB", Name = "ALBA", Diaspora = false },
                 new County { Id = 1, NumberOfPollingStations = 1, Code = "AR", Name = "ARAD", Diaspora = false },
                 new County { Id = 2, NumberOfPollingStations = 1, Code = "AG", Name = "ARGES", Diaspora = false },
@@ -154,26 +172,7 @@ namespace VotingIrregularities.Domain.Seed
                 );
         }
 
-        private static void DataCleanUp(this VoteMonitorContext context)
-        {
-            context.Database.ExecuteSqlRaw(@"delete from public.""NotificationRecipients""");
-            context.Database.ExecuteSqlRaw(@"delete from public.""Notifications""");
-            context.Database.ExecuteSqlRaw(@"delete from public.""NotesAttachments""");
-            context.Database.ExecuteSqlRaw(@"delete from public.""Notes""");
-            context.Database.ExecuteSqlRaw(@"delete from public.""Answers""");
-            context.Database.ExecuteSqlRaw(@"delete from public.""OptionsToQuestions""");
-            context.Database.ExecuteSqlRaw(@"delete from public.""Options""");
-            context.Database.ExecuteSqlRaw(@"delete from public.""Questions""");
-            context.Database.ExecuteSqlRaw(@"delete from public.""FormSections""");
-            context.Database.ExecuteSqlRaw(@"delete from public.""Forms""");
-            context.Database.ExecuteSqlRaw(@"delete from public.""PollingStations""");
-            context.Database.ExecuteSqlRaw(@"delete from public.""Counties""");
-            context.Database.ExecuteSqlRaw(@"delete from public.""Observers""");
-            context.Database.ExecuteSqlRaw(@"delete from public.""NgoAdmin""");
-            context.Database.ExecuteSqlRaw(@"delete from public.""Ngos""");
-        }
-
-        private static void SeedForms(this VoteMonitorContext context)
+        private void SeedForms()
         {
             var otherOption = new Option { Text = "Other (please specify)", IsFreeText = true };
             var form1 = new Form
@@ -321,46 +320,42 @@ namespace VotingIrregularities.Domain.Seed
                 }
             };
 
-            context.Forms.Add(form1);
-            context.Forms.Add(form2);
+            _context.Forms.Add(form1);
+            _context.Forms.Add(form2);
 
-            context.SaveChanges();
+            _context.SaveChanges();
         }
 
-        private static void SeedNGOs(this VoteMonitorContext context)
+        private void SeedNGOs()
         {
-            context.Ngos.Add(new Ngo
+            foreach (var ngo in _options.Ngos)
             {
-                Id = 1,
-                Name = "Code4Romania",
-                Organizer = true,
-                ShortName = "C4R",
-                IsActive = true
-            });
-            context.Ngos.Add(new Ngo
-            {
-                Id = 2,
-                Name = "Guest NGO",
-                Organizer = false,
-                ShortName = "GUE",
-                IsActive = true
-            });
-            context.SaveChanges();
+                _context.Ngos.Add(new Ngo
+                {
+                    Id = int.Parse(ngo.Key),
+                    Name = ngo.Value.Name,
+                    Organizer = ngo.Value.IsOrganizer,
+                    ShortName = ngo.Value.ShortName,
+                    IsActive = true,
+                    NgoAdmins = ngo.Value.Admins.Select(x => new NgoAdmin()
+                    {
+                        Id = int.Parse(x.Key),
+                        Account = x.Value.Account,
+                        Password = _hashService.GetHash(x.Value.Password),
 
-        }
+                    }).ToArray(),
+                    Observers = ngo.Value.Observers.Select(x => new Observer()
+                    {
+                        Id = int.Parse(x.Key),
+                        Name = x.Value.Name,
+                        Phone = x.Value.Phone,
+                        Pin = _hashService.GetHash(x.Value.Pin),
+                        FromTeam = x.Value.FromTeam
+                    }).ToArray()
+                });
+            }
+            _context.SaveChanges();
 
-
-        private static bool AllMigrationsApplied(this DbContext context)
-        {
-            var applied = context.GetService<IHistoryRepository>()
-                .GetAppliedMigrations()
-                .Select(m => m.MigrationId);
-
-            var total = context.GetService<IMigrationsAssembly>()
-                .Migrations
-                .Select(m => m.Key);
-
-            return !total.Except(applied).Any();
         }
     }
 }

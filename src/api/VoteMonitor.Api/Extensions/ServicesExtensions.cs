@@ -20,13 +20,13 @@ namespace VoteMonitor.Api.Extensions
         {
             var hashOptions = configuration.GetHashOptions().Get<HashOptions>();
 
-            if (hashOptions.ServiceType == HashServiceType.ClearText)
+            if (hashOptions.HashServiceType == HashServiceType.ClearText)
             {
                 services.AddSingleton<IHashService, ClearTextService>();
             }
             else
             {
-                services.AddSingleton<IHashService, HashService>();
+                services.AddSingleton<IHashService, SHA256HashService>();
             }
 
             return services;
@@ -139,6 +139,8 @@ namespace VoteMonitor.Api.Extensions
                     .CheckOnlyWhen("AzureBlobStorage", () => enableHealthChecks && configuration["FileServiceOptions:Type"] == "BlobService")
                 .AddFirebase("Firebase")
                     .CheckOnlyWhen("Firebase", () => enableHealthChecks && !string.IsNullOrEmpty(configuration["FirebaseServiceOptions:ServerKey"]))
+                .AddS3Storage("S3")
+                    .CheckOnlyWhen("S3", () => enableHealthChecks && configuration["FileServiceOptions:Type"] == "S3Service")
                 .AddApplicationInsightsPublisher();
             return services;
         }

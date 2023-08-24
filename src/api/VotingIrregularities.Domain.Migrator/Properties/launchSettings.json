@@ -2,9 +2,8 @@
   "profiles": {
     "VotingIrregularities.Domain.Seed": {
       "commandName": "Project",
-      "commandLineArgs": "-seed",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "development"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     }
   }
