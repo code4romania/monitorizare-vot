@@ -22,7 +22,7 @@ namespace VotingIrregularities.Domain.Seed.Options
 
 
         /// <summary>
-        /// A dictionary containing NGOs to be seeded. Dictionary key is the ngo name
+        /// A dictionary containing NGOs to be seeded. Dictionary key is the ngo id
         /// </summary>
         public Dictionary<string, NgoSeed> Ngos { get; set; } = new Dictionary<string, NgoSeed>();
     }

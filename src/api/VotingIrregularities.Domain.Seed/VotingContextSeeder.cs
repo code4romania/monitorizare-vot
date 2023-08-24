@@ -332,23 +332,23 @@ namespace VotingIrregularities.Domain.Seed
             {
                 _context.Ngos.Add(new Ngo
                 {
-                    Id = ngo.Value.Id,
+                    Id = int.Parse(ngo.Key),
                     Name = ngo.Value.Name,
                     Organizer = ngo.Value.IsOrganizer,
-                    ShortName = ngo.Key,
+                    ShortName = ngo.Value.ShortName,
                     IsActive = true,
                     NgoAdmins = ngo.Value.Admins.Select(x => new NgoAdmin()
                     {
-                        Id = x.Value.Id,
-                        Account = x.Key,
+                        Id = int.Parse(x.Key),
+                        Account = x.Value.Account,
                         Password = _hashService.GetHash(x.Value.Password),
 
                     }).ToArray(),
                     Observers = ngo.Value.Observers.Select(x => new Observer()
                     {
-                        Id = x.Value.Id,
+                        Id = int.Parse(x.Key),
                         Name = x.Value.Name,
-                        Phone = x.Key,
+                        Phone = x.Value.Phone,
                         Pin = _hashService.GetHash(x.Value.Pin),
                         FromTeam = x.Value.FromTeam
                     }).ToArray()
