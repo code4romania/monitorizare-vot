@@ -28,7 +28,7 @@ namespace VotingIrregularities.Domain.Migrator
                 var context = serviceScope.ServiceProvider.GetService<VoteMonitorContext>();
                 _logger.LogDebug("Initializing Database for VotingContext...");
                 context.Database.Migrate();
-                _logger.LogDebug("Database created");
+                _logger.LogDebug("Database migrated");
             }
         }
 

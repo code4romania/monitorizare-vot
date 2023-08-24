@@ -4,15 +4,17 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using VoteMonitor.Entities;
+using VotingIrregularities.Domain.Seed.Options;
+using VotingIrregularities.Domain.Seed.Services;
 
 namespace VotingIrregularities.Domain.Seed
 {
     public class Program
     {
         private static IConfigurationRoot _configuration;
-        private static ILogger _logger;
+        private static ILogger<Program> _logger;
 
-        public static void Main(string[] args)
+        public static void Main()
         {
             _configuration = ConfigurationHelper.GetConfiguration();
 
@@ -25,16 +27,41 @@ namespace VotingIrregularities.Domain.Seed
 
             using (var serviceScope = provider.GetService<IServiceScopeFactory>().CreateScope())
             {
-                var context = serviceScope.ServiceProvider.GetService<VoteMonitorContext>();
-  
+                var seeder = serviceScope.ServiceProvider.GetService<VotingContextSeeder>();
+
                 _logger.LogDebug("Initializing data seeding...");
-                context.EnsureSeedData();
-                _logger.LogDebug("Data seeded.");
+                var success = seeder.SeedData();
+
+                if (success)
+                {
+
+                    _logger.LogDebug("Data seeded.");
+                }
+                else
+                {
+                    _logger.LogWarning("Problems occurred when migrating data. See logs.");
+                }
             }
         }
 
         private static void ConfigureServices(IServiceCollection services)
         {
+            // Seed options
+            var seedOptions = new SeedOption();
+            _configuration.GetSection(SeedOption.SectionKey).Bind(seedOptions);
+            services.AddSingleton(seedOptions);
+
+            // Configure hash service
+            if (seedOptions.HashServiceType == HashServiceType.ClearText)
+            {
+                services.AddSingleton<IHashService, ClearTextService>();
+            }
+
+            if (seedOptions.HashServiceType == HashServiceType.Hash)
+            {
+                services.AddSingleton<IHashService>(new HashService(seedOptions.PasswordSalt));
+            }
+
             // Logging
             services.AddLogging(configure =>
             {
@@ -50,6 +77,8 @@ namespace VotingIrregularities.Domain.Seed
                 options.UseNpgsql(connectionString,
                     x => x.MigrationsAssembly("VotingIrregularities.Domain.Seed"));
             });
+
+            services.AddTransient<VotingContextSeeder>();
         }
     }
 }

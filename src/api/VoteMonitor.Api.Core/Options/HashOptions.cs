@@ -9,7 +9,7 @@ namespace VoteMonitor.Api.Core.Options
         /// `Hash` will use the HashService (that needs the Salt setting) to generate hashes for the password
         /// :warning: `ClearText` will allow your development environment to create and store clear text passwords in the database. Please only use this in development to speed up things.
         /// </summary>
-        public HashServiceType ServiceType { get; set; } = HashServiceType.ClearText;
+        public HashServiceType HashServiceType { get; set; } = HashServiceType.ClearText;
     }
     public enum HashServiceType
     {

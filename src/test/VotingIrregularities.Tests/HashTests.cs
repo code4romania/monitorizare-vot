@@ -34,7 +34,7 @@ namespace VotingIrregularities.Tests
 
             var optionsList = Options.Create(hashOptions);
 
-            var hashService = new HashService(optionsList);
+            var hashService = new SHA256HashService(optionsList);
 
             var pathToFile = Directory.GetCurrentDirectory()
                + Path.DirectorySeparatorChar
