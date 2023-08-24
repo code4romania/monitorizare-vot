@@ -7,11 +7,11 @@ using VoteMonitor.Api.Core.Options;
 namespace VoteMonitor.Api.Core.Services
 {
     /// <inheritdoc />
-    public class HashService : IHashService
+    public class SHA256HashService : IHashService
     {
         private readonly string _salt;
 
-        public HashService(IOptions<HashOptions> options)
+        public SHA256HashService(IOptions<HashOptions> options)
         {
             _salt = options.Value.Salt;
         }

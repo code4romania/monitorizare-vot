@@ -26,7 +26,7 @@ namespace VoteMonitor.Api.Extensions
             }
             else
             {
-                services.AddSingleton<IHashService, HashService>();
+                services.AddSingleton<IHashService, SHA256HashService>();
             }
 
             return services;

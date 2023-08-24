@@ -59,7 +59,7 @@ namespace VotingIrregularities.Domain.Seed
 
             if (seedOptions.HashServiceType == HashServiceType.Hash)
             {
-                services.AddSingleton<IHashService>(new HashService(seedOptions.PasswordSalt));
+                services.AddSingleton<IHashService>(new SHA256HashService(seedOptions.PasswordSalt));
             }
 
             // Logging
