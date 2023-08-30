@@ -8,10 +8,10 @@ namespace VoteMonitor.Api.County.Models
         public int Id { get; set; }
 
         [Index(1)]
-        public string Name { get; set; }
+        public string Code { set; get; }
 
         [Index(2)]
-        public string Code { set; get; }
+        public string Name { get; set; }
 
         [Index(3)]
         public bool Diaspora { get; set; }

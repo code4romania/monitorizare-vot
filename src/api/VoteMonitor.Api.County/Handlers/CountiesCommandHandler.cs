@@ -188,15 +188,18 @@ namespace VoteMonitor.Api.County.Handlers
         {
             try
             {
-                var county = await _context.Counties.Select(c => new CountyModel
-                {
-                    Id = request.CountyId,
-                    Code = c.Code,
-                    Name = c.Name,
-                    Order = c.Order,
-                    Diaspora = c.Diaspora,
-                    NumberOfPollingStations = c.PollingStations.Count()
-                }).FirstOrDefaultAsync(x => x.Id == request.CountyId, cancellationToken);
+                var county = await _context.Counties
+                    .Where(x => x.Id == request.CountyId)
+                    .Select(c => new CountyModel
+                    {
+                        Id = request.CountyId,
+                        Code = c.Code,
+                        Name = c.Name,
+                        Order = c.Order,
+                        Diaspora = c.Diaspora,
+                        NumberOfPollingStations = c.PollingStations.Count()
+                    })
+                    .FirstOrDefaultAsync(cancellationToken);
 
                 if (county == null)
                 {
