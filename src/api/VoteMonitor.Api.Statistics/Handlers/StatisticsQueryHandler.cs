@@ -172,13 +172,13 @@ namespace VoteMonitor.Api.Statistics.Handlers
                   INNER JOIN public.""Questions"" I ON I.""Id"" = RD.""IdQuestion""
                   INNER JOIN public.""FormSections"" fs on i.""IdSection"" = fs.""Id""
                   INNER JOIN public.""Forms"" f on fs.""IdForm"" = f.""Id""
-                  WHERE RD.""Flagged"" = true AND N.""IsActive"" = true AND O.IsTestObserver = false",
+                  WHERE RD.""Flagged"" = true AND N.""IsActive"" = true AND O.""IsTestObserver"" = false",
                 CacheKey = "StatisticiSectii"
             };
 
             queryBuilder.AndOngFilter(message.IsOrganizer, message.NgoId);
             queryBuilder.AndFormCodeFilter(message.FormCode);
-            queryBuilder.Append("GROUP BY R.CountyCode, R.PollingStationNumber");
+            queryBuilder.Append(@"GROUP BY R.""CountyCode"", R.""PollingStationNumber""");
 
             return await _cacheService.GetOrSaveDataInCacheAsync($"{queryBuilder.CacheKey}-{message.Page}",
                 async () =>

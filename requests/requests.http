@@ -1,6 +1,6 @@
 # @url = https://localhost:44335
-# @url = https://localhost:5001
-@url = http://localhost:53413
+@url = https://localhost:5001
+# @url = http://localhost:53413
 
 # @name observerJwtToken
 POST {{url}}/api/v2/access/authorize
@@ -19,7 +19,7 @@ POST {{url}}/api/v2/access/authorize
 Content-Type: application/json
 
 {
-  "user": "code4roadmin",
+  "user": "admin@code4ro.org",
   "password": "password"
 }
 ###
@@ -28,7 +28,7 @@ Content-Type: application/json
 # @name exportForms
 POST {{url}}/api/v1/export/forms
 Content-Type: application/json
-Authorization: Bearer {{observerJwtToken.response.body.$.access_token}}
+Authorization: Bearer {{adminJwtToken.response.body.$.access_token}}
 ###
 
 # @name exportFilledInForms
@@ -40,7 +40,7 @@ Authorization: Bearer {{observerJwtToken.response.body.$.access_token}}
 # @name getCounties
 GET {{url}}/api/v1/county
 Content-Type: application/json
-Authorization: Bearer {{observerJwtToken.response.body.$.access_token}}
+Authorization: Bearer {{adminJwtToken.response.body.$.access_token}}
 ###
 
 # @name getPollingStations
@@ -230,4 +230,83 @@ Authorization: Bearer {{observerJwtToken.response.body.$.access_token}}
 # @name getFormDetails
 GET {{url}}/api/v1/form/1
 Authorization: Bearer {{observerJwtToken.response.body.$.access_token}}
+###
+
+###
+# @name importForms
+POST {{url}}/api/v1/form
+Content-Type: application/json
+Authorization: Bearer {{adminJwtToken.response.body.$.access_token}}
+
+< Saturday-A-Opening_B95q5oIoyG5dJi-9oxv3y.json
+###
+
+###
+# @name csvFormat
+GET {{url}}/api/v1/county/csvFormat
+Authorization: Bearer {{adminJwtToken.response.body.$.access_token}}
+###
+
+###
+# @name getObserversImportTemplate
+GET {{url}}/api/v1/observer/import-template
+Authorization: Bearer {{adminJwtToken.response.body.$.access_token}}
+###
+
+###
+# @name getCountyImportTemplate
+GET {{url}}/api/v1/county/import-template
+Authorization: Bearer {{adminJwtToken.response.body.$.access_token}}
+###
+
+###
+# @name getCountyImportTemplate
+GET {{url}}/api/v1/polling-station/import-template
+Authorization: Bearer {{adminJwtToken.response.body.$.access_token}}
+###
+
+###
+# @name importObservers
+POST {{url}}/api/v1/observer/import
+Authorization: Bearer {{adminJwtToken.response.body.$.access_token}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="ngoId"
+
+1
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="observers.csv"
+Content-Type: text/csv
+
+< ./observers.csv
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+###
+
+###
+# @name importCounties
+POST {{url}}/api/v1/county/import
+Authorization: Bearer {{adminJwtToken.response.body.$.access_token}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="CsvFile"; filename="counties.csv"
+Content-Type: text/csv
+
+< ./counties.csv
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+###
+
+###
+# @name importPollingStations
+POST {{url}}/api/v1/polling-station/import
+Authorization: Bearer {{adminJwtToken.response.body.$.access_token}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="CsvFile"; filename="polling-stations.csv"
+Content-Type: text/csv
+
+< ./polling-stations.csv
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
 ###

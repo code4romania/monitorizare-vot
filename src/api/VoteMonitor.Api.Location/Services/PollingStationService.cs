@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -93,7 +93,7 @@ namespace VoteMonitor.Api.Location.Services
                      {
                          Name = c.Name,
                          Code = c.Code,
-                         Limit = c.NumberOfPollingStations,
+                         Limit = c.PollingStations.Count(),
                          Id = c.Id,
                          Diaspora = c.Diaspora,
                          Order = c.Order

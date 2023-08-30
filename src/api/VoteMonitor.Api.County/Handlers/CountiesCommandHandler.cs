@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -78,7 +78,6 @@ namespace VoteMonitor.Api.County.Handlers
                     {
                         county.Code = csvModel.Code;
                         county.Name = csvModel.Name;
-                        county.NumberOfPollingStations = csvModel.NumberOfPollingStations;
                         county.Diaspora = csvModel.Diaspora;
                         county.Order = csvModel.Order;
 
@@ -95,7 +94,6 @@ namespace VoteMonitor.Api.County.Handlers
                         Id = csvModel.Id,
                         Code = csvModel.Code,
                         Name = csvModel.Name,
-                        NumberOfPollingStations = csvModel.NumberOfPollingStations,
                         Diaspora = csvModel.Diaspora,
                         Order = csvModel.Order
                     };
@@ -166,7 +164,15 @@ namespace VoteMonitor.Api.County.Handlers
             {
                 counties = await _context.Counties
                     .OrderBy(c => c.Order)
-                    .Select(x => _mapper.Map<CountyModel>(x))
+                    .Select(x => new CountyModel()
+                    {
+                        Id = x.Id,
+                        Code = x.Code,
+                        Name = x.Name,
+                        NumberOfPollingStations = x.PollingStations.Count(),
+                        Diaspora = x.Diaspora,
+                        Order = x.Order
+                    })
                     .ToListAsync(cancellationToken);
             }
             catch (Exception e)
@@ -182,15 +188,22 @@ namespace VoteMonitor.Api.County.Handlers
         {
             try
             {
-                var county = await _context.Counties.FirstOrDefaultAsync(x => x.Id == request.CountyId, cancellationToken);
+                var county = await _context.Counties.Select(c => new CountyModel
+                {
+                    Id = request.CountyId,
+                    Code = c.Code,
+                    Name = c.Name,
+                    Order = c.Order,
+                    Diaspora = c.Diaspora,
+                    NumberOfPollingStations = c.PollingStations.Count()
+                }).FirstOrDefaultAsync(x => x.Id == request.CountyId, cancellationToken);
+
                 if (county == null)
                 {
                     return Result.Failure<CountyModel>($"Could not find county with id = {request.CountyId}");
                 }
 
-                var countyModel = _mapper.Map<CountyModel>(county);
-
-                return Result.Success(countyModel);
+                return Result.Success(county);
             }
             catch (Exception e)
             {
@@ -203,17 +216,16 @@ namespace VoteMonitor.Api.County.Handlers
         {
             try
             {
-                var county = await _context.Counties.FirstOrDefaultAsync(x => x.Id == request.County.Id, cancellationToken);
+                var county = await _context.Counties.FirstOrDefaultAsync(x => x.Id == request.CountyId, cancellationToken);
                 if (county == null)
                 {
-                    return Result.Failure($"Could not find county with id = {request.County.Id}");
+                    return Result.Failure($"Could not find county with id = {request.CountyId}");
                 }
 
-                county.Code = request.County.Code;
-                county.Name = request.County.Name;
-                county.NumberOfPollingStations = request.County.NumberOfPollingStations;
-                county.Diaspora = request.County.Diaspora;
-                county.Order = request.County.Order;
+                county.Code = request.Code;
+                county.Name = request.Name;
+                county.Diaspora = request.Diaspora;
+                county.Order = request.Order;
 
                 await _context.SaveChangesAsync(cancellationToken);
 
@@ -221,8 +233,8 @@ namespace VoteMonitor.Api.County.Handlers
             }
             catch (Exception e)
             {
-                _logger.LogError($"Unable to update county {request.County.Id}", e);
-                return Result.Failure($"Unable to update county {request.County.Id}");
+                _logger.LogError($"Unable to update county {request.CountyId}", e);
+                return Result.Failure($"Unable to update county {request.CountyId}");
             }
         }
     }

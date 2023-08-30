@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace VoteMonitor.Api.County.Models
 {
@@ -12,7 +12,6 @@ namespace VoteMonitor.Api.County.Models
         [StringLength(20)]
         public string Code { get; set; }
 
-        public int NumberOfPollingStations { get; set; }
         public bool Diaspora { get; set; }
         public int Order { get; set; }
     }

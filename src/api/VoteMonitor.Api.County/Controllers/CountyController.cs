@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.IO;
@@ -67,6 +67,43 @@ namespace VoteMonitor.Api.County.Controllers
             }
 
             return BadRequest(new ErrorModel { Message = response.Error });
+        }
+
+        [HttpGet]
+        [Route("import-template")]
+        [Authorize("Organizer")]
+        public IActionResult DownloadImportTemplate()
+        {
+            using (var mem = new MemoryStream())
+            using (var writer = new StreamWriter(mem))
+            using (var csvWriter = new CsvWriter(writer))
+            {
+                csvWriter.Configuration.HasHeaderRecord = true;
+                csvWriter.Configuration.AutoMap<CountyCsvModel>();
+
+                csvWriter.WriteRecords(new[]
+                {
+                    new CountyCsvModel
+                    {
+                        Id = 1,
+                        Code = "CE 1",
+                        Name = "County example 1",
+                        Diaspora = false,
+                        Order = 0
+                    }, 
+                    new CountyCsvModel
+                    {
+                        Id = 2,
+                        Code = "CE 2",
+                        Name = "County example 1",
+                        Diaspora = true,
+                        Order = 1
+                    },
+
+                });
+                writer.Flush();
+                return File(mem.ToArray(), "application/octet-stream", "observers-import-template.csv");
+            }
         }
 
         [HttpGet]

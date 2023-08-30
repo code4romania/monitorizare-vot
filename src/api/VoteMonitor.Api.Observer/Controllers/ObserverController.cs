@@ -1,10 +1,13 @@
-﻿using AutoMapper;
+using AutoMapper;
+using CsvHelper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using VoteMonitor.Api.Core;
@@ -71,20 +74,46 @@ namespace VoteMonitor.Api.Observer.Controllers
         [Authorize("Organizer")]
         [Route("import")]
         [Produces(type: typeof(int))]
-        public async Task<int> Import(IFormFile file, [FromForm] int ongId)
+        public async Task<int> Import(IFormFile file, [FromForm] int ngoId)
         {
-            if (ongId <= 0)
+            if (ngoId <= 0)
             {
-                ongId = NgoId;
+                ngoId = NgoId;
             }
 
             var counter = await _mediator.Send(new ImportObserversRequest
             {
                 File = file,
-                NgoId = ongId
+                NgoId = ngoId
             });
 
             return counter;
+        }
+
+        [HttpGet]
+        [Authorize("Organizer")]
+        [Route("import-template")]
+        public IActionResult DownloadImportTemplate()
+        {
+            using (var mem = new MemoryStream())
+            using (var writer = new StreamWriter(mem))
+            using (var csvWriter = new CsvWriter(writer))
+            {
+                csvWriter.Configuration.HasHeaderRecord = true;
+                csvWriter.Configuration.AutoMap<ObserversImportModel>();
+
+                csvWriter.WriteRecords(new []
+                {
+                    new ObserversImportModel
+                    {
+                        Phone = "observer phone",
+                        Pin = "observer pin",
+                        Name = "observer name",
+                    }
+                });
+                writer.Flush();
+                return File(mem.ToArray(), "application/octet-stream", "observers-import-template.csv");
+            }
         }
 
         /// <summary>

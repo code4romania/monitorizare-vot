@@ -1,4 +1,5 @@
-﻿using MediatR;
+using CsvHelper;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.IO;
@@ -7,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using VoteMonitor.Api.Core.Services;
 using VoteMonitor.Api.Observer.Commands;
+using VoteMonitor.Api.Observer.Models;
 using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Observer.Handlers
@@ -43,27 +45,26 @@ namespace VoteMonitor.Api.Observer.Handlers
             var counter = 0;
             var startId = GetMaxIdObserver();
 
-            using (var reader = new StreamReader(message.File.OpenReadStream()))
-            {
-                while (reader.Peek() >= 0)
-                {
-                    var fileContent = reader.ReadLine();
-                    var data = fileContent.Split('\t');
-                    var hashed = _hashService.GetHash(data[1]);
+            using var reader = new StreamReader(message.File.OpenReadStream());
+            using var csv = new CsvReader(reader);
+            var observers = csv.GetRecords<ObserversImportModel>()
+                .ToList();
 
-                    var observer = new Entities.Observer
-                    {
-                        Id = startId + counter,
-                        IdNgo = message.NgoId,
-                        Phone = data[0],
-                        Name = data[2],
-                        Pin = hashed
-                    };
-                    _context.Observers.Add(observer);
-                    counter++;
-                }
-                await _context.SaveChangesAsync();
+            foreach (var importedObserver in observers)
+            {
+                var observer = new Entities.Observer
+                {
+                    Id = startId + counter,
+                    IdNgo = message.NgoId,
+                    Phone = importedObserver.Phone,
+                    Name = importedObserver.Name,
+                    Pin = _hashService.GetHash(importedObserver.Pin)
+                };
+                _context.Observers.Add(observer);
+                counter++;
             }
+
+            await _context.SaveChangesAsync();
 
             return counter;
         }

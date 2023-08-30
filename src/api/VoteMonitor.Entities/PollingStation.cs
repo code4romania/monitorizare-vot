@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace VoteMonitor.Entities
 {
-    public partial class PollingStation : IIdentifiableEntity
+    public class PollingStation : IIdentifiableEntity
     {
         public PollingStation()
         {
@@ -12,12 +12,9 @@ namespace VoteMonitor.Entities
         }
 
         public int Id { get; set; }
-        public string Address { get; set; }
-        public string Coordinates { get; set; }
-        public string AdministrativeTerritoryCode { get; set; }
         public int IdCounty { get; set; }
-        public string TerritoryCode { get; set; }
         public int Number { get; set; }
+        public string Address { get; set; }
 
         public virtual ICollection<Note> Notes { get; set; }
         public virtual ICollection<Answer> Answers { get; set; }

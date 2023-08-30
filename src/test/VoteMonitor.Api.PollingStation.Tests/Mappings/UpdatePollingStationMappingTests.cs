@@ -41,47 +41,6 @@ namespace VoteMonitor.Api.PollingStation.Tests.Mappings
 
             result.Address.Should().Be("street x");
         }
-        
-        [Fact]
-        public void UpdatePollingStations_WhenMappingToUpdatePollingStationQuery_MapsCoordinates()
-        {
-            var updatePollingStations = new Models.UpdatePollingStationModel
-            {
-                Coordinates = "90.99"
-            };
-
-            var result = _mapper.Map<Queries.UpdatePollingStation>(updatePollingStations);
-
-            result.Coordinates.Should().Be("90.99");
-
-
-        }
-
-        [Fact]
-        public void UpdatePollingStations_WhenMappingToUpdatePollingStationQuery_MapsAdministrativeTerritoryCode()
-        {
-            var updatePollingStations = new Models.UpdatePollingStationModel
-            {
-                AdministrativeTerritoryCode = "IS"
-            };
-
-            var result = _mapper.Map<Queries.UpdatePollingStation>(updatePollingStations);
-
-            result.AdministrativeTerritoryCode.Should().Be("IS");
-        }
-
-        [Fact]
-        public void UpdatePollingStations_WhenMappingToUpdatePollingStationQuery_MapsTerritoryCode()
-        {
-            var updatePollingStations = new Models.UpdatePollingStationModel
-            {
-                TerritoryCode = "code IS"
-            };
-
-            var result = _mapper.Map<Queries.UpdatePollingStation>(updatePollingStations);
-
-            result.TerritoryCode.Should().Be("code IS");
-        }
 
         [Fact]
         public void UpdatePollingStations_WhenMappingToUpdatePollingStationQuery_MapsNumber()

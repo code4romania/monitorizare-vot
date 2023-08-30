@@ -10,8 +10,9 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="9.0.0" />
-    <PackageReference Include="CSharpFunctionalExtensions" Version="2.3.0" />
+    <PackageReference Include="CSharpFunctionalExtensions" Version="2.13.0" />
     <PackageReference Include="CsvHelper" Version="12.3.2" />
+    <PackageReference Include="DotNetCore.NPOI.Core" Version="1.2.2" />
     <PackageReference Include="MediatR" Version="7.0.0" />
   </ItemGroup>
   <ItemGroup>
