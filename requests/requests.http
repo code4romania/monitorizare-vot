@@ -42,6 +42,11 @@ GET {{url}}/api/v1/county
 Content-Type: application/json
 Authorization: Bearer {{adminJwtToken.response.body.$.access_token}}
 ###
+# @name getCounty
+GET {{url}}/api/v1/county/1
+Content-Type: application/json
+Authorization: Bearer {{adminJwtToken.response.body.$.access_token}}
+###
 
 # @name getPollingStations
 GET {{url}}/api/v2/polling-station
