@@ -1,4 +1,4 @@
-﻿using CSharpFunctionalExtensions;
+using CSharpFunctionalExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -35,7 +35,6 @@ namespace VoteMonitor.Api.PollingStation.Handlers
                         await DeletePollingStationsInfo(cancellationToken);
                     }
 
-                    await ResetCountiesPollingStationCounter(cancellationToken);
                     await DeletePollingStations(cancellationToken);
 
                     await transaction.CommitAsync(cancellationToken);
@@ -45,7 +44,7 @@ namespace VoteMonitor.Api.PollingStation.Handlers
             }
             catch (Exception ex)
             {
-                _logger.LogError("Error while removing polling stations.", ex);
+                _logger.LogError(ex, "Error while removing polling stations.");
                 return Result.Failure("Cannot remove polling stations.");
             }
         }
@@ -66,11 +65,7 @@ namespace VoteMonitor.Api.PollingStation.Handlers
         {
             await DeleteDataFromTable(nameof(_context.PollingStationInfos), cancellationToken);
         }
-        private async Task ResetCountiesPollingStationCounter(CancellationToken cancellationToken)
-        {
-            await _context.Database.ExecuteSqlRawAsync($"UPDATE {nameof(_context.Counties)} SET {nameof(County.NumberOfPollingStations)} = 0"
-                                        , cancellationToken);
-        }
+
         private async Task DeletePollingStations(CancellationToken cancellationToken)
         {
             await DeleteDataFromTable(nameof(_context.PollingStations), cancellationToken);
@@ -80,7 +75,7 @@ namespace VoteMonitor.Api.PollingStation.Handlers
         {
             //if there are any performance issues, DELETE can be changed to TRUNCATE - but then we need to tackle a way to 
             //bypass foreign key relationship while removing data
-            await _context.Database.ExecuteSqlRawAsync($"DELETE FROM {tableName}"
+            await _context.Database.ExecuteSqlRawAsync($"DELETE FROM public.\"{tableName}\""
                                     , cancellationToken);
         }
     }

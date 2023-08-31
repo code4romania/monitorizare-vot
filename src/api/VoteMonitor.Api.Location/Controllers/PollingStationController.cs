@@ -1,10 +1,12 @@
-﻿using AutoMapper;
+using AutoMapper;
+using CsvHelper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -25,13 +27,11 @@ namespace VoteMonitor.Api.Location.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
-        private readonly IFileLoader _fileLoader;
 
-        public PollingStationController(IMediator mediator, IMapper mapper, IFileLoader loader)
+        public PollingStationController(IMediator mediator, IMapper mapper)
         {
             _mapper = mapper;
             _mediator = mediator;
-            _fileLoader = loader;
         }
 
         /// <summary>
@@ -105,14 +105,14 @@ namespace VoteMonitor.Api.Location.Controllers
         [HttpPost("import")]
         [Authorize("Organizer")]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> ImportFormatFile(IFormFile file)
+        public async Task<IActionResult> ImportFormatFile(PollingStationsUploadRequest request)
         {
-            if (!_fileLoader.ValidateFile(file))
+            if (!ModelState.IsValid)
             {
-                return UnprocessableEntity();
+                return BadRequest(ModelState);
             }
 
-            var result = await _mediator.Send(new PollingStationCommand(_fileLoader.ImportFileAsync(file).Result));
+            var result = await _mediator.Send(new ImportPollingStationsCommand(request.CsvFile));
 
             if (result.Success)
             {
@@ -130,12 +130,36 @@ namespace VoteMonitor.Api.Location.Controllers
         }
 
         [HttpGet]
-        [Route("excelHeaderFile")]
-        [ProducesResponseType(typeof(byte[]), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult ExcelHeaderFile()
+        [Route("import-template")]
+        [Authorize("Organizer")]
+        public IActionResult DownloadImportTemplate()
         {
-            return File(_fileLoader.ExportHeaderInformation(), "application/octet-stream", "pollingStationHeader.xlsx");
+            using (var mem = new MemoryStream())
+            using (var writer = new StreamWriter(mem))
+            using (var csvWriter = new CsvWriter(writer))
+            {
+                csvWriter.Configuration.HasHeaderRecord = true;
+                csvWriter.Configuration.AutoMap<PollingStationCsvModel>();
+
+                csvWriter.WriteRecords(new[]
+                {
+                    new PollingStationCsvModel
+                    {
+                        Address = "Example address",
+                        CountyCode = "EC",
+                        Number = 1
+                    },
+                    new PollingStationCsvModel
+                    {
+                        Address = "Example address",
+                        CountyCode = "EC",
+                        Number = 2
+                    }
+
+                });
+                writer.Flush();
+                return File(mem.ToArray(), "application/octet-stream", "observers-import-template.csv");
+            }
         }
     }
 }

@@ -60,46 +60,7 @@ namespace VoteMonitor.Api.PollingStation.Tests.Mappings
 
             pollingStationModel.Address.Should().Be("str X bloc 4");
         }
-
-        [Fact]
-        public void PollingStationEntity_WhenMappingToPollingStationModel_MapsAdministrativeTerritoryCodeCorrectly()
-        {
-            var pollingStationEntity = new Entities.PollingStation
-            {
-                AdministrativeTerritoryCode = "IS"
-            };
-
-            var pollingStationModel = _mapper.Map<Models.GetPollingStationModel>(pollingStationEntity);
-
-            pollingStationModel.AdministrativeTerritoryCode.Should().Be("IS");
-        }
-
-        [Fact]
-        public void PollingStationEntity_WhenMappingToPollingStationModel_MapsTerritoryCodeCorrectly()
-        {
-            var pollingStationEntity = new Entities.PollingStation
-            {
-                TerritoryCode = "code"
-            };
-
-            var pollingStationModel = _mapper.Map<Models.GetPollingStationModel>(pollingStationEntity);
-
-            pollingStationModel.TerritoryCode.Should().Be("code");
-        }
-
-        [Fact]
-        public void PollingStationEntity_WhenMappingToPollingStationModel_MapsCoordinatesCorrectly()
-        {
-            var pollingStationEntity = new Entities.PollingStation
-            {
-                Coordinates = "90.91"
-            };
-
-            var pollingStationModel = _mapper.Map<Models.GetPollingStationModel>(pollingStationEntity);
-
-            pollingStationModel.Coordinates.Should().Be("90.91");
-        }
-
+        
         [Fact]
         public void PollingStationEntity_WhenMappingToPollingStationModel_MapsNumberCorrectly()
         {

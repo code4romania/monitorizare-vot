@@ -43,7 +43,6 @@ namespace VoteMonitor.Api
             services.AddVoteMonitorAuthentication(Configuration);
 
             services.AddScoped<IPollingStationService, PollingStationService>();
-            services.AddScoped<IFileLoader, XlsxFileLoader>();
 
             services.AddDbContext<VoteMonitorContext>(o => o.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
             services.AddFirebase(Configuration);

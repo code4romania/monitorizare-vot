@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -57,10 +57,9 @@ namespace VotingIrregularities.Tests.CountyApi
                     Id = 1,
                     Name = "Name1",
                     Order = 12,
-                    NumberOfPollingStations = 14
                 });
                 context.Counties.Add(new County
-                { Code = "Code2", Diaspora = true, Id = 3, Name = "Name2", Order = 1, NumberOfPollingStations = 2 });
+                { Code = "Code2", Diaspora = true, Id = 3, Name = "Name2", Order = 1 });
                 context.SaveChanges();
             }
 
@@ -78,8 +77,7 @@ namespace VotingIrregularities.Tests.CountyApi
                                          && x.Diaspora == false
                                          && x.Id == 1
                                          && x.Name == "Name1"
-                                         && x.Order == 12
-                                         && x.NumberOfPollingStations == 14)
+                                         && x.Order == 12)
                     .ShouldNotBeNull();
 
                 exportResult.Value
@@ -87,8 +85,7 @@ namespace VotingIrregularities.Tests.CountyApi
                                          && x.Diaspora == true
                                          && x.Id == 3
                                          && x.Name == "Name2"
-                                         && x.Order == 1
-                                         && x.NumberOfPollingStations == 2)
+                                         && x.Order == 1)
                     .ShouldNotBeNull();
             }
         }
@@ -129,11 +126,11 @@ namespace VotingIrregularities.Tests.CountyApi
             {
                 var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object, _mapper);
 
-                StringBuilder sb = new StringBuilder("Id,Code,Name,NumberOfPollingStations,Diaspora,Order");
+                StringBuilder sb = new StringBuilder("Id,Code,Name,Diaspora,Order");
                 sb.Append(Environment.NewLine);
-                sb.Append("2,Iasi,Iasi,1,TRUE,");
+                sb.Append("2,Iasi,Iasi,TRUE,");
                 sb.Append(Environment.NewLine);
-                sb.Append("3,Cluj,Cluj,1,TRUE,1");
+                sb.Append("3,Cluj,Cluj,TRUE,1");
 
                 var buffer = Encoding.UTF8.GetBytes(sb.ToString());
                 var formFile = new FormFile(new MemoryStream(buffer), 0, buffer.Length, "Data", "dummy.csv");
@@ -154,11 +151,11 @@ namespace VotingIrregularities.Tests.CountyApi
             {
                 var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object, _mapper);
 
-                StringBuilder sb = new StringBuilder("Id,Code,Name,NumberOfPollingStations,Diaspora,Order");
+                StringBuilder sb = new StringBuilder("Id,Code,Name,Diaspora,Order");
                 sb.Append(Environment.NewLine);
-                sb.Append("2,Iasi11111111111111111111111111111111111111111111111111111111111111,Iasi,1,TRUE,1");
+                sb.Append("2,Iasi11111111111111111111111111111111111111111111111111111111111111,Iasi,TRUE,1");
                 sb.Append(Environment.NewLine);
-                sb.Append("3,Cluj,Cluj,1,TRUE,1");
+                sb.Append("3,Cluj,Cluj,TRUE,1");
 
                 var buffer = Encoding.UTF8.GetBytes(sb.ToString());
                 var formFile = new FormFile(new MemoryStream(buffer), 0, buffer.Length, "Data", "dummy.csv");
@@ -179,11 +176,11 @@ namespace VotingIrregularities.Tests.CountyApi
             {
                 var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object, _mapper);
 
-                StringBuilder sb = new StringBuilder("Id,Code,Name,NumberOfPollingStations,Diaspora,Order");
+                StringBuilder sb = new StringBuilder("Id,Code,Name,Diaspora,Order");
                 sb.Append(Environment.NewLine);
-                sb.Append("2,Iasi,IasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiI,1,TRUE,1");
+                sb.Append("2,Iasi,IasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiI,TRUE,1");
                 sb.Append(Environment.NewLine);
-                sb.Append("3,Cluj,Cluj,1,TRUE,1");
+                sb.Append("3,Cluj,Cluj,TRUE,1");
 
                 var buffer = Encoding.UTF8.GetBytes(sb.ToString());
                 var formFile = new FormFile(new MemoryStream(buffer), 0, buffer.Length, "Data", "dummy.csv");
@@ -204,11 +201,11 @@ namespace VotingIrregularities.Tests.CountyApi
             {
                 var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object, _mapper);
 
-                StringBuilder sb = new StringBuilder("Id,Code,Name,NumberOfPollingStations,Diaspora,Order");
+                StringBuilder sb = new StringBuilder("Id,Code,Name,Diaspora,Order");
                 sb.Append(Environment.NewLine);
-                sb.Append("2,Iasi,Iasi_,1,TRUE,1");
+                sb.Append("2,Iasi,Iasi_,TRUE,1");
                 sb.Append(Environment.NewLine);
-                sb.Append("2,Cluj,Cluj_,1,TRUE,1");
+                sb.Append("2,Cluj,Cluj_,TRUE,1");
 
                 var buffer = Encoding.UTF8.GetBytes(sb.ToString());
                 var formFile = new FormFile(new MemoryStream(buffer), 0, buffer.Length, "Data", "dummy.csv");
@@ -234,7 +231,6 @@ namespace VotingIrregularities.Tests.CountyApi
                     Id = 3,
                     Name = "Name1",
                     Order = 12,
-                    NumberOfPollingStations = 14
                 });
 
                 context.SaveChanges();
@@ -244,9 +240,9 @@ namespace VotingIrregularities.Tests.CountyApi
             {
                 var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object, _mapper);
 
-                StringBuilder sb = new StringBuilder("Id,Code,Name,NumberOfPollingStations,Diaspora,Order");
+                StringBuilder sb = new StringBuilder("Id,Code,Name,Diaspora,Order");
                 sb.Append(Environment.NewLine);
-                sb.Append("3,Cluj,Cluuuuuuuuuj,1,TRUE,1");
+                sb.Append("3,Cluj,Cluuuuuuuuuj,TRUE,1");
 
                 var buffer = Encoding.UTF8.GetBytes(sb.ToString());
                 var formFile = new FormFile(new MemoryStream(buffer), 0, buffer.Length, "Data", "dummy.csv");
@@ -261,7 +257,6 @@ namespace VotingIrregularities.Tests.CountyApi
                 county.Id.ShouldBe(3);
                 county.Code.ShouldBe("Cluj");
                 county.Name.ShouldBe("Cluuuuuuuuuj");
-                county.NumberOfPollingStations.ShouldBe(1);
                 county.Diaspora.ShouldBe(true);
                 county.Order.ShouldBe(1);
             }
@@ -275,11 +270,11 @@ namespace VotingIrregularities.Tests.CountyApi
             {
                 var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object, _mapper);
 
-                StringBuilder sb = new StringBuilder("Id,Code,Name,NumberOfPollingStations,Diaspora,Order");
+                StringBuilder sb = new StringBuilder("Id,Code,Name,Diaspora,Order");
                 sb.Append(Environment.NewLine);
-                sb.Append("3,Cluj,Cluuuuuuuuuj,1,TRUE,999");
+                sb.Append("3,Cluj,Cluuuuuuuuuj,TRUE,999");
                 sb.Append(Environment.NewLine);
-                sb.Append("1,Iasi,Iasi The Best,13,False,5");
+                sb.Append("1,Iasi,Iasi The Best,False,5");
 
                 var buffer = Encoding.UTF8.GetBytes(sb.ToString());
                 var formFile = new FormFile(new MemoryStream(buffer), 0, buffer.Length, "Data", "dummy.csv");
@@ -295,7 +290,6 @@ namespace VotingIrregularities.Tests.CountyApi
                 clujCounty.Id.ShouldBe(3);
                 clujCounty.Code.ShouldBe("Cluj");
                 clujCounty.Name.ShouldBe("Cluuuuuuuuuj");
-                clujCounty.NumberOfPollingStations.ShouldBe(1);
                 clujCounty.Diaspora.ShouldBe(true);
                 clujCounty.Order.ShouldBe(999);
 
@@ -303,7 +297,6 @@ namespace VotingIrregularities.Tests.CountyApi
                 iasiCounty.Id.ShouldBe(1);
                 iasiCounty.Code.ShouldBe("Iasi");
                 iasiCounty.Name.ShouldBe("Iasi The Best");
-                iasiCounty.NumberOfPollingStations.ShouldBe(13);
                 iasiCounty.Diaspora.ShouldBe(false);
                 iasiCounty.Order.ShouldBe(5);
             }
@@ -321,10 +314,9 @@ namespace VotingIrregularities.Tests.CountyApi
                     Id = 1,
                     Name = "Name1",
                     Order = 12,
-                    NumberOfPollingStations = 14
                 });
                 context.Counties.Add(new County
-                { Code = "Code2", Diaspora = true, Id = 3, Name = "Name2", Order = 1, NumberOfPollingStations = 2 });
+                { Code = "Code2", Diaspora = true, Id = 3, Name = "Name2", Order = 1 });
                 context.SaveChanges();
             }
 
@@ -332,11 +324,11 @@ namespace VotingIrregularities.Tests.CountyApi
             {
                 var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object, _mapper);
 
-                StringBuilder sb = new StringBuilder("Id,Code,Name,NumberOfPollingStations,Diaspora,Order");
+                StringBuilder sb = new StringBuilder("Id,Code,Name,Diaspora,Order");
                 sb.Append(Environment.NewLine);
-                sb.Append("1,Cluj,Cluuuuuuuuuj,1,TRUE,999");
+                sb.Append("1,Cluj,Cluuuuuuuuuj,TRUE,999");
                 sb.Append(Environment.NewLine);
-                sb.Append("3,Iasi,Iasi The Best,13,False,5");
+                sb.Append("3,Iasi,Iasi The Best,False,5");
 
                 var buffer = Encoding.UTF8.GetBytes(sb.ToString());
                 var formFile = new FormFile(new MemoryStream(buffer), 0, buffer.Length, "Data", "dummy.csv");
@@ -351,7 +343,6 @@ namespace VotingIrregularities.Tests.CountyApi
                 clujCounty.Id.ShouldBe(1);
                 clujCounty.Code.ShouldBe("Cluj");
                 clujCounty.Name.ShouldBe("Cluuuuuuuuuj");
-                clujCounty.NumberOfPollingStations.ShouldBe(1);
                 clujCounty.Diaspora.ShouldBe(true);
                 clujCounty.Order.ShouldBe(999);
 
@@ -359,7 +350,6 @@ namespace VotingIrregularities.Tests.CountyApi
                 iasiCounty.Id.ShouldBe(3);
                 iasiCounty.Code.ShouldBe("Iasi");
                 iasiCounty.Name.ShouldBe("Iasi The Best");
-                iasiCounty.NumberOfPollingStations.ShouldBe(13);
                 iasiCounty.Diaspora.ShouldBe(false);
                 iasiCounty.Order.ShouldBe(5);
             }
@@ -370,9 +360,9 @@ namespace VotingIrregularities.Tests.CountyApi
         {
             using (var context = new VoteMonitorContext(_dbContextOptions))
             {
-                context.Counties.Add(new County { Code = "Code1", Diaspora = false, Id = 1, Name = "Name1", Order = 12, NumberOfPollingStations = 14 });
-                context.Counties.Add(new County { Code = "Code2", Diaspora = true, Id = 2, Name = "Name2", Order = 3, NumberOfPollingStations = 2 });
-                context.Counties.Add(new County { Code = "Code3", Diaspora = true, Id = 3, Name = "Name3", Order = 1, NumberOfPollingStations = 2 });
+                context.Counties.Add(new County { Code = "Code1", Diaspora = false, Id = 1, Name = "Name1", Order = 12 });
+                context.Counties.Add(new County { Code = "Code2", Diaspora = true, Id = 2, Name = "Name2", Order = 3 });
+                context.Counties.Add(new County { Code = "Code3", Diaspora = true, Id = 3, Name = "Name3", Order = 1 });
                 context.SaveChanges();
             }
 
@@ -389,7 +379,6 @@ namespace VotingIrregularities.Tests.CountyApi
                 c1.Id.ShouldBe(3);
                 c1.Code.ShouldBe("Code3");
                 c1.Name.ShouldBe("Name3");
-                c1.NumberOfPollingStations.ShouldBe(2);
                 c1.Diaspora.ShouldBe(true);
                 c1.Order.ShouldBe(1);
 
@@ -397,7 +386,6 @@ namespace VotingIrregularities.Tests.CountyApi
                 c2.Id.ShouldBe(2);
                 c2.Code.ShouldBe("Code2");
                 c2.Name.ShouldBe("Name2");
-                c2.NumberOfPollingStations.ShouldBe(2);
                 c2.Diaspora.ShouldBe(true);
                 c2.Order.ShouldBe(3);
 
@@ -405,11 +393,9 @@ namespace VotingIrregularities.Tests.CountyApi
                 c3.Id.ShouldBe(1);
                 c3.Code.ShouldBe("Code1");
                 c3.Name.ShouldBe("Name1");
-                c3.NumberOfPollingStations.ShouldBe(14);
                 c3.Diaspora.ShouldBe(false);
                 c3.Order.ShouldBe(12);
             }
-
         }
 
         [Fact]
@@ -417,9 +403,9 @@ namespace VotingIrregularities.Tests.CountyApi
         {
             using (var context = new VoteMonitorContext(_dbContextOptions))
             {
-                context.Counties.Add(new County { Code = "Code1", Diaspora = false, Id = 1, Name = "Name1", Order = 12, NumberOfPollingStations = 14 });
-                context.Counties.Add(new County { Code = "Code2", Diaspora = true, Id = 2, Name = "Name2", Order = 3, NumberOfPollingStations = 2 });
-                context.Counties.Add(new County { Code = "Code3", Diaspora = true, Id = 3, Name = "Name3", Order = 1, NumberOfPollingStations = 2 });
+                context.Counties.Add(new County { Code = "Code1", Diaspora = false, Id = 1, Name = "Name1", Order = 12 });
+                context.Counties.Add(new County { Code = "Code2", Diaspora = true, Id = 2, Name = "Name2", Order = 3 });
+                context.Counties.Add(new County { Code = "Code3", Diaspora = true, Id = 3, Name = "Name3", Order = 1 });
                 context.SaveChanges();
             }
 
@@ -439,9 +425,9 @@ namespace VotingIrregularities.Tests.CountyApi
         {
             using (var context = new VoteMonitorContext(_dbContextOptions))
             {
-                context.Counties.Add(new County { Code = "Code1", Diaspora = false, Id = 1, Name = "Name1", Order = 12, NumberOfPollingStations = 14 });
-                context.Counties.Add(new County { Code = "Code2", Diaspora = true, Id = 2, Name = "Name2", Order = 3, NumberOfPollingStations = 2 });
-                context.Counties.Add(new County { Code = "Code3", Diaspora = true, Id = 3, Name = "Name3", Order = 1, NumberOfPollingStations = 2 });
+                context.Counties.Add(new County { Code = "Code1", Diaspora = false, Id = 11, Name = "Name1", Order = 12 });
+                context.Counties.Add(new County { Code = "Code2", Diaspora = true, Id = 2, Name = "Name2", Order = 3 });
+                context.Counties.Add(new County { Code = "Code3", Diaspora = true, Id = 3, Name = "Name3", Order = 1 });
                 context.SaveChanges();
             }
 
@@ -456,7 +442,6 @@ namespace VotingIrregularities.Tests.CountyApi
                 c2.Id.ShouldBe(2);
                 c2.Code.ShouldBe("Code2");
                 c2.Name.ShouldBe("Name2");
-                c2.NumberOfPollingStations.ShouldBe(2);
                 c2.Diaspora.ShouldBe(true);
                 c2.Order.ShouldBe(3);
             }
@@ -467,9 +452,9 @@ namespace VotingIrregularities.Tests.CountyApi
         {
             using (var context = new VoteMonitorContext(_dbContextOptions))
             {
-                context.Counties.Add(new County { Code = "Code1", Diaspora = false, Id = 1, Name = "Name1", Order = 12, NumberOfPollingStations = 14 });
-                context.Counties.Add(new County { Code = "Code2", Diaspora = true, Id = 2, Name = "Name2", Order = 3, NumberOfPollingStations = 2 });
-                context.Counties.Add(new County { Code = "Code3", Diaspora = true, Id = 3, Name = "Name3", Order = 1, NumberOfPollingStations = 2 });
+                context.Counties.Add(new County { Code = "Code1", Diaspora = false, Id = 1, Name = "Name1", Order = 12 });
+                context.Counties.Add(new County { Code = "Code2", Diaspora = true, Id = 2, Name = "Name2", Order = 3 });
+                context.Counties.Add(new County { Code = "Code3", Diaspora = true, Id = 3, Name = "Name3", Order = 1 });
                 context.SaveChanges();
             }
 
@@ -489,9 +474,9 @@ namespace VotingIrregularities.Tests.CountyApi
         {
             using (var context = new VoteMonitorContext(_dbContextOptions))
             {
-                context.Counties.Add(new County { Code = "Code1", Diaspora = false, Id = 1, Name = "Name1", Order = 12, NumberOfPollingStations = 14 });
-                context.Counties.Add(new County { Code = "Code2", Diaspora = true, Id = 2, Name = "Name2", Order = 3, NumberOfPollingStations = 2 });
-                context.Counties.Add(new County { Code = "Code3", Diaspora = true, Id = 3, Name = "Name3", Order = 1, NumberOfPollingStations = 2 });
+                context.Counties.Add(new County { Code = "Code1", Diaspora = false, Id = 1, Name = "Name1", Order = 12 });
+                context.Counties.Add(new County { Code = "Code2", Diaspora = true, Id = 2, Name = "Name2", Order = 3 });
+                context.Counties.Add(new County { Code = "Code3", Diaspora = true, Id = 3, Name = "Name3", Order = 1 });
                 context.SaveChanges();
             }
 
@@ -503,7 +488,6 @@ namespace VotingIrregularities.Tests.CountyApi
                     Code = "IS",
                     Order = 33,
                     Diaspora = false,
-                    NumberOfPollingStations = 767
                 };
                 var county =
                     await countiesCommandHandler.Handle(new UpdateCounty(2,updateCountyModel), new CancellationToken(false));
@@ -516,7 +500,6 @@ namespace VotingIrregularities.Tests.CountyApi
                 updatedCounty.Id.ShouldBe(2);
                 updatedCounty.Code.ShouldBe("IS");
                 updatedCounty.Name.ShouldBe("Super Iasi");
-                updatedCounty.NumberOfPollingStations.ShouldBe(767);
                 updatedCounty.Diaspora.ShouldBe(false);
                 updatedCounty.Order.ShouldBe(33);
             }

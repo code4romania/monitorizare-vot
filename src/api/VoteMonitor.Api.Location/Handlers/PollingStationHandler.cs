@@ -1,9 +1,11 @@
 using AutoMapper;
-using EFCore.BulkExtensions;
+using CsvHelper;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,7 +17,7 @@ using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Location.Handlers
 {
-    public class PollingStationHandler : IRequestHandler<PollingStationCommand, PollingStationImportResultValue>
+    public class PollingStationHandler : IRequestHandler<ImportPollingStationsCommand, PollingStationImportResultValue>
     {
         private readonly VoteMonitorContext _context;
         private readonly IMapper _mapper;
@@ -28,21 +30,19 @@ namespace VoteMonitor.Api.Location.Handlers
             _logger = logger;
         }
 
-        public async Task<PollingStationImportResultValue> Handle(PollingStationCommand request, CancellationToken cancellationToken)
+        public async Task<PollingStationImportResultValue> Handle(ImportPollingStationsCommand request, CancellationToken cancellationToken)
         {
-
             try
             {
                 using (var transaction = await _context.Database.BeginTransactionAsync(cancellationToken))
                 {
                     var countiesFromDatabase = _context.Counties.ToList();
 
-                    List<PollingStation> newPollingStations = CreatePollingStationEntitiesFromDto(request.PollingStationsDTOs, countiesFromDatabase);
-                    _context.BulkInsert(newPollingStations);
+                    var pollingStations = ParseUploadedPollingStations(request.File);
+                    var newPollingStations = CreatePollingStationEntitiesFromDto(pollingStations, countiesFromDatabase);
+                    await  _context.PollingStations.BulkInsertAsync(newPollingStations, cancellationToken);
 
-                    UpdateCountiesPollingStationCounter(countiesFromDatabase, newPollingStations);
-
-                    var result = await _context.SaveChangesAsync(cancellationToken);
+                    await _context.BulkSaveChangesAsync(cancellationToken);
 
                     transaction.Commit();
                     return PollingStationImportResultValue.SuccessValue;
@@ -50,44 +50,41 @@ namespace VoteMonitor.Api.Location.Handlers
             }
             catch (Exception ex)
             {
-                _logger.LogError("Error while importing polling station information ", ex);
+                _logger.LogError(ex, "Error while importing polling station information ");
                 return new PollingStationImportResultValue(ex);
             }
         }
 
-        private void UpdateCountiesPollingStationCounter(List<County> countiesFromDatabase, List<PollingStation> newPollingStations)
+        private List<PollingStationCsvModel> ParseUploadedPollingStations(IFormFile requestFile)
         {
-            var idsOfCountiesToBeUpdated = newPollingStations.Select(x => x.IdCounty).Distinct();
-            var countiesToBeUpdated = countiesFromDatabase.Where(c => idsOfCountiesToBeUpdated.Any(id => c.Id == id));
+            using var reader = new StreamReader(requestFile.OpenReadStream());
+            using var csv = new CsvReader(reader);
+            var counties = csv.GetRecords<PollingStationCsvModel>()
+                .ToList();
 
-            foreach (var county in countiesToBeUpdated)
-            {
-                county.NumberOfPollingStations = _context.PollingStations
-                    .Where(p => p.IdCounty == county.Id)
-                    .Count();
-                _context.Counties.Update(county);
-            }
+            return counties;
         }
 
-        private List<PollingStation> CreatePollingStationEntitiesFromDto(List<PollingStationDTO> pollingStationDtos, List<County> countiesFromDatabase)
+        private List<PollingStation> CreatePollingStationEntitiesFromDto(List<PollingStationCsvModel> pollingStationDtos, List<County> countiesFromDatabase)
         {
-            var random = new Random();
             var startingPsId = _context.PollingStations.Any() ? _context.PollingStations.Max(ps => ps.Id) + 1 : 1;
 
             var newPollingStations = new List<PollingStation>();
             foreach (var record in pollingStationDtos)
             {
-                var countyForPollingStation = countiesFromDatabase.FirstOrDefault(x => x.Code.Equals(record.CodJudet, StringComparison.OrdinalIgnoreCase));
+                var countyForPollingStation = countiesFromDatabase.FirstOrDefault(x => x.Code.Equals(record.CountyCode, StringComparison.OrdinalIgnoreCase));
                 if (countyForPollingStation == null)
                 {
-                    throw new PollingStationImportException($"County {record.CodJudet} not found in the database");
+                    throw new PollingStationImportException($"County {record.CountyCode} not found in the database");
                 }
 
-                var pollingStation = _mapper.Map<PollingStation>(record);
-                pollingStation.Id = startingPsId++;
-                pollingStation.IdCounty = countyForPollingStation.Id;
-                pollingStation.Coordinates = null;
-                pollingStation.TerritoryCode = random.Next(10000).ToString();
+                var pollingStation = new PollingStation
+                {
+                    Id = startingPsId++,
+                    IdCounty = countyForPollingStation.Id,
+                    Address = record.Address,
+                    Number = record.Number
+                };
 
                 newPollingStations.Add(pollingStation);
 

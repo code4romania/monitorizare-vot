@@ -269,15 +269,6 @@ namespace VoteMonitor.Entities
                 entity.Property(e => e.Address)
                     .HasMaxLength(500);
 
-                entity.Property(e => e.Coordinates)
-                    .HasMaxLength(200);
-
-                entity.Property(e => e.AdministrativeTerritoryCode).HasMaxLength(100);
-
-                entity.Property(e => e.TerritoryCode)
-                    .IsRequired()
-                    .HasMaxLength(100);
-
                 entity.HasOne(d => d.County)
                     .WithMany(p => p.PollingStations)
                     .HasForeignKey(d => d.IdCounty)

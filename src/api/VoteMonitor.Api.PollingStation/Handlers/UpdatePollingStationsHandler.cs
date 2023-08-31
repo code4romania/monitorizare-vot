@@ -30,10 +30,7 @@ namespace VoteMonitor.Api.PollingStation.Handlers
                     return false;
                 }
 
-                existingPollingStation.AdministrativeTerritoryCode = request.AdministrativeTerritoryCode;
-                existingPollingStation.Coordinates = request.Coordinates;
                 existingPollingStation.Address = request.Address;
-                existingPollingStation.TerritoryCode = request.TerritoryCode;
                 existingPollingStation.Number = request.Number;
                 await _context.SaveChangesAsync(cancellationToken);
             }

@@ -1,4 +1,4 @@
-﻿using CSharpFunctionalExtensions;
+using CSharpFunctionalExtensions;
 using MediatR;
 using VoteMonitor.Api.County.Models;
 
@@ -6,19 +6,19 @@ namespace VoteMonitor.Api.County.Commands
 {
     public class UpdateCounty : IRequest<Result>
     {
-        public CountyModel County { get; }
+        public int CountyId { get; }
+        public string Code { get; }
+        public string Name { get; }
+        public bool Diaspora { get; }
+        public int Order { get; }
 
         public UpdateCounty(int countyId, UpdateCountyRequest county)
         {
-            County = new CountyModel
-            {
-                Id = countyId,
-                Name = county.Name,
-                Code = county.Code,
-                Diaspora = county.Diaspora,
-                Order = county.Order,
-                NumberOfPollingStations = county.NumberOfPollingStations
-            };
+            CountyId = countyId;
+            Name = county.Name;
+            Code = county.Code;
+            Diaspora = county.Diaspora;
+            Order = county.Order;
         }
     }
 }
