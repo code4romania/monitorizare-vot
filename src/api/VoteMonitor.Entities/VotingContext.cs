@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace VoteMonitor.Entities
 {
@@ -9,6 +10,8 @@ namespace VoteMonitor.Entities
         {
 
         }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+            => optionsBuilder.EnableSensitiveDataLogging(true);
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
