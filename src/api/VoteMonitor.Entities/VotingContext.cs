@@ -70,13 +70,13 @@ namespace VoteMonitor.Entities
                     .HasName("PK_Note");
 
                 entity.HasIndex(e => e.IdQuestion)
-                    .HasName("IX_Note_IdQuestion");
+                    .HasDatabaseName("IX_Note_IdQuestion");
 
                 entity.HasIndex(e => e.IdObserver)
-                    .HasName("IX_Note_IdObserver");
+                    .HasDatabaseName("IX_Note_IdObserver");
 
                 entity.HasIndex(e => e.IdPollingStation)
-                    .HasName("IX_Note_IdPollingStation");
+                    .HasDatabaseName("IX_Note_IdPollingStation");
 
                 entity.Property(e => e.LastModified);
 
@@ -115,7 +115,7 @@ namespace VoteMonitor.Entities
                     .HasName("PK_Observer");
 
                 entity.HasIndex(e => e.IdNgo)
-                    .HasName("IX_Observer_IdNgo");
+                    .HasDatabaseName("IX_Observer_IdNgo");
 
                 entity.HasIndex(e => e.MobileDeviceId);
                 entity.HasIndex(e => e.MobileDeviceIdType);
@@ -186,16 +186,16 @@ namespace VoteMonitor.Entities
                     .HasName("PK_Answer");
 
                 entity.HasIndex(e => e.IdObserver)
-                    .HasName("IX_Answer_IdObserver");
+                    .HasDatabaseName("IX_Answer_IdObserver");
 
                 entity.HasIndex(e => e.IdOptionToQuestion)
-                    .HasName("IX_Answer_IdOptionToQuestion");
+                    .HasDatabaseName("IX_Answer_IdOptionToQuestion");
 
                 entity.HasIndex(e => e.IdPollingStation)
-                    .HasName("IX_Answer_IdPollingStation");
+                    .HasDatabaseName("IX_Answer_IdPollingStation");
 
                 entity.HasIndex(e => new { e.IdObserver, e.CountyCode, e.PollingStationNumber, e.LastModified })
-                    .HasName("IX_Answer_IdObserver_CountyCode_PollingStationNumber_LastModified");
+                    .HasDatabaseName("IX_Answer_IdObserver_CountyCode_PollingStationNumber_LastModified");
 
                 entity.Property(e => e.LastModified)
                     .HasDefaultValueSql("timezone('utc', now())");
@@ -260,10 +260,10 @@ namespace VoteMonitor.Entities
                     .HasName("PK_PollingStation");
 
                 entity.HasIndex(e => e.IdCounty)
-                    .HasName("IX_PollingStation_IdCounty");
+                    .HasDatabaseName("IX_PollingStation_IdCounty");
 
                 entity.HasIndex(e => new { e.IdCounty, IdPollingStation = e.Id })
-                    .HasName("IX_Unique_IdCounty_IdPollingStation")
+                    .HasDatabaseName("IX_Unique_IdCounty_IdPollingStation")
                     .IsUnique();
 
                 entity.Property(e => e.Id)
@@ -342,13 +342,13 @@ namespace VoteMonitor.Entities
                     .HasName("PK_OptionToQuestion");
 
                 entity.HasIndex(e => e.IdQuestion)
-                    .HasName("IX_OptionToQuestion_Question");
+                    .HasDatabaseName("IX_OptionToQuestion_Question");
 
                 entity.HasIndex(e => e.IdOption)
-                    .HasName("IX_OptionToQuestion_Option");
+                    .HasDatabaseName("IX_OptionToQuestion_Option");
 
                 entity.HasIndex(e => new { e.IdOption, e.IdQuestion })
-                    .HasName("IX_OptionToQuestion")
+                    .HasDatabaseName("IX_OptionToQuestion")
                     .IsUnique();
 
                 entity.Property(e => e.Flagged)
@@ -383,10 +383,10 @@ namespace VoteMonitor.Entities
                     .HasName("PK_NotificationRegistrationData");
 
                 entity.HasIndex(e => new { e.ObserverId, e.ChannelName })
-                    .HasName("IX_NotificationRegistrationData_ObserverId_ChannelName");
+                    .HasDatabaseName("IX_NotificationRegistrationData_ObserverId_ChannelName");
 
                 entity.HasIndex(e => new { e.ObserverId })
-                    .HasName("IX_NotificationRegistrationData_IdObserver");
+                    .HasDatabaseName("IX_NotificationRegistrationData_IdObserver");
 
                 entity.Property(e => e.ObserverId)
                     .IsRequired();

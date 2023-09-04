@@ -36,7 +36,7 @@ namespace VoteMonitor.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers().AddNewtonsoftJson(opt=>opt.SerializerSettings.NullValueHandling = NullValueHandling.Ignore);
+            services.AddControllers();
             services.ConfigureCustomOptions(Configuration);
             services.AddHashService(Configuration);
             services.AddFileService(Configuration);
@@ -47,7 +47,10 @@ namespace VoteMonitor.Api
             services.AddDbContext<VoteMonitorContext>(o => o.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
             services.AddFirebase(Configuration);
             services.AddAutoMapper(GetAssemblies());
-            services.AddMediatR(GetAssemblies().ToArray());
+            services.AddMediatR(cfg =>
+            {
+                cfg.RegisterServicesFromAssemblies(GetAssemblies().ToArray());
+            });
             services.AddFormServices();
 
             services.ConfigureSwagger();
@@ -71,7 +74,7 @@ namespace VoteMonitor.Api
             {
                 app.UseDeveloperExceptionPage();
             }
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
             app.UseAuthentication();

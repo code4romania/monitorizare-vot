@@ -2,6 +2,7 @@ using CsvHelper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -46,7 +47,7 @@ namespace VoteMonitor.Api.Observer.Handlers
             var startId = GetMaxIdObserver();
 
             using var reader = new StreamReader(message.File.OpenReadStream());
-            using var csv = new CsvReader(reader);
+            using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
             var observers = csv.GetRecords<ObserversImportModel>()
                 .ToList();
 

@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
@@ -9,7 +9,7 @@ using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.PollingStation.Handlers
 {
-    public class UpdatePollingStationInfoHandler : IRequestHandler<UpdatePollingStationInfo, Unit>
+    public class UpdatePollingStationInfoHandler : IRequestHandler<UpdatePollingStationInfo>
     {
         private readonly VoteMonitorContext _context;
         private readonly ILogger _logger;
@@ -20,7 +20,7 @@ namespace VoteMonitor.Api.PollingStation.Handlers
             _logger = logger;
         }
 
-        public async Task<Unit> Handle(UpdatePollingStationInfo request, CancellationToken cancellationToken)
+        public async Task Handle(UpdatePollingStationInfo request, CancellationToken cancellationToken)
         {
             try
             {
@@ -30,7 +30,7 @@ namespace VoteMonitor.Api.PollingStation.Handlers
 
                 if(pollingStationInfo == null)
                 {
-                    return Unit.Value;
+                    return;
                 }
 
                 pollingStationInfo.ObserverLeaveTime = request.ObserverLeaveTime;
@@ -38,8 +38,6 @@ namespace VoteMonitor.Api.PollingStation.Handlers
 
                 _context.Update(pollingStationInfo);
                 await _context.SaveChangesAsync(cancellationToken);
-
-                return Unit.Value;
             }
             catch (Exception ex)
             {

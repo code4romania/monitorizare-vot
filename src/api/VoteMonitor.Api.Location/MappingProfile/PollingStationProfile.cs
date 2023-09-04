@@ -13,18 +13,17 @@ namespace VoteMonitor.Api.Location.MappingProfile
         {
             CreateMap<PollingStationInfo, RegisterPollingStationCommand>();
 
-            CreateMap<RegisterPollingStationCommand, PollingStationInfo>()
+            CreateMap<RegisterPollingStationCommand, PollingStationInfo>(MemberList.None)
                 .ForMember(dest => dest.LastModified, c => c.MapFrom(src => DateTime.UtcNow))
-                .ForMember(dest => dest.IsPollingStationPresidentFemale, c => c.MapFrom(src => src.IsPollingStationPresidentFemale))
+                .ForMember(dest => dest.IsPollingStationPresidentFemale,
+                    c => c.MapFrom(src => src.IsPollingStationPresidentFemale))
                 .ForMember(dest => dest.ObserverArrivalTime, c => c.MapFrom(src => src.ObserverArrivalTime))
                 .ForMember(dest => dest.ObserverLeaveTime, c => c.MapFrom(src => src.ObserverLeaveTime))
-                .ForMember(dest => dest.UrbanArea, c => c.MapFrom(src => src.UrbanArea))
-                .ForAllOtherMembers(x => x.Ignore());
+                .ForMember(dest => dest.UrbanArea, c => c.MapFrom(src => src.UrbanArea));
 
-            CreateMap<UpdatePollingSectionCommand, PollingStationInfo>()
+            CreateMap<UpdatePollingSectionCommand, PollingStationInfo>(MemberList.None)
                 .ForMember(dest => dest.LastModified, c => c.MapFrom(src => DateTime.UtcNow))
-                .ForMember(dest => dest.ObserverLeaveTime, c => c.MapFrom(src => src.ObserverLeaveTime))
-                .ForAllOtherMembers(x => x.Ignore());
+                .ForMember(dest => dest.ObserverLeaveTime, c => c.MapFrom(src => src.ObserverLeaveTime));
 
 
             CreateMap<AddPollingStationInfo, RegisterPollingStationCommand>()

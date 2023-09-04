@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -69,7 +69,7 @@ namespace VoteMonitor.Api.Ngo.Handlers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error when loading all ngo admins", request.AdminId, request.NgoId);
+                _logger.LogError(e, "Error when loading all ngo admins {ngoId} {adminId}", request.NgoId, request.AdminId);
                 return Result.Failure<NgoAdminModel>($"Could not load info for ngo admin with id {request.AdminId} and in ngo with id = {request.NgoId}");
             }
         }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -93,7 +93,7 @@ namespace VoteMonitor.Api.Ngo.Handlers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Could not delete ngo admin", request.IdNgo, request.IdNgoAdmin);
+                _logger.LogError(e, "Could not delete ngo admin, {ngoId} {adminId}", request.IdNgo, request.IdNgoAdmin);
                 return Result.Failure($"Could not delete ngo admin with id = {request.IdNgoAdmin} and ngoId = {request.IdNgo}");
             }
         }

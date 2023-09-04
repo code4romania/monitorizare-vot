@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
@@ -21,7 +21,7 @@ namespace VoteMonitor.Api.Observer.Handlers
             _logger = logger;
         }
 
-        public async Task<Unit> Handle(RemoveDeviceIdCommand request, CancellationToken cancellationToken)
+        public async Task Handle(RemoveDeviceIdCommand request, CancellationToken cancellationToken)
         {
             try
             {
@@ -31,7 +31,6 @@ namespace VoteMonitor.Api.Observer.Handlers
 
                 observer.MobileDeviceId = null;
                 await _context.SaveChangesAsync(cancellationToken);
-                return Unit.Value;
             }
             catch (Exception exception)
             {

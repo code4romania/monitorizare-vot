@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -58,7 +59,7 @@ namespace VoteMonitor.Api.Location.Handlers
         private List<PollingStationCsvModel> ParseUploadedPollingStations(IFormFile requestFile)
         {
             using var reader = new StreamReader(requestFile.OpenReadStream());
-            using var csv = new CsvReader(reader);
+            using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
             var counties = csv.GetRecords<PollingStationCsvModel>()
                 .ToList();
 

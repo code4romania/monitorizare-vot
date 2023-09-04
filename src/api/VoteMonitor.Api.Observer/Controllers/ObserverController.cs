@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
@@ -97,11 +98,8 @@ namespace VoteMonitor.Api.Observer.Controllers
         {
             using (var mem = new MemoryStream())
             using (var writer = new StreamWriter(mem))
-            using (var csvWriter = new CsvWriter(writer))
+            using (var csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture))
             {
-                csvWriter.Configuration.HasHeaderRecord = true;
-                csvWriter.Configuration.AutoMap<ObserversImportModel>();
-
                 csvWriter.WriteRecords(new []
                 {
                     new ObserversImportModel

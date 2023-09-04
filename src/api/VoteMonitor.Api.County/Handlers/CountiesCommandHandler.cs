@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -59,7 +60,7 @@ namespace VoteMonitor.Api.County.Handlers
             var result = await ReadFromCsv(request)
                 .Ensure(x => x != null && x.Count > 0, "No counties to add or update")
                 .Bind(x => ValidateData(x))
-                .Tap(async x => await InsertOrUpdateCounties(x, cancellationToken));
+                .Check(async x => await InsertOrUpdateCounties(x, cancellationToken));
 
             return result;
         }
@@ -143,7 +144,7 @@ namespace VoteMonitor.Api.County.Handlers
             try
             {
                 using var reader = new StreamReader(request.File.OpenReadStream());
-                using var csv = new CsvReader(reader);
+                using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
                 counties = csv.GetRecords<CountyCsvModel>()
                     .ToList();
             }

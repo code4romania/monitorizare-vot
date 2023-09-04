@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -22,7 +22,7 @@ namespace VoteMonitor.Api.PollingStation.Handlers
             _logger = logger;
         }
 
-        public async Task<Unit> Handle(CreatePollingStationInfo request, CancellationToken cancellationToken)
+        public async Task Handle(CreatePollingStationInfo request, CancellationToken cancellationToken)
         {
             try
             {
@@ -30,8 +30,6 @@ namespace VoteMonitor.Api.PollingStation.Handlers
 
                 _context.PollingStationInfos.Add(pollingStationInfo);
                 await _context.SaveChangesAsync(cancellationToken);
-
-                return Unit.Value;
             }
             catch (Exception ex)
             {

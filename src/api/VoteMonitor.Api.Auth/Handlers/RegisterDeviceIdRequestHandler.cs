@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
@@ -33,8 +33,8 @@ namespace VoteMonitor.Api.Auth.Handlers
             }
             catch (Exception ex)
             {
-                _logger.LogError(new EventId(), ex, ex.Message);
-                throw ex;
+                _logger.LogError(ex, ex.Message);
+                throw;
             }
         }
     }

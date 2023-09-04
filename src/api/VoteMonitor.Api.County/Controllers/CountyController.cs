@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using VoteMonitor.Api.County.Commands;
 using VoteMonitor.Api.County.Queries;
+using System.Globalization;
 
 namespace VoteMonitor.Api.County.Controllers
 {
@@ -38,11 +39,8 @@ namespace VoteMonitor.Api.County.Controllers
 
             using (var mem = new MemoryStream())
             using (var writer = new StreamWriter(mem))
-            using (var csvWriter = new CsvWriter(writer))
+            using (var csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture))
             {
-                csvWriter.Configuration.HasHeaderRecord = true;
-                csvWriter.Configuration.AutoMap<CountyCsvModel>();
-
                 csvWriter.WriteRecords(dataResult.Value);
 
                 writer.Flush();
@@ -76,11 +74,8 @@ namespace VoteMonitor.Api.County.Controllers
         {
             using (var mem = new MemoryStream())
             using (var writer = new StreamWriter(mem))
-            using (var csvWriter = new CsvWriter(writer))
+            using (var csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture))
             {
-                csvWriter.Configuration.HasHeaderRecord = true;
-                csvWriter.Configuration.AutoMap<CountyCsvModel>();
-
                 csvWriter.WriteRecords(new[]
                 {
                     new CountyCsvModel

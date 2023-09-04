@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System;
@@ -66,7 +66,7 @@ namespace VoteMonitor.Api.Observer.Handlers
             }
             catch (Exception ex)
             {
-                _logger.LogError("Error during generation of random observers", ex, ex.Message);
+                _logger.LogError(ex, "Error during generation of random observers");
             }
 
             return await Task.FromResult(generatedObservers);

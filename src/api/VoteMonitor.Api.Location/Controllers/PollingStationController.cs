@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -136,11 +137,8 @@ namespace VoteMonitor.Api.Location.Controllers
         {
             using (var mem = new MemoryStream())
             using (var writer = new StreamWriter(mem))
-            using (var csvWriter = new CsvWriter(writer))
+            using (var csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture))
             {
-                csvWriter.Configuration.HasHeaderRecord = true;
-                csvWriter.Configuration.AutoMap<PollingStationCsvModel>();
-
                 csvWriter.WriteRecords(new[]
                 {
                     new PollingStationCsvModel
