@@ -24,7 +24,6 @@ Content-Type: application/json
 }
 ###
 
-
 # @name exportForms
 POST {{url}}/api/v1/export/forms
 Content-Type: application/json
@@ -298,7 +297,7 @@ Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0g
 Content-Disposition: form-data; name="CsvFile"; filename="counties.csv"
 Content-Type: text/csv
 
-< ./counties.csv
+< ./polish_counties_2019.csv
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
 ###
 
@@ -312,6 +311,12 @@ Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0g
 Content-Disposition: form-data; name="CsvFile"; filename="polling-stations.csv"
 Content-Type: text/csv
 
-< ./polling-stations.csv
+< ./polish_polling_stations_2019.csv
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
+###
+
+
+###
+# @name exportAll
+GET {{url}}/api/v2/export/all
 ###
