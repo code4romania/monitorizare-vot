@@ -1,36 +1,20 @@
 using CsvHelper;
-using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
-using System.Linq;
 
-namespace VoteMonitor.Api.DataExport.FileGenerator
+namespace VoteMonitor.Api.DataExport.FileGenerator;
+
+public class CsvGenerator : ICsvGenerator
 {
-    public class CsvGenerator : ICsvGenerator
+    public byte[] Export<T>(IEnumerable<T> exportData, string fileName)
     {
-        private readonly ILogger _logger;
-
-        public CsvGenerator(ILogger logger)
+        using (var mem = new MemoryStream())
+        using (var writer = new StreamWriter(mem))
+        using (var csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture))
         {
-            _logger = logger;
-        }
+            csvWriter.WriteRecords(exportData);
 
-        public byte[] Export<T>(IEnumerable<T> exportData, string fileName)
-        {
-            if (exportData == null || !exportData.Any())
-                return new byte[0];
-
-
-            using (var mem = new MemoryStream())
-            using (var writer = new StreamWriter(mem))
-            using (var csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture))
-            {
-                csvWriter.WriteRecords(exportData);
-
-                writer.Flush();
-                return mem.ToArray();
-            }
+            writer.Flush();
+            return mem.ToArray();
         }
     }
 }

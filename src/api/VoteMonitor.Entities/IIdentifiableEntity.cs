@@ -1,7 +1,6 @@
-﻿namespace VoteMonitor.Entities
+﻿namespace VoteMonitor.Entities;
+
+public interface IIdentifiableEntity
 {
-    public interface IIdentifiableEntity
-    {
-        int Id { get; }
-    }
+    int Id { get; }
 }

@@ -1,8 +1,7 @@
-﻿namespace VoteMonitor.Api.Statistics.Models
+﻿namespace VoteMonitor.Api.Statistics.Models;
+
+public enum StatisticsGroupingTypes
 {
-    public enum StatisticsGroupingTypes
-    {
-        County,
-        PollingStation
-    }
+    County,
+    PollingStation
 }

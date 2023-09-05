@@ -1,10 +1,9 @@
 ﻿using MediatR;
 using VoteMonitor.Api.Form.Models;
 
-namespace VoteMonitor.Api.Form.Commands
+namespace VoteMonitor.Api.Form.Commands;
+
+public class AddFormCommand : IRequest<FormDTO>
 {
-    public class AddFormCommand : IRequest<FormDTO>
-    {
-        public FormDTO Form { get; set; }
-    }
+    public FormDTO Form { get; set; }
 }

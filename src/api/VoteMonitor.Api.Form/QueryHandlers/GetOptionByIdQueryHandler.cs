@@ -1,33 +1,29 @@
 ﻿using AutoMapper;
 using MediatR;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using VoteMonitor.Api.Form.Models.Options;
 using VoteMonitor.Api.Form.Queries;
 using VoteMonitor.Entities;
 
-namespace VoteMonitor.Api.Form.QueryHandlers
+namespace VoteMonitor.Api.Form.QueryHandlers;
+
+public class GetOptionByIdQueryHandler : IRequestHandler<GetOptionByIdQuery, OptionDTO>
+
 {
-    public class GetOptionByIdQueryHandler : IRequestHandler<GetOptionByIdQuery, OptionDTO>
+    private readonly VoteMonitorContext _context;
+    private readonly IMapper _mapper;
 
+    public GetOptionByIdQueryHandler(VoteMonitorContext context, IMapper mapper)
     {
-        private readonly VoteMonitorContext _context;
-        private readonly IMapper _mapper;
+        _context = context;
+        _mapper = mapper;
+    }
 
-        public GetOptionByIdQueryHandler(VoteMonitorContext context, IMapper mapper)
-        {
-            _context = context;
-            _mapper = mapper;
-        }
+    public Task<OptionDTO> Handle(GetOptionByIdQuery request, CancellationToken cancellationToken)
+    {
+        var option = _context.Options.FirstOrDefault(c => c.Id == request.OptionId);
 
-        public Task<OptionDTO> Handle(GetOptionByIdQuery request, CancellationToken cancellationToken)
-        {
-            var option = _context.Options.FirstOrDefault(c => c.Id == request.OptionId);
+        var optionDto = _mapper.Map<OptionDTO>(option);
 
-            var optionDto = _mapper.Map<OptionDTO>(option);
-
-            return Task.FromResult(optionDto);
-        }
+        return Task.FromResult(optionDto);
     }
 }

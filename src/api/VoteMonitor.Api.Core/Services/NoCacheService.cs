@@ -1,20 +1,17 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
-using System;
-using System.Threading.Tasks;
 
-namespace VoteMonitor.Api.Core.Services
+namespace VoteMonitor.Api.Core.Services;
+
+public class NoCacheService : ICacheService
 {
-    public class NoCacheService : ICacheService
+    public async Task<T> GetOrSaveDataInCacheAsync<T>(string name, Func<Task<T>> source,
+        DistributedCacheEntryOptions options = null)
     {
-        public async Task<T> GetOrSaveDataInCacheAsync<T>(string name, Func<Task<T>> source,
-            DistributedCacheEntryOptions options = null)
-        {
-            return await source();
-        }
-
-        public Task<T> GetObjectSafeAsync<T>(string name) => throw new NotImplementedException();
-
-        public Task SaveObjectSafeAsync(string name, object value,
-            DistributedCacheEntryOptions options = null) => throw new NotImplementedException();
+        return await source();
     }
+
+    public Task<T> GetObjectSafeAsync<T>(string name) => throw new NotImplementedException();
+
+    public Task SaveObjectSafeAsync(string name, object value,
+        DistributedCacheEntryOptions options = null) => throw new NotImplementedException();
 }

@@ -1,10 +1,9 @@
-﻿namespace VoteMonitor.Entities
+﻿namespace VoteMonitor.Entities;
+
+public enum QuestionType
 {
-    public enum QuestionType
-    {
-        MultipleOption = 0,
-        SingleOption = 1,
-        SingleOptionWithText = 2,
-        MultipleOptionWithText = 3
-    }
+    MultipleOption = 0,
+    SingleOption = 1,
+    SingleOptionWithText = 2,
+    MultipleOptionWithText = 3
 }

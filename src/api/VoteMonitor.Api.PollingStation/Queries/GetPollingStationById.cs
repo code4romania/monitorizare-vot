@@ -1,10 +1,9 @@
 using MediatR;
 using VoteMonitor.Api.PollingStation.Models;
 
-namespace VoteMonitor.Api.PollingStation.Queries
+namespace VoteMonitor.Api.PollingStation.Queries;
+
+public class GetPollingStationById : IRequest<GetPollingStationModel>
 {
-    public class GetPollingStationById : IRequest<GetPollingStationModel>
-    {
-        public int PollingStationId { get; set; }
-    }
+    public int PollingStationId { get; set; }
 }

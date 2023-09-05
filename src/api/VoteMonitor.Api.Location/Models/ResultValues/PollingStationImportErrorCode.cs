@@ -1,10 +1,7 @@
-﻿using System;
+﻿namespace VoteMonitor.Api.Location.Models.ResultValues;
 
-namespace VoteMonitor.Api.Location.Models.ResultValues
+public enum PollingStationImportErrorCode
 {
-    public enum PollingStationImportErrorCode
-    {
-        GenericError = -1,
-        CountyNotFound = -2
-    }
+    GenericError = -1,
+    CountyNotFound = -2
 }

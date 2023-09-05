@@ -1,19 +1,18 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace VoteMonitor.Entities
+namespace VoteMonitor.Entities;
+
+public class NotesAttachments : IIdentifiableEntity
 {
-    public class NotesAttachments : IIdentifiableEntity
-    {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Key]
-        public int Id { get; set; }
-        public int NoteId { get; set; }
-        public virtual Note Note { get; set; }
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    [Key]
+    public int Id { get; set; }
+    public int NoteId { get; set; }
+    public virtual Note Note { get; set; }
 
 
-        [Required, MaxLength(1000)]
-        public string Path { get; set; }
+    [Required, MaxLength(1000)]
+    public string Path { get; set; }
 
-    }
 }

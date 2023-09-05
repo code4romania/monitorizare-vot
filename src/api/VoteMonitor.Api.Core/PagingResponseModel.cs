@@ -1,18 +1,17 @@
-﻿namespace VoteMonitor.Api.Core
+﻿namespace VoteMonitor.Api.Core;
+
+public class PagingResponseModel : PagingModel
 {
-    public class PagingResponseModel : PagingModel
+    protected int _totalItems;
+
+    public int TotalItems
     {
-        protected int _totalItems;
+        get { return _totalItems; }
+        set { _totalItems = value; }
+    }
 
-        public int TotalItems
-        {
-            get { return _totalItems; }
-            set { _totalItems = value; }
-        }
-
-        public int TotalPages
-        {
-            get { return 1 + (_totalItems - 1) / _pageSize; }
-        }
+    public int TotalPages
+    {
+        get { return 1 + (_totalItems - 1) / _pageSize; }
     }
 }

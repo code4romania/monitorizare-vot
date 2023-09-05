@@ -1,8 +1,7 @@
-﻿namespace VoteMonitor.Api.Core.Models
+﻿namespace VoteMonitor.Api.Core.Models;
+
+public enum UserType
 {
-    public enum UserType
-    {
-        Observer,
-        NgoAdmin
-    }
+    Observer,
+    NgoAdmin
 }

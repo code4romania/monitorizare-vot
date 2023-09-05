@@ -2,62 +2,58 @@ using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using VoteMonitor.Api.Core;
 using VoteMonitor.Api.Core.Services;
 using VoteMonitor.Api.Statistics.Models;
 using VoteMonitor.Api.Statistics.Queries;
 using VoteMonitor.Entities;
 
-namespace VoteMonitor.Api.Statistics.Handlers
+namespace VoteMonitor.Api.Statistics.Handlers;
+
+public class StatisticsQueryHandler :
+    IRequestHandler<StatisticsObserverNumberQuery, ApiListResponse<SimpleStatisticsModel>>,
+    IRequestHandler<StatisticsTopIrregularitiesQuery, ApiListResponse<SimpleStatisticsModel>>,
+    IRequestHandler<StatisticsOptionsQuery, StatisticsOptionsModel>
 {
-    public class StatisticsQueryHandler :
-        IRequestHandler<StatisticsObserverNumberQuery, ApiListResponse<SimpleStatisticsModel>>,
-        IRequestHandler<StatisticsTopIrregularitiesQuery, ApiListResponse<SimpleStatisticsModel>>,
-        IRequestHandler<StatisticsOptionsQuery, StatisticsOptionsModel>
+    private readonly VoteMonitorContext _context;
+    private readonly ICacheService _cacheService;
+    private readonly IMapper _mapper;
+
+    public StatisticsQueryHandler(VoteMonitorContext context, IMapper mapper, ICacheService cacheService)
     {
-        private readonly VoteMonitorContext _context;
-        private readonly ICacheService _cacheService;
-        private readonly IMapper _mapper;
+        _context = context;
+        _mapper = mapper;
+        _cacheService = cacheService;
+    }
 
-        public StatisticsQueryHandler(VoteMonitorContext context, IMapper mapper, ICacheService cacheService)
+    public async Task<StatisticsOptionsModel> Handle(StatisticsOptionsQuery message, CancellationToken token)
+    {
+        var queryBuilder = new StatisticsQueryBuilder
         {
-            _context = context;
-            _mapper = mapper;
-            _cacheService = cacheService;
-        }
-
-        public async Task<StatisticsOptionsModel> Handle(StatisticsOptionsQuery message, CancellationToken token)
-        {
-            var queryBuilder = new StatisticsQueryBuilder
-            {
-                Query = $@"SELECT O.""Text"" AS Label, O.""Id"" AS Code, OQ.""Flagged"" AS Flagged, COUNT(*) as Value
+            Query = $@"SELECT O.""Text"" AS Label, O.""Id"" AS Code, OQ.""Flagged"" AS Flagged, COUNT(*) as Value
                   FROM public.""Answers"" AS A
                   INNER JOIN public.""OptionsToQuestions"" AS OQ ON OQ.""Id"" = A.""IdOptionToQuestion""
                   INNER JOIN public.""Options"" AS O ON O.""Id"" = OQ.""IdOption""
                   INNER JOIN public.""Observers"" Obs ON Obs.""Id"" = A.""IdObserver""
                   INNER JOIN public.""Ngos"" N ON Obs.""IdNgo"" = N.""Id""
                   WHERE OQ.""Id"" = {message.QuestionId} AND N.""IsActive"" = true AND Obs.""IsTestObserver"" = false",
-                CacheKey = $"StatisticiOptiuni-{message.QuestionId}"
-            };
+            CacheKey = $"StatisticiOptiuni-{message.QuestionId}"
+        };
 
-            queryBuilder.AndOngFilter(message.IsOrganizer, message.NgoId);
-            queryBuilder.Append(@"GROUP BY O.""Text"", O.""Id"", OQ.""Flagged""");
+        queryBuilder.AndOngFilter(message.IsOrganizer, message.NgoId);
+        queryBuilder.Append(@"GROUP BY O.""Text"", O.""Id"", OQ.""Flagged""");
 
-            return await _cacheService.GetOrSaveDataInCacheAsync(queryBuilder.CacheKey,
-                async () =>
+        return await _cacheService.GetOrSaveDataInCacheAsync(queryBuilder.CacheKey,
+            async () =>
+            {
+                var records = await _context.OptionsStatistics
+                    .FromSqlRaw(queryBuilder.Query)
+                    .ToListAsync(cancellationToken: token);
+
+                return new StatisticsOptionsModel
                 {
-                    var records = await _context.OptionsStatistics
-                        .FromSqlRaw(queryBuilder.Query)
-                        .ToListAsync(cancellationToken: token);
-
-                    return new StatisticsOptionsModel
-                    {
-                        QuestionId = message.QuestionId,
-                        Options = records.Select(s => new OptionStatisticsModel
+                    QuestionId = message.QuestionId,
+                    Options = records.Select(s => new OptionStatisticsModel
                         {
                             OptionId = s.Code,
                             Label = s.Label,
@@ -65,65 +61,65 @@ namespace VoteMonitor.Api.Statistics.Handlers
                             IsFlagged = s.Flagged
                         })
                         .ToList(),
-                        Total = records.Sum(s => s.Value)
-                    };
-                },
-                new DistributedCacheEntryOptions
-                {
-                    AbsoluteExpirationRelativeToNow = new TimeSpan(message.CacheHours, message.CacheMinutes, message.CacheMinutes)
-                }
-            );
-        }
-
-        public async Task<ApiListResponse<SimpleStatisticsModel>> Handle(StatisticsObserverNumberQuery message, CancellationToken token)
-        {
-            var queryBuilder = new StatisticsQueryBuilder
+                    Total = records.Sum(s => s.Value)
+                };
+            },
+            new DistributedCacheEntryOptions
             {
-                Query = @"SELECT COUNT(distinct a.""IdObserver"") as Value, a.""CountyCode"" as Label
+                AbsoluteExpirationRelativeToNow = new TimeSpan(message.CacheHours, message.CacheMinutes, message.CacheMinutes)
+            }
+        );
+    }
+
+    public async Task<ApiListResponse<SimpleStatisticsModel>> Handle(StatisticsObserverNumberQuery message, CancellationToken token)
+    {
+        var queryBuilder = new StatisticsQueryBuilder
+        {
+            Query = @"SELECT COUNT(distinct a.""IdObserver"") as Value, a.""CountyCode"" as Label
                           FROM public.""Answers"" a
                           INNER JOIN public.""Observers"" o on a.""IdObserver"" = o.""Id""
                           INNER JOIN public.""Ngos"" N ON O.""IdNgo"" = N.""Id""
                           WHERE N.""IsActive"" = true AND o.""IsTestObserver"" = false",
-                CacheKey = "StatisticiObservatori"
-            };
+            CacheKey = "StatisticiObservatori"
+        };
 
-            queryBuilder.AndOngFilter(message.IsOrganizer, message.NgoId);
-            queryBuilder.Append(@"group by a.""CountyCode"" order by Value desc");
+        queryBuilder.AndOngFilter(message.IsOrganizer, message.NgoId);
+        queryBuilder.Append(@"group by a.""CountyCode"" order by Value desc");
 
-            var records = await _cacheService.GetOrSaveDataInCacheAsync(
-                queryBuilder.CacheKey,
-                async () => await _context.SimpleStatistics
-                    .FromSqlRaw(queryBuilder.Query)
-                    .ToListAsync(cancellationToken: token),
-                new DistributedCacheEntryOptions
-                {
-                    AbsoluteExpirationRelativeToNow = new TimeSpan(message.CacheHours, message.CacheMinutes, message.CacheMinutes)
-                }
-            );
-
-            var pagedList = records.Paginate(message.Page, message.PageSize);
-
-            return new ApiListResponse<SimpleStatisticsModel>
+        var records = await _cacheService.GetOrSaveDataInCacheAsync(
+            queryBuilder.CacheKey,
+            async () => await _context.SimpleStatistics
+                .FromSqlRaw(queryBuilder.Query)
+                .ToListAsync(cancellationToken: token),
+            new DistributedCacheEntryOptions
             {
-                Data = pagedList.Select(x => _mapper.Map<SimpleStatisticsModel>(x)).ToList(),
-                Page = message.Page,
-                PageSize = message.PageSize,
-                TotalItems = records.Count
-            };
-        }
+                AbsoluteExpirationRelativeToNow = new TimeSpan(message.CacheHours, message.CacheMinutes, message.CacheMinutes)
+            }
+        );
 
-        public async Task<ApiListResponse<SimpleStatisticsModel>> Handle(StatisticsTopIrregularitiesQuery message, CancellationToken token)
-        {
-            return message.GroupType == StatisticsGroupingTypes.County
-                ? await GetCountyIrregularities(message, token)
-                : await GetPollingStationIrregularities(message, token);
-        }
+        var pagedList = records.Paginate(message.Page, message.PageSize);
 
-        private async Task<ApiListResponse<SimpleStatisticsModel>> GetCountyIrregularities(StatisticsTopIrregularitiesQuery message, CancellationToken token)
+        return new ApiListResponse<SimpleStatisticsModel>
         {
-            var queryBuilder = new StatisticsQueryBuilder
-            {
-                Query = @"SELECT R.""CountyCode"" AS Label, COUNT(*) as Value
+            Data = pagedList.Select(x => _mapper.Map<SimpleStatisticsModel>(x)).ToList(),
+            Page = message.Page,
+            PageSize = message.PageSize,
+            TotalItems = records.Count
+        };
+    }
+
+    public async Task<ApiListResponse<SimpleStatisticsModel>> Handle(StatisticsTopIrregularitiesQuery message, CancellationToken token)
+    {
+        return message.GroupType == StatisticsGroupingTypes.County
+            ? await GetCountyIrregularities(message, token)
+            : await GetPollingStationIrregularities(message, token);
+    }
+
+    private async Task<ApiListResponse<SimpleStatisticsModel>> GetCountyIrregularities(StatisticsTopIrregularitiesQuery message, CancellationToken token)
+    {
+        var queryBuilder = new StatisticsQueryBuilder
+        {
+            Query = @"SELECT R.""CountyCode"" AS Label, COUNT(*) as Value
                   FROM public.""Answers"" AS R 
                   INNER JOIN public.""OptionsToQuestions"" AS RD ON RD.""Id"" = R.""IdOptionToQuestion""
                   INNER JOIN public.""Observers"" O ON O.""Id"" = R.""IdObserver""
@@ -132,39 +128,39 @@ namespace VoteMonitor.Api.Statistics.Handlers
                   INNER JOIN public.""FormSections"" fs on i.""IdSection"" = fs.""Id""
                   INNER JOIN public.""Forms"" f on fs.""IdForm"" = f.""Id""
                   WHERE RD.""Flagged"" = true AND N.""IsActive"" = true AND O.""IsTestObserver"" = false",
-                CacheKey = "StatisticiJudete"
-            };
+            CacheKey = "StatisticiJudete"
+        };
 
-            queryBuilder.AndOngFilter(message.IsOrganizer, message.NgoId);
-            queryBuilder.AndFormCodeFilter(message.FormCode);
-            queryBuilder.Append(@"GROUP BY R.""CountyCode"" ORDER BY Value DESC");
+        queryBuilder.AndOngFilter(message.IsOrganizer, message.NgoId);
+        queryBuilder.AndFormCodeFilter(message.FormCode);
+        queryBuilder.Append(@"GROUP BY R.""CountyCode"" ORDER BY Value DESC");
 
-            var records = await _cacheService.GetOrSaveDataInCacheAsync(queryBuilder.CacheKey,
-                async () => await _context.SimpleStatistics
-                    .FromSqlRaw(queryBuilder.Query)
-                    .ToListAsync(cancellationToken: token),
-                new DistributedCacheEntryOptions
-                {
-                    AbsoluteExpirationRelativeToNow = new TimeSpan(message.CacheHours, message.CacheMinutes, message.CacheMinutes)
-                }
-            );
-
-            var pagedList = records.Paginate(message.Page, message.PageSize);
-
-            return new ApiListResponse<SimpleStatisticsModel>
+        var records = await _cacheService.GetOrSaveDataInCacheAsync(queryBuilder.CacheKey,
+            async () => await _context.SimpleStatistics
+                .FromSqlRaw(queryBuilder.Query)
+                .ToListAsync(cancellationToken: token),
+            new DistributedCacheEntryOptions
             {
-                Data = pagedList.Select(x => _mapper.Map<SimpleStatisticsModel>(x)).ToList(),
-                Page = message.Page,
-                PageSize = message.PageSize,
-                TotalItems = records.Count
-            };
-        }
+                AbsoluteExpirationRelativeToNow = new TimeSpan(message.CacheHours, message.CacheMinutes, message.CacheMinutes)
+            }
+        );
 
-        private async Task<ApiListResponse<SimpleStatisticsModel>> GetPollingStationIrregularities(StatisticsTopIrregularitiesQuery message, CancellationToken token)
+        var pagedList = records.Paginate(message.Page, message.PageSize);
+
+        return new ApiListResponse<SimpleStatisticsModel>
         {
-            var queryBuilder = new StatisticsQueryBuilder
-            {
-                Query = @"SELECT R.""CountyCode"" AS Label, R.""PollingStationNumber"" AS Code, COUNT(*) as Value
+            Data = pagedList.Select(x => _mapper.Map<SimpleStatisticsModel>(x)).ToList(),
+            Page = message.Page,
+            PageSize = message.PageSize,
+            TotalItems = records.Count
+        };
+    }
+
+    private async Task<ApiListResponse<SimpleStatisticsModel>> GetPollingStationIrregularities(StatisticsTopIrregularitiesQuery message, CancellationToken token)
+    {
+        var queryBuilder = new StatisticsQueryBuilder
+        {
+            Query = @"SELECT R.""CountyCode"" AS Label, R.""PollingStationNumber"" AS Code, COUNT(*) as Value
                   FROM public.""Answers"" AS R 
                   INNER JOIN public.""OptionsToQuestions"" AS RD ON RD.""Id"" = R.""IdOptionToQuestion""
                   INNER JOIN public.""Observers"" O ON O.""Id"" = R.""IdObserver""
@@ -173,33 +169,32 @@ namespace VoteMonitor.Api.Statistics.Handlers
                   INNER JOIN public.""FormSections"" fs on i.""IdSection"" = fs.""Id""
                   INNER JOIN public.""Forms"" f on fs.""IdForm"" = f.""Id""
                   WHERE RD.""Flagged"" = true AND N.""IsActive"" = true AND O.""IsTestObserver"" = false",
-                CacheKey = "StatisticiSectii"
-            };
+            CacheKey = "StatisticiSectii"
+        };
 
-            queryBuilder.AndOngFilter(message.IsOrganizer, message.NgoId);
-            queryBuilder.AndFormCodeFilter(message.FormCode);
-            queryBuilder.Append(@"GROUP BY R.""CountyCode"", R.""PollingStationNumber""");
+        queryBuilder.AndOngFilter(message.IsOrganizer, message.NgoId);
+        queryBuilder.AndFormCodeFilter(message.FormCode);
+        queryBuilder.Append(@"GROUP BY R.""CountyCode"", R.""PollingStationNumber""");
 
-            return await _cacheService.GetOrSaveDataInCacheAsync($"{queryBuilder.CacheKey}-{message.Page}",
-                async () =>
+        return await _cacheService.GetOrSaveDataInCacheAsync($"{queryBuilder.CacheKey}-{message.Page}",
+            async () =>
+            {
+                var records = await _context.ComposedStatistics
+                    .FromSqlRaw(queryBuilder.GetPaginatedQuery(message.Page, message.PageSize))
+                    .ToListAsync(cancellationToken: token);
+
+                return new ApiListResponse<SimpleStatisticsModel>
                 {
-                    var records = await _context.ComposedStatistics
-                        .FromSqlRaw(queryBuilder.GetPaginatedQuery(message.Page, message.PageSize))
-                        .ToListAsync(cancellationToken: token);
-
-                    return new ApiListResponse<SimpleStatisticsModel>
-                    {
-                        Data = records.Select(x => _mapper.Map<SimpleStatisticsModel>(x)).ToList(),
-                        Page = message.Page,
-                        PageSize = message.PageSize,
-                        TotalItems = await _context.ComposedStatistics.FromSqlRaw(queryBuilder.Query).CountAsync(cancellationToken: token)
-                    };
-                },
-                new DistributedCacheEntryOptions
-                {
-                    AbsoluteExpirationRelativeToNow = new TimeSpan(message.CacheHours, message.CacheMinutes, message.CacheMinutes)
-                }
-            );
-        }
+                    Data = records.Select(x => _mapper.Map<SimpleStatisticsModel>(x)).ToList(),
+                    Page = message.Page,
+                    PageSize = message.PageSize,
+                    TotalItems = await _context.ComposedStatistics.FromSqlRaw(queryBuilder.Query).CountAsync(cancellationToken: token)
+                };
+            },
+            new DistributedCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = new TimeSpan(message.CacheHours, message.CacheMinutes, message.CacheMinutes)
+            }
+        );
     }
 }

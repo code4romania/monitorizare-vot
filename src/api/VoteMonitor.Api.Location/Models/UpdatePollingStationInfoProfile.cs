@@ -2,14 +2,13 @@
 using VoteMonitor.Api.Location.Commands;
 using VoteMonitor.Api.Location.Queries;
 
-namespace VoteMonitor.Api.Location.Models
+namespace VoteMonitor.Api.Location.Models;
+
+public class UpdatePollingStationInfoProfile : Profile
 {
-    public class UpdatePollingStationInfoProfile : Profile
+    public UpdatePollingStationInfoProfile()
     {
-        public UpdatePollingStationInfoProfile()
-        {
-            CreateMap<UpdatePollingStationInfo, PollingStationQuery>();
-            CreateMap<UpdatePollingStationInfo, UpdatePollingSectionCommand>();
-        }
+        CreateMap<UpdatePollingStationInfo, PollingStationQuery>();
+        CreateMap<UpdatePollingStationInfo, UpdatePollingSectionCommand>();
     }
 }

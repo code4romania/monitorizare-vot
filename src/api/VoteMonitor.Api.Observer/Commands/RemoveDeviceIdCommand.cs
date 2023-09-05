@@ -1,9 +1,8 @@
 ﻿using MediatR;
 
-namespace VoteMonitor.Api.Observer.Commands
+namespace VoteMonitor.Api.Observer.Commands;
+
+public class RemoveDeviceIdCommand : IRequest
 {
-    public class RemoveDeviceIdCommand : IRequest
-    {
-        public int Id { get; set; }
-    }
+    public int Id { get; set; }
 }

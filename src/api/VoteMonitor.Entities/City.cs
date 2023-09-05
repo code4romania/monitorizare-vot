@@ -1,17 +1,9 @@
-﻿using System.Collections.Generic;
+namespace VoteMonitor.Entities;
 
-namespace VoteMonitor.Entities
+public class City : IIdentifiableEntity
 {
-    public partial class City : IIdentifiableEntity
-    {
-        public City()
-        {
-            PollingStations = new HashSet<PollingStation>();
-        }
+    public int Id { get; set; }
+    public string Name { get; set; }
 
-        public int Id { get; set; }
-        public string Name { get; set; }
-
-        public virtual ICollection<PollingStation> PollingStations { get; set; }
-    }
+    public ICollection<PollingStation> PollingStations { get; set; } = new HashSet<PollingStation>();
 }

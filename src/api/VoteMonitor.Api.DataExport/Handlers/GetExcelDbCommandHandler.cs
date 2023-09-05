@@ -1,67 +1,64 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using VoteMonitor.Api.DataExport.FileGenerator;
 using VoteMonitor.Api.DataExport.Queries;
 using VoteMonitor.Entities;
 
-namespace VoteMonitor.Api.DataExport.Handlers
+namespace VoteMonitor.Api.DataExport.Handlers;
+
+public class GetExcelDbCommandHandler : IRequestHandler<GetExcelDbCommand, byte[]>
 {
-    public class GetExcelDbCommandHandler : IRequestHandler<GetExcelDbCommand, byte[]>
+    private readonly VoteMonitorContext _context;
+
+    public GetExcelDbCommandHandler(VoteMonitorContext context)
     {
-        private readonly VoteMonitorContext _context;
+        _context = context;
+    }
 
-        public GetExcelDbCommandHandler(VoteMonitorContext context)
-        {
-            _context = context;
-        }
+    public async Task<byte[]> Handle(GetExcelDbCommand request, CancellationToken cancellationToken)
+    {
+        var ngos = await _context.Ngos
+            .Select(ngo => new { ngo.Id, ngo.Name, ngo.Organizer, })
+            .ToListAsync(cancellationToken: cancellationToken);
 
-        public async Task<byte[]> Handle(GetExcelDbCommand request, CancellationToken cancellationToken)
-        {
-            var ngos = await _context.Ngos
-                .Select(ngo => new { ngo.Id, ngo.Name, ngo.Organizer, })
-                .ToListAsync(cancellationToken: cancellationToken);
+        var observers = await _context.Observers
+            .Select(observer => new
+            {
+                observer.Id,
+                observer.Phone,
+                observer.Name,
+                observer.IdNgo,
+                observer.FromTeam,
+                observer.IsTestObserver
+            })
+            .ToListAsync(cancellationToken: cancellationToken);
 
-            var observers = await _context.Observers
-                .Select(observer => new
-                {
-                    observer.Id,
-                    observer.Phone,
-                    observer.Name,
-                    observer.IdNgo,
-                    observer.FromTeam,
-                    observer.IsTestObserver
-                })
-                .ToListAsync(cancellationToken: cancellationToken);
+        var counties = await _context.Counties
+            .OrderBy(x => x.Order)
+            .Select(county => new { county.Id, county.Code, county.Name })
+            .ToListAsync(cancellationToken: cancellationToken);
 
-            var counties = await _context.Counties
-                .OrderBy(x => x.Order)
-                .Select(county => new { county.Id, county.Code, county.Name })
-                .ToListAsync(cancellationToken: cancellationToken);
+        var pollingStations = await _context
+            .PollingStations
+            .Select(pollingStation => new
+            {
+                pollingStation.Id,
+                CountyId = pollingStation.IdCounty,
+                pollingStation.Number,
+                pollingStation.Address
+            })
+            .ToListAsync(cancellationToken: cancellationToken);
 
-            var pollingStations = await _context
-                .PollingStations
-                .Select(pollingStation => new
-                {
-                    pollingStation.Id,
-                    CountyId = pollingStation.IdCounty,
-                    pollingStation.Number,
-                    pollingStation.Address
-                })
-                .ToListAsync(cancellationToken: cancellationToken);
+        var forms = await _context.Forms
+            .Include(f => f.FormSections)
+            .ThenInclude(fs => fs.Questions)
+            .ThenInclude(q => q.OptionsToQuestions)
+            .ThenInclude(otq => otq.Option)
+            .Where(x => x.Draft == false)
+            .OrderBy(f => f.Order)
+            .ToListAsync(cancellationToken);
 
-            var forms = await _context.Forms
-                .Include(f => f.FormSections)
-                .ThenInclude(fs => fs.Questions)
-                .ThenInclude(q => q.OptionsToQuestions)
-                .ThenInclude(otq => otq.Option)
-                .Where(x => x.Draft == false)
-                .OrderBy(f => f.Order)
-                .ToListAsync(cancellationToken);
-
-            var aggregatedForms = forms.SelectMany(form => form.FormSections
+        var aggregatedForms = forms.SelectMany(form => form.FormSections
                 .OrderBy(x => x.OrderNumber)
                 .SelectMany(formSection => formSection.Questions.OrderBy(x => x.OrderNumber)
                     .Select(question => new
@@ -92,33 +89,33 @@ namespace VoteMonitor.Api.DataExport.Handlers
                             })
                             .ToList()
                     })))
-                .ToList();
+            .ToList();
 
-            var answers = await _context.Answers.AsNoTracking()
-                          .Include(a => a.Observer)
-                          .Include(a => a.PollingStation)
-                          .Include(a => a.OptionAnswered)
-                          .ThenInclude(otq => otq.Question)
-                          .ThenInclude(q => q.FormSection)
-                          .ThenInclude(fs => fs.Form)
-                          .Where(a => a.OptionAnswered.Question.FormSection.Form.Draft == false) // exclude draft forms
-                          .Where(a => a.Observer.IdNgo != 1) // exclude code4ro org
-                          .Where(a => a.Observer.Ngo.IsActive)
-                          .Where(a => !a.Observer.IsTestObserver) // Exclude test observers ,test NGO and inactive NGOs
-                          .Select(x => new
-                          {
-                              FormId = x.OptionAnswered.Question.FormSection.Form.Id,
-                              FormSectionId = x.OptionAnswered.Question.FormSection.Id,
-                              ObserverId = x.Observer.Id,
-                              PollingStationId = x.IdPollingStation,
-                              QuestionId = x.OptionAnswered.IdQuestion,
-                              x.LastModified,
-                              OptionId = x.OptionAnswered.IdOption
-                          })
-                          .ToListAsync(cancellationToken);
+        var answers = await _context.Answers.AsNoTracking()
+            .Include(a => a.Observer)
+            .Include(a => a.PollingStation)
+            .Include(a => a.OptionAnswered)
+            .ThenInclude(otq => otq.Question)
+            .ThenInclude(q => q.FormSection)
+            .ThenInclude(fs => fs.Form)
+            .Where(a => a.OptionAnswered.Question.FormSection.Form.Draft == false) // exclude draft forms
+            .Where(a => a.Observer.IdNgo != 1) // exclude code4ro org
+            .Where(a => a.Observer.Ngo.IsActive)
+            .Where(a => !a.Observer.IsTestObserver) // Exclude test observers ,test NGO and inactive NGOs
+            .Select(x => new
+            {
+                FormId = x.OptionAnswered.Question.FormSection.Form.Id,
+                FormSectionId = x.OptionAnswered.Question.FormSection.Id,
+                ObserverId = x.Observer.Id,
+                PollingStationId = x.IdPollingStation,
+                QuestionId = x.OptionAnswered.IdQuestion,
+                x.LastModified,
+                OptionId = x.OptionAnswered.IdOption
+            })
+            .ToListAsync(cancellationToken);
 
-            // we have to aggregate on client side since this cannot be translated to sql group by
-            var filledInForms = answers.GroupBy(x => new
+        // we have to aggregate on client side since this cannot be translated to sql group by
+        var filledInForms = answers.GroupBy(x => new
             {
                 x.FormId,
                 x.FormSectionId,
@@ -135,32 +132,31 @@ namespace VoteMonitor.Api.DataExport.Handlers
                 LastModified = g.Max(x => x.LastModified),
                 Answers = g.Select(x => x.OptionId).ToList()
             })
-                .OrderBy(x => x.ObserverId)
-                .ToList();
+            .OrderBy(x => x.ObserverId)
+            .ToList();
 
 
-            var notes = await _context.Notes
-                .Include(x => x.Attachments)
-                .Select(note => new
-                {
-                    Id = note.Id,
-                    PollingStationId = note.IdPollingStation,
-                    ObserverId = note.IdObserver,
-                    note.IdQuestion,
-                    note.LastModified,
-                    Attachments = note.Attachments.Select(attachment => new { attachment.Id, attachment.Path }).ToList()
-                }).ToListAsync(cancellationToken);
+        var notes = await _context.Notes
+            .Include(x => x.Attachments)
+            .Select(note => new
+            {
+                Id = note.Id,
+                PollingStationId = note.IdPollingStation,
+                ObserverId = note.IdObserver,
+                note.IdQuestion,
+                note.LastModified,
+                Attachments = note.Attachments.Select(attachment => new { attachment.Id, attachment.Path }).ToList()
+            }).ToListAsync(cancellationToken);
 
-            return ExcelFile
-                .New()
-                .WithSheet("ngos", ngos)
-                .WithSheet("observers", observers)
-                .WithSheet("counties", counties)
-                .WithSheet("polling-stations", pollingStations)
-                .WithSheet("forms", aggregatedForms)
-                .WithSheet("filled-forms", filledInForms)
-                .WithSheet("notes", notes)
-                .Write();
-        }
+        return ExcelFile
+            .New()
+            .WithSheet("ngos", ngos)
+            .WithSheet("observers", observers)
+            .WithSheet("counties", counties)
+            .WithSheet("polling-stations", pollingStations)
+            .WithSheet("forms", aggregatedForms)
+            .WithSheet("filled-forms", filledInForms)
+            .WithSheet("notes", notes)
+            .Write();
     }
 }

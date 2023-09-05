@@ -1,8 +1,7 @@
-namespace VoteMonitor.Api.Core.Options
+namespace VoteMonitor.Api.Core.Options;
+
+public class S3StorageOptions
 {
-    public class S3StorageOptions
-    {
-        public string BucketName { get; set; }
-        public int PresignedUrlExpirationInMinutes { get; set; }
-    }
+    public string BucketName { get; set; }
+    public int PresignedUrlExpirationInMinutes { get; set; }
 }

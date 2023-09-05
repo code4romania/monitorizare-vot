@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
+﻿namespace VoteMonitor.Api.DataExport.FileGenerator;
 
-namespace VoteMonitor.Api.DataExport.FileGenerator
+public interface ICsvGenerator
 {
-    public interface ICsvGenerator
-    {
-        byte[] Export<T>(IEnumerable<T> exportData, string fileName);
-    }
+    byte[] Export<T>(IEnumerable<T> exportData, string fileName);
 }

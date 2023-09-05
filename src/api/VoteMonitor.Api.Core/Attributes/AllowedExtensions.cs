@@ -1,41 +1,38 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.IO;
 using Microsoft.AspNetCore.Http;
-using System.Linq;
 
-namespace VoteMonitor.Api.Core.Attributes
+namespace VoteMonitor.Api.Core.Attributes;
+
+public class AllowedExtensionsAttribute : ValidationAttribute
 {
-    public class AllowedExtensionsAttribute : ValidationAttribute
+    private readonly string[] _extensions;
+    private readonly string _validationMessage;
+
+    public AllowedExtensionsAttribute(string[] extensions) : this(extensions, "This extension is not allowed")
     {
-        private readonly string[] _extensions;
-        private readonly string _validationMessage;
+    }
 
-        public AllowedExtensionsAttribute(string[] extensions) : this(extensions, "This extension is not allowed")
-        {
-        }
+    public AllowedExtensionsAttribute(string[] extensions, string validationMessage)
+    {
+        _extensions = extensions;
+        _validationMessage = validationMessage;
+    }
 
-        public AllowedExtensionsAttribute(string[] extensions, string validationMessage)
+    protected override ValidationResult IsValid(
+        object value, ValidationContext validationContext)
+    {
+        if (value is IFormFile file)
         {
-            _extensions = extensions;
-            _validationMessage = validationMessage;
-        }
+            var extension = Path.GetExtension(file.FileName);
 
-        protected override ValidationResult IsValid(
-            object value, ValidationContext validationContext)
-        {
-            if (value is IFormFile file)
+            if (!_extensions.Contains(extension.ToLower()))
             {
-                var extension = Path.GetExtension(file.FileName);
-
-                if (!_extensions.Contains(extension.ToLower()))
-                {
-                    return new ValidationResult(_validationMessage);
-                }
-
+                return new ValidationResult(_validationMessage);
             }
 
-            return ValidationResult.Success;
         }
 
+        return ValidationResult.Success;
     }
+
 }

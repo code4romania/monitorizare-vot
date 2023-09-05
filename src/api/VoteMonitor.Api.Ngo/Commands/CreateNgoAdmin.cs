@@ -2,19 +2,18 @@
 using MediatR;
 using VoteMonitor.Api.Ngo.Models;
 
-namespace VoteMonitor.Api.Ngo.Commands
+namespace VoteMonitor.Api.Ngo.Commands;
+
+public class CreateNgoAdmin : IRequest<Result>
 {
-    public class CreateNgoAdmin : IRequest<Result>
+    public NgoAdminModel NgoAdmin { get; }
+    public CreateNgoAdmin(int idNgo, CreateUpdateNgoAdminModel admin)
     {
-        public NgoAdminModel NgoAdmin { get; }
-        public CreateNgoAdmin(int idNgo, CreateUpdateNgoAdminModel admin)
+        NgoAdmin = new NgoAdminModel
         {
-            NgoAdmin = new NgoAdminModel
-            {
-               Account = admin.Account,
-               IdNgo = idNgo,
-               Password = admin.Password
-            };
-        }
+            Account = admin.Account,
+            IdNgo = idNgo,
+            Password = admin.Password
+        };
     }
 }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -14,46 +10,45 @@ using VoteMonitor.Api.PollingStation.Queries;
 using VoteMonitor.Entities;
 using Xunit;
 
-namespace VoteMonitor.Api.PollingStation.Tests.Handlers
+namespace VoteMonitor.Api.PollingStation.Tests.Handlers;
+
+public class CreatePollingStationInfoHandlerTests
 {
-    public class CreatePollingStationInfoHandlerTests
+    private readonly DbContextOptions<VoteMonitorContext> _dbContextOptions;
+    private readonly MapperConfiguration _mapperConfiguration;
+    private readonly Mock<ILogger<CreatePollingStationInfoHandler>> _mockLogger;
+
+    public CreatePollingStationInfoHandlerTests()
     {
-        private readonly DbContextOptions<VoteMonitorContext> _dbContextOptions;
-        private readonly MapperConfiguration _mapperConfiguration;
-        private readonly Mock<ILogger<CreatePollingStationInfoHandler>> _mockLogger;
+        _dbContextOptions = new DbContextOptionsBuilder<VoteMonitorContext>()
+            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+            .ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning))
+            .Options;
 
-        public CreatePollingStationInfoHandlerTests()
+        _mapperConfiguration = new MapperConfiguration(cfg =>
         {
-            _dbContextOptions = new DbContextOptionsBuilder<VoteMonitorContext>()
-                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-                .ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning))
-                .Options;
+            cfg.AddProfile<PollingStationInfoProfile>();
+        });
 
-            _mapperConfiguration = new MapperConfiguration(cfg =>
+        _mockLogger = new Mock<ILogger<CreatePollingStationInfoHandler>>();
+    }
+
+    [Fact]
+    public async Task Handler_CreatesPollingStationInfo()
+    {
+        using (var context = new VoteMonitorContext(_dbContextOptions))
+        {
+            var sut = new CreatePollingStationInfoHandler(context, new Mapper(_mapperConfiguration), _mockLogger.Object);
+
+            var createPollingStationInfo = new CreatePollingStationInfo
             {
-                cfg.AddProfile<PollingStationInfoProfile>();
-            });
+                PollingStationId = 3
+            };
+            await sut.Handle(createPollingStationInfo, new CancellationToken());
 
-            _mockLogger = new Mock<ILogger<CreatePollingStationInfoHandler>>();
+            var savedPollingStationInfo = context.PollingStationInfos.FirstOrDefault(p => p.IdPollingStation == createPollingStationInfo.PollingStationId);
+            savedPollingStationInfo.Should().NotBeNull();
         }
 
-        [Fact]
-        public async Task Handler_CreatesPollingStationInfo()
-        {
-            using (var context = new VoteMonitorContext(_dbContextOptions))
-            {
-                var sut = new CreatePollingStationInfoHandler(context, new Mapper(_mapperConfiguration), _mockLogger.Object);
-
-                var createPollingStationInfo = new CreatePollingStationInfo
-                {
-                    PollingStationId = 3
-                };
-                await sut.Handle(createPollingStationInfo, new CancellationToken());
-
-                var savedPollingStationInfo = context.PollingStationInfos.FirstOrDefault(p => p.IdPollingStation == createPollingStationInfo.PollingStationId);
-                savedPollingStationInfo.Should().NotBeNull();
-            }
-
-        }
     }
 }

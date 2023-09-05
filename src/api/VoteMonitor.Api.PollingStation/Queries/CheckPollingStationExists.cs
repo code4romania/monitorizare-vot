@@ -1,9 +1,8 @@
 ﻿using MediatR;
 
-namespace VoteMonitor.Api.PollingStation.Queries
+namespace VoteMonitor.Api.PollingStation.Queries;
+
+public class CheckPollingStationExists: IRequest<bool>
 {
-    public class CheckPollingStationExists: IRequest<bool>
-    {
-        public int PollingStationId { get; set; }
-    }
+    public int PollingStationId { get; set; }
 }

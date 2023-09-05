@@ -1,36 +1,32 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using VoteMonitor.Api.PollingStation.Queries;
 using VoteMonitor.Entities;
 
-namespace VoteMonitor.Api.PollingStation.Handlers
+namespace VoteMonitor.Api.PollingStation.Handlers;
+
+public class CheckPollingStationExistsHandler: IRequestHandler<CheckPollingStationExists, bool>
 {
-    public class CheckPollingStationExistsHandler: IRequestHandler<CheckPollingStationExists, bool>
+    private readonly VoteMonitorContext _context;
+    private readonly ILogger _logger;
+
+    public CheckPollingStationExistsHandler(VoteMonitorContext context, ILogger<CheckPollingStationExistsHandler> logger)
     {
-        private readonly VoteMonitorContext _context;
-        private readonly ILogger _logger;
+        _context = context;
+        _logger = logger;
+    }
 
-        public CheckPollingStationExistsHandler(VoteMonitorContext context, ILogger<CheckPollingStationExistsHandler> logger)
+    public async Task<bool> Handle(CheckPollingStationExists request, CancellationToken cancellationToken)
+    {
+        try
         {
-            _context = context;
-            _logger = logger;
+            return await _context.PollingStations.AnyAsync(p => p.Id == request.PollingStationId, cancellationToken);
         }
-
-        public async Task<bool> Handle(CheckPollingStationExists request, CancellationToken cancellationToken)
+        catch (Exception ex)
         {
-            try
-            {
-                return await _context.PollingStations.AnyAsync(p => p.Id == request.PollingStationId, cancellationToken);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error retrieving polling station: ", ex);
-                throw;
-            }
+            _logger.LogError(ex, "Error retrieving polling station: ");
+            throw;
         }
     }
 }

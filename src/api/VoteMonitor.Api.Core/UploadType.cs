@@ -1,8 +1,7 @@
-﻿namespace VoteMonitor.Api.Core
+﻿namespace VoteMonitor.Api.Core;
+
+public enum UploadType
 {
-    public enum UploadType
-    {
-        Notes,
-        Observers
-    }
+    Notes,
+    Observers
 }

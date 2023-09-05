@@ -1,12 +1,11 @@
-﻿namespace VoteMonitor.Api.Location.Models
+namespace VoteMonitor.Api.Core.Models;
+
+public class CountyPollingStationLimit
 {
-    public class CountyPollingStationLimit
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Code { get; set; }
-        public int Limit { get; set; }
-        public bool Diaspora { get; set; }
-        public int Order { get; set; }
-    }
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public string Code { get; set; }
+    public int Limit { get; set; }
+    public bool Diaspora { get; set; }
+    public int Order { get; set; }
 }

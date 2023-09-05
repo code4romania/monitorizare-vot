@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
+﻿namespace VoteMonitor.Api.Core.Services;
 
-namespace VoteMonitor.Api.Core.Services
+public interface IFirebaseService
 {
-    public interface IFirebaseService
-    {
-        int Send(string from, string title, string message, List<string> recipients);
-    }
+    int Send(string from, string title, string message, List<string> recipients);
 }

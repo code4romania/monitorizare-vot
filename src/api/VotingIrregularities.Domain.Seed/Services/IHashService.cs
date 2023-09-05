@@ -1,7 +1,6 @@
-namespace VotingIrregularities.Domain.Seed.Services
+namespace VotingIrregularities.Domain.Seed.Services;
+
+public interface IHashService
 {
-    public interface IHashService
-    {
-        string GetHash(string clearString);
-    }
+    string GetHash(string clearString);
 }

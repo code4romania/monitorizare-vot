@@ -1,12 +1,10 @@
 ﻿using MediatR;
-using System;
 
-namespace VoteMonitor.Api.Location.Commands
+namespace VoteMonitor.Api.Location.Commands;
+
+public class UpdatePollingSectionCommand : IRequest<int>
 {
-    public class UpdatePollingSectionCommand : IRequest<int>
-    {
-        public int IdObserver { get; set; }
-        public int IdPollingStation { get; set; }
-        public DateTime ObserverLeaveTime { get; set; }
-    }
+    public int IdObserver { get; set; }
+    public int IdPollingStation { get; set; }
+    public DateTime ObserverLeaveTime { get; set; }
 }

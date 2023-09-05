@@ -1,9 +1,8 @@
 ﻿using MediatR;
 
-namespace VoteMonitor.Api.Form.Commands
+namespace VoteMonitor.Api.Form.Commands;
+
+public class DeleteSectionCommand : IRequest<bool>
 {
-    public class DeleteSectionCommand : IRequest<bool>
-    {
-        public int SectionId { get; set; }
-    }
+    public int SectionId { get; set; }
 }

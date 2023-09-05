@@ -1,8 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Logging;
@@ -12,152 +8,151 @@ using VoteMonitor.Api.PollingStation.Queries;
 using VoteMonitor.Entities;
 using Xunit;
 
-namespace VoteMonitor.Api.PollingStation.Tests.Handlers
+namespace VoteMonitor.Api.PollingStation.Tests.Handlers;
+
+public class UpdatePollingStationsHandlerTests
 {
-    public class UpdatePollingStationsHandlerTests
+    private readonly DbContextOptions<VoteMonitorContext> _dbContextOptions;
+    private readonly Mock<ILogger<UpdatePollingStationsHandler>> _mockLogger;
+
+    public UpdatePollingStationsHandlerTests()
     {
-        private readonly DbContextOptions<VoteMonitorContext> _dbContextOptions;
-        private readonly Mock<ILogger<UpdatePollingStationsHandler>> _mockLogger;
+        _dbContextOptions = new DbContextOptionsBuilder<VoteMonitorContext>()
+            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+            .ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning))
+            .Options;
 
-        public UpdatePollingStationsHandlerTests()
+        _mockLogger = new Mock<ILogger<UpdatePollingStationsHandler>>();
+    }
+
+    [Fact]
+    public async Task Handle_WhenPollingStationNotFound_ReturnsFalse()
+    {
+        using (var context = new VoteMonitorContext(_dbContextOptions))
         {
-            _dbContextOptions = new DbContextOptionsBuilder<VoteMonitorContext>()
-                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-                .ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning))
-                .Options;
-
-            _mockLogger = new Mock<ILogger<UpdatePollingStationsHandler>>();
-        }
-
-        [Fact]
-        public async Task Handle_WhenPollingStationNotFound_ReturnsFalse()
-        {
-            using (var context = new VoteMonitorContext(_dbContextOptions))
-            {
-                var sut = new UpdatePollingStationsHandler(context, _mockLogger.Object);
-
-                var requestNonExistingPollingStation = new UpdatePollingStation
-                {
-                    PollingStationId = 5
-                };
-                var result = await sut.Handle(requestNonExistingPollingStation, new CancellationToken());
-
-                result.Should().Be(false);
-            }
-        }
-        
-        [Fact]
-        public async Task Handle_WhenPollingStationFound_ReturnsTrue()
-        {
-            SetupContextWithPollingStation(new PollingStationBuilder().WithId(5).Build());
-
-            using (var context = new VoteMonitorContext(_dbContextOptions))
-            {
-                var sut = new UpdatePollingStationsHandler(context, _mockLogger.Object);
-
-                var requestExistingPollingStation = new UpdatePollingStation
-                {
-                    PollingStationId = 5
-                };
-                var result = await sut.Handle(requestExistingPollingStation, new CancellationToken());
-
-                result.Should().Be(true);
-            }
-        }
-
-        [Fact]
-        public async Task Handle_WhenContextThrowsException_ReturnsNull()
-        {
-            var mockContext = new Mock<VoteMonitorContext>(_dbContextOptions);
-            mockContext.Setup(m => m.PollingStations).Throws(new Exception());
-
-            var sut = new UpdatePollingStationsHandler(mockContext.Object, _mockLogger.Object);
+            var sut = new UpdatePollingStationsHandler(context, _mockLogger.Object);
 
             var requestNonExistingPollingStation = new UpdatePollingStation
             {
                 PollingStationId = 5
             };
+            var result = await sut.Handle(requestNonExistingPollingStation, new CancellationToken());
 
-            bool? result = false;
-            await Record.ExceptionAsync(async () => result = await sut.Handle(requestNonExistingPollingStation, new CancellationToken()));
-
-            result.Should().BeNull();
+            result.Should().Be(false);
         }
+    }
+        
+    [Fact]
+    public async Task Handle_WhenPollingStationFound_ReturnsTrue()
+    {
+        SetupContextWithPollingStation(new PollingStationBuilder().WithId(5).Build());
 
-        [Fact]
-        public async Task Handle_WhenContextThrowsException_ErrorIsLogged()
+        using (var context = new VoteMonitorContext(_dbContextOptions))
         {
-            var mockContext = new Mock<VoteMonitorContext>(_dbContextOptions);
-            mockContext.Setup(m => m.PollingStations).Throws(new Exception());
+            var sut = new UpdatePollingStationsHandler(context, _mockLogger.Object);
 
-            var sut = new UpdatePollingStationsHandler(mockContext.Object, _mockLogger.Object);
-
-            var requestNonExistingPollingStation = new UpdatePollingStation
+            var requestExistingPollingStation = new UpdatePollingStation
             {
                 PollingStationId = 5
             };
+            var result = await sut.Handle(requestExistingPollingStation, new CancellationToken());
 
-            await Record.ExceptionAsync(async () => await sut.Handle(requestNonExistingPollingStation, new CancellationToken()));
-
-            _mockLogger.Verify(x => x.Log(
-                LogLevel.Error, 
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => true),
-                It.IsAny<Exception>(),
-                It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)), Times.Once);
+            result.Should().Be(true);
         }
+    }
 
-        [Fact]
-        public async Task Handle_WhenPollingStationFound_UpdatesAddress()
+    [Fact]
+    public async Task Handle_WhenContextThrowsException_ReturnsNull()
+    {
+        var mockContext = new Mock<VoteMonitorContext>(_dbContextOptions);
+        mockContext.Setup(m => m.PollingStations).Throws(new Exception());
+
+        var sut = new UpdatePollingStationsHandler(mockContext.Object, _mockLogger.Object);
+
+        var requestNonExistingPollingStation = new UpdatePollingStation
         {
-            var id = 3;
-            SetupContextWithPollingStation(new PollingStationBuilder().WithId(id).WithAddress("old address").Build());
+            PollingStationId = 5
+        };
 
-            using (var context = new VoteMonitorContext(_dbContextOptions))
-            {
-                var sut = new UpdatePollingStationsHandler(context, _mockLogger.Object);
+        bool? result = false;
+        await Record.ExceptionAsync(async () => result = await sut.Handle(requestNonExistingPollingStation, new CancellationToken()));
 
-                var requestExistingPollingStation = new UpdatePollingStation
-                {
-                    PollingStationId = id,
-                    Address = "new address"
-                };
-                await sut.Handle(requestExistingPollingStation, new CancellationToken());
+        result.Should().BeNull();
+    }
 
-                var updatedPollingStation = context.PollingStations.First(p => p.Id == id);
-                updatedPollingStation.Address.Should().Be("new address");
-            }
-        }
+    [Fact]
+    public async Task Handle_WhenContextThrowsException_ErrorIsLogged()
+    {
+        var mockContext = new Mock<VoteMonitorContext>(_dbContextOptions);
+        mockContext.Setup(m => m.PollingStations).Throws(new Exception());
 
-        [Fact]
-        public async Task Handle_WhenPollingStationFound_UpdatesNumber()
+        var sut = new UpdatePollingStationsHandler(mockContext.Object, _mockLogger.Object);
+
+        var requestNonExistingPollingStation = new UpdatePollingStation
         {
-            var id = 3;
-            SetupContextWithPollingStation(new PollingStationBuilder().WithId(id).WithNumber(13).Build());
+            PollingStationId = 5
+        };
 
-            using (var context = new VoteMonitorContext(_dbContextOptions))
+        await Record.ExceptionAsync(async () => await sut.Handle(requestNonExistingPollingStation, new CancellationToken()));
+
+        _mockLogger.Verify(x => x.Log(
+            LogLevel.Error, 
+            It.IsAny<EventId>(),
+            It.Is<It.IsAnyType>((v, t) => true),
+            It.IsAny<Exception>(),
+            It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)), Times.Once);
+    }
+
+    [Fact]
+    public async Task Handle_WhenPollingStationFound_UpdatesAddress()
+    {
+        var id = 3;
+        SetupContextWithPollingStation(new PollingStationBuilder().WithId(id).WithAddress("old address").Build());
+
+        using (var context = new VoteMonitorContext(_dbContextOptions))
+        {
+            var sut = new UpdatePollingStationsHandler(context, _mockLogger.Object);
+
+            var requestExistingPollingStation = new UpdatePollingStation
             {
-                var sut = new UpdatePollingStationsHandler(context, _mockLogger.Object);
+                PollingStationId = id,
+                Address = "new address"
+            };
+            await sut.Handle(requestExistingPollingStation, new CancellationToken());
 
-                var requestExistingPollingStation = new UpdatePollingStation
-                {
-                    PollingStationId = id,
-                    Number = 27
-                };
-                await sut.Handle(requestExistingPollingStation, new CancellationToken());
-
-                var updatedPollingStation = context.PollingStations.First(p => p.Id == id);
-                updatedPollingStation.Number.Should().Be(27);
-            }
+            var updatedPollingStation = context.PollingStations.First(p => p.Id == id);
+            updatedPollingStation.Address.Should().Be("new address");
         }
+    }
+
+    [Fact]
+    public async Task Handle_WhenPollingStationFound_UpdatesNumber()
+    {
+        var id = 3;
+        SetupContextWithPollingStation(new PollingStationBuilder().WithId(id).WithNumber(13).Build());
+
+        using (var context = new VoteMonitorContext(_dbContextOptions))
+        {
+            var sut = new UpdatePollingStationsHandler(context, _mockLogger.Object);
+
+            var requestExistingPollingStation = new UpdatePollingStation
+            {
+                PollingStationId = id,
+                Number = 27
+            };
+            await sut.Handle(requestExistingPollingStation, new CancellationToken());
+
+            var updatedPollingStation = context.PollingStations.First(p => p.Id == id);
+            updatedPollingStation.Number.Should().Be(27);
+        }
+    }
         
-        private void SetupContextWithPollingStation(Entities.PollingStation pollingStation)
+    private void SetupContextWithPollingStation(Entities.PollingStation pollingStation)
+    {
+        using (var context = new VoteMonitorContext(_dbContextOptions))
         {
-            using (var context = new VoteMonitorContext(_dbContextOptions))
-            {
-                context.PollingStations.Add(pollingStation);
-                context.SaveChanges();
-            }
+            context.PollingStations.Add(pollingStation);
+            context.SaveChanges();
         }
     }
 }

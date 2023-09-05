@@ -1,73 +1,67 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoMapper;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Logging;
 using Moq;
 using VoteMonitor.Api.PollingStation.Handlers;
-using VoteMonitor.Api.PollingStation.Profiles;
 using VoteMonitor.Api.PollingStation.Queries;
 using VoteMonitor.Entities;
 using Xunit;
 
-namespace VoteMonitor.Api.PollingStation.Tests.Handlers
+namespace VoteMonitor.Api.PollingStation.Tests.Handlers;
+
+public class CheckPollingStationExistsHandlerTests
 {
-    public class CheckPollingStationExistsHandlerTests
+    private readonly DbContextOptions<VoteMonitorContext> _dbContextOptions;
+    private readonly Mock<ILogger<CheckPollingStationExistsHandler>> _mockLogger;
+
+    public CheckPollingStationExistsHandlerTests()
     {
-        private readonly DbContextOptions<VoteMonitorContext> _dbContextOptions;
-        private readonly Mock<ILogger<CheckPollingStationExistsHandler>> _mockLogger;
+        _dbContextOptions = new DbContextOptionsBuilder<VoteMonitorContext>()
+            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+            .ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning))
+            .Options;
 
-        public CheckPollingStationExistsHandlerTests()
+        _mockLogger = new Mock<ILogger<CheckPollingStationExistsHandler>>();
+    }
+
+    [Fact]
+    public async Task Handler_WhenPollingStationExists_ReturnsTrue()
+    {
+        using (var context = new VoteMonitorContext(_dbContextOptions))
         {
-            _dbContextOptions = new DbContextOptionsBuilder<VoteMonitorContext>()
-                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-                .ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning))
-                .Options;
-
-            _mockLogger = new Mock<ILogger<CheckPollingStationExistsHandler>>();
+            context.PollingStations.Add(new PollingStationBuilder().WithId(3).Build());
+            context.SaveChanges();
         }
 
-        [Fact]
-        public async Task Handler_WhenPollingStationExists_ReturnsTrue()
+        using (var context = new VoteMonitorContext(_dbContextOptions))
         {
-            using (var context = new VoteMonitorContext(_dbContextOptions))
+            var sut = new CheckPollingStationExistsHandler(context, _mockLogger.Object);
+            var checkPollingStationExists = new CheckPollingStationExists()
             {
-                context.PollingStations.Add(new PollingStationBuilder().WithId(3).Build());
-                context.SaveChanges();
-            }
+                PollingStationId = 3
+            };
 
-            using (var context = new VoteMonitorContext(_dbContextOptions))
-            {
-                var sut = new CheckPollingStationExistsHandler(context, _mockLogger.Object);
-                var checkPollingStationExists = new CheckPollingStationExists()
-                {
-                    PollingStationId = 3
-                };
+            var result = await sut.Handle(checkPollingStationExists, new CancellationToken());
 
-                var result = await sut.Handle(checkPollingStationExists, new CancellationToken());
-
-                result.Should().Be(true);
-            }
+            result.Should().Be(true);
         }
+    }
 
-        [Fact]
-        public async Task Handler_WhenPollingStationDoes_NotExist_ReturnsFalse()
+    [Fact]
+    public async Task Handler_WhenPollingStationDoes_NotExist_ReturnsFalse()
+    {
+        using (var context = new VoteMonitorContext(_dbContextOptions))
         {
-            using (var context = new VoteMonitorContext(_dbContextOptions))
+            var sut = new CheckPollingStationExistsHandler(context, _mockLogger.Object);
+            var checkPollingStationExists = new CheckPollingStationExists()
             {
-                var sut = new CheckPollingStationExistsHandler(context, _mockLogger.Object);
-                var checkPollingStationExists = new CheckPollingStationExists()
-                {
-                    PollingStationId = 3
-                };
+                PollingStationId = 3
+            };
 
-                var result = await sut.Handle(checkPollingStationExists, new CancellationToken());
+            var result = await sut.Handle(checkPollingStationExists, new CancellationToken());
 
-                result.Should().Be(false);
-            }
+            result.Should().Be(false);
         }
     }
 }

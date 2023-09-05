@@ -1,23 +1,20 @@
-﻿using MediatR;
-using System.Threading;
-using System.Threading.Tasks;
+using MediatR;
+using VoteMonitor.Api.Core.Services;
 using VoteMonitor.Api.Location.Queries;
-using VoteMonitor.Api.Location.Services;
 
-namespace VoteMonitor.Api.Location.Handlers
+namespace VoteMonitor.Api.Location.Handlers;
+
+public class PollingStationQueryHandler : IRequestHandler<PollingStationQuery, int>
 {
-    public class PollingStationQueryHandler : IRequestHandler<PollingStationQuery, int>
+    private readonly IPollingStationService _pollingStationService;
+
+    public PollingStationQueryHandler(IPollingStationService pollingStationService)
     {
-        private readonly IPollingStationService _pollingStationService;
+        _pollingStationService = pollingStationService;
+    }
 
-        public PollingStationQueryHandler(IPollingStationService pollingStationService)
-        {
-            _pollingStationService = pollingStationService;
-        }
-
-        public async Task<int> Handle(PollingStationQuery message, CancellationToken cancellationToken)
-        {
-            return await _pollingStationService.GetPollingStationByCountyCode(message.IdPollingStation, message.CountyCode);
-        }
+    public async Task<int> Handle(PollingStationQuery message, CancellationToken cancellationToken)
+    {
+        return await _pollingStationService.GetPollingStationByCountyCode(message.IdPollingStation, message.CountyCode);
     }
 }

@@ -1,8 +1,7 @@
 using MediatR;
 
-namespace VoteMonitor.Api.DataExport.Queries
+namespace VoteMonitor.Api.DataExport.Queries;
+
+public class GetExcelDbCommand : IRequest<byte[]>
 {
-    public class GetExcelDbCommand : IRequest<byte[]>
-    {
-    }
 }

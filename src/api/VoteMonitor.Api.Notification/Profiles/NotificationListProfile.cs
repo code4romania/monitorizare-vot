@@ -2,13 +2,12 @@ using AutoMapper;
 using VoteMonitor.Api.Notification.Commands;
 using VoteMonitor.Api.Notification.Queries;
 
-namespace VoteMonitor.Api.Notification.Profiles
+namespace VoteMonitor.Api.Notification.Profiles;
+
+public class NotificationListProfile : Profile
 {
-    public class NotificationListProfile : Profile
+    public NotificationListProfile()
     {
-        public NotificationListProfile()
-        {
-            CreateMap<NotificationListQuery, NotificationListCommand>();
-        }
+        CreateMap<NotificationListQuery, NotificationListCommand>();
     }
 }

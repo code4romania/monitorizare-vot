@@ -2,9 +2,8 @@
 using VoteMonitor.Api.Core;
 using VoteMonitor.Api.Statistics.Models;
 
-namespace VoteMonitor.Api.Statistics.Queries
+namespace VoteMonitor.Api.Statistics.Queries;
+
+public class StatisticsObserverNumberQuery : StatisticsPaginatedQuery, IRequest<ApiListResponse<SimpleStatisticsModel>>
 {
-    public class StatisticsObserverNumberQuery : StatisticsPaginatedQuery, IRequest<ApiListResponse<SimpleStatisticsModel>>
-    {
-    }
 }

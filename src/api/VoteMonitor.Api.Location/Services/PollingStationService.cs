@@ -1,105 +1,100 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using VoteMonitor.Api.Core.Models;
 using VoteMonitor.Api.Core.Services;
-using VoteMonitor.Api.Location.Models;
 using VoteMonitor.Entities;
 
-namespace VoteMonitor.Api.Location.Services
+namespace VoteMonitor.Api.Location.Services;
+
+public class PollingStationService : IPollingStationService
 {
-    public class PollingStationService : IPollingStationService
+    private readonly VoteMonitorContext _context;
+    private readonly ICacheService _cacheService;
+    private readonly ILogger _logger;
+
+    public PollingStationService(VoteMonitorContext context, ICacheService cacheService, ILogger<PollingStationService> logger)
     {
-        private readonly VoteMonitorContext _context;
-        private readonly ICacheService _cacheService;
-        private readonly ILogger _logger;
+        _context = context;
+        _cacheService = cacheService;
+        _logger = logger;
+    }
 
-        public PollingStationService(VoteMonitorContext context, ICacheService cacheService, ILogger<PollingStationService> logger)
+    public async Task<int> GetPollingStationByCountyCode(int pollingStationNumber, string countyCode)
+    {
+        try
         {
-            _context = context;
-            _cacheService = cacheService;
-            _logger = logger;
+            var cacheKey = $"polling-station-countyCode-{pollingStationNumber}-{countyCode}";
+
+            return await _cacheService.GetOrSaveDataInCacheAsync(cacheKey, async () =>
+            {
+                var countyId = _context.Counties.FirstOrDefault(c => c.Code == countyCode)?.Id;
+                if (countyId == null)
+                    throw new ArgumentException($"Could not find County with code: {countyCode}");
+
+                return await GetPollingStationByCountyId(pollingStationNumber, countyId.Value);
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(new EventId(), ex.Message);
         }
 
-        public async Task<int> GetPollingStationByCountyCode(int pollingStationNumber, string countyCode)
+        return -1;
+    }
+
+    public async Task<int> GetPollingStationByCountyId(int pollingStationNumber, int countyId)
+    {
+        try
         {
-            try
+            var cacheKey = $"polling-station-{pollingStationNumber}-{countyId}";
+            return await _cacheService.GetOrSaveDataInCacheAsync<int>(cacheKey, async () =>
             {
-                var cacheKey = $"polling-station-countyCode-{pollingStationNumber}-{countyCode}";
+                var idSectie = await
+                    _context.PollingStations
+                        .Where(a => a.IdCounty == countyId && a.Number == pollingStationNumber)
+                        .Select(a => a.Id).ToListAsync();
 
-                return await _cacheService.GetOrSaveDataInCacheAsync(cacheKey, async () =>
-                 {
-                     var countyId = _context.Counties.FirstOrDefault(c => c.Code == countyCode)?.Id;
-                     if (countyId == null)
-                         throw new ArgumentException($"Could not find County with code: {countyCode}");
+                if (idSectie.Count == 0)
+                    throw new ArgumentException($"No Polling station found for: {new { countyId, pollingStationNumber }}");
 
-                     return await GetPollingStationByCountyId(pollingStationNumber, countyId.Value);
-                 });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(new EventId(), ex.Message);
-            }
 
-            return -1;
+                if (idSectie.Count > 1) // TODO[bv] add unique constraint on PollingStations [CountyId, Number]
+                    throw new ArgumentException($"More than one polling station found for: {new { countyId, idSectie }}");
+
+                return idSectie.Single();
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(new EventId(), ex.Message);
         }
 
-        public async Task<int> GetPollingStationByCountyId(int pollingStationNumber, int countyId)
+        return -1;
+    }
+
+    public async Task<IEnumerable<CountyPollingStationLimit>> GetPollingStationsAssignmentsForAllCounties(bool? diaspora)
+    {
+        var cacheKey = "all-polling-stations";
+
+        if (diaspora.HasValue)
         {
-            try
-            {
-                var cacheKey = $"polling-station-{pollingStationNumber}-{countyId}";
-                return await _cacheService.GetOrSaveDataInCacheAsync<int>(cacheKey, async () =>
-                 {
-                     var idSectie = await
-                     _context.PollingStations
-                         .Where(a => a.IdCounty == countyId && a.Number == pollingStationNumber)
-                         .Select(a => a.Id).ToListAsync();
-
-                     if (idSectie.Count == 0)
-                         throw new ArgumentException($"No Polling station found for: {new { countyId, pollingStationNumber }}");
-
-
-                     if (idSectie.Count > 1) // TODO[bv] add unique constraint on PollingStations [CountyId, Number]
-                         throw new ArgumentException($"More than one polling station found for: {new { countyId, idSectie }}");
-
-                     return idSectie.Single();
-                 });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(new EventId(), ex.Message);
-            }
-
-            return -1;
+            cacheKey = $"polling-station-diaspora-{diaspora.Value}";
         }
 
-        public async Task<IEnumerable<CountyPollingStationLimit>> GetPollingStationsAssignmentsForAllCounties(bool? diaspora)
-        {
-            var cacheKey = "all-polling-stations";
+        var data = await _cacheService
+            .GetOrSaveDataInCacheAsync(cacheKey, async () => await _context.Counties
+                .Where(c => diaspora == null || c.Diaspora == diaspora)
+                .OrderBy(c => c.Order)
+                .Select(c => new CountyPollingStationLimit
+                {
+                    Name = c.Name,
+                    Code = c.Code,
+                    Limit = c.PollingStations.Count(),
+                    Id = c.Id,
+                    Diaspora = c.Diaspora,
+                    Order = c.Order
+                }).ToListAsync());
 
-            if (diaspora.HasValue)
-            {
-                cacheKey = $"polling-station-diaspora-{diaspora.Value}";
-            }
-
-            var data = await _cacheService
-                 .GetOrSaveDataInCacheAsync(cacheKey, async () => await _context.Counties
-                     .Where(c => diaspora == null || c.Diaspora == diaspora)
-                     .OrderBy(c => c.Order)
-                     .Select(c => new CountyPollingStationLimit
-                     {
-                         Name = c.Name,
-                         Code = c.Code,
-                         Limit = c.PollingStations.Count(),
-                         Id = c.Id,
-                         Diaspora = c.Diaspora,
-                         Order = c.Order
-                     }).ToListAsync());
-
-            return data;
-        }
+        return data;
     }
 }

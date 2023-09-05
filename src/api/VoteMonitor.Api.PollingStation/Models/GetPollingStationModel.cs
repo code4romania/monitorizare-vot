@@ -1,10 +1,9 @@
-﻿namespace VoteMonitor.Api.PollingStation.Models
+﻿namespace VoteMonitor.Api.PollingStation.Models;
+
+public class GetPollingStationModel
 {
-    public class GetPollingStationModel
-    {
-        public int Id { get; set; }
-        public int IdCounty { get; set; }
-        public string Address { get; set; }
-        public int Number { get; set; }
-    }
+    public int Id { get; set; }
+    public int IdCounty { get; set; }
+    public string Address { get; set; }
+    public int Number { get; set; }
 }
