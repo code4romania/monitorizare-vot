@@ -1,6 +1,6 @@
 # @url = https://localhost:44335
-@url = https://localhost:5001
-# @url = http://localhost:53413
+# @url = https://localhost:5001
+@url = http://localhost:53413
 
 # @name observerJwtToken
 POST {{url}}/api/v2/access/authorize
@@ -42,8 +42,8 @@ Content-Type: application/json
 Authorization: Bearer {{adminJwtToken.response.body.$.access_token}}
 ###
 
-# @name getCommuntieis
-GET {{url}}/api/v1/county/0201/communities
+# @name getMunicipalities
+GET {{url}}/api/v1/county/0201/municipalities
 Content-Type: application/json
 Authorization: Bearer {{adminJwtToken.response.body.$.access_token}}
 ###
@@ -173,11 +173,11 @@ Authorization: Bearer {{adminJwtToken.response.body.$.access_token}}
 ###
 # @name getFormVersions
 GET {{url}}/api/v1/form/versions
-Authorization: Bearer {{observerJwtToken.response.body.$.access_token}}
+Authorization: Bearer {{adminJwtToken.response.body.$.access_token}}
 ###
 # @name getFormDetails
 GET {{url}}/api/v1/form/1
-Authorization: Bearer {{observerJwtToken.response.body.$.access_token}}
+Authorization: Bearer {{adminJwtToken.response.body.$.access_token}}
 ###
 
 ###
@@ -208,8 +208,8 @@ Authorization: Bearer {{adminJwtToken.response.body.$.access_token}}
 ###
 
 ###
-# @name getCommunityImportTemplate
-GET {{url}}/api/v1/community/import-template
+# @name getMunicipalitiesImportTemplate
+GET {{url}}/api/v1/municipality/import-template
 Authorization: Bearer {{adminJwtToken.response.body.$.access_token}}
 ###
 
@@ -252,16 +252,16 @@ Content-Type: text/csv
 ###
 
 ###
-# @name importCommunities
-POST {{url}}/api/v1/community/import
+# @name importMunicipalities
+POST {{url}}/api/v1/municipality/import
 Authorization: Bearer {{adminJwtToken.response.body.$.access_token}}
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
-Content-Disposition: form-data; name="CsvFile"; filename="communities.csv"
+Content-Disposition: form-data; name="CsvFile"; filename="municipalities.csv"
 Content-Type: text/csv
 
-< ./polish_communities_2023.csv
+< ./polish_municipalities_2023.csv
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
 ###
 

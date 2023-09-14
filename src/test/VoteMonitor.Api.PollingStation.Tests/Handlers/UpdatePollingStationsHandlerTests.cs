@@ -101,7 +101,7 @@ public class UpdatePollingStationsHandlerTests
         {
             var sut = new UpdatePollingStationsHandler(context, _mockLogger.Object);
 
-            var requestExistingPollingStation = new UpdatePollingStation(5, "new address", 1);
+            var requestExistingPollingStation = new UpdatePollingStation(id, "new address", 1);
             await sut.Handle(requestExistingPollingStation, new CancellationToken());
 
             var updatedPollingStation = context.PollingStations.First(p => p.Id == id);
@@ -119,7 +119,7 @@ public class UpdatePollingStationsHandlerTests
         {
             var sut = new UpdatePollingStationsHandler(context, _mockLogger.Object);
 
-            var requestExistingPollingStation = new UpdatePollingStation(5, "new address", 27);
+            var requestExistingPollingStation = new UpdatePollingStation(id, "new address", 27);
             await sut.Handle(requestExistingPollingStation, new CancellationToken());
 
             var updatedPollingStation = context.PollingStations.First(p => p.Id == id);

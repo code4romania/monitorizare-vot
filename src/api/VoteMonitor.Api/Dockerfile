@@ -1,6 +1,6 @@
 #See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
-FROM mcr.microsoft.com/dotnet/sdk:3.1 AS build
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 COPY ["api/VoteMonitor.Api/VoteMonitor.Api.csproj", "api/VoteMonitor.Api/"]
 COPY ["api/VoteMonitor.Api.County/VoteMonitor.Api.County.csproj", "api/VoteMonitor.Api.County/"]
@@ -32,7 +32,7 @@ RUN dotnet test --logger:trx
 WORKDIR "/src/api/VoteMonitor.Api"
 RUN dotnet publish "VoteMonitor.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-alpine
+FROM mcr.microsoft.com/dotnet/aspnet:7.0-alpine
 RUN apk add --no-cache --repository https://alpine.global.ssl.fastly.net/alpine/edge/testing/ \
         libgdiplus-dev \
         fontconfig \

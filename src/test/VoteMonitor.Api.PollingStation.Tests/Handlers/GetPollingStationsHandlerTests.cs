@@ -48,16 +48,31 @@ public class GetPollingStationsHandlerTests
     [Fact]
     public async Task Handle_WithSecondPage_ReturnsSecondPageResults()
     {
+        SetupContextWithMunicipalities(new[]
+        {
+            new Municipality()
+            {
+                Id = 13,
+                Code = "m",
+                Name = "municipality",
+                County = new County()
+                {
+                    Id = 10,
+                    Code = "c",
+                    Name = "county",
+                }
+            }
+        });
         SetupContextWithPollingStations(new List<Entities.PollingStation>
         {
-            new PollingStationBuilder().WithId(1).Build(),
-            new PollingStationBuilder().WithId(2).Build()
+            new PollingStationBuilder().WithId(1).WithMunicipalityId(13).Build(),
+            new PollingStationBuilder().WithId(2).WithMunicipalityId(13).Build()
         });
 
         using (var context = new VoteMonitorContext(_dbContextOptions))
         {
             var sut = new GetPollingStationsHandler(context, _mockLogger.Object);
-            var getPollingStations = new GetPollingStations(CountyId: 0, Page: 2, PageSize: 1);
+            var getPollingStations = new GetPollingStations(CountyId: 10, Page: 2, PageSize: 1);
             var result = await sut.Handle(getPollingStations, new CancellationToken());
 
             result.Count().Should().Be(1);
@@ -68,10 +83,38 @@ public class GetPollingStationsHandlerTests
     [Fact]
     public async Task Handle_WithIdCounty_ReturnsCorrectResults()
     {
+        SetupContextWithMunicipalities(new[]
+        {
+            new Municipality()
+            {
+                Id = 13,
+                Code = "m1",
+                Name = "municipality1",
+                County = new County()
+                {
+                    Id = 10,
+                    Code = "c1",
+                    Name = "county1",
+                }
+            },
+            new Municipality()
+            {
+                Id = 14,
+                Code = "m2",
+                Name = "municipality2",
+                County = new County()
+                {
+                    Id = 20,
+                    Code = "c2",
+                    Name = "county2",
+                }
+            }
+        });
+
         SetupContextWithPollingStations(new List<Entities.PollingStation>
         {
-            new PollingStationBuilder().WithId(1).WithMunicipalityId(30,5).Build(),
-            new PollingStationBuilder().WithId(2).WithMunicipalityId(20, 20).Build()
+            new PollingStationBuilder().WithId(1).WithMunicipalityId(13).Build(),
+            new PollingStationBuilder().WithId(2).WithMunicipalityId(14).Build()
         });
 
         using (var context = new VoteMonitorContext(_dbContextOptions))
@@ -103,6 +146,14 @@ public class GetPollingStationsHandlerTests
             It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)), Times.Once);
     }
 
+    private void SetupContextWithMunicipalities(IEnumerable<Municipality> municipalities)
+    {
+        using (var context = new VoteMonitorContext(_dbContextOptions))
+        {
+            context.Municipalities.AddRange(municipalities);
+            context.SaveChanges();
+        }
+    }
     private void SetupContextWithPollingStations(IEnumerable<Entities.PollingStation> pollingStations)
     {
         using (var context = new VoteMonitorContext(_dbContextOptions))
