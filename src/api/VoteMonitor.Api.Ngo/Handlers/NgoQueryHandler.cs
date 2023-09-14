@@ -1,4 +1,3 @@
-﻿using AutoMapper;
 using CSharpFunctionalExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -13,13 +12,11 @@ public class NgoQueryHandler : IRequestHandler<GetAllNgos, Result<List<NgoModel>
     IRequestHandler<GetNgoDetails, Result<NgoModel>>
 {
     private readonly VoteMonitorContext _context;
-    private readonly IMapper _mapper;
     private readonly ILogger<NgoQueryHandler> _logger;
 
-    public NgoQueryHandler(VoteMonitorContext context, IMapper mapper, ILogger<NgoQueryHandler> logger)
+    public NgoQueryHandler(VoteMonitorContext context, ILogger<NgoQueryHandler> logger)
     {
         _context = context;
-        _mapper = mapper;
         _logger = logger;
     }
 
@@ -27,7 +24,7 @@ public class NgoQueryHandler : IRequestHandler<GetAllNgos, Result<List<NgoModel>
     {
         try
         {
-            var listAsync = await _context.Ngos.Select(x => _mapper.Map<NgoModel>(x)).ToListAsync(cancellationToken);
+            var listAsync = await _context.Ngos.Select(x => ToModel(x)).ToListAsync(cancellationToken);
             return Result.Success(listAsync);
         }
         catch (Exception e)
@@ -47,7 +44,7 @@ public class NgoQueryHandler : IRequestHandler<GetAllNgos, Result<List<NgoModel>
                 return Result.Failure<NgoModel>($"Could not find ngo with id {request.NgoId}");
             }
 
-            var mappedNgo = _mapper.Map<NgoModel>(ngo);
+            var mappedNgo = ToModel(ngo);
             return Result.Success(mappedNgo);
         }
         catch (Exception e)
@@ -55,5 +52,17 @@ public class NgoQueryHandler : IRequestHandler<GetAllNgos, Result<List<NgoModel>
             _logger.LogError(e, "Error when loading all ngos");
             return Result.Failure<NgoModel>($"Error when loading info for ngo with id {request.NgoId}");
         }
+    }
+
+    private static NgoModel ToModel(Entities.Ngo x)
+    {
+        return new NgoModel
+        {
+            Id = x.Id,
+            Name = x.Name,
+            IsActive = x.IsActive,
+            Organizer = x.Organizer,
+            ShortName = x.ShortName
+        };
     }
 }

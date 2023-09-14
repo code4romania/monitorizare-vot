@@ -1,4 +1,3 @@
-using AutoMapper;
 using CsvHelper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -18,15 +17,14 @@ namespace VoteMonitor.Api.Location.Controllers;
 /// <summary>
 /// Controller responsible for interacting with the polling stations - PollingStationInfo 
 /// </summary>
+[ApiController]
 [Route("api/v1/polling-station")]
 public class PollingStationController : Controller
 {
-    private readonly IMapper _mapper;
     private readonly IMediator _mediator;
 
-    public PollingStationController(IMediator mediator, IMapper mapper)
+    public PollingStationController(IMediator mediator)
     {
-        _mapper = mapper;
         _mediator = mediator;
     }
 
@@ -34,21 +32,23 @@ public class PollingStationController : Controller
     /// This method gets called when the observer saves the info regarding the arrival time, leave time, urban area, BESV president
     /// These info come together with the polling station id.
     /// </summary>
-    /// <param name="pollingStationInfo">Info about the polling station and its' allocated observer</param>
+    /// <param name="request">Info about the polling station and its' allocated observer</param>
     /// <returns></returns>
     [HttpPost]
     [Authorize]
-    public async Task<IAsyncResult> Register([FromBody] AddPollingStationInfo pollingStationInfo)
+    public async Task<IAsyncResult> Register([FromBody] AddPollingStationInfo request)
     {
-        if (!ModelState.IsValid)
+        var command = new RegisterPollingStationCommand
         {
-            return this.ResultAsync(HttpStatusCode.BadRequest, ModelState);
-        }
+            CountyCode = request.CountyCode,
+            MunicipalityCode = request.MunicipalityCode,
+            ObserverArrivalTime = request.ObserverArrivalTime,
+            ObserverLeaveTime = request.ObserverLeaveTime,
+            IsPollingStationPresidentFemale = request.IsPollingStationPresidentFemale,
+            IdObserver = int.Parse(User.Claims.First(c => c.Type == ClaimsHelper.ObserverIdProperty).Value),
+            PollingStationNumber = request.PollingStationNumber
+        };
 
-        var command = _mapper.Map<RegisterPollingStationCommand>(pollingStationInfo);
-
-        // TODO[DH] get the actual IdObservator from token
-        command.IdObserver = int.Parse(User.Claims.First(c => c.Type == ClaimsHelper.ObserverIdProperty).Value);
 
         var result = await _mediator.Send(command);
 
@@ -59,31 +59,31 @@ public class PollingStationController : Controller
     /// This method gets called when updating information about the leave time.
     /// These info come together with the polling station id.
     /// </summary>
-    /// <param name="pollingStationInfo">Polling station id, county code, leave time</param>
+    /// <param name="request">Polling station id, county code, leave time</param>
     /// <returns></returns>
     [HttpPut]
     [Authorize]
-    public async Task<IAsyncResult> Update([FromBody] UpdatePollingStationInfo pollingStationInfo)
+    public async Task<IActionResult> Update([FromBody] UpdatePollingStationInfo request)
     {
-        if (!ModelState.IsValid)
+        var pollingStationId = await _mediator.Send(new GetPollingStationId(request.CountyCode,request.MunicipalityCode,request.PollingStationNumber));
+        if (pollingStationId < 0)
         {
-            return this.ResultAsync(HttpStatusCode.BadRequest, ModelState);
+            return NotFound();
         }
 
-        var idSectie = await _mediator.Send(_mapper.Map<PollingStationQuery>(pollingStationInfo));
-        if (idSectie < 0)
+        var command = new UpdatePollingSectionCommand
         {
-            return this.ResultAsync(HttpStatusCode.NotFound);
-        }
-
-        var command = _mapper.Map<UpdatePollingSectionCommand>(pollingStationInfo);
-
-        command.IdObserver = this.GetIdObserver();
-        command.IdPollingStation = idSectie;
+            ObserverId = this.GetIdObserver(), 
+            PollingStationId = pollingStationId
+        };
 
         var result = await _mediator.Send(command);
+        if (result < 0)
+        {
+            return NotFound();
+        }
 
-        return this.ResultAsync(result < 0 ? HttpStatusCode.NotFound : HttpStatusCode.OK);
+        return Ok();
     }
 
     /// <summary>
@@ -92,7 +92,7 @@ public class PollingStationController : Controller
     /// <returns>{ "countyCode": "numberOfPollingStationsAssigned", ... }</returns>
     [HttpGet]
     [Produces(typeof(IEnumerable<CountyPollingStationLimit>))]
-    public async Task<IActionResult> PollingStationsLimits(bool? diaspora)
+    public async Task<IActionResult> PollingStationsLimits([FromQuery] bool? diaspora)
     {
         var result = await _mediator.Send(new PollingStationsAssignmentQuery(diaspora));
         return Ok(result);
@@ -101,13 +101,8 @@ public class PollingStationController : Controller
     [HttpPost("import")]
     [Authorize("Organizer")]
     [Consumes("multipart/form-data")]
-    public async Task<IActionResult> ImportFormatFile(PollingStationsUploadRequest request)
+    public async Task<IActionResult> ImportFormatFile([FromForm] PollingStationsUploadRequest request)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
         var result = await _mediator.Send(new ImportPollingStationsCommand(request.CsvFile));
 
         if (result.Success)
@@ -139,13 +134,13 @@ public class PollingStationController : Controller
                 new PollingStationCsvModel
                 {
                     Address = "Example address",
-                    CountyCode = "EC",
+                    MunicipalityCode = "EC",
                     Number = 1
                 },
                 new PollingStationCsvModel
                 {
                     Address = "Example address",
-                    CountyCode = "EC",
+                    MunicipalityCode = "EC",
                     Number = 2
                 }
 

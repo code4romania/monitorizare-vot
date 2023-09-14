@@ -20,21 +20,21 @@ public class AnswerQueryHandler :
     public async Task<FillInAnswerCommand> Handle(BulkAnswers message, CancellationToken cancellationToken)
     {
         var countyPollingStations = message.Answers
-            .Select(a => new { a.PollingStationNumber, a.CountyCode })
+            .Select(a => new { a.PollingStationNumber, a.MunicipalityCode, a.CountyCode })
             .Distinct()
             .ToList();
 
-        var command = new FillInAnswerCommand { ObserverId = message.ObserverId };
-
-
+        var answersBuilder = new List<AnswerDto>();
         foreach (var pollingStation in countyPollingStations)
         {
             var pollingStationId = (await _context
                     .PollingStations
-                    .FirstAsync(p => p.County.Code == pollingStation.CountyCode && p.Number == pollingStation.PollingStationNumber, cancellationToken: cancellationToken))
+                    .FirstAsync(p => p.Municipality.County.Code == pollingStation.CountyCode
+                                     && p.Municipality.Code == pollingStation.MunicipalityCode
+                                     && p.Number == pollingStation.PollingStationNumber, cancellationToken: cancellationToken))
                 !.Id;
 
-            command.Answers.AddRange(message.Answers
+            answersBuilder.AddRange(message.Answers
                 .Where(a => a.PollingStationNumber == pollingStation.PollingStationNumber && a.CountyCode == pollingStation.CountyCode)
                 .Select(a => new AnswerDto
                 {
@@ -45,7 +45,7 @@ public class AnswerQueryHandler :
                     CountyCode = a.CountyCode
                 }));
         }
-
+        var command = new FillInAnswerCommand(message.ObserverId, answersBuilder);
         return command;
     }
 }

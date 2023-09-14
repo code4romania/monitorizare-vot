@@ -5,7 +5,7 @@ namespace VoteMonitor.Api.Location.Models;
 public class PollingStationCsvModel
 {
     [Index(0)]
-    public string CountyCode { get; set; }
+    public string MunicipalityCode { get; set; }
 
     [Index(1)]
     public string Address { get; set; }

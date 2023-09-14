@@ -1,4 +1,3 @@
-using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
@@ -12,13 +11,11 @@ namespace VoteMonitor.Api.Form.QueryHandlers;
 public class FormQuestionQueryHandler : IRequestHandler<FormQuestionQuery, IEnumerable<FormSectionDTO>>
 {
     private readonly VoteMonitorContext _context;
-    private readonly IMapper _mapper;
     private readonly ICacheService _cacheService;
 
-    public FormQuestionQueryHandler(VoteMonitorContext context, IMapper mapper, ICacheService cacheService)
+    public FormQuestionQueryHandler(VoteMonitorContext context, ICacheService cacheService)
     {
         _context = context;
-        _mapper = mapper;
         _cacheService = cacheService;
     }
 
@@ -56,7 +53,24 @@ public class FormQuestionQueryHandler : IRequestHandler<FormQuestionQuery, IEnum
                     Questions = questions.Where(a => a.IdSection == section.IdSection)
                         .OrderBy(question => question.OrderNumber)
                         .Select(q=> OrderOptions(q))
-                        .Select(a => _mapper.Map<QuestionDTO>(a)).ToList()
+                        .Select(q => new QuestionDTO()
+                        {
+                            Code =q.Code,
+                            Text = q.Text,
+                            Hint = q.Hint,
+                            FormCode = q.FormSection.Form.Code,
+                            Id = q.Id,
+                            QuestionType = q.QuestionType,
+                            IdSection = q.IdSection,
+                            OrderNumber = q.OrderNumber,
+                            OptionsToQuestions = q.OptionsToQuestions.Select(x=> new OptionToQuestionDTO()
+                            {
+                                Text = x.Option.Text,
+                                IsFreeText = x.Option.IsFreeText,
+                                OrderNumber = x.Option.OrderNumber,
+                                IdOption = x.Id
+                            }).ToList()
+                        }).ToList()
                 }).ToList();
 
  

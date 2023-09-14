@@ -1,4 +1,3 @@
-using AutoMapper;
 using CSharpFunctionalExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -15,13 +14,11 @@ public class NgoCommandsHandler : IRequestHandler<CreateNgo, Result>
     , IRequestHandler<SetNgoOrganizerFlag, Result>
 {
     private readonly VoteMonitorContext _context;
-    private readonly IMapper _mapper;
     private readonly ILogger<NgoCommandsHandler> _logger;
 
-    public NgoCommandsHandler(ILogger<NgoCommandsHandler> logger, IMapper mapper, VoteMonitorContext context)
+    public NgoCommandsHandler(ILogger<NgoCommandsHandler> logger, VoteMonitorContext context)
     {
         _logger = logger;
-        _mapper = mapper;
         _context = context;
     }
 
@@ -29,7 +26,14 @@ public class NgoCommandsHandler : IRequestHandler<CreateNgo, Result>
     {
         try
         {
-            var newNgo = _mapper.Map<Entities.Ngo>(request.Ngo);
+            var newNgo = new Entities.Ngo()
+            {
+                Name = request.Ngo.Name,
+                ShortName = request.Ngo.ShortName,
+                IsActive = request.Ngo.IsActive,
+                Organizer = request.Ngo.Organizer
+            };
+
             var maxNgoId = await _context.Ngos.MaxAsync(x => x.Id, cancellationToken);
             newNgo.Id = maxNgoId + 1;
 

@@ -1,14 +1,16 @@
-﻿using MediatR;
+using MediatR;
 using VoteMonitor.Api.Answer.Models;
 
 namespace VoteMonitor.Api.Answer.Commands;
 
-public class FillInAnswerCommand : IRequest<int>
+public record FillInAnswerCommand : IRequest<int>
 {
-    public FillInAnswerCommand()
+    public FillInAnswerCommand(int observerId, IEnumerable<AnswerDto> answers)
     {
-        Answers = new List<AnswerDto>();
+        ObserverId = observerId;
+        Answers = answers.ToList().AsReadOnly();
     }
-    public int ObserverId { get; set; }
-    public List<AnswerDto> Answers { get; set; }
+
+    public int ObserverId { get; }
+    public IReadOnlyCollection<AnswerDto> Answers { get; }
 }

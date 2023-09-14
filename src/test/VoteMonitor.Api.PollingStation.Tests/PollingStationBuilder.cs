@@ -1,18 +1,33 @@
-﻿namespace VoteMonitor.Api.PollingStation.Tests;
+using VoteMonitor.Entities;
+
+namespace VoteMonitor.Api.PollingStation.Tests;
 
 internal class PollingStationBuilder
 {
     private int _id = 1;
-    private int _idCounty = 10;
+    private int _municipalityId = 10;
     private string _address = "str X no 5";
     private int _number = 15;
+    private int _countyId = 1;
 
     public Entities.PollingStation Build()
     {
         return new Entities.PollingStation
         {
             Id = _id,
-            IdCounty = _idCounty,
+            MunicipalityId = _municipalityId,
+            Municipality = new Municipality
+            {
+                Id = _municipalityId,
+                Code = $"{_municipalityId}Code",
+                Name = $"{_municipalityId}Name",
+                County = new County
+                {
+                    Id = _countyId,
+                    Code = $"{_countyId}Code",
+                    Name = $"{_countyId}Name",
+                }
+            },
             Address = _address,
             Number = _number
         };
@@ -24,9 +39,10 @@ internal class PollingStationBuilder
         return this;
     }
 
-    public PollingStationBuilder WithIdCounty(int idCounty)
+    public PollingStationBuilder WithMunicipalityId(int countyId, int municipalityId)
     {
-        _idCounty = idCounty;
+        _countyId = countyId;
+        _municipalityId = municipalityId;
         return this;
     }
 

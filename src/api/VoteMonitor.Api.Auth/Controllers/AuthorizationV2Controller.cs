@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +14,7 @@ using VoteMonitor.Entities;
 namespace VoteMonitor.Api.Auth.Controllers;
 
 /// <inheritdoc />
+[ApiController]
 [Route("api/v2/access")]
 public class AuthorizationV2Controller : AuthorizationControllerBase
 {
@@ -40,11 +41,6 @@ public class AuthorizationV2Controller : AuthorizationControllerBase
     [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> AuthenticateUser([FromBody] AuthenticateUserRequestV2 request)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
         var identity = await GetClaimsIdentity(request.User, request.Password, request.FcmToken, MobileDeviceIdType.FcmToken);
 
         var haveFcmToken = !string.IsNullOrEmpty(request.FcmToken);
@@ -62,12 +58,7 @@ public class AuthorizationV2Controller : AuthorizationControllerBase
 
         if (haveFcmToken && observerId.HasValue)
         {
-            await _mediator.Send(new NotificationRegistrationDataCommand()
-            {
-                ChannelName = request.ChannelName,
-                ObserverId = observerId.Value,
-                Token = request.FcmToken,
-            });
+            await _mediator.Send(new NotificationRegistrationDataCommand(observerId.Value, request.ChannelName, request.FcmToken));
 
             _logger.LogInformation($"Observer {observerId} registered for notifications");
         }

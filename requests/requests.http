@@ -7,7 +7,7 @@ POST {{url}}/api/v2/access/authorize
 Content-Type: application/json
 
 {
-  "user": "075",
+  "user": "074",
   "password": "1234",
   "channelName": "a channel name",
   "fcmToken": "fcmToken"
@@ -33,7 +33,7 @@ Authorization: Bearer {{adminJwtToken.response.body.$.access_token}}
 # @name exportFilledInForms
 POST {{url}}/api/v1/export/filled-forms
 Content-Type: application/json
-Authorization: Bearer {{observerJwtToken.response.body.$.access_token}}
+Authorization: Bearer {{adminJwtToken.response.body.$.access_token}}
 ###
 
 # @name getCounties
@@ -41,6 +41,13 @@ GET {{url}}/api/v1/county
 Content-Type: application/json
 Authorization: Bearer {{adminJwtToken.response.body.$.access_token}}
 ###
+
+# @name getCommuntieis
+GET {{url}}/api/v1/county/0201/communities
+Content-Type: application/json
+Authorization: Bearer {{adminJwtToken.response.body.$.access_token}}
+###
+
 # @name getCounty
 GET {{url}}/api/v1/county/1
 Content-Type: application/json
@@ -51,69 +58,6 @@ Authorization: Bearer {{adminJwtToken.response.body.$.access_token}}
 GET {{url}}/api/v2/polling-station
 Content-Type: application/json
 Authorization: Bearer {{observerJwtToken.response.body.$.access_token}}
-###
-
-# @name addAnswer
-
-@countyCode = AR
-@pollingStationNumber = 1
-
-POST {{url}}/api/v1/answers
-Content-Type: application/json
-Authorization: Bearer {{observerJwtToken.response.body.$.access_token}}
-
-{
-  "answers": [
-    {
-      "questionId": 53,
-      "countyCode": "{{countyCode}}",
-      "pollingStationNumber": "{{pollingStationNumber}}",
-      "options": [
-        {
-          "optionId": 178
-        }
-      ]
-    },
-    {
-      "questionId": 54,
-      "countyCode": "{{countyCode}}",
-      "pollingStationNumber": "{{pollingStationNumber}}",
-      "options": [
-        {
-          "optionId": 196,
-          "value": "Nemteana"
-        }
-      ]
-    },
-    {
-      "questionId": 55,
-      "countyCode": "{{countyCode}}",
-      "pollingStationNumber": "{{pollingStationNumber}}",
-      "options": [
-        {
-          "optionId": 194,
-        },
-        {
-          "optionId": 193,
-        },
-      ]
-    },
-    {
-      "questionId": 56,
-      "countyCode": "{{countyCode}}",
-      "pollingStationNumber": "{{pollingStationNumber}}",
-      "options": [
-        {
-          "optionId": 190,
-        },
-        {
-          "optionId": 188,
-          "value": "Bike"
-        },
-      ]
-    },
-  ]
-}
 ###
 
 # @name statisticsMiniAll
@@ -182,7 +126,7 @@ Authorization: Bearer {{observerJwtToken.response.body.$.access_token}}
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
-Content-Disposition: form-data; name="CountyCode"
+Content-Disposition: form-data; name="MunicipalityCode"
 
 IS
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
@@ -246,7 +190,7 @@ Authorization: Bearer {{adminJwtToken.response.body.$.access_token}}
 ###
 
 ###
-# @name csvFormat
+# @name countyCsvFormat
 GET {{url}}/api/v1/county/csvFormat
 Authorization: Bearer {{adminJwtToken.response.body.$.access_token}}
 ###
@@ -264,7 +208,13 @@ Authorization: Bearer {{adminJwtToken.response.body.$.access_token}}
 ###
 
 ###
-# @name getCountyImportTemplate
+# @name getCommunityImportTemplate
+GET {{url}}/api/v1/community/import-template
+Authorization: Bearer {{adminJwtToken.response.body.$.access_token}}
+###
+
+###
+# @name getPollingStationsImportTemplate
 GET {{url}}/api/v1/polling-station/import-template
 Authorization: Bearer {{adminJwtToken.response.body.$.access_token}}
 ###
@@ -278,12 +228,12 @@ Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0g
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
 Content-Disposition: form-data; name="ngoId"
 
-1
+3
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
-Content-Disposition: form-data; name="file"; filename="observers.csv"
+Content-Disposition: form-data; name="file"; filename="staging_observers.csv"
 Content-Type: text/csv
 
-< ./observers.csv
+< ./staging_observers.csv
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
 ###
 
@@ -297,7 +247,21 @@ Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0g
 Content-Disposition: form-data; name="CsvFile"; filename="counties.csv"
 Content-Type: text/csv
 
-< ./polish_counties_2019.csv
+< ./polish_counties_2023.csv
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+###
+
+###
+# @name importCommunities
+POST {{url}}/api/v1/community/import
+Authorization: Bearer {{adminJwtToken.response.body.$.access_token}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="CsvFile"; filename="communities.csv"
+Content-Type: text/csv
+
+< ./polish_communities_2023.csv
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
 ###
 
@@ -311,12 +275,37 @@ Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0g
 Content-Disposition: form-data; name="CsvFile"; filename="polling-stations.csv"
 Content-Type: text/csv
 
-< ./polish_polling_stations_2019.csv
+< ./polish_polling_stations_2023.csv
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
 ###
-
 
 ###
 # @name exportAll
 GET {{url}}/api/v2/export/all
+###
+
+###
+# @name getNgos
+GET {{url}}/api/v1/ngo
+Authorization: Bearer {{adminJwtToken.response.body.$.access_token}}
+###
+
+###
+# @name getObservers
+GET {{url}}/api/v1/observer
+Authorization: Bearer {{adminJwtToken.response.body.$.access_token}}
+###
+
+
+# @name addNgo
+POST {{url}}/api/v1/ngo
+Content-Type: application/json
+Authorization: Bearer {{adminJwtToken.response.body.$.access_token}}
+
+{
+  "shortName": "polish-ngo",
+  "name": "polish ngo demo",
+  "organizer": false,
+  "isActive": true
+}
 ###

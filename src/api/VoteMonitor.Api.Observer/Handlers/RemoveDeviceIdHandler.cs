@@ -22,7 +22,7 @@ public class RemoveDeviceIdHandler : IRequestHandler<RemoveDeviceIdCommand>
         try
         {
             var observer = await _context.Observers
-                .Where(o => o.Id == request.Id)
+                .Where(o => o.Id == request.ObserverId)
                 .FirstAsync(cancellationToken);
 
             observer.MobileDeviceId = null;
@@ -30,9 +30,7 @@ public class RemoveDeviceIdHandler : IRequestHandler<RemoveDeviceIdCommand>
         }
         catch (Exception exception)
         {
-            _logger.LogError(
-                "Exception caught during removal of mobile device Id of Observer with id " + request.Id,
-                exception);
+            _logger.LogError(exception, "Exception caught during removal of mobile device Id of Observer with {id} ", request.ObserverId);
             throw;
         }
     }

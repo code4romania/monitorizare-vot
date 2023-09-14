@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using VoteMonitor.Entities;
 
+#nullable disable
+
 namespace VotingIrregularities.Domain.Seed.Migrations
 {
     [DbContext(typeof(VoteMonitorContext))]
@@ -15,9 +17,10 @@ namespace VotingIrregularities.Domain.Seed.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
-                .HasAnnotation("ProductVersion", "3.1.32")
+                .HasAnnotation("ProductVersion", "7.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
+
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("VoteMonitor.Entities.Answer", b =>
                 {
@@ -31,35 +34,35 @@ namespace VotingIrregularities.Domain.Seed.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("CountyCode")
-                        .HasColumnType("character varying(2)")
-                        .HasMaxLength(2);
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<DateTime>("LastModified")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("timezone('utc', now())");
 
                     b.Property<int>("PollingStationNumber")
                         .HasColumnType("integer");
 
                     b.Property<string>("Value")
-                        .HasColumnType("character varying(1000)")
-                        .HasMaxLength(1000);
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
 
                     b.HasKey("IdObserver", "IdOptionToQuestion", "IdPollingStation")
                         .HasName("PK_Answer");
 
                     b.HasIndex("IdObserver")
-                        .HasName("IX_Answer_IdObserver");
+                        .HasDatabaseName("IX_Answer_IdObserver");
 
                     b.HasIndex("IdOptionToQuestion")
-                        .HasName("IX_Answer_IdOptionToQuestion");
+                        .HasDatabaseName("IX_Answer_IdOptionToQuestion");
 
                     b.HasIndex("IdPollingStation")
-                        .HasName("IX_Answer_IdPollingStation");
+                        .HasDatabaseName("IX_Answer_IdPollingStation");
 
                     b.HasIndex("IdObserver", "CountyCode", "PollingStationNumber", "LastModified")
-                        .HasName("IX_Answer_IdObserver_CountyCode_PollingStationNumber_LastModified");
+                        .HasDatabaseName("IX_Answer_IdObserver_CountyCode_PollingStationNumber_LastModified");
 
                     b.ToTable("Answers");
                 });
@@ -73,7 +76,7 @@ namespace VotingIrregularities.Domain.Seed.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("LastModified")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("ObserverName")
                         .HasColumnType("text");
@@ -114,8 +117,8 @@ namespace VotingIrregularities.Domain.Seed.Migrations
 
                     b.Property<string>("Code")
                         .IsRequired()
-                        .HasColumnType("character varying(20)")
-                        .HasMaxLength(20);
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.Property<bool>("Diaspora")
                         .ValueGeneratedOnAdd()
@@ -124,8 +127,8 @@ namespace VotingIrregularities.Domain.Seed.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("character varying(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<int>("Order")
                         .ValueGeneratedOnAdd()
@@ -157,7 +160,7 @@ namespace VotingIrregularities.Domain.Seed.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("LastModified")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("NoteAttachmentPath")
                         .HasColumnType("text");
@@ -186,9 +189,9 @@ namespace VotingIrregularities.Domain.Seed.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasMaxLength(2)
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Code")
                         .HasColumnType("text");
@@ -225,18 +228,19 @@ namespace VotingIrregularities.Domain.Seed.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Code")
                         .IsRequired()
-                        .HasColumnType("character varying(4)")
-                        .HasMaxLength(4);
+                        .HasMaxLength(4)
+                        .HasColumnType("character varying(4)");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("character varying(200)")
-                        .HasMaxLength(200);
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
 
                     b.Property<int>("IdForm")
                         .HasColumnType("integer");
@@ -252,6 +256,39 @@ namespace VotingIrregularities.Domain.Seed.Migrations
                     b.ToTable("FormSections");
                 });
 
+            modelBuilder.Entity("VoteMonitor.Entities.Municipality", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<int>("CountyId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<int>("Order")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CountyId");
+
+                    b.ToTable("Municipalities");
+                });
+
             modelBuilder.Entity("VoteMonitor.Entities.Ngo", b =>
                 {
                     b.Property<int>("Id")
@@ -264,8 +301,8 @@ namespace VotingIrregularities.Domain.Seed.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("character varying(200)")
-                        .HasMaxLength(200);
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
 
                     b.Property<bool>("Organizer")
                         .ValueGeneratedOnAdd()
@@ -274,8 +311,8 @@ namespace VotingIrregularities.Domain.Seed.Migrations
 
                     b.Property<string>("ShortName")
                         .IsRequired()
-                        .HasColumnType("character varying(10)")
-                        .HasMaxLength(10);
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
 
                     b.HasKey("Id")
                         .HasName("PK_NGO");
@@ -290,31 +327,32 @@ namespace VotingIrregularities.Domain.Seed.Migrations
 
                     b.Property<string>("Account")
                         .IsRequired()
-                        .HasColumnType("character varying(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<int>("IdNgo")
                         .HasColumnType("integer");
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("character varying(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.HasKey("Id")
                         .HasName("PK_NgoAdminId");
 
                     b.HasIndex("IdNgo");
 
-                    b.ToTable("NgoAdmin");
+                    b.ToTable("NgoAdmin", (string)null);
                 });
 
             modelBuilder.Entity("VoteMonitor.Entities.Note", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("IdObserver")
                         .HasColumnType("integer");
@@ -326,7 +364,7 @@ namespace VotingIrregularities.Domain.Seed.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("LastModified")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Text")
                         .HasColumnType("text");
@@ -335,13 +373,13 @@ namespace VotingIrregularities.Domain.Seed.Migrations
                         .HasName("PK_Note");
 
                     b.HasIndex("IdObserver")
-                        .HasName("IX_Note_IdObserver");
+                        .HasDatabaseName("IX_Note_IdObserver");
 
                     b.HasIndex("IdPollingStation")
-                        .HasName("IX_Note_IdPollingStation");
+                        .HasDatabaseName("IX_Note_IdPollingStation");
 
                     b.HasIndex("IdQuestion")
-                        .HasName("IX_Note_IdQuestion");
+                        .HasDatabaseName("IX_Note_IdQuestion");
 
                     b.ToTable("Notes");
                 });
@@ -350,16 +388,17 @@ namespace VotingIrregularities.Domain.Seed.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("NoteId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Path")
                         .IsRequired()
-                        .HasColumnType("character varying(1000)")
-                        .HasMaxLength(1000);
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
 
                     b.HasKey("Id")
                         .HasName("PK_NoteAttachment");
@@ -373,8 +412,9 @@ namespace VotingIrregularities.Domain.Seed.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Body")
                         .HasColumnType("text");
@@ -383,7 +423,7 @@ namespace VotingIrregularities.Domain.Seed.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("InsertedAt")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("SenderAdminId")
                         .HasColumnType("integer");
@@ -401,10 +441,12 @@ namespace VotingIrregularities.Domain.Seed.Migrations
             modelBuilder.Entity("VoteMonitor.Entities.NotificationRecipient", b =>
                 {
                     b.Property<int>("ObserverId")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnOrder(1);
 
                     b.Property<int>("NotificationId")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnOrder(2);
 
                     b.HasKey("ObserverId", "NotificationId");
 
@@ -419,22 +461,22 @@ namespace VotingIrregularities.Domain.Seed.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("ChannelName")
-                        .HasColumnType("character varying(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("Token")
                         .IsRequired()
-                        .HasColumnType("character varying(512)")
-                        .HasMaxLength(512);
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)");
 
                     b.HasKey("ObserverId", "ChannelName")
                         .HasName("PK_NotificationRegistrationData");
 
                     b.HasIndex("ObserverId")
-                        .HasName("IX_NotificationRegistrationData_IdObserver");
+                        .HasDatabaseName("IX_NotificationRegistrationData_IdObserver");
 
                     b.HasIndex("ObserverId", "ChannelName")
-                        .HasName("IX_NotificationRegistrationData_ObserverId_ChannelName");
+                        .HasDatabaseName("IX_NotificationRegistrationData_ObserverId_ChannelName");
 
                     b.ToTable("NotificationRegistrationData");
                 });
@@ -445,7 +487,7 @@ namespace VotingIrregularities.Domain.Seed.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime?>("DeviceRegisterDate")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("FromTeam")
                         .ValueGeneratedOnAdd()
@@ -461,8 +503,8 @@ namespace VotingIrregularities.Domain.Seed.Migrations
                         .HasDefaultValue(false);
 
                     b.Property<string>("MobileDeviceId")
-                        .HasColumnType("character varying(500)")
-                        .HasMaxLength(500);
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
 
                     b.Property<int>("MobileDeviceIdType")
                         .ValueGeneratedOnAdd()
@@ -471,24 +513,24 @@ namespace VotingIrregularities.Domain.Seed.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("character varying(200)")
-                        .HasMaxLength(200);
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
 
                     b.Property<string>("Phone")
                         .IsRequired()
-                        .HasColumnType("character varying(20)")
-                        .HasMaxLength(20);
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.Property<string>("Pin")
                         .IsRequired()
-                        .HasColumnType("character varying(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.HasKey("Id")
                         .HasName("PK_Observer");
 
                     b.HasIndex("IdNgo")
-                        .HasName("IX_Observer_IdNgo");
+                        .HasDatabaseName("IX_Observer_IdNgo");
 
                     b.HasIndex("MobileDeviceId");
 
@@ -501,8 +543,9 @@ namespace VotingIrregularities.Domain.Seed.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Hint")
                         .HasColumnType("text");
@@ -517,8 +560,8 @@ namespace VotingIrregularities.Domain.Seed.Migrations
 
                     b.Property<string>("Text")
                         .IsRequired()
-                        .HasColumnType("character varying(1000)")
-                        .HasMaxLength(1000);
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
 
                     b.HasKey("Id")
                         .HasName("PK_Option");
@@ -530,8 +573,9 @@ namespace VotingIrregularities.Domain.Seed.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("Flagged")
                         .ValueGeneratedOnAdd()
@@ -548,14 +592,14 @@ namespace VotingIrregularities.Domain.Seed.Migrations
                         .HasName("PK_OptionToQuestion");
 
                     b.HasIndex("IdOption")
-                        .HasName("IX_OptionToQuestion_Option");
+                        .HasDatabaseName("IX_OptionToQuestion_Option");
 
                     b.HasIndex("IdQuestion")
-                        .HasName("IX_OptionToQuestion_Question");
+                        .HasDatabaseName("IX_OptionToQuestion_Question");
 
                     b.HasIndex("IdOption", "IdQuestion")
                         .IsUnique()
-                        .HasName("IX_OptionToQuestion");
+                        .HasDatabaseName("IX_OptionToQuestion");
 
                     b.ToTable("OptionsToQuestions");
                 });
@@ -586,10 +630,10 @@ namespace VotingIrregularities.Domain.Seed.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("Address")
-                        .HasColumnType("character varying(500)")
-                        .HasMaxLength(500);
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
 
-                    b.Property<int>("IdCounty")
+                    b.Property<int>("MunicipalityId")
                         .HasColumnType("integer");
 
                     b.Property<int>("Number")
@@ -598,12 +642,11 @@ namespace VotingIrregularities.Domain.Seed.Migrations
                     b.HasKey("Id")
                         .HasName("PK_PollingStation");
 
-                    b.HasIndex("IdCounty")
-                        .HasName("IX_PollingStation_IdCounty");
+                    b.HasIndex("MunicipalityId")
+                        .HasDatabaseName("IX_PollingStation_IdCounty");
 
-                    b.HasIndex("IdCounty", "Id")
-                        .IsUnique()
-                        .HasName("IX_Unique_IdCounty_IdPollingStation");
+                    b.HasIndex("MunicipalityId", "Number")
+                        .IsUnique();
 
                     b.ToTable("PollingStations");
                 });
@@ -621,26 +664,23 @@ namespace VotingIrregularities.Domain.Seed.Migrations
 
                     b.Property<DateTime>("LastModified")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("timezone('utc', now())");
 
                     b.Property<DateTime?>("ObserverArrivalTime")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime?>("ObserverLeaveTime")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<bool?>("UrbanArea")
-                        .HasColumnType("boolean");
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("IdObserver", "IdPollingStation")
                         .HasName("PK_PollingStationInfo");
 
                     b.HasIndex("IdObserver")
-                        .HasName("IX_PollingStationInfo_IdObserver");
+                        .HasDatabaseName("IX_PollingStationInfo_IdObserver");
 
                     b.HasIndex("IdPollingStation")
-                        .HasName("IX_PollingStationInfo_IdPollingStation");
+                        .HasDatabaseName("IX_PollingStationInfo_IdPollingStation");
 
                     b.ToTable("PollingStationInfos");
                 });
@@ -649,8 +689,9 @@ namespace VotingIrregularities.Domain.Seed.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Code")
                         .HasColumnType("text");
@@ -669,14 +710,14 @@ namespace VotingIrregularities.Domain.Seed.Migrations
 
                     b.Property<string>("Text")
                         .IsRequired()
-                        .HasColumnType("character varying(1000)")
-                        .HasMaxLength(1000);
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
 
                     b.HasKey("Id")
                         .HasName("PK_Question");
 
                     b.HasIndex("IdSection")
-                        .HasName("IX_Question_IdSection");
+                        .HasDatabaseName("IX_Question_IdSection");
 
                     b.ToTable("Questions");
                 });
@@ -700,9 +741,9 @@ namespace VotingIrregularities.Domain.Seed.Migrations
                     b.HasOne("VoteMonitor.Entities.Observer", "Observer")
                         .WithMany("Answers")
                         .HasForeignKey("IdObserver")
-                        .HasConstraintName("FK_Answer_Observer")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_Answer_Observer");
 
                     b.HasOne("VoteMonitor.Entities.OptionToQuestion", "OptionAnswered")
                         .WithMany("Answers")
@@ -715,6 +756,12 @@ namespace VotingIrregularities.Domain.Seed.Migrations
                         .HasForeignKey("IdPollingStation")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Observer");
+
+                    b.Navigation("OptionAnswered");
+
+                    b.Navigation("PollingStation");
                 });
 
             modelBuilder.Entity("VoteMonitor.Entities.FormSection", b =>
@@ -724,6 +771,19 @@ namespace VotingIrregularities.Domain.Seed.Migrations
                         .HasForeignKey("IdForm")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Form");
+                });
+
+            modelBuilder.Entity("VoteMonitor.Entities.Municipality", b =>
+                {
+                    b.HasOne("VoteMonitor.Entities.County", "County")
+                        .WithMany("Municipalities")
+                        .HasForeignKey("CountyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("County");
                 });
 
             modelBuilder.Entity("VoteMonitor.Entities.NgoAdmin", b =>
@@ -731,9 +791,11 @@ namespace VotingIrregularities.Domain.Seed.Migrations
                     b.HasOne("VoteMonitor.Entities.Ngo", "Ngo")
                         .WithMany("NgoAdmins")
                         .HasForeignKey("IdNgo")
-                        .HasConstraintName("FK_NgoAdmin_Ngo")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_NgoAdmin_Ngo");
+
+                    b.Navigation("Ngo");
                 });
 
             modelBuilder.Entity("VoteMonitor.Entities.Note", b =>
@@ -754,6 +816,12 @@ namespace VotingIrregularities.Domain.Seed.Migrations
                         .WithMany("Notes")
                         .HasForeignKey("IdQuestion")
                         .HasConstraintName("FK_Note_Question");
+
+                    b.Navigation("Observer");
+
+                    b.Navigation("PollingStation");
+
+                    b.Navigation("Question");
                 });
 
             modelBuilder.Entity("VoteMonitor.Entities.NotesAttachments", b =>
@@ -763,6 +831,8 @@ namespace VotingIrregularities.Domain.Seed.Migrations
                         .HasForeignKey("NoteId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Note");
                 });
 
             modelBuilder.Entity("VoteMonitor.Entities.Notification", b =>
@@ -772,6 +842,8 @@ namespace VotingIrregularities.Domain.Seed.Migrations
                         .HasForeignKey("SenderAdminId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("SenderAdmin");
                 });
 
             modelBuilder.Entity("VoteMonitor.Entities.NotificationRecipient", b =>
@@ -787,6 +859,10 @@ namespace VotingIrregularities.Domain.Seed.Migrations
                         .HasForeignKey("ObserverId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Notification");
+
+                    b.Navigation("Observer");
                 });
 
             modelBuilder.Entity("VoteMonitor.Entities.NotificationRegistrationData", b =>
@@ -796,6 +872,8 @@ namespace VotingIrregularities.Domain.Seed.Migrations
                         .HasForeignKey("ObserverId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Observer");
                 });
 
             modelBuilder.Entity("VoteMonitor.Entities.Observer", b =>
@@ -805,6 +883,8 @@ namespace VotingIrregularities.Domain.Seed.Migrations
                         .HasForeignKey("IdNgo")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Ngo");
                 });
 
             modelBuilder.Entity("VoteMonitor.Entities.OptionToQuestion", b =>
@@ -812,26 +892,31 @@ namespace VotingIrregularities.Domain.Seed.Migrations
                     b.HasOne("VoteMonitor.Entities.Option", "Option")
                         .WithMany("OptionsToQuestions")
                         .HasForeignKey("IdOption")
-                        .HasConstraintName("FK_OptionToQuestion_Option")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_OptionToQuestion_Option");
 
                     b.HasOne("VoteMonitor.Entities.Question", "Question")
                         .WithMany("OptionsToQuestions")
                         .HasForeignKey("IdQuestion")
-                        .HasConstraintName("FK_OptionToQuestion_Question")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_OptionToQuestion_Question");
+
+                    b.Navigation("Option");
+
+                    b.Navigation("Question");
                 });
 
             modelBuilder.Entity("VoteMonitor.Entities.PollingStation", b =>
                 {
-                    b.HasOne("VoteMonitor.Entities.County", "County")
+                    b.HasOne("VoteMonitor.Entities.Municipality", "Municipality")
                         .WithMany("PollingStations")
-                        .HasForeignKey("IdCounty")
-                        .HasConstraintName("FK_PollingStation_County")
+                        .HasForeignKey("MunicipalityId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Municipality");
                 });
 
             modelBuilder.Entity("VoteMonitor.Entities.PollingStationInfo", b =>
@@ -839,15 +924,19 @@ namespace VotingIrregularities.Domain.Seed.Migrations
                     b.HasOne("VoteMonitor.Entities.Observer", "Observer")
                         .WithMany("PollingStationInfos")
                         .HasForeignKey("IdObserver")
-                        .HasConstraintName("FK_PollingStationInfo_Observer")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_PollingStationInfo_Observer");
 
                     b.HasOne("VoteMonitor.Entities.PollingStation", "PollingStation")
                         .WithMany("PollingStationInfos")
                         .HasForeignKey("IdPollingStation")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Observer");
+
+                    b.Navigation("PollingStation");
                 });
 
             modelBuilder.Entity("VoteMonitor.Entities.Question", b =>
@@ -857,6 +946,87 @@ namespace VotingIrregularities.Domain.Seed.Migrations
                         .HasForeignKey("IdSection")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("FormSection");
+                });
+
+            modelBuilder.Entity("VoteMonitor.Entities.County", b =>
+                {
+                    b.Navigation("Municipalities");
+                });
+
+            modelBuilder.Entity("VoteMonitor.Entities.Form", b =>
+                {
+                    b.Navigation("FormSections");
+                });
+
+            modelBuilder.Entity("VoteMonitor.Entities.FormSection", b =>
+                {
+                    b.Navigation("Questions");
+                });
+
+            modelBuilder.Entity("VoteMonitor.Entities.Municipality", b =>
+                {
+                    b.Navigation("PollingStations");
+                });
+
+            modelBuilder.Entity("VoteMonitor.Entities.Ngo", b =>
+                {
+                    b.Navigation("NgoAdmins");
+
+                    b.Navigation("Observers");
+                });
+
+            modelBuilder.Entity("VoteMonitor.Entities.NgoAdmin", b =>
+                {
+                    b.Navigation("NotificationsSent");
+                });
+
+            modelBuilder.Entity("VoteMonitor.Entities.Note", b =>
+                {
+                    b.Navigation("Attachments");
+                });
+
+            modelBuilder.Entity("VoteMonitor.Entities.Notification", b =>
+                {
+                    b.Navigation("NotificationRecipients");
+                });
+
+            modelBuilder.Entity("VoteMonitor.Entities.Observer", b =>
+                {
+                    b.Navigation("Answers");
+
+                    b.Navigation("Notes");
+
+                    b.Navigation("Notifications");
+
+                    b.Navigation("PollingStationInfos");
+                });
+
+            modelBuilder.Entity("VoteMonitor.Entities.Option", b =>
+                {
+                    b.Navigation("OptionsToQuestions");
+                });
+
+            modelBuilder.Entity("VoteMonitor.Entities.OptionToQuestion", b =>
+                {
+                    b.Navigation("Answers");
+                });
+
+            modelBuilder.Entity("VoteMonitor.Entities.PollingStation", b =>
+                {
+                    b.Navigation("Answers");
+
+                    b.Navigation("Notes");
+
+                    b.Navigation("PollingStationInfos");
+                });
+
+            modelBuilder.Entity("VoteMonitor.Entities.Question", b =>
+                {
+                    b.Navigation("Notes");
+
+                    b.Navigation("OptionsToQuestions");
                 });
 #pragma warning restore 612, 618
         }

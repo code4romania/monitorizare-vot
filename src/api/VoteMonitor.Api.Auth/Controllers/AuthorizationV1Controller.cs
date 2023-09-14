@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +12,7 @@ using VoteMonitor.Entities;
 namespace VoteMonitor.Api.Auth.Controllers;
 
 /// <inheritdoc />
+[ApiController]
 [Route("api/v1/access")]
 public class AuthorizationV1Controller : AuthorizationControllerBase
 {
@@ -35,11 +36,6 @@ public class AuthorizationV1Controller : AuthorizationControllerBase
     [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> AuthenticateUser([FromBody] AuthenticateUserRequest request)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
         var identity = await GetClaimsIdentity(request.User, request.Password, request.UniqueId, MobileDeviceIdType.UserGeneratedGuid);
 
         if (identity == null)

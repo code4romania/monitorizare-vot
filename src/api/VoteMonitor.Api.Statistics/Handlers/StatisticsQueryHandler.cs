@@ -1,4 +1,3 @@
-using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
@@ -17,12 +16,10 @@ public class StatisticsQueryHandler :
 {
     private readonly VoteMonitorContext _context;
     private readonly ICacheService _cacheService;
-    private readonly IMapper _mapper;
 
-    public StatisticsQueryHandler(VoteMonitorContext context, IMapper mapper, ICacheService cacheService)
+    public StatisticsQueryHandler(VoteMonitorContext context, ICacheService cacheService)
     {
         _context = context;
-        _mapper = mapper;
         _cacheService = cacheService;
     }
 
@@ -101,7 +98,11 @@ public class StatisticsQueryHandler :
 
         return new ApiListResponse<SimpleStatisticsModel>
         {
-            Data = pagedList.Select(x => _mapper.Map<SimpleStatisticsModel>(x)).ToList(),
+            Data = pagedList.Select(x => new SimpleStatisticsModel()
+            {
+                Label = x.Label,
+                Value = x.Value.ToString()
+            }).ToList(),
             Page = message.Page,
             PageSize = message.PageSize,
             TotalItems = records.Count
@@ -149,7 +150,11 @@ public class StatisticsQueryHandler :
 
         return new ApiListResponse<SimpleStatisticsModel>
         {
-            Data = pagedList.Select(x => _mapper.Map<SimpleStatisticsModel>(x)).ToList(),
+            Data = pagedList.Select(x => new SimpleStatisticsModel()
+            {
+                Label = x.Label,
+                Value = x.Value.ToString()
+            }).ToList(),
             Page = message.Page,
             PageSize = message.PageSize,
             TotalItems = records.Count
@@ -185,7 +190,11 @@ public class StatisticsQueryHandler :
 
                 return new ApiListResponse<SimpleStatisticsModel>
                 {
-                    Data = records.Select(x => _mapper.Map<SimpleStatisticsModel>(x)).ToList(),
+                    Data = records.Select(x => new SimpleStatisticsModel()
+                    {
+                        Label = x.Label,
+                        Value = x.Value.ToString()
+                    }).ToList(),
                     Page = message.Page,
                     PageSize = message.PageSize,
                     TotalItems = await _context.ComposedStatistics.FromSqlRaw(queryBuilder.Query).CountAsync(cancellationToken: token)

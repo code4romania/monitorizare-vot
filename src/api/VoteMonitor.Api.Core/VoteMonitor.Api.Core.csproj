@@ -8,7 +8,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.17.0" />
     <PackageReference Include="FirebaseAdmin" Version="2.4.0" />
     <PackageReference Include="MediatR" Version="12.1.1" />

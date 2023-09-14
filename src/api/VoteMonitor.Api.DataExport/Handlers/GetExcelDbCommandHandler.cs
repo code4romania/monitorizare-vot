@@ -19,6 +19,7 @@ public class GetExcelDbCommandHandler : IRequestHandler<GetExcelDbCommand, byte[
     {
         var ngos = await _context.Ngos
             .Select(ngo => new { ngo.Id, ngo.Name, ngo.Organizer, })
+            .OrderBy(x=>x.Id)
             .ToListAsync(cancellationToken: cancellationToken);
 
         var observers = await _context.Observers
@@ -27,15 +28,22 @@ public class GetExcelDbCommandHandler : IRequestHandler<GetExcelDbCommand, byte[
                 observer.Id,
                 observer.Phone,
                 observer.Name,
-                observer.IdNgo,
+                NgoId=  observer.IdNgo,
                 observer.FromTeam,
                 observer.IsTestObserver
             })
+            .OrderBy(x => x.NgoId)
+            .ThenBy(x => x.Id)
             .ToListAsync(cancellationToken: cancellationToken);
 
         var counties = await _context.Counties
             .OrderBy(x => x.Order)
-            .Select(county => new { county.Id, county.Code, county.Name })
+            .Select(county => new { county.Id, county.Code, county.Name, county.Diaspora, county.Order })
+            .ToListAsync(cancellationToken: cancellationToken);
+      
+        var municipalities = await _context.Municipalities
+            .OrderBy(x => x.Order)
+            .Select(municipality => new { municipality.Id, CountyId = municipality.County.Id, municipality.Code, municipality.Name })
             .ToListAsync(cancellationToken: cancellationToken);
 
         var pollingStations = await _context
@@ -43,10 +51,14 @@ public class GetExcelDbCommandHandler : IRequestHandler<GetExcelDbCommand, byte[
             .Select(pollingStation => new
             {
                 pollingStation.Id,
-                CountyId = pollingStation.IdCounty,
+                CountyId = pollingStation.Municipality.County.Id,
+                MunicipalityId = pollingStation.Municipality.Id,
                 pollingStation.Number,
                 pollingStation.Address
             })
+            .OrderBy(x => x.CountyId)
+            .ThenBy(x => x.MunicipalityId)
+            .ThenBy(x => x.Number)
             .ToListAsync(cancellationToken: cancellationToken);
 
         var forms = await _context.Forms
@@ -153,6 +165,7 @@ public class GetExcelDbCommandHandler : IRequestHandler<GetExcelDbCommand, byte[
             .WithSheet("ngos", ngos)
             .WithSheet("observers", observers)
             .WithSheet("counties", counties)
+            .WithSheet("municipalities", municipalities)
             .WithSheet("polling-stations", pollingStations)
             .WithSheet("forms", aggregatedForms)
             .WithSheet("filled-forms", filledInForms)

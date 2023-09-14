@@ -1,4 +1,3 @@
-﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -11,16 +10,15 @@ using VoteMonitor.Api.Form.Queries;
 
 namespace VoteMonitor.Api.Form.Controllers;
 
+[ApiController]
 [Route("api/v1/option")]
 public class OptionController : Controller
 {
     private readonly IMediator _mediator;
-    private readonly IMapper _mapper;
 
-    public OptionController(IMediator mediator, IMapper mapper)
+    public OptionController(IMediator mediator)
     {
         _mediator = mediator;
-        _mapper = mapper;
     }
 
     [HttpGet]
@@ -30,7 +28,7 @@ public class OptionController : Controller
     public async Task<List<OptionModel>> GetAll()
     {
         var options = await _mediator.Send(new FetchAllOptionsQuery());
-        var mappedResult = options.Select(dto => _mapper.Map<OptionModel>(dto)).ToList();
+        var mappedResult = options.Select(ToModel).ToList();
 
         return mappedResult;
     }
@@ -43,7 +41,8 @@ public class OptionController : Controller
     public async Task<OptionModel> GetByOptionId([FromRoute] int id)
     {
         var optionDto = await _mediator.Send(new GetOptionByIdQuery(id));
-        var result = _mapper.Map<OptionModel>(optionDto);
+        var result = ToModel(optionDto);
+
         return result;
     }
 
@@ -55,15 +54,9 @@ public class OptionController : Controller
     [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> Create([FromBody] CreateOptionModel model)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
+        var optionDto = await _mediator.Send(new AddOptionCommand(model.Text, model.Hint, model.IsFreeText));
 
-        var dto = _mapper.Map<OptionDTO>(model);
-        var optionDto = await _mediator.Send(new AddOptionCommand() { Option = dto });
-
-        var result = _mapper.Map<OptionModel>(optionDto);
+        var result = ToModel(optionDto);
 
         return Ok(result);
 
@@ -77,16 +70,19 @@ public class OptionController : Controller
     [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
     public async Task<IAsyncResult> Update([FromBody] OptionModel model)
     {
-        if (!ModelState.IsValid)
-        {
-            return this.ResultAsync(HttpStatusCode.BadRequest, ModelState);
-        }
-
-        var dto = _mapper.Map<OptionDTO>(model);
-        var result = await _mediator.Send(new UpdateOptionCommand() { Option = dto });
-
+        var result = await _mediator.Send(new UpdateOptionCommand(model.Id,model.Text, model.Hint, model.IsFreeText));
 
         return this.ResultAsync(result < 0 ? HttpStatusCode.NotFound : HttpStatusCode.OK);
     }
 
+    private static OptionModel ToModel(OptionDTO optionDto)
+    {
+        return new OptionModel
+        {
+            Id = optionDto.Id,
+            Hint = optionDto.Hint,
+            Text = optionDto.Text,
+            IsFreeText = optionDto.IsFreeText
+        };
+    }
 }

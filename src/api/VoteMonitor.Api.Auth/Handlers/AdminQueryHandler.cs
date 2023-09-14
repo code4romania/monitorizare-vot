@@ -1,4 +1,3 @@
-﻿using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using VoteMonitor.Api.Auth.Models;
@@ -12,13 +11,11 @@ public class AdminQueryHandler : IRequestHandler<NgoAdminApplicationUser, UserIn
 {
     private readonly VoteMonitorContext _context;
     private readonly IHashService _hash;
-    private readonly IMapper _mapper;
 
-    public AdminQueryHandler(VoteMonitorContext context, IHashService hash, IMapper mapper)
+    public AdminQueryHandler(VoteMonitorContext context, IHashService hash)
     {
         _context = context;
         _hash = hash;
-        _mapper = mapper;
     }
 
     public async Task<UserInfo> Handle(NgoAdminApplicationUser message, CancellationToken token)
@@ -29,7 +26,12 @@ public class AdminQueryHandler : IRequestHandler<NgoAdminApplicationUser, UserIn
             .Include(a => a.Ngo)
             .Where(a => a.Password == hashValue &&
                         a.Account == message.UserName)
-            .Select(_mapper.Map<UserInfo>)
+            .Select(x=> new UserInfo
+            {
+                IdNgo = x.IdNgo,
+                NgoAdminId = x.Id,
+                Organizer = x.Ngo.Organizer
+            })
             .FirstOrDefault();
 
         return await Task.FromResult(userinfo);

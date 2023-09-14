@@ -1,9 +1,7 @@
-﻿using CSharpFunctionalExtensions;
+using CSharpFunctionalExtensions;
 using MediatR;
 using VoteMonitor.Api.County.Models;
 
 namespace VoteMonitor.Api.County.Queries;
 
-public class GetAllCounties : IRequest<Result<List<CountyModel>>>
-{
-}
+public record GetAllCounties : IRequest<Result<List<CountyModel>>>;

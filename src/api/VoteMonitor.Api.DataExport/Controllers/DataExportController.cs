@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -25,7 +25,7 @@ public class DataExportController : Controller
     /// <returns></returns>
     [HttpGet("all")]
     [Authorize("Organizer")]
-    public async Task<IActionResult> GetAllData(int? idNgo, int? idObserver, int? pollingStationNumber, string county, DateTime? from, DateTime? to)
+    public async Task<IActionResult> GetAllData([FromQuery] int? idNgo, [FromQuery] int? idObserver, [FromQuery] int? pollingStationNumber, [FromQuery] string county, [FromQuery] DateTime? from, [FromQuery] DateTime? to)
     {
         var filter = new GetDataForExport
         {
@@ -47,7 +47,7 @@ public class DataExportController : Controller
         {
             _logger.LogError(e, nameof(GetAllData));
         }
-            
+
 
         if (csvFileBytes == null || csvFileBytes.Length == 0)
         {
@@ -63,7 +63,7 @@ public class DataExportController : Controller
 
     [HttpGet("all/notes")]
     [Authorize("Organizer")]
-    public async Task<IActionResult> GetAllNotes(int? idNgo, int? idObserver, int? pollingStationNumber, string county, DateTime? from, DateTime? to)
+    public async Task<IActionResult> GetAllNotes([FromQuery] int? idNgo, [FromQuery] int? idObserver, [FromQuery] int? pollingStationNumber, [FromQuery] string county, [FromQuery] DateTime? from, [FromQuery] DateTime? to)
     {
         var filter = new GetNotesForExport
         {

@@ -20,7 +20,7 @@ public class DataExportV2Controller : Controller
     /// </summary>
     /// <returns></returns>
     [HttpGet("all")]
-    //[Authorize("Organizer")]
+    [Authorize("Organizer")]
     [AllowAnonymous]
     public async Task<IActionResult> GetAllData()
     {

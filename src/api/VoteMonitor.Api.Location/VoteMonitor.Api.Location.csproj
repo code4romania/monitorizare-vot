@@ -9,7 +9,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="CsvHelper" Version="30.0.1" />
     <PackageReference Include="MediatR" Version="12.1.1" />
     <PackageReference Include="Z.EntityFramework.Extensions.EFCore" Version="7.22.6" />

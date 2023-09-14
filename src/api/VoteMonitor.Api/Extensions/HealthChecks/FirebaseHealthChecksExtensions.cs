@@ -20,7 +20,7 @@ public class FirebaseHealthCheck : IHealthCheck
         {
             if (FirebaseApp.DefaultInstance == null)
             {
-                FirebaseApp.Create(new AppOptions()
+                FirebaseApp.Create(new AppOptions
                 {
                     Credential = GoogleCredential.GetApplicationDefault(),
                 });

@@ -1,4 +1,3 @@
-using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -11,13 +10,11 @@ namespace VoteMonitor.Api.PollingStation.Handlers;
 public class GetPollingStationsHandler : IRequestHandler<GetPollingStations, IEnumerable<GetPollingStationModel>>
 {
     private readonly VoteMonitorContext _context;
-    private readonly IMapper _mapper;
     private readonly ILogger _logger;
 
-    public GetPollingStationsHandler(VoteMonitorContext context, IMapper mapper, ILogger<GetPollingStationsHandler> logger)
+    public GetPollingStationsHandler(VoteMonitorContext context, ILogger<GetPollingStationsHandler> logger)
     {
         _context = context;
-        _mapper = mapper;
         _logger = logger;
     }
 
@@ -33,7 +30,13 @@ public class GetPollingStationsHandler : IRequestHandler<GetPollingStations, IEn
             var pollingStations = await iQueryable
                 .Skip(skip)
                 .Take(take)
-                .Select(m => _mapper.Map<GetPollingStationModel>(m))
+                .Select(x => new GetPollingStationModel()
+                {
+                    Id = x.Id,
+                    Number = x.Number,
+                    Address = x.Address,
+                    MunicipalityId = x.MunicipalityId
+                })
                 .ToListAsync(cancellationToken);
 
             return pollingStations;
@@ -51,7 +54,7 @@ public class GetPollingStationsHandler : IRequestHandler<GetPollingStations, IEn
 
         if (request.CountyId > 0)
         {
-            iQueryable = iQueryable.Where(p => p.IdCounty == request.CountyId);
+            iQueryable = iQueryable.Where(p => p.Municipality.County.Id == request.CountyId);
         }
 
         return iQueryable;

@@ -1,11 +1,9 @@
-using AutoMapper;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Logging;
 using Moq;
 using VoteMonitor.Api.PollingStation.Handlers;
-using VoteMonitor.Api.PollingStation.Profiles;
 using VoteMonitor.Api.PollingStation.Queries;
 using VoteMonitor.Entities;
 using Xunit;
@@ -15,7 +13,6 @@ namespace VoteMonitor.Api.PollingStation.Tests.Handlers;
 public class GetPollingStationsHandlerTests
 {
     private readonly DbContextOptions<VoteMonitorContext> _dbContextOptions;
-    private readonly MapperConfiguration _mapperConfiguration;
     private readonly Mock<ILogger<GetPollingStationsHandler>> _mockLogger;
 
     public GetPollingStationsHandlerTests()
@@ -24,11 +21,6 @@ public class GetPollingStationsHandlerTests
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning))
             .Options;
-
-        _mapperConfiguration = new MapperConfiguration(cfg =>
-        {
-            cfg.AddProfile<PollingStationProfile>();
-        });
 
         _mockLogger = new Mock<ILogger<GetPollingStationsHandler>>();
     }
@@ -43,12 +35,9 @@ public class GetPollingStationsHandlerTests
 
         using (var context = new VoteMonitorContext(_dbContextOptions))
         {
-            var sut = new GetPollingStationsHandler(context, new Mapper(_mapperConfiguration), _mockLogger.Object);
+            var sut = new GetPollingStationsHandler(context, _mockLogger.Object);
 
-            var getPollingStations = new GetPollingStations
-            {
-                PageSize = 10
-            };
+            var getPollingStations = new GetPollingStations(CountyId: 0, Page: 1, PageSize: 10);
             var result = await sut.Handle(getPollingStations, new CancellationToken());
 
             result.Count().Should().Be(1);
@@ -67,13 +56,8 @@ public class GetPollingStationsHandlerTests
 
         using (var context = new VoteMonitorContext(_dbContextOptions))
         {
-            var sut = new GetPollingStationsHandler(context, new Mapper(_mapperConfiguration), _mockLogger.Object);
-
-            var getPollingStations = new GetPollingStations
-            {
-                Page = 2,
-                PageSize = 1
-            };
+            var sut = new GetPollingStationsHandler(context, _mockLogger.Object);
+            var getPollingStations = new GetPollingStations(CountyId: 0, Page: 2, PageSize: 1);
             var result = await sut.Handle(getPollingStations, new CancellationToken());
 
             result.Count().Should().Be(1);
@@ -86,20 +70,15 @@ public class GetPollingStationsHandlerTests
     {
         SetupContextWithPollingStations(new List<Entities.PollingStation>
         {
-            new PollingStationBuilder().WithId(1).WithIdCounty(5).Build(),
-            new PollingStationBuilder().WithId(2).WithIdCounty(20).Build()
+            new PollingStationBuilder().WithId(1).WithMunicipalityId(30,5).Build(),
+            new PollingStationBuilder().WithId(2).WithMunicipalityId(20, 20).Build()
         });
 
         using (var context = new VoteMonitorContext(_dbContextOptions))
         {
-            var sut = new GetPollingStationsHandler(context, new Mapper(_mapperConfiguration), _mockLogger.Object);
+            var sut = new GetPollingStationsHandler(context, _mockLogger.Object);
 
-            var getPollingStations = new GetPollingStations
-            {
-                CountyId = 20,
-                Page = 1,
-                PageSize = 1
-            };
+            var getPollingStations = new GetPollingStations(CountyId: 20, Page: 1, PageSize: 1);
             var result = await sut.Handle(getPollingStations, new CancellationToken());
 
             result.Count().Should().Be(1);
@@ -112,9 +91,9 @@ public class GetPollingStationsHandlerTests
     {
         var mockContext = new Mock<VoteMonitorContext>(_dbContextOptions);
         mockContext.Setup(m => m.PollingStations).Throws(new Exception());
-        var sut = new GetPollingStationsHandler(mockContext.Object, new Mapper(_mapperConfiguration), _mockLogger.Object);
+        var sut = new GetPollingStationsHandler(mockContext.Object, _mockLogger.Object);
 
-        await Record.ExceptionAsync(async () => await sut.Handle(new GetPollingStations(), new CancellationToken()));
+        await Record.ExceptionAsync(async () => await sut.Handle(new GetPollingStations(CountyId: 0, Page: 1, PageSize: 10), new CancellationToken()));
 
         _mockLogger.Verify(x => x.Log(
             LogLevel.Error,

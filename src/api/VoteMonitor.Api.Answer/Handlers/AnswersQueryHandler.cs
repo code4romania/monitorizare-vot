@@ -1,4 +1,3 @@
-using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using VoteMonitor.Api.Answer.Models;
@@ -14,12 +13,10 @@ public class AnswersQueryHandler :
     IRequestHandler<FormAnswersQuery, PollingStationInfoDto>
 {
     private readonly VoteMonitorContext _context;
-    private readonly IMapper _mapper;
 
-    public AnswersQueryHandler(VoteMonitorContext context, IMapper mapper)
+    public AnswersQueryHandler(VoteMonitorContext context)
     {
         _context = context;
-        _mapper = mapper;
     }
 
     public async Task<ApiListResponse<AnswerQueryDto>> Handle(AnswersQuery message, CancellationToken cancellationToken)
@@ -74,13 +71,20 @@ public class AnswersQueryHandler :
 
         return new ApiListResponse<AnswerQueryDto>
         {
-            Data = pagedAnswerQueryInfo.Select(x => _mapper.Map<AnswerQueryDto>(x)).ToList(),
+            Data = pagedAnswerQueryInfo.Select(x => new AnswerQueryDto
+            {
+                ObserverId = x.IdObserver,
+                ObserverName = x.ObserverName,
+                ObserverPhoneNumber = x.ObserverPhoneNumber,
+                PollingStationId = x.IdPollingStation,
+                PollingStationName = x.PollingStation
+            }).ToList(),
             Page = message.Page,
             PageSize = message.PageSize,
             TotalItems = count
         };
     }
-        
+
     public async Task<List<QuestionDto<FilledInAnswerDto>>> Handle(FilledInAnswersQuery message, CancellationToken cancellationToken)
     {
         var answers = await _context.Answers
@@ -95,7 +99,22 @@ public class AnswersQueryHandler :
             .Select(r => r.OptionAnswered.Question)
             .ToList();
 
-        return questions.Select(i => _mapper.Map<QuestionDto<FilledInAnswerDto>>(i)).ToList();
+        return questions.Select(q => new QuestionDto<FilledInAnswerDto>
+        {
+            Id = q.Id,
+            Text = q.Text,
+            QuestionTypeId = (int)q.QuestionType,
+            QuestionId = q.Code,
+            FormCode = q.Code,
+            Answers = q.OptionsToQuestions.Select(otq => new FilledInAnswerDto
+            {
+                Text = otq.Option.Text,
+                IsFreeText = otq.Option.IsFreeText,
+                OptionId = otq.Id,
+                IsFlagged = otq.Flagged,
+                Value = otq.Answers.First().Value
+            }).ToList()
+        }).ToList();
     }
 
     public async Task<PollingStationInfoDto> Handle(FormAnswersQuery message, CancellationToken cancellationToken)
@@ -104,6 +123,12 @@ public class AnswersQueryHandler :
             .FirstOrDefaultAsync(rd => rd.IdObserver == message.ObserverId
                                        && rd.IdPollingStation == message.PollingStationId, cancellationToken: cancellationToken);
 
-        return _mapper.Map<PollingStationInfoDto>(pollingStationInfo);
+        return new PollingStationInfoDto
+        {
+            ObserverArrivalTime = pollingStationInfo.ObserverArrivalTime,
+            ObserverLeaveTime = pollingStationInfo.ObserverLeaveTime,
+            IsPollingStationPresidentFemale = pollingStationInfo.IsPollingStationPresidentFemale,
+            LastModified = pollingStationInfo.LastModified
+        };
     }
 }

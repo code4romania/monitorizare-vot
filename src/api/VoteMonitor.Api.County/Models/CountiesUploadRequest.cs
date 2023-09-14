@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 using VoteMonitor.Api.Core.Attributes;
 
@@ -8,6 +8,6 @@ public class CountiesUploadRequest
 {
     [Required(ErrorMessage = "Please select a file.")]
     [DataType(DataType.Upload)]
-    [AllowedExtensions(new string[] { ".csv" })]
+    [AllowedExtensions(new[] { ".csv" })]
     public IFormFile CsvFile { get; set; }
 }

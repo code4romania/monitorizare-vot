@@ -1,4 +1,3 @@
-using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -16,14 +15,12 @@ public class NotificationRegistrationDataHandler :
 {
     private readonly VoteMonitorContext _context;
     private readonly IFirebaseService _firebaseService;
-    private readonly IMapper _mapper;
     private readonly ILogger<NotificationRegistrationDataHandler> _logger;
 
-    public NotificationRegistrationDataHandler(VoteMonitorContext context, IFirebaseService firebaseService, IMapper mapper, ILogger<NotificationRegistrationDataHandler> logger)
+    public NotificationRegistrationDataHandler(VoteMonitorContext context, IFirebaseService firebaseService, ILogger<NotificationRegistrationDataHandler> logger)
     {
         _context = context;
         _firebaseService = firebaseService;
-        _mapper = mapper;
         _logger = logger;
     }
 
@@ -74,11 +71,18 @@ public class NotificationRegistrationDataHandler :
 
             if (targetFcmTokens.Count > 0)
             {
-                response = _firebaseService.Send(request.From, request.Title, request.Message,
-                    targetFcmTokens);
+                response = _firebaseService.Send(request.From, request.Title, request.Message, targetFcmTokens);
             }
 
-            var notification = _mapper.Map<Entities.Notification>(request);
+            var notification = new Entities.Notification
+            {
+                Body = request.Message,
+                InsertedAt = DateTime.UtcNow,
+                SenderAdminId = request.SenderAdminId,
+                NotificationRecipients = request.Recipients.Select(r => new NotificationRecipient { ObserverId = r }).ToList(),
+                Title = request.Title,
+                Channel = request.Channel
+            };
 
             await _context.Notifications.AddAsync(notification, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
@@ -112,10 +116,16 @@ public class NotificationRegistrationDataHandler :
             .Select(regDataResult => regDataResult.ObserverId)
             .ToList();
 
-        var notification = _mapper.Map<Entities.Notification>(request);
-        notification.NotificationRecipients = observerIds.Select(id => new NotificationRecipient { ObserverId = id })
-            .ToList();
-            
+        var notification = new Entities.Notification
+        {
+            Body = request.Message,
+            InsertedAt = DateTime.UtcNow,
+            SenderAdminId = request.SenderAdminId,
+            NotificationRecipients = observerIds.Select(r => new NotificationRecipient { ObserverId = r }).ToList(),
+            Title = request.Title,
+            Channel = request.Channel
+        };
+
         await _context.Notifications.AddAsync(notification, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
         return response;

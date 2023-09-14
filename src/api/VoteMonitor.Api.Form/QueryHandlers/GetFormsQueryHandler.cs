@@ -31,7 +31,7 @@ public class GetFormsQueryHandler : IRequestHandler<GetFormsQuery, IReadOnlyList
     }
 
     private static readonly Expression<Func<Entities.Form, FormResponseModel>> ToFormResponseModel =
-        form => new FormResponseModel()
+        form => new FormResponseModel
         {
             Id = form.Id,
             Code = form.Code,
@@ -47,7 +47,7 @@ public class GetFormsQueryHandler : IRequestHandler<GetFormsQuery, IReadOnlyList
         };
 
     private static readonly Expression<Func<FormSection, FormSectionResponseModel>> ToFormSectionResponseModel =
-        section => new FormSectionResponseModel()
+        section => new FormSectionResponseModel
         {
             Id = section.Id,
             Code = section.Code,
@@ -61,7 +61,7 @@ public class GetFormsQueryHandler : IRequestHandler<GetFormsQuery, IReadOnlyList
         };
 
     private static readonly Expression<Func<Question, QuestionResponseModel>> ToQuestionResponseModel =
-        question => new QuestionResponseModel()
+        question => new QuestionResponseModel
         {
             Id = question.Id,
             Code = question.Code,
@@ -77,7 +77,7 @@ public class GetFormsQueryHandler : IRequestHandler<GetFormsQuery, IReadOnlyList
         };
 
     private static readonly Expression<Func<OptionToQuestion, OptionsResponseModel>> MapOptionsResponseModel =
-        optionToQuestion => new OptionsResponseModel()
+        optionToQuestion => new OptionsResponseModel
         {
             Id = optionToQuestion.Id,
             OptionId = optionToQuestion.Option.Id,

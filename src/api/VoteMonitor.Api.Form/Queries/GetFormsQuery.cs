@@ -3,7 +3,4 @@ using VoteMonitor.Api.Form.Models;
 
 namespace VoteMonitor.Api.Form.Queries;
 
-public class GetFormsQuery: IRequest<IReadOnlyList<FormResponseModel>>
-{
-
-}
+public record GetFormsQuery: IRequest<IReadOnlyList<FormResponseModel>>;

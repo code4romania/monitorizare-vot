@@ -1,4 +1,3 @@
-using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using VoteMonitor.Api.Core.Services;
@@ -13,14 +12,12 @@ public class GenerateObserversHandler : IRequestHandler<ObserverGenerateCommand,
 {
     private readonly VoteMonitorContext _voteMonitorContext;
     private readonly ILogger _logger;
-    private readonly IMapper _mapper;
     private readonly IHashService _hashService;
 
-    public GenerateObserversHandler(VoteMonitorContext voteMonitorContext, ILogger<GenerateObserversHandler> logger, IMapper mapper, IHashService hashService)
+    public GenerateObserversHandler(VoteMonitorContext voteMonitorContext, ILogger<GenerateObserversHandler> logger, IHashService hashService)
     {
         _voteMonitorContext = voteMonitorContext;
         _logger = logger;
-        _mapper = mapper;
         _hashService = hashService;
     }
 
@@ -55,7 +52,12 @@ public class GenerateObserversHandler : IRequestHandler<ObserverGenerateCommand,
                 tran.Commit();
 
                 return dbObservers
-                    .Select(o => _mapper.Map<GeneratedObserver>(o))
+                    .Select(o => new GeneratedObserver()
+                    {
+                        Id = o.Id.ToString(),
+                        Pin = o.Pin,
+                        PhoneNumber = o.Phone
+                    })
                     .ToList();
             }
         }

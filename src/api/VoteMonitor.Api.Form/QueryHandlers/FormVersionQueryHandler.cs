@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using VoteMonitor.Api.Form.Models;
 using VoteMonitor.Api.Form.Queries;
@@ -28,7 +28,8 @@ public class FormVersionQueryHandler : IRequestHandler<FormVersionQuery, List<Fo
 
         var sortedForms = result
             .OrderBy(x=>x.Order)
-            .Select(x=>new FormDetailsModel() { 
+            .Select(x=>new FormDetailsModel
+            { 
                 Id = x.Id,
                 Description = x.Description,
                 Code = x.Code,

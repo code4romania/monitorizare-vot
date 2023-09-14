@@ -53,7 +53,7 @@ public class GetFilledFormsQueryHandler : IRequestHandler<GetFilledFormsQuery, I
                         Sectionid = x.OptionAnswered.Question.FormSection.Id,
                         QuestionId = x.OptionAnswered.IdQuestion
                     })
-                    .Select(x => new AnswerResponseModel()
+                    .Select(x => new AnswerResponseModel
                     {
                         QuestionId = x.Key.QuestionId,
                         FormSectionId = x.Key.Sectionid,

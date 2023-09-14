@@ -1,4 +1,3 @@
-using AutoMapper;
 using CsvHelper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -15,30 +14,34 @@ using VoteMonitor.Api.Observer.Queries;
 
 namespace VoteMonitor.Api.Observer.Controllers;
 
+[ApiController]
 [Route("api/v1/observer")]
 public class ObserverController : Controller
 {
     private readonly IMediator _mediator;
-    private readonly IMapper _mapper;
     private readonly DefaultNgoOptions _defaultNgoOptions;
 
     private int NgoId => this.GetIdOngOrDefault(_defaultNgoOptions.DefaultNgoId);
     private bool IsOrganizer => this.GetOrganizatorOrDefault(false);
 
-    public ObserverController(IMediator mediator, IMapper mapper, IOptions<DefaultNgoOptions> defaultNgoOptions)
+    public ObserverController(IMediator mediator, IOptions<DefaultNgoOptions> defaultNgoOptions)
     {
         _mediator = mediator;
-        _mapper = mapper;
         _defaultNgoOptions = defaultNgoOptions.Value;
     }
 
     [HttpGet]
     [Produces(type: typeof(ApiListResponse<ObserverModel>))]
-    public async Task<ApiListResponse<ObserverModel>> GetObservers(ObserverListQuery query)
+    public async Task<ApiListResponse<ObserverModel>> GetObservers([FromQuery] ObserverListQuery query)
     {
-        var command = _mapper.Map<ObserverListCommand>(query);
-
-        command.NgoId = IsOrganizer ? -1 : NgoId;
+        var command = new ObserverListCommand()
+        {
+            Number = query.Number,
+            Name = query.Name,
+            Page = query.Page,
+            PageSize = query.PageSize,
+            NgoId = IsOrganizer ? -1 : NgoId
+        };
 
         var result = await _mediator.Send(command);
         return result;
@@ -48,13 +51,11 @@ public class ObserverController : Controller
     [Authorize("NgoAdmin")]
     [Produces(type: typeof(List<ObserverModel>))]
     [Route("active")]
-    public async Task<List<ObserverModel>> GetActiveObservers(ActiveObserverFilter query)
+    public async Task<List<ObserverModel>> GetActiveObservers([FromQuery] ActiveObserverFilter filter)
     {
-        var command = _mapper.Map<ActiveObserversQuery>(query);
+        var query = new ActiveObserversQuery(IsOrganizer ? -1 : NgoId, filter.CountyCodes, filter.CurrentlyCheckedIn);
 
-        command.NgoId = IsOrganizer ? -1 : NgoId;
-
-        var result = await _mediator.Send(command);
+        var result = await _mediator.Send(query);
         return result;
     }
 
@@ -78,11 +79,7 @@ public class ObserverController : Controller
             ngoId = NgoId;
         }
 
-        var counter = await _mediator.Send(new ImportObserversRequest
-        {
-            File = file,
-            NgoId = ngoId
-        });
+        var counter = await _mediator.Send(new ImportObserversRequest(ngoId, file));
 
         return counter;
     }
@@ -96,7 +93,7 @@ public class ObserverController : Controller
         using (var writer = new StreamWriter(mem))
         using (var csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture))
         {
-            csvWriter.WriteRecords(new []
+            csvWriter.WriteRecords(new[]
             {
                 new ObserversImportModel
                 {
@@ -118,15 +115,16 @@ public class ObserverController : Controller
     [HttpPost]
     [Authorize("Organizer")]
     [Produces(type: typeof(int))]
-    public async Task<IActionResult> NewObserver(NewObserverModel model)
+    public async Task<IActionResult> NewObserver([FromBody] NewObserverModel model)
     {
-        if (!ModelState.IsValid)
+        var newObsCommand = new NewObserverCommand()
         {
-            return BadRequest(ModelState);
-        }
+            Name = model.Name,
+            Pin = model.Pin,
+            Phone = model.Phone,
+            NgoId = NgoId
+        };
 
-        var newObsCommand = _mapper.Map<NewObserverCommand>(model);
-        newObsCommand.NgoId = NgoId;
         var newId = await _mediator.Send(newObsCommand);
 
         return Ok(newId);
@@ -142,12 +140,7 @@ public class ObserverController : Controller
     [Produces(type: typeof(bool))]
     public async Task<IActionResult> EditObserver([FromBody] EditObserverModel model)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
-        if(string.IsNullOrWhiteSpace(model.Name)
+        if (string.IsNullOrWhiteSpace(model.Name)
            && string.IsNullOrWhiteSpace(model.Phone)
            && string.IsNullOrWhiteSpace(model.Pin))
         {
@@ -160,7 +153,13 @@ public class ObserverController : Controller
             return Problem("Action not allowed", statusCode: (int)HttpStatusCode.BadRequest);
         }
 
-        var id = await _mediator.Send(_mapper.Map<EditObserverCommand>(model));
+        var id = await _mediator.Send(new EditObserverCommand()
+        {
+            Name = model.Name,
+            Phone = model.Phone,
+            Pin = model.Pin,
+            ObserverId = model.ObserverId!.Value
+        });
 
         return Ok(id > 0);
     }
@@ -175,11 +174,6 @@ public class ObserverController : Controller
     [Produces(type: typeof(bool))]
     public async Task<IActionResult> DeleteObserver(int id)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
         var isActionAllowed = await IsActionAllowed(id);
         if (!isActionAllowed)
         {
@@ -219,16 +213,15 @@ public class ObserverController : Controller
     [Authorize("NgoAdmin")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> RemoveObserverDeviceId(int id)
+    public async Task<IActionResult> RemoveObserverDeviceId([FromBody] RemoveDeviceIdModel request)
     {
-        var isActionAllowed = await IsActionAllowed(id);
+        var isActionAllowed = await IsActionAllowed(request.Id);
         if (!isActionAllowed)
         {
             return Problem("Action not allowed", statusCode: (int)HttpStatusCode.BadRequest);
         }
 
-        var request = _mapper.Map<RemoveDeviceIdCommand>(new RemoveDeviceIdModel { Id = id });
-        await _mediator.Send(request);
+        await _mediator.Send(new RemoveDeviceIdCommand(request.Id));
 
         return Ok();
     }

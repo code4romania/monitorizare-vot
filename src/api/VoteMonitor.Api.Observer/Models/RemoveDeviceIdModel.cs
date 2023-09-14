@@ -1,4 +1,4 @@
-﻿namespace VoteMonitor.Api.Observer.Models;
+namespace VoteMonitor.Api.Observer.Models;
 
 public class RemoveDeviceIdModel
 {

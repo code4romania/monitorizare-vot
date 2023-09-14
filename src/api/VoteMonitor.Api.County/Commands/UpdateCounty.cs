@@ -4,7 +4,7 @@ using VoteMonitor.Api.County.Models;
 
 namespace VoteMonitor.Api.County.Commands;
 
-public class UpdateCounty : IRequest<Result>
+public record UpdateCounty : IRequest<Result>
 {
     public int CountyId { get; }
     public string Code { get; }

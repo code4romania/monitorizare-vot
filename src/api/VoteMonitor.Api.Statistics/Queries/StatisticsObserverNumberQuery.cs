@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using VoteMonitor.Api.Core;
 using VoteMonitor.Api.Statistics.Models;
 

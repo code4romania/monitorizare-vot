@@ -1,4 +1,3 @@
-﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -16,22 +15,20 @@ namespace VoteMonitor.Api.PollingStation.Controllers;
 public class PollingStationController : Controller
 {
     private readonly IMediator _mediator;
-    private readonly IMapper _mapper;
 
-    public PollingStationController(IMediator mediator, IMapper mapper)
+    public PollingStationController(IMediator mediator)
     {
         _mediator = mediator;
-        _mapper = mapper;
     }
 
     /// Retrieves all of the polling stations matching a certain filter.
     [HttpGet]
     [Produces(typeof(IEnumerable<GetPollingStationModel>))]
-    public async Task<IActionResult> GetAllPollingStations([FromQuery] PollingStationsFilterModel pollingStationsFilterModel)
+    public async Task<IActionResult> GetAllPollingStations([FromQuery] PollingStationsFilterModel request)
     {
-        var request = _mapper.Map<GetPollingStations>(pollingStationsFilterModel);
+        var query = new GetPollingStations(request.CountyId, request.Page, request.PageSize);
 
-        var result = await _mediator.Send(request);
+        var result = await _mediator.Send(query);
 
         return Ok(result);
     }
@@ -43,9 +40,9 @@ public class PollingStationController : Controller
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetPollingStation(int id)
+    public async Task<IActionResult> GetPollingStation([FromRoute] int id)
     {
-        var request = new GetPollingStationById { PollingStationId = id };
+        var request = new GetPollingStationById(id);
 
         var result = await _mediator.Send(request);
         if (result == null)
@@ -62,12 +59,11 @@ public class PollingStationController : Controller
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> EditPollingStation([FromRoute] int id, [FromBody] UpdatePollingStationModel pollingStationModel)
+    public async Task<IActionResult> EditPollingStation([FromRoute] int id, [FromBody] UpdatePollingStationModel request)
     {
-        var request = _mapper.Map<UpdatePollingStation>(pollingStationModel);
-        request.PollingStationId = id;
+        var command = new UpdatePollingStation(id, request.Address, request.Number);
 
-        var updated = await _mediator.Send(request);
+        var updated = await _mediator.Send(command);
         if (updated.HasValue && !updated.Value)
         {
             return NotFound(id);

@@ -1,4 +1,3 @@
-﻿using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -13,13 +12,11 @@ public class ObserverListQueryHandler : IRequestHandler<ObserverListCommand, Api
 {
     private readonly VoteMonitorContext _context;
     private readonly ILogger _logger;
-    private readonly IMapper _mapper;
 
-    public ObserverListQueryHandler(VoteMonitorContext context, ILogger<ObserverListQueryHandler> logger, IMapper mapper)
+    public ObserverListQueryHandler(VoteMonitorContext context, ILogger<ObserverListQueryHandler> logger)
     {
         _context = context;
         _logger = logger;
-        _mapper = mapper;
     }
     public async Task<ApiListResponse<ObserverModel>> Handle(ObserverListCommand request, CancellationToken cancellationToken)
     {
@@ -49,7 +46,16 @@ public class ObserverListQueryHandler : IRequestHandler<ObserverListCommand, Api
 
         var requestedPageObservers = GetPagedQuery(observers, request.Page, request.PageSize)
             .ToList()
-            .Select(_mapper.Map<ObserverModel>);
+            .Select(o=> new ObserverModel
+            {
+                Id = o.Id,
+                Phone = o.Phone,
+                Name = o.Name,
+                Ngo = o.Ngo.Name,
+                NumberOfPollingStations = o.PollingStationInfos.Count,
+                NumberOfNotes = o.Notes.Count,
+                DeviceRegisterDate = o.DeviceRegisterDate
+            });
 
 
         return new ApiListResponse<ObserverModel>

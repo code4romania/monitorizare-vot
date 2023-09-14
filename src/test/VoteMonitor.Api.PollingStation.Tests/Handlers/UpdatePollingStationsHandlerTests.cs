@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Logging;
@@ -32,10 +32,7 @@ public class UpdatePollingStationsHandlerTests
         {
             var sut = new UpdatePollingStationsHandler(context, _mockLogger.Object);
 
-            var requestNonExistingPollingStation = new UpdatePollingStation
-            {
-                PollingStationId = 5
-            };
+            var requestNonExistingPollingStation = new UpdatePollingStation(5, "new address", 1);
             var result = await sut.Handle(requestNonExistingPollingStation, new CancellationToken());
 
             result.Should().Be(false);
@@ -51,10 +48,7 @@ public class UpdatePollingStationsHandlerTests
         {
             var sut = new UpdatePollingStationsHandler(context, _mockLogger.Object);
 
-            var requestExistingPollingStation = new UpdatePollingStation
-            {
-                PollingStationId = 5
-            };
+            var requestExistingPollingStation = new UpdatePollingStation(5, "new address", 1);
             var result = await sut.Handle(requestExistingPollingStation, new CancellationToken());
 
             result.Should().Be(true);
@@ -69,10 +63,7 @@ public class UpdatePollingStationsHandlerTests
 
         var sut = new UpdatePollingStationsHandler(mockContext.Object, _mockLogger.Object);
 
-        var requestNonExistingPollingStation = new UpdatePollingStation
-        {
-            PollingStationId = 5
-        };
+        var requestNonExistingPollingStation = new UpdatePollingStation(5, "new address", 1);
 
         bool? result = false;
         await Record.ExceptionAsync(async () => result = await sut.Handle(requestNonExistingPollingStation, new CancellationToken()));
@@ -88,10 +79,7 @@ public class UpdatePollingStationsHandlerTests
 
         var sut = new UpdatePollingStationsHandler(mockContext.Object, _mockLogger.Object);
 
-        var requestNonExistingPollingStation = new UpdatePollingStation
-        {
-            PollingStationId = 5
-        };
+        var requestNonExistingPollingStation = new UpdatePollingStation(5, "new address", 1);
 
         await Record.ExceptionAsync(async () => await sut.Handle(requestNonExistingPollingStation, new CancellationToken()));
 
@@ -113,11 +101,7 @@ public class UpdatePollingStationsHandlerTests
         {
             var sut = new UpdatePollingStationsHandler(context, _mockLogger.Object);
 
-            var requestExistingPollingStation = new UpdatePollingStation
-            {
-                PollingStationId = id,
-                Address = "new address"
-            };
+            var requestExistingPollingStation = new UpdatePollingStation(5, "new address", 1);
             await sut.Handle(requestExistingPollingStation, new CancellationToken());
 
             var updatedPollingStation = context.PollingStations.First(p => p.Id == id);
@@ -135,11 +119,7 @@ public class UpdatePollingStationsHandlerTests
         {
             var sut = new UpdatePollingStationsHandler(context, _mockLogger.Object);
 
-            var requestExistingPollingStation = new UpdatePollingStation
-            {
-                PollingStationId = id,
-                Number = 27
-            };
+            var requestExistingPollingStation = new UpdatePollingStation(5, "new address", 27);
             await sut.Handle(requestExistingPollingStation, new CancellationToken());
 
             var updatedPollingStation = context.PollingStations.First(p => p.Id == id);

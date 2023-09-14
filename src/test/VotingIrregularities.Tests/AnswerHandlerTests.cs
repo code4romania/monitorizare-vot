@@ -14,45 +14,43 @@ public class AnswerHandlerTests
         var pollingStationId = 1;
         var pollingStationNumber = 1;
         var lastModified = DateTime.Now;
-
-        var message = new FillInAnswerCommand
+        var answersBuilder = new List<AnswerDto>
         {
-            ObserverId = 1,
-            Answers = new List<AnswerDto>()
+            new()
+            {
+                CountyCode = countyCode,
+                PollingStationNumber = pollingStationNumber,
+                PollingStationId = pollingStationId,
+                QuestionId = 1,
+                Options = new List<SelectedOptionDto>
+                {
+                    new() {OptionId  = 11, Value = "val0"},
+                    new() {OptionId = 11, Value = "val234"},
+                    new() {OptionId = 11, Value = "val2s34"},
+                    new() {OptionId = 11, Value = "varl234"},
+                    new() {OptionId = 11, Value = "varl234"},
+                    new() {OptionId = 11, Value = "ok"},
+                    new() {OptionId = 21, Value = "1"}
+                }
+            },
+            new()
+            {
+                CountyCode = countyCode,
+                PollingStationNumber = pollingStationNumber,
+                PollingStationId = pollingStationId,
+                QuestionId = 2,
+                Options = new List<SelectedOptionDto>
+                {
+                    new() {OptionId = 21, Value = "val0"},
+                    new() {OptionId = 21, Value = "val234"},
+                    new() {OptionId = 21, Value = "ok"},
+                    new() {OptionId = 22, Value = "ok"},
+                    new() {OptionId = 23, Value = "ok"}
+                }
+            }
         };
 
-        message.Answers.Add(new AnswerDto
-        {
-            CountyCode = countyCode,
-            PollingStationNumber = pollingStationNumber,
-            PollingStationId = pollingStationId,
-            QuestionId = 1,
-            Options = new List<SelectedOptionDto>
-            {
-                new SelectedOptionDto{OptionId  = 11, Value = "val0"},
-                new SelectedOptionDto{OptionId = 11, Value = "val234"},
-                new SelectedOptionDto{OptionId = 11, Value = "val2s34"},
-                new SelectedOptionDto{OptionId = 11, Value = "varl234"},
-                new SelectedOptionDto{OptionId = 11, Value = "varl234"},
-                new SelectedOptionDto{OptionId = 11, Value = "ok"},
-                new SelectedOptionDto{OptionId = 21, Value = "1"}
-            }
-        });
-        message.Answers.Add(new AnswerDto
-        {
-            CountyCode = countyCode,
-            PollingStationNumber = pollingStationNumber,
-            PollingStationId = pollingStationId,
-            QuestionId = 2,
-            Options = new List<SelectedOptionDto>
-            {
-                new SelectedOptionDto{OptionId = 21, Value = "val0"},
-                new SelectedOptionDto{OptionId = 21, Value = "val234"},
-                new SelectedOptionDto{OptionId = 21, Value = "ok"},
-                new SelectedOptionDto{OptionId = 22, Value = "ok"},
-                new SelectedOptionDto{OptionId = 23, Value = "ok"}
-            }
-        });
+        var message = new FillInAnswerCommand(1, answersBuilder);
 
         var reducedCollection = FillInAnswerQueryHandler.GetFlatListOfAnswers(message, lastModified);
 

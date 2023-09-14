@@ -4,7 +4,7 @@ using VoteMonitor.Api.Location.Queries;
 
 namespace VoteMonitor.Api.Location.Handlers;
 
-public class PollingStationQueryHandler : IRequestHandler<PollingStationQuery, int>
+public class PollingStationQueryHandler : IRequestHandler<GetPollingStationId, int>
 {
     private readonly IPollingStationService _pollingStationService;
 
@@ -13,8 +13,8 @@ public class PollingStationQueryHandler : IRequestHandler<PollingStationQuery, i
         _pollingStationService = pollingStationService;
     }
 
-    public async Task<int> Handle(PollingStationQuery message, CancellationToken cancellationToken)
+    public async Task<int> Handle(GetPollingStationId message, CancellationToken cancellationToken)
     {
-        return await _pollingStationService.GetPollingStationByCountyCode(message.IdPollingStation, message.CountyCode);
+        return await _pollingStationService.GetPollingStationId(message.CountyCode, message.MunicipalityCode, message.PollingStationNumber);
     }
 }

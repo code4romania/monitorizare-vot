@@ -14,6 +14,7 @@ namespace VoteMonitor.Api.Form.Controllers;
 /// <summary>
 /// Form Controller offers support for CRUD Operations on the forms completed by observers.
 /// </summary>
+[ApiController]
 [Route("api/v1/form")]
 public class FormController : Controller
 {
@@ -30,18 +31,14 @@ public class FormController : Controller
     [Authorize("NgoAdmin")]
     public async Task<ActionResult<int>> AddForm([FromBody] FormDTO newForm)
     {
-        var formExists = await _mediator.Send(new ExistsFormByCodeOrIdQuery()
-        {
-            Id = newForm.Id,
-            Code = newForm.Code
-        });
+        var formExists = await _mediator.Send(new ExistsFormByCodeOrIdQuery(newForm.Id, newForm.Code));
 
         if (formExists)
         {
             return BadRequest($"The form with the given code/id already exists");
         }
 
-        var result = await _mediator.Send(new AddFormCommand { Form = newForm });
+        var result = await _mediator.Send(new AddFormCommand(newForm));
         return result.Id;
     }
 
@@ -49,13 +46,13 @@ public class FormController : Controller
     [Authorize("Organizer")]
     public async Task<ActionResult> UpdateForm([FromBody] FormDTO newForm)
     {
-        var formExists = await _mediator.Send(new GetFormExistsByIdQuery() { Id = newForm.Id });
+        var formExists = await _mediator.Send(new GetFormExistsByIdQuery(newForm.Id));
         if (!formExists)
         {
             return NotFound($"The form with id {newForm.Id} was not found.");
         }
 
-        var result = await _mediator.Send(new UpdateFormCommand { Id = newForm.Id, Form = newForm });
+        var result = await _mediator.Send(new UpdateFormCommand(newForm, newForm.Id));
         return Ok(result.Id);
     }
     /// <summary>
@@ -78,8 +75,8 @@ public class FormController : Controller
     /// Returns an array of forms
     /// </summary>
     /// <returns></returns>
-    [Authorize]
     [HttpGet]
+    [Authorize]
     public async Task<IActionResult> GetFormsAsync(bool? diaspora, bool? draft)
         => Ok(new FormVersionsModel { FormVersions = await _mediator.Send(new FormVersionQuery(diaspora, draft)) });
 
@@ -90,17 +87,15 @@ public class FormController : Controller
     /// </summary>
     /// <param name="formId">Id-ul formularului pentru care trebuie preluata definitia</param>
     /// <returns></returns>
-    [Authorize]
     [HttpGet("{formId}")]
-    public async Task<IEnumerable<FormSectionDTO>> GetFormAsync(int formId)
+    [Authorize]
+    public async Task<IEnumerable<FormSectionDTO>> GetFormAsync([FromRoute] int formId)
     {
-        var result = await _mediator.Send(new FormQuestionQuery
-        {
-            FormId = formId,
-            CacheHours = _cacheOptions.Hours,
-            CacheMinutes = _cacheOptions.Minutes,
-            CacheSeconds = _cacheOptions.Seconds
-        });
+        var result = await _mediator.Send(new FormQuestionQuery(formId,
+            _cacheOptions.Hours,
+           _cacheOptions.Minutes,
+           _cacheOptions.Seconds
+        ));
 
         return result;
     }
@@ -111,12 +106,7 @@ public class FormController : Controller
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> DeleteForm(int formId)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
-        var result = await _mediator.Send(new DeleteFormCommand { FormId = formId });
+        var result = await _mediator.Send(new DeleteFormCommand(formId));
 
         if (result.IsFailure)
         {
@@ -142,7 +132,7 @@ public class FormController : Controller
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> DeleteSection(int sectionId)
     {
-        var deleted = await _mediator.Send(new DeleteSectionCommand { SectionId = sectionId });
+        var deleted = await _mediator.Send(new DeleteSectionCommand(sectionId));
 
         if (!deleted)
         {
@@ -158,11 +148,7 @@ public class FormController : Controller
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> DeleteQuestionAsync(int sectionId, int questionId)
     {
-        var deleted = await _mediator.Send(new DeleteQuestionCommand()
-        {
-            QuestionId = questionId,
-            SectionId = sectionId
-        });
+        var deleted = await _mediator.Send(new DeleteQuestionCommand(sectionId, questionId));
 
         if (!deleted)
         {

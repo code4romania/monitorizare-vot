@@ -42,7 +42,7 @@ public static class ServicesExtensions
             case ApplicationCacheImplementationType.RedisCache:
             {
                 services.AddSingleton<ICacheService, CacheService>();
-                services.AddDistributedRedisCache(options =>
+                services.AddStackExchangeRedisCache(options =>
                 {
                     configuration.GetSection("RedisCacheOptions").Bind(options);
                 });

@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.IdentityModel.Tokens.Jwt;
@@ -101,12 +101,7 @@ public class AuthorizationControllerBase : Controller
 
         if (mobileUserInfo.ShouldRegisterMobileDeviceId)
         {
-            await _mediator.Send(new RegisterDeviceId
-            {
-                MobileDeviceId = mobileDeviceId,
-                MobileDeviceIdType = mobileDeviceIdType,
-                ObserverId = mobileUserInfo.ObserverId
-            });
+            await _mediator.Send(new RegisterDeviceId(mobileDeviceId, mobileDeviceIdType, mobileUserInfo.ObserverId));
         }
 
         // Get the generic claims + the user specific one (the organizer flag)

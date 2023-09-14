@@ -1,5 +1,4 @@
 using System.Globalization;
-using AutoMapper;
 using CSharpFunctionalExtensions;
 using CsvHelper;
 using MediatR;
@@ -16,22 +15,20 @@ namespace VoteMonitor.Api.County.Handlers;
 public class CountiesCommandHandler : IRequestHandler<GetCountiesForExport, Result<List<CountyCsvModel>>>,
     IRequestHandler<CreateOrUpdateCounties, Result>,
     IRequestHandler<GetAllCounties, Result<List<CountyModel>>>,
-    IRequestHandler<GetCounty, Result<CountyModel>>,
+    IRequestHandler<GetCountyById, Result<CountyModel>>,
     IRequestHandler<UpdateCounty, Result>
 
 {
     private readonly VoteMonitorContext _context;
     private readonly ILogger _logger;
-    private readonly IMapper _mapper;
 
     private const int NameMaxLength = 100;
     private const int CodeMaxLength = 20;
 
-    public CountiesCommandHandler(VoteMonitorContext context, ILogger<CountiesCommandHandler> logger, IMapper mapper)
+    public CountiesCommandHandler(VoteMonitorContext context, ILogger<CountiesCommandHandler> logger)
     {
         _context = context;
         _logger = logger;
-        _mapper = mapper;
     }
 
     public async Task<Result<List<CountyCsvModel>>> Handle(GetCountiesForExport request, CancellationToken cancellationToken)
@@ -40,11 +37,18 @@ public class CountiesCommandHandler : IRequestHandler<GetCountiesForExport, Resu
         {
             return await _context.Counties
                 .OrderBy(c => c.Order)
-                .Select(c => _mapper.Map<CountyCsvModel>(c))
+                .Select(c => new CountyCsvModel
+                {
+                    Id = c.Id,
+                    Code = c.Code,
+                    Name = c.Name,
+                    Diaspora = c.Diaspora,
+                    Order = c.Order
+                })
                 .ToListAsync(cancellationToken);
         }, ex =>
         {
-            _logger.LogError("Error retrieving counties", ex);
+            _logger.LogError(ex, "Error retrieving counties");
             return "Cannot retrieve counties.";
         });
     }
@@ -102,7 +106,7 @@ public class CountiesCommandHandler : IRequestHandler<GetCountiesForExport, Resu
         }
         catch (Exception exception)
         {
-            _logger.LogError("Cannot add/update counties", exception);
+            _logger.LogError(exception, "Cannot add/update counties");
             return Result.Failure("Cannot add/update counties");
         }
 
@@ -144,7 +148,7 @@ public class CountiesCommandHandler : IRequestHandler<GetCountiesForExport, Resu
         }
         catch (Exception e)
         {
-            _logger.LogError("Unable to read csv file", e);
+            _logger.LogError(e, "Unable to read csv file");
             return Result.Failure<List<CountyCsvModel>>("Cannot read csv file provided");
         }
 
@@ -159,12 +163,11 @@ public class CountiesCommandHandler : IRequestHandler<GetCountiesForExport, Resu
         {
             counties = await _context.Counties
                 .OrderBy(c => c.Order)
-                .Select(x => new CountyModel()
+                .Select(x => new CountyModel
                 {
                     Id = x.Id,
                     Code = x.Code,
                     Name = x.Name,
-                    NumberOfPollingStations = x.PollingStations.Count(),
                     Diaspora = x.Diaspora,
                     Order = x.Order
                 })
@@ -172,14 +175,14 @@ public class CountiesCommandHandler : IRequestHandler<GetCountiesForExport, Resu
         }
         catch (Exception e)
         {
-            _logger.LogError("Unable to load all counties", e);
+            _logger.LogError(e, "Unable to load all counties");
             return Result.Failure<List<CountyModel>>("Unable to load all counties");
         }
 
         return Result.Success(counties);
     }
 
-    public async Task<Result<CountyModel>> Handle(GetCounty request, CancellationToken cancellationToken)
+    public async Task<Result<CountyModel>> Handle(GetCountyById request, CancellationToken cancellationToken)
     {
         try
         {
@@ -192,7 +195,6 @@ public class CountiesCommandHandler : IRequestHandler<GetCountiesForExport, Resu
                     Name = c.Name,
                     Order = c.Order,
                     Diaspora = c.Diaspora,
-                    NumberOfPollingStations = c.PollingStations.Count()
                 })
                 .FirstOrDefaultAsync(cancellationToken);
 

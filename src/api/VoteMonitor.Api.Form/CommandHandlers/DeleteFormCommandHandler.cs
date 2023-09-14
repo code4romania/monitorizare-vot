@@ -62,7 +62,7 @@ public class DeleteFormCommandHandler : IRequestHandler<DeleteFormCommand, Resul
         catch (Exception e)
         {
             _logger.LogError(e, $"Error occured when deleting form with id= {request.FormId}");
-            return DeleteFormErrorType.ErrorOccured;
+            return DeleteFormErrorType.ErrorOccurred;
         }
     }
 }

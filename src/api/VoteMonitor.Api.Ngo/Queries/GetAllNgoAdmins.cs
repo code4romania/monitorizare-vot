@@ -1,15 +1,7 @@
-﻿using CSharpFunctionalExtensions;
+using CSharpFunctionalExtensions;
 using MediatR;
 using VoteMonitor.Api.Ngo.Models;
 
 namespace VoteMonitor.Api.Ngo.Queries;
 
-public class GetAllNgoAdmins : IRequest<Result<List<NgoAdminModel>>>
-{
-    public int IdNgo { get; }
-
-    public GetAllNgoAdmins(int idNgo)
-    {
-        IdNgo = idNgo;
-    }
-}
+public record GetAllNgoAdmins(int IdNgo) : IRequest<Result<List<NgoAdminModel>>>;

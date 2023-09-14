@@ -1,10 +1,7 @@
-﻿using CSharpFunctionalExtensions;
+using CSharpFunctionalExtensions;
 using MediatR;
 using VoteMonitor.Api.Ngo.Models;
 
 namespace VoteMonitor.Api.Ngo.Queries;
 
-public class GetAllNgos : IRequest<Result<List<NgoModel>>>
-{
-
-}
+public record GetAllNgos : IRequest<Result<List<NgoModel>>>;

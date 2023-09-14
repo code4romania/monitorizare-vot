@@ -38,7 +38,7 @@ public class ServiceExtensions_ConditionalChecksRegistrationsTests
         var healthCheckMock = new Mock<IHealthCheck>();
         var serviceCollection = new ServiceCollection();
         var configuration = new ConfigurationBuilder()
-            .AddInMemoryCollection(new Dictionary<string, string>()
+            .AddInMemoryCollection(new Dictionary<string, string>
             {
                 { "EnableHealthChecks", "true"},
                 { "ApplicationCacheOptions:Implementation", "RedisCache"}
@@ -102,7 +102,7 @@ public class ServiceExtensions_ConditionalChecksRegistrationsTests
         var healthCheckMock = new Mock<IHealthCheck>();
         var serviceCollection = new ServiceCollection();
         var configuration = new ConfigurationBuilder()
-            .AddInMemoryCollection(new Dictionary<string, string>()
+            .AddInMemoryCollection(new Dictionary<string, string>
             {
                 { "EnableHealthChecks", "true"},
                 { "FirebaseServiceOptions:ServerKey", "a valid server key"}
@@ -127,7 +127,7 @@ public class ServiceExtensions_ConditionalChecksRegistrationsTests
         var healthCheckMock = new Mock<IHealthCheck>();
         var serviceCollection = new ServiceCollection();
         var configuration = new ConfigurationBuilder()
-            .AddInMemoryCollection(new Dictionary<string, string>()
+            .AddInMemoryCollection(new Dictionary<string, string>
             {
                 { "EnableHealthChecks", "true"},
                 { "FileServiceOptions:Type", "LocalFileService"}
@@ -152,7 +152,7 @@ public class ServiceExtensions_ConditionalChecksRegistrationsTests
         var healthCheckMock = new Mock<IHealthCheck>();
         var serviceCollection = new ServiceCollection();
         var configuration = new ConfigurationBuilder()
-            .AddInMemoryCollection(new Dictionary<string, string>()
+            .AddInMemoryCollection(new Dictionary<string, string>
             {
                 { "EnableHealthChecks", "true"},
                 { "FileServiceOptions:Type", "BlobService"}

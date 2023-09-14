@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -36,7 +36,7 @@ public class StatisticsController : Controller
     [HttpGet]
     [Route("observerNumber")]
     [Authorize("NgoAdmin")]
-    public async Task<ApiListResponse<SimpleStatisticsModel>> ObserverNumber(PagingModel model)
+    public async Task<ApiListResponse<SimpleStatisticsModel>> ObserverNumber([FromQuery] PagingModel model)
     {
         return await _mediator.Send(new StatisticsObserverNumberQuery
         {
@@ -61,7 +61,7 @@ public class StatisticsController : Controller
     [HttpGet]
     [Route("irregularities")]
     [Authorize("NgoAdmin")]
-    public async Task<ApiListResponse<SimpleStatisticsModel>> Irregularities(FilterStatisticsModel model)
+    public async Task<ApiListResponse<SimpleStatisticsModel>> Irregularities([FromQuery] FilterStatisticsModel model)
     {
         if (model.GroupingType == StatisticsGroupingTypes.PollingStation)
         {
@@ -90,7 +90,7 @@ public class StatisticsController : Controller
     [HttpGet]
     [Route("countiesIrregularities")]
     [Authorize("NgoAdmin")]
-    public async Task<ApiListResponse<SimpleStatisticsModel>> CountiesIrregularities(PagingModel model)
+    public async Task<ApiListResponse<SimpleStatisticsModel>> CountiesIrregularities([FromQuery] PagingModel model)
     {
         return await _mediator.Send(new StatisticsTopIrregularitiesQuery
         {
@@ -138,7 +138,7 @@ public class StatisticsController : Controller
     [HttpGet]
     [Route("countiesOpeningIrregularities")]
     [Authorize("NgoAdmin")]
-    public async Task<ApiListResponse<SimpleStatisticsModel>> CountiesOpeningIrregularities(PagingModel model)
+    public async Task<ApiListResponse<SimpleStatisticsModel>> CountiesOpeningIrregularities([FromQuery] PagingModel model)
     {
         return await _mediator.Send(new StatisticsTopIrregularitiesQuery
         {
@@ -162,7 +162,7 @@ public class StatisticsController : Controller
     [HttpGet]
     [Route("pollingStationOpeningIrregularities")]
     [Authorize("NgoAdmin")]
-    public async Task<ApiListResponse<SimpleStatisticsModel>> PollingStationsOpeningIrregularities(PagingModel model)
+    public async Task<ApiListResponse<SimpleStatisticsModel>> PollingStationsOpeningIrregularities([FromQuery] PagingModel model)
     {
         return await _mediator.Send(new StatisticsTopIrregularitiesQuery
         {
@@ -186,7 +186,7 @@ public class StatisticsController : Controller
     [HttpGet]
     [Route("countiesByCountingIrregularities")]
     [Authorize("NgoAdmin")]
-    public async Task<ApiListResponse<SimpleStatisticsModel>> CountiesByCountingIrregularities(PagingModel model)
+    public async Task<ApiListResponse<SimpleStatisticsModel>> CountiesByCountingIrregularities([FromQuery] PagingModel model)
     {
         return await _mediator.Send(new StatisticsTopIrregularitiesQuery
         {
@@ -210,7 +210,7 @@ public class StatisticsController : Controller
     [HttpGet]
     [Route("pollingStationsByCountingIrregularities")]
     [Authorize("NgoAdmin")]
-    public async Task<ApiListResponse<SimpleStatisticsModel>> PollingStationsByCountingIrregularities(PagingModel model)
+    public async Task<ApiListResponse<SimpleStatisticsModel>> PollingStationsByCountingIrregularities([FromQuery] PagingModel model)
     {
         return await _mediator.Send(new StatisticsTopIrregularitiesQuery
         {
@@ -235,17 +235,15 @@ public class StatisticsController : Controller
     [HttpGet]
     [Route("countAnswersByQuestion")]
     [Authorize("NgoAdmin")]
-    public async Task<StatisticsOptionsModel> CountAnswersForQuestion(OptionsFilterModel model)
+    public async Task<StatisticsOptionsModel> CountAnswersForQuestion([FromQuery] OptionsFilterModel model)
     {
-        return await _mediator.Send(new StatisticsOptionsQuery
-        {
-            QuestionId = model.QuestionId,
-            NgoId = NgoId,
-            IsOrganizer = IsOrganizer,
-            CacheHours = _cacheOptions.Hours,
-            CacheMinutes = _cacheOptions.Minutes,
-            CacheSeconds = _cacheOptions.Seconds
-        });
+        return await _mediator.Send(new StatisticsOptionsQuery(
+             model.QuestionId,
+            NgoId,
+            IsOrganizer,
+            _cacheOptions.Hours,
+            _cacheOptions.Minutes,
+            _cacheOptions.Seconds));
     }
 
     [HttpGet]

@@ -1,4 +1,3 @@
-﻿using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using VoteMonitor.Api.Note.Commands;
@@ -15,12 +14,10 @@ public class NoteQueriesHandler :
 {
 
     private readonly VoteMonitorContext _context;
-    private readonly IMapper _mapper;
 
-    public NoteQueriesHandler(VoteMonitorContext context, IMapper mapper)
+    public NoteQueriesHandler(VoteMonitorContext context)
     {
         _context = context;
-        _mapper = mapper;
     }
     public async Task<List<NoteModel>> Handle(NoteQuery message, CancellationToken token)
     {
@@ -45,7 +42,8 @@ public class NoteQueriesHandler :
                 FormCode = n.Question.FormSection.Form.Code,
                 FormId = n.Question.FormSection.Form.Id,
                 QuestionId = n.Question.Id,
-                CountyCode = n.PollingStation.County.Code,
+                CountyCode = n.PollingStation.Municipality.County.Code,
+                MunicipalityCode = n.PollingStation.Municipality.Code,
                 PollingStationNumber = n.PollingStation.Number
             })
             .ToListAsync(cancellationToken: token);
@@ -53,35 +51,47 @@ public class NoteQueriesHandler :
 
     public async Task<int> Handle(AddNoteCommandV2 request, CancellationToken cancellationToken)
     {
-        try
+        var noteEntity = new Entities.Note
         {
-            var noteEntity = _mapper.Map<Entities.Note>(request);
+            Text = request.Text,
+            IdPollingStation = request.IdPollingStation,
+            // A note can be added to a polling station as well.
+            // In that case IdQuestion is either null or 0
+            IdQuestion = request.IdQuestion == 0 ? null : request.IdQuestion,
+            IdObserver = request.IdObserver,
+            LastModified = DateTime.UtcNow,
+            Attachments = request.AttachmentPaths.Select(path => new NotesAttachments { Path = path }).ToList()
+        };
 
-            _context.Notes.Add(noteEntity);
+        _context.Notes.Add(noteEntity);
 
-            return await _context.SaveChangesAsync(cancellationToken);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
+        return await _context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task<int> Handle(AddNoteCommand request, CancellationToken cancellationToken)
     {
-        try
+        var noteEntity = new Entities.Note
         {
-            var noteEntity = _mapper.Map<Entities.Note>(request);
+            Text = request.Text,
+            IdPollingStation = request.IdPollingStation,
+            // A note can be added to a polling station as well.
+            // In that case IdQuestion is either null or 0
+            IdQuestion = request.IdQuestion == 0 ? null : request.IdQuestion, 
+            IdObserver = request.IdObserver,
+            LastModified = DateTime.UtcNow,
+            Attachments = new List<NotesAttachments>()
+        };
 
-            _context.Notes.Add(noteEntity);
-
-            return await _context.SaveChangesAsync(cancellationToken);
-        }
-        catch (Exception e)
+        if (!string.IsNullOrEmpty(request.AttachementPath))
         {
-            Console.WriteLine(e);
-            throw;
+            noteEntity.Attachments.Add(new NotesAttachments
+            {
+                Path = request.AttachementPath
+            });
         }
+
+        _context.Notes.Add(noteEntity);
+
+        return await _context.SaveChangesAsync(cancellationToken);
     }
 }

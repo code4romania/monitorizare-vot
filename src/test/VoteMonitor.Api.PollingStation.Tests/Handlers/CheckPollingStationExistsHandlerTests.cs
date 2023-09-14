@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Logging;
@@ -37,10 +37,7 @@ public class CheckPollingStationExistsHandlerTests
         using (var context = new VoteMonitorContext(_dbContextOptions))
         {
             var sut = new CheckPollingStationExistsHandler(context, _mockLogger.Object);
-            var checkPollingStationExists = new CheckPollingStationExists()
-            {
-                PollingStationId = 3
-            };
+            var checkPollingStationExists = new CheckPollingStationExists(3);
 
             var result = await sut.Handle(checkPollingStationExists, new CancellationToken());
 
@@ -54,10 +51,7 @@ public class CheckPollingStationExistsHandlerTests
         using (var context = new VoteMonitorContext(_dbContextOptions))
         {
             var sut = new CheckPollingStationExistsHandler(context, _mockLogger.Object);
-            var checkPollingStationExists = new CheckPollingStationExists()
-            {
-                PollingStationId = 3
-            };
+            var checkPollingStationExists = new CheckPollingStationExists(3);
 
             var result = await sut.Handle(checkPollingStationExists, new CancellationToken());
 

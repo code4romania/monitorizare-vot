@@ -1,4 +1,3 @@
-﻿using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -11,13 +10,11 @@ public class RegisterPollingSectionHandler : IRequestHandler<RegisterPollingStat
 {
     private readonly VoteMonitorContext _context;
     private readonly ILogger _logger;
-    private readonly IMapper _mapper;
 
-    public RegisterPollingSectionHandler(VoteMonitorContext context, ILogger<RegisterPollingSectionHandler> logger, IMapper mapper)
+    public RegisterPollingSectionHandler(VoteMonitorContext context, ILogger<RegisterPollingSectionHandler> logger)
     {
         _context = context;
         _logger = logger;
-        _mapper = mapper;
     }
 
     public async Task<int> Handle(RegisterPollingStationCommand message, CancellationToken cancellationToken)
@@ -27,32 +24,41 @@ public class RegisterPollingSectionHandler : IRequestHandler<RegisterPollingStat
             //TODO[DH] this can be moved to a previous step, before the command is executed
             var pollingStation = await _context.PollingStations
                 .Where(a =>
-                    a.Number == message.IdPollingStation &&
-                    a.County.Code == message.CountyCode)
+                    a.Number == message.PollingStationNumber
+                    && a.Municipality.Code == message.MunicipalityCode
+                    && a.Municipality.County.Code == message.CountyCode)
                 .FirstOrDefaultAsync();
 
             if (pollingStation == null)
             {
-                throw new ArgumentException("Sectia nu exista");
+                throw new ArgumentException($"polling station not found for {message.CountyCode} {message.MunicipalityCode}");
             }
 
-            var formular = await _context.PollingStationInfos
+            var pollingStationInfo = await _context.PollingStationInfos
                 .FirstOrDefaultAsync(a =>
                     a.IdObserver == message.IdObserver &&
                     a.IdPollingStation == pollingStation.Id);
 
-            if (formular == null)
+            if (pollingStationInfo == null)
             {
-                formular = _mapper.Map<PollingStationInfo>(message);
+                pollingStationInfo = new PollingStationInfo
+                    {
+                        IdPollingStation = pollingStation.Id,
+                        IdObserver = message.IdObserver,
+                        IsPollingStationPresidentFemale = message.IsPollingStationPresidentFemale,
+                        LastModified = DateTime.UtcNow,
+                        ObserverArrivalTime = message.ObserverArrivalTime,
+                        ObserverLeaveTime = message.ObserverLeaveTime
+                    };
 
-                formular.IdPollingStation = pollingStation.Id;
-                formular.IdObserver = message.IdObserver;
-
-                _context.Add(formular);
+                _context.Add(pollingStationInfo);
             }
             else
             {
-                _mapper.Map(message, formular);
+                pollingStationInfo.IsPollingStationPresidentFemale = message.IsPollingStationPresidentFemale;
+                pollingStationInfo.LastModified = DateTime.UtcNow;
+                pollingStationInfo.ObserverArrivalTime = message.ObserverArrivalTime;
+                pollingStationInfo.ObserverLeaveTime = message.ObserverLeaveTime;
             }
 
             return await _context.SaveChangesAsync();
@@ -60,7 +66,7 @@ public class RegisterPollingSectionHandler : IRequestHandler<RegisterPollingStat
         }
         catch (Exception ex)
         {
-            _logger.LogError(new EventId(), ex.Message);
+            _logger.LogError(ex, ex.Message);
         }
 
         return -1;

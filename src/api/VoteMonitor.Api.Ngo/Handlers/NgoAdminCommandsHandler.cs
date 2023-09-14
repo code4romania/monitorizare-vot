@@ -29,7 +29,7 @@ public class NgoAdminCommandsHandler : IRequestHandler<CreateNgoAdmin, Result>
         try
         {
             var maxNgoAdminId = await _context.NgoAdmins.MaxAsync(x => x.Id, cancellationToken);
-            var ngoAdmin = new NgoAdmin()
+            var ngoAdmin = new NgoAdmin
             {
                 Id = maxNgoAdminId + 1,
                 Account = request.NgoAdmin.Account,

@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -48,7 +48,7 @@ public class NgoController : Controller
     [ProducesResponseType(typeof(NgoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> GetNgoByIdAsync(int id)
+    public async Task<IActionResult> GetNgoByIdAsync([FromRoute] int id)
     {
         var ngoDetailsResult = await _mediator.Send(new GetNgoDetails(id));
 

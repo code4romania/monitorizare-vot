@@ -8,7 +8,10 @@ public class UpdatePollingStationInfo
     public string CountyCode { get; set; }
 
     [Required(AllowEmptyStrings = false)]
-    public int IdPollingStation { get; set; }
+    public string MunicipalityCode { get; set; }
+
+    [Required(AllowEmptyStrings = false)]
+    public int PollingStationNumber { get; set; }
 
     [Required(AllowEmptyStrings = false)]
     public DateTime? ObserverLeaveTime { get; set; }

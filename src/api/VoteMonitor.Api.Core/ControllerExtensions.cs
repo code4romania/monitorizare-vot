@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Net;
-using VoteMonitor.Api.Core.Models;
 
 namespace VoteMonitor.Api.Core;
 
@@ -40,13 +39,6 @@ public static class ControllerExtensions
     public static bool ValidateGenerateObserversNumber(int number)
     {
         return (number > LOWER_OBS_VALUE) && (number < UPPER_OBS_VALUE);
-    }
-
-    public static UserType? GetUserType(this Controller controller)
-    {
-        if (Enum.TryParse(controller.User.Claims.First(c => c.Type == ClaimsHelper.UserType).Value, out UserType userType))
-            return userType;
-        return null;
     }
 
     [Obsolete("Please use methods available from controller")]

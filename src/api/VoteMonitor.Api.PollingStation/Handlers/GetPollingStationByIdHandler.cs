@@ -1,4 +1,3 @@
-using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using VoteMonitor.Api.PollingStation.Models;
@@ -10,13 +9,11 @@ namespace VoteMonitor.Api.PollingStation.Handlers;
 public class GetPollingStationByIdHandler : IRequestHandler<GetPollingStationById, GetPollingStationModel>
 {
     private readonly VoteMonitorContext _context;
-    private readonly IMapper _mapper;
     private readonly ILogger _logger;
 
-    public GetPollingStationByIdHandler(VoteMonitorContext context, IMapper mapper, ILogger<GetPollingStationByIdHandler> logger)
+    public GetPollingStationByIdHandler(VoteMonitorContext context, ILogger<GetPollingStationByIdHandler> logger)
     {
         _context = context;
-        _mapper = mapper;
         _logger = logger;
     }
 
@@ -29,7 +26,13 @@ public class GetPollingStationByIdHandler : IRequestHandler<GetPollingStationByI
             GetPollingStationModel pollingStationData = null;
             if (pollingStation != null)
             {
-                pollingStationData = _mapper.Map<GetPollingStationModel>(pollingStation);
+                pollingStationData = new GetPollingStationModel()
+                {
+                    Id = pollingStation.Id,
+                    Number = pollingStation.Number,
+                    Address = pollingStation.Address,
+                    MunicipalityId = pollingStation.MunicipalityId,
+                };
             }
 
             return Task.FromResult(pollingStationData);

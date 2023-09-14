@@ -1,12 +1,6 @@
-﻿using MediatR;
+using MediatR;
 using VoteMonitor.Api.Form.Models;
 
 namespace VoteMonitor.Api.Form.Queries;
 
-public class FormQuestionQuery : IRequest<IEnumerable<FormSectionDTO>>
-{
-    public int FormId { get; set; }
-    public int CacheHours { get; set; }
-    public int CacheMinutes { get; set; }
-    public int CacheSeconds { get; set; }
-}
+public record FormQuestionQuery(int FormId, int CacheHours, int CacheMinutes, int CacheSeconds) : IRequest<IEnumerable<FormSectionDTO>>;

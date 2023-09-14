@@ -19,19 +19,19 @@ public class PollingStationService : IPollingStationService
         _logger = logger;
     }
 
-    public async Task<int> GetPollingStationByCountyCode(int pollingStationNumber, string countyCode)
+    public async Task<int> GetPollingStationId(string countyCode, string municipalityCode, int pollingStationNumber)
     {
         try
         {
-            var cacheKey = $"polling-station-countyCode-{pollingStationNumber}-{countyCode}";
+            var cacheKey = $"polling-station-{countyCode}-{municipalityCode}-{pollingStationNumber}";
 
             return await _cacheService.GetOrSaveDataInCacheAsync(cacheKey, async () =>
             {
-                var countyId = _context.Counties.FirstOrDefault(c => c.Code == countyCode)?.Id;
-                if (countyId == null)
-                    throw new ArgumentException($"Could not find County with code: {countyCode}");
+                var municipalityId = _context.Municipalities.FirstOrDefault(c =>c.County.Code == countyCode && c.Code == municipalityCode)?.Id;
+                if (municipalityId == null)
+                    throw new ArgumentException($"Could not find municipality with code: {countyCode} {municipalityCode}");
 
-                return await GetPollingStationByCountyId(pollingStationNumber, countyId.Value);
+                return await GetPollingStationByMunicipalityId(pollingStationNumber, municipalityId.Value);
             });
         }
         catch (Exception ex)
@@ -42,31 +42,31 @@ public class PollingStationService : IPollingStationService
         return -1;
     }
 
-    public async Task<int> GetPollingStationByCountyId(int pollingStationNumber, int countyId)
+    public async Task<int> GetPollingStationByMunicipalityId(int municipalityId, int pollingStationNumber)
     {
         try
         {
-            var cacheKey = $"polling-station-{pollingStationNumber}-{countyId}";
+            var cacheKey = $"polling-station-{municipalityId}-{pollingStationNumber}";
             return await _cacheService.GetOrSaveDataInCacheAsync<int>(cacheKey, async () =>
             {
-                var idSectie = await
+                var pollingStationIds = await
                     _context.PollingStations
-                        .Where(a => a.IdCounty == countyId && a.Number == pollingStationNumber)
+                        .Where(a => a.MunicipalityId == municipalityId && a.Number == pollingStationNumber)
                         .Select(a => a.Id).ToListAsync();
 
-                if (idSectie.Count == 0)
-                    throw new ArgumentException($"No Polling station found for: {new { countyId, pollingStationNumber }}");
+                if (pollingStationIds.Count == 0)
+                    throw new ArgumentException($"No Polling station found for: {new { municipalityId, pollingStationNumber }}");
 
 
-                if (idSectie.Count > 1) // TODO[bv] add unique constraint on PollingStations [CountyId, Number]
-                    throw new ArgumentException($"More than one polling station found for: {new { countyId, idSectie }}");
+                if (pollingStationIds.Count > 1)
+                    throw new ArgumentException($"More than one polling station found for: {new { municipalityId, pollingStationIds }}");
 
-                return idSectie.Single();
+                return pollingStationIds.Single();
             });
         }
         catch (Exception ex)
         {
-            _logger.LogError(new EventId(), ex.Message);
+            _logger.LogError(ex, "Error occurred whn searching for polling station");
         }
 
         return -1;
@@ -89,7 +89,6 @@ public class PollingStationService : IPollingStationService
                 {
                     Name = c.Name,
                     Code = c.Code,
-                    Limit = c.PollingStations.Count(),
                     Id = c.Id,
                     Diaspora = c.Diaspora,
                     Order = c.Order

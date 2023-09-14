@@ -8,6 +8,7 @@ using VoteMonitor.Api.Core;
 
 namespace VoteMonitor.Api.Answer.Controllers;
 
+[ApiController]
 [Route("api/v1/answers")]
 public class AnswersController : Controller
 {
@@ -27,7 +28,7 @@ public class AnswersController : Controller
     /// <param name="model">SectionAnswersRequest</param>
     /// <returns></returns>
     [HttpGet]
-    public async Task<ApiListResponse<AnswerQueryDto>> Get(SectionAnswersRequest model)
+    public async Task<ApiListResponse<AnswerQueryDto>> Get([FromQuery] SectionAnswersRequest model)
     {
         var organizer = this.GetOrganizatorOrDefault(_configuration.GetValue<bool>("DefaultOrganizator"));
         var ngoId = this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
@@ -50,13 +51,9 @@ public class AnswersController : Controller
     /// Returns answers given by the specified observer at the specified polling station
     /// </summary>
     [HttpGet("filledIn")]
-    public async Task<List<QuestionDto<FilledInAnswerDto>>> Get(int pollingStationId, int observerId)
+    public async Task<List<QuestionDto<FilledInAnswerDto>>> Get([FromQuery] int pollingStationId, [FromQuery] int observerId)
     {
-        return await _mediator.Send(new FilledInAnswersQuery
-        {
-            ObserverId = observerId,
-            PollingStationId = pollingStationId
-        });
+        return await _mediator.Send(new FilledInAnswersQuery(observerId, pollingStationId));
     }
 
     /// <summary>
@@ -66,15 +63,11 @@ public class AnswersController : Controller
     /// "ObserverId" - Id of the observer
     /// </param>
     [HttpGet("pollingStationInfo")]
-    public async Task<PollingStationInfoDto> GetObserverAnswers(ObserverAnswersRequest model)
+    public async Task<PollingStationInfoDto> GetObserverAnswers([FromQuery] ObserverAnswersRequest model)
     {
-        return await _mediator.Send(new FormAnswersQuery
-        {
-            ObserverId = model.ObserverId,
-            PollingStationId = model.PollingStationNumber
-        });
+        return await _mediator.Send(new FormAnswersQuery(model.ObserverId, model.PollingStationId));
     }
-        
+
     /// <summary>
     /// Saves the answers to one or more questions, at a given polling station
     /// An answer can have multiple options (OptionId) and potentially a free text (Value).
@@ -86,15 +79,8 @@ public class AnswersController : Controller
     [Authorize("Observer")]
     public async Task<IActionResult> PostAnswer([FromBody] BulkAnswersRequest answerModel)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
         // TODO[DH] use a pipeline instead of separate Send commands
-        var command = await _mediator.Send(new Commands.BulkAnswers(answerModel.Answers));
-
-        command.ObserverId = this.GetIdObserver();
+        var command = await _mediator.Send(new Commands.BulkAnswers(this.GetIdObserver(), answerModel.Answers));
 
         var result = await _mediator.Send(command);
 

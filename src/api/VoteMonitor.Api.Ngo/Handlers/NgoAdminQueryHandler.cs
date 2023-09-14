@@ -52,7 +52,7 @@ public class NgoAdminQueryHandler : IRequestHandler<GetAllNgoAdmins, Result<List
                 return Result.Failure<NgoAdminModel>($"Could not find ngo admin with id = {request.AdminId} and in ngo with id = {request.NgoId}");
             }
 
-            var model = new NgoAdminModel()
+            var model = new NgoAdminModel
             {
                 Id = ngoAdmin.Id,
                 Account = ngoAdmin.Account,

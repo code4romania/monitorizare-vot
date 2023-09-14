@@ -1,4 +1,3 @@
-﻿using AutoMapper;
 using MediatR;
 using VoteMonitor.Api.Form.Commands;
 using VoteMonitor.Api.Form.Models.Options;
@@ -9,21 +8,25 @@ namespace VoteMonitor.Api.Form.CommandHandlers;
 public class AddOptionCommandHandler : IRequestHandler<AddOptionCommand, OptionDTO>
 {
     private readonly VoteMonitorContext _context;
-    private readonly IMapper _mapper;
 
-    public AddOptionCommandHandler(VoteMonitorContext context, IMapper mapper)
+    public AddOptionCommandHandler(VoteMonitorContext context)
     {
         _context = context;
-        _mapper = mapper;
     }
 
     public async Task<OptionDTO> Handle(AddOptionCommand request, CancellationToken cancellationToken)
     {
-        var optionEntity = _mapper.Map<Option>(request.Option);
+        var optionEntity = new Option { Text = request.Text, Hint = request.Hint, IsFreeText = request.IsFreeText, };
 
         _context.Options.Add(optionEntity);
         await _context.SaveChangesAsync(cancellationToken);
 
-        return _mapper.Map<OptionDTO>(optionEntity);
+        return new OptionDTO
+        {
+            Id = optionEntity.Id,
+            Hint = optionEntity.Hint,
+            IsFreeText = optionEntity.IsFreeText,
+            Text = optionEntity.Text
+        };
     }
 }

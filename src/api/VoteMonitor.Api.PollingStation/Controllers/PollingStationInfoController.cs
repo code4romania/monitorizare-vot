@@ -1,4 +1,3 @@
-﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -12,12 +11,10 @@ namespace VoteMonitor.Api.PollingStation.Controllers;
 [Route("api/v2/polling-station-info")]
 public class PollingStationInfoController : Controller
 {
-    private readonly IMapper _mapper;
     private readonly IMediator _mediator;
 
-    public PollingStationInfoController(IMapper mapper, IMediator mediator)
+    public PollingStationInfoController(IMediator mediator)
     {
-        _mapper = mapper;
         _mediator = mediator;
     }
 
@@ -25,22 +22,18 @@ public class PollingStationInfoController : Controller
     [Authorize("Observer")]
     [ProducesResponseType(StatusCodes.Status202Accepted)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> CreatePollingStationInfo([FromBody] CreatePollingStationInfoModel pollingStationInfoModel)
+    public async Task<IActionResult> CreatePollingStationInfo([FromBody] CreatePollingStationInfoModel request)
     {
-        var pollingStationRequest = new CheckPollingStationExists
-        {
-            PollingStationId = pollingStationInfoModel.PollingStationId
-        };
+        var pollingStationRequest = new CheckPollingStationExists(request.PollingStationId);
 
         var foundPollingStation = await _mediator.Send(pollingStationRequest);
         if (!foundPollingStation)
         {
-            return NotFound(pollingStationInfoModel.PollingStationId);
+            return NotFound(request.PollingStationId);
         }
-            
-        var request = _mapper.Map<CreatePollingStationInfo>(pollingStationInfoModel);
-        request.ObserverId = this.GetIdObserver();
-        await _mediator.Send(request);
+
+        var command = new CreatePollingStationInfo(this.GetIdObserver(), request.PollingStationId, request.CountyCode, request.ObserverLeaveTime, request.ObserverArrivalTime, request.IsPollingStationPresidentFemale);
+        await _mediator.Send(command);
         return Accepted();
     }
 
@@ -48,12 +41,9 @@ public class PollingStationInfoController : Controller
     [Authorize("Observer")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UpdatePollingStationInfo([FromRoute]int id, [FromBody]EditPollingStationInfo pollingStationInfo)
+    public async Task<IActionResult> UpdatePollingStationInfo([FromRoute] int id, [FromBody] EditPollingStationInfo request)
     {
-        var pollingStationRequest = new CheckPollingStationExists
-        {
-            PollingStationId = id
-        };
+        var pollingStationRequest = new CheckPollingStationExists(id);
 
         var foundPollingStation = await _mediator.Send(pollingStationRequest);
         if (!foundPollingStation)
@@ -61,11 +51,8 @@ public class PollingStationInfoController : Controller
             return NotFound(id);
         }
 
-        var request = _mapper.Map<UpdatePollingStationInfo>(pollingStationInfo);
-        request.ObserverId = this.GetIdObserver();
-        request.PollingStationId = id;
-
-        await _mediator.Send(request);
+        var command = new UpdatePollingStationInfo(this.GetIdObserver(), id, request.ObserverLeaveTime.Value);
+        await _mediator.Send(command);
 
         return Ok();
     }

@@ -11,6 +11,9 @@ public class BulkAnswerDto
     public string CountyCode { get; set; }
 
     [Required(AllowEmptyStrings = false)]
+    public string MunicipalityCode { get; set; }
+
+    [Required(AllowEmptyStrings = false)]
     public int PollingStationNumber { get; set; }
 
     public List<SelectedOptionDto> Options { get; set; }

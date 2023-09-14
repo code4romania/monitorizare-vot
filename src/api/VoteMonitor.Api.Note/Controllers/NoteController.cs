@@ -1,4 +1,3 @@
-﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,22 +10,21 @@ using VoteMonitor.Api.Note.Queries;
 
 namespace VoteMonitor.Api.Note.Controllers;
 
+[ApiController]
 [Route("api/v2/note")]
 public class NoteController : Controller
 {
-    private readonly IMapper _mapper;
     private readonly IMediator _mediator;
 
-    public NoteController(IMediator mediator, IMapper mapper)
+    public NoteController(IMediator mediator)
     {
         _mediator = mediator;
-        _mapper = mapper;
     }
 
 
     [HttpGet]
     [Produces(type: typeof(List<NoteModel>))]
-    public async Task<IActionResult> GetNotes(NoteQuery filter)
+    public async Task<IActionResult> GetNotes([FromQuery] NoteQuery filter)
     {
         if (filter.IdQuestion.HasValue && !filter.IdPollingStation.HasValue)
             return BadRequest($"If the {nameof(filter.IdQuestion)} param is provided then the {nameof(filter.IdPollingStation)} param is required !");
@@ -44,28 +42,26 @@ public class NoteController : Controller
     [Produces(type: typeof(UploadNoteResultV2))]
     public async Task<IActionResult> Upload([FromForm] UploadNoteModelV2 note)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
         // TODO[DH] use a pipeline instead of separate Send commands
         // daca nota este asociata sectiei
-        var pollingStationId = await _mediator.Send(_mapper.Map<PollingStationQuery>(note));
+        var pollingStationId = await _mediator.Send(new GetPollingStationId(note.CountyCode, note.MunicipalityCode, note.PollingStationNumber));
 
         if (pollingStationId < 0)
         {
             return NotFound();
         }
 
-        var command = _mapper.Map<AddNoteCommandV2>(note);
-
-        command.IdObserver = this.GetIdObserver();
-        command.IdPollingStation = pollingStationId;
+        var command = new AddNoteCommandV2
+        {
+            IdObserver = this.GetIdObserver(),
+            IdPollingStation = pollingStationId,
+            Text = note.Text,
+            IdQuestion = note.QuestionId
+        };
 
         if (note.Files != null && note.Files.Any())
         {
-            var files = await _mediator.Send(new UploadFileCommandV2 { Files = note.Files, UploadType = UploadType.Notes });
+            var files = await _mediator.Send(new UploadFileCommandV2(note.Files, UploadType.Notes));
             command.AttachmentPaths = files;
         }
 
@@ -98,28 +94,26 @@ public class NoteController : Controller
     [Produces(type: typeof(UploadNoteResult))]
     public async Task<IActionResult> UploadOld([FromForm] UploadNoteModel note)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
         // TODO[DH] use a pipeline instead of separate Send commands
         // daca nota este asociata sectiei
-        var idSectie = await _mediator.Send(_mapper.Map<PollingStationQuery>(note));
+        var pollingStationId = await _mediator.Send(new GetPollingStationId(note.CountyCode, note.MunicipalityCode, note.PollingStationNumber));
 
-        if (idSectie < 0)
+        if (pollingStationId < 0)
         {
             return NotFound();
         }
 
-        var command = _mapper.Map<AddNoteCommand>(note);
-
-        command.IdObserver = int.Parse(User.Claims.First(c => c.Type == ClaimsHelper.ObserverIdProperty).Value);
-        command.IdPollingStation = idSectie;
+        var command = new AddNoteCommand
+        {
+            IdObserver = int.Parse(User.Claims.First(c => c.Type == ClaimsHelper.ObserverIdProperty).Value),
+            IdPollingStation = pollingStationId,
+            Text = note.Text,
+            IdQuestion = note.QuestionId
+        };
 
         if (note.File != null)
         {
-            var fileAddress = await _mediator.Send(new UploadFileCommand { File = note.File, UploadType = UploadType.Notes });
+            var fileAddress = await _mediator.Send(new UploadFileCommand(note.File, UploadType.Notes));
             command.AttachementPath = fileAddress;
         }
 
@@ -130,6 +124,6 @@ public class NoteController : Controller
             return NotFound();
         }
 
-        return Ok(new UploadNoteResult{ FileAddress = command.AttachementPath, Note= note });
+        return Ok(new UploadNoteResult { FileAddress = command.AttachementPath, Note = note });
     }
 }

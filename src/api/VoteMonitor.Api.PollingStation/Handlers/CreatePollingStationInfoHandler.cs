@@ -1,4 +1,3 @@
-using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using VoteMonitor.Api.PollingStation.Queries;
@@ -9,13 +8,11 @@ namespace VoteMonitor.Api.PollingStation.Handlers;
 public class CreatePollingStationInfoHandler : IRequestHandler<CreatePollingStationInfo>
 {
     private readonly VoteMonitorContext _context;
-    private readonly IMapper _mapper;
     private readonly ILogger _logger;
 
-    public CreatePollingStationInfoHandler(VoteMonitorContext context, IMapper mapper, ILogger<CreatePollingStationInfoHandler> logger)
+    public CreatePollingStationInfoHandler(VoteMonitorContext context, ILogger<CreatePollingStationInfoHandler> logger)
     {
         _context = context;
-        _mapper = mapper;
         _logger = logger;
     }
 
@@ -23,7 +20,15 @@ public class CreatePollingStationInfoHandler : IRequestHandler<CreatePollingStat
     {
         try
         {
-            var pollingStationInfo = _mapper.Map<PollingStationInfo>(request);
+            var pollingStationInfo = new PollingStationInfo()
+            {
+                IdObserver = request.ObserverId,
+                IdPollingStation = request.PollingStationId,
+                ObserverArrivalTime = request.ObserverArrivalTime,
+                ObserverLeaveTime = request.ObserverLeaveTime,
+                IsPollingStationPresidentFemale = request.IsPollingStationPresidentFemale,
+                LastModified = DateTime.UtcNow
+            };
 
             _context.PollingStationInfos.Add(pollingStationInfo);
             await _context.SaveChangesAsync(cancellationToken);

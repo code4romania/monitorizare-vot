@@ -1,9 +1,9 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using VoteMonitor.Entities;
 
 namespace VoteMonitor.Api.Form.Models;
 
-public class FormDTO : IHierarchicalEntity<FormSectionDTO>, IIdentifiableEntity
+public class FormDTO : IHierarchicalEntity<FormSectionDTO>
 {
     public int Id { get; set; }
     public string Code { get; set; }

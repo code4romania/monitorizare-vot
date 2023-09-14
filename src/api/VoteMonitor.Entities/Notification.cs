@@ -16,14 +16,3 @@ public class Notification : IIdentifiableEntity
     public NgoAdmin SenderAdmin { get; set; }
     public virtual ICollection<NotificationRecipient> NotificationRecipients { get; set; }
 }
-
-public class NotificationRecipient
-{
-    [Key, Column(Order = 1)]
-    public int ObserverId { get; set; }
-    [Key, Column(Order = 2)]
-    public int NotificationId { get; set; }
-    public Observer Observer { get; set; }
-    public Notification Notification { get; set; }
-
-}

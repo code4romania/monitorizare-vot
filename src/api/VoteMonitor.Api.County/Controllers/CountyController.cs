@@ -10,6 +10,7 @@ using System.Globalization;
 
 namespace VoteMonitor.Api.County.Controllers;
 
+[ApiController]
 [Route("api/v1/county")]
 public class CountyController : Controller
 {
@@ -48,13 +49,8 @@ public class CountyController : Controller
     [HttpPost]
     [Route("import")]
     [Authorize("Organizer")]
-    public async Task<IActionResult> ImportAsync(CountiesUploadRequest request)
+    public async Task<IActionResult> ImportAsync([FromForm] CountiesUploadRequest request)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
         var response = await _mediator.Send(new CreateOrUpdateCounties(request.CsvFile));
         if (response.IsSuccess)
         {
@@ -119,9 +115,9 @@ public class CountyController : Controller
     [ProducesResponseType(typeof(CountyModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> GetCountyAsync(int countyId)
+    public async Task<IActionResult> GetCountyAsync([FromRoute] int countyId)
     {
-        var response = await _mediator.Send(new GetCounty(countyId));
+        var response = await _mediator.Send(new GetCountyById(countyId));
         if (response.IsSuccess)
         {
             return Ok(response.Value);
@@ -135,12 +131,28 @@ public class CountyController : Controller
     [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> UpdateCountyAsync(int countyId, [FromBody] UpdateCountyRequest county)
+    public async Task<IActionResult> UpdateCountyAsync([FromRoute]int countyId, [FromBody] UpdateCountyRequest county)
     {
         var response = await _mediator.Send(new UpdateCounty(countyId, county));
         if (response.IsSuccess)
         {
             return Ok();
+        }
+
+        return BadRequest(new ErrorModel { Message = response.Error });
+    }
+
+    [Authorize]
+    [HttpGet("{countyCode}/municipalities")]
+    [ProducesResponseType(typeof(List<MunicipalityModel>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> GetAllMunicipalitiesAsync([FromRoute] string countyCode)
+    {
+        var response = await _mediator.Send(new GetAllMunicipalities(countyCode));
+        if (response.IsSuccess)
+        {
+            return Ok(response.Value);
         }
 
         return BadRequest(new ErrorModel { Message = response.Error });

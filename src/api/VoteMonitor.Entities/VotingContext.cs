@@ -9,6 +9,7 @@ public class VoteMonitorContext : DbContext
     {
 
     }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.EnableSensitiveDataLogging();
 
@@ -61,6 +62,32 @@ public class VoteMonitorContext : DbContext
             entity
                 .Property(x => x.Order)
                 .HasDefaultValue(0);
+        });
+
+        modelBuilder.Entity<Municipality>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+
+            entity.Property(e => e.Id)
+                .ValueGeneratedOnAdd();
+
+            entity.Property(e => e.Code)
+                .IsRequired()
+                .HasMaxLength(20);
+
+            entity.Property(e => e.Name)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            entity
+                .Property(x => x.Order)
+                .HasDefaultValue(0);
+
+            entity
+                .HasOne(e => e.County)
+                .WithMany(c => c.Municipalities)
+                .HasForeignKey(x=>x.CountyId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<Note>(entity =>
@@ -203,7 +230,7 @@ public class VoteMonitorContext : DbContext
                 .HasMaxLength(1000);
 
             entity.Property(e => e.CountyCode)
-                .HasMaxLength(2);
+                .HasMaxLength(100);
 
             entity.HasOne(d => d.Observer)
                 .WithMany(p => p.Answers)
@@ -258,11 +285,10 @@ public class VoteMonitorContext : DbContext
             entity.HasKey(e => e.Id)
                 .HasName("PK_PollingStation");
 
-            entity.HasIndex(e => e.IdCounty)
+            entity.HasIndex(e => e.MunicipalityId)
                 .HasDatabaseName("IX_PollingStation_IdCounty");
 
-            entity.HasIndex(e => new { e.IdCounty, IdPollingStation = e.Id })
-                .HasDatabaseName("IX_Unique_IdCounty_IdPollingStation")
+            entity.HasIndex(e => new { e.MunicipalityId, e.Number })
                 .IsUnique();
 
             entity.Property(e => e.Id)
@@ -271,11 +297,9 @@ public class VoteMonitorContext : DbContext
             entity.Property(e => e.Address)
                 .HasMaxLength(500);
 
-            entity.HasOne(d => d.County)
+            entity.HasOne(d => d.Municipality)
                 .WithMany(p => p.PollingStations)
-                .HasForeignKey(d => d.IdCounty)
-                .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_PollingStation_County");
+                .OnDelete(DeleteBehavior.Restrict);
         });
 
 
@@ -284,8 +308,7 @@ public class VoteMonitorContext : DbContext
             entity.HasKey(e => e.Id)
                 .HasName("PK_FormVersion");
 
-            entity.Property(e => e.Id)
-                .HasMaxLength(2);
+            entity.Property(e => e.Id);
 
             entity.Property(x => x.Diaspora)
                 .HasDefaultValue(false);
@@ -446,6 +469,7 @@ public class VoteMonitorContext : DbContext
     public virtual DbSet<NgoAdmin> NgoAdmins { get; set; }
     public virtual DbSet<Question> Questions { get; set; }
     public virtual DbSet<County> Counties { get; set; }
+    public virtual DbSet<Municipality> Municipalities { get; set; }
     public virtual DbSet<Note> Notes { get; set; }
     public virtual DbSet<NotesAttachments> NotesAttachments { get; set; }
     public virtual DbSet<Observer> Observers { get; set; }

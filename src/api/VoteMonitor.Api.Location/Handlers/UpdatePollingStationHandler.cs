@@ -1,4 +1,3 @@
-﻿using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -11,13 +10,11 @@ public class UpdatePollingSectionHandler : IRequestHandler<UpdatePollingSectionC
 {
     private readonly VoteMonitorContext _context;
     private readonly ILogger _logger;
-    private readonly IMapper _mapper;
 
-    public UpdatePollingSectionHandler(VoteMonitorContext context, ILogger<UpdatePollingSectionHandler> logger, IMapper mapper)
+    public UpdatePollingSectionHandler(VoteMonitorContext context, ILogger<UpdatePollingSectionHandler> logger)
     {
         _context = context;
         _logger = logger;
-        _mapper = mapper;
     }
 
     public async Task<int> Handle(UpdatePollingSectionCommand message, CancellationToken cancellationToken)
@@ -26,15 +23,17 @@ public class UpdatePollingSectionHandler : IRequestHandler<UpdatePollingSectionC
         {
             var pollingStationInfo = await _context.PollingStationInfos
                 .FirstOrDefaultAsync(a =>
-                    a.IdObserver == message.IdObserver &&
-                    a.IdPollingStation == message.IdPollingStation);
+                    a.IdObserver == message.ObserverId &&
+                    a.IdPollingStation == message.PollingStationId);
 
             if (pollingStationInfo == null)
             {
-                throw new ArgumentException("PollingStationInfo nu exista");
+                throw new ArgumentException($"PollingStationInfo for observerId =  {message.ObserverId} idPollingStation = {message.PollingStationId}");
             }
 
-            _mapper.Map(message, pollingStationInfo);
+            pollingStationInfo.ObserverLeaveTime = message.ObserverLeaveTime;
+            pollingStationInfo.LastModified = DateTime.UtcNow;
+            
             _context.Update(pollingStationInfo);
 
             return await _context.SaveChangesAsync();
@@ -42,7 +41,7 @@ public class UpdatePollingSectionHandler : IRequestHandler<UpdatePollingSectionC
         }
         catch (Exception ex)
         {
-            _logger.LogError(new EventId(), ex.Message);
+            _logger.LogError(ex, ex.Message);
         }
 
         return -1;

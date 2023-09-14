@@ -1,4 +1,3 @@
-using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -14,13 +13,11 @@ public class NotificationListQueryHandler : QueryExtension, IRequestHandler<Noti
 {
     private readonly VoteMonitorContext _context;
     private readonly ILogger _logger;
-    private readonly IMapper _mapper;
 
-    public NotificationListQueryHandler(VoteMonitorContext context, ILogger<NotificationListQueryHandler> logger, IMapper mapper)
+    public NotificationListQueryHandler(VoteMonitorContext context, ILogger<NotificationListQueryHandler> logger)
     {
         _context = context;
         _logger = logger;
-        _mapper = mapper;
     }
 
     public async Task<ApiListResponse<NotificationModel>> Handle(NotificationListCommand request, CancellationToken cancellationToken)
@@ -40,7 +37,19 @@ public class NotificationListQueryHandler : QueryExtension, IRequestHandler<Noti
 
         var requestedPageNotifications = GetPagedQuery(notifications, request.Page, request.PageSize)
             .ToList()
-            .Select(_mapper.Map<NotificationModel>);
+            .Select(x => new NotificationModel()
+            {
+                Id = x.Id,
+                Channel = x.Channel,
+                Body = x.Body,
+                SenderId = x.SenderAdmin.Id,
+                SenderAccount = x.SenderAdmin.Account,
+                InsertedAt = x.InsertedAt,
+                SenderIdNgo = x.SenderAdmin.IdNgo,
+                SenderNgoName = x.SenderAdmin.Ngo.Name,
+                Title = x.Title,
+                SentObserverIds = x.NotificationRecipients.Select(o => o.ObserverId).ToList()
+            });
 
         return new ApiListResponse<NotificationModel>
         {

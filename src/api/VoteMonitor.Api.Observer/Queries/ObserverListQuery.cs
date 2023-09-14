@@ -1,9 +1,10 @@
-﻿using VoteMonitor.Api.Core;
+using Microsoft.AspNetCore.Mvc;
+using VoteMonitor.Api.Core;
 
 namespace VoteMonitor.Api.Observer.Queries;
 
 public class ObserverListQuery : PagingModel
 {
-    public string Number { get; set; }
-    public string Name { get; set; }
+    [FromQuery] public string Number { get; set; }
+    [FromQuery] public string Name { get; set; }
 }

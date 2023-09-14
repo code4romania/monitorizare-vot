@@ -8,5 +8,5 @@ public class County : IIdentifiableEntity
     public bool Diaspora { get; set; }
     public int Order { get; set; }
 
-    public virtual ICollection<PollingStation> PollingStations { get; set; } = new HashSet<PollingStation>();
+    public virtual ICollection<Municipality> Municipalities { get; set; } = new HashSet<Municipality>();
 }

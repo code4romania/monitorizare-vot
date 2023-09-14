@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace VoteMonitor.Api.Note.Models;
 
@@ -6,6 +6,10 @@ public class NoteModel
 {
     [Required(AllowEmptyStrings = false)]
     public string CountyCode { get; set; }
+
+    [Required(AllowEmptyStrings = false)]
+    public string MunicipalityCode { get; set; }
+
     [Required]
     public int PollingStationNumber { get; set; }
     public int? QuestionId { get; set; }

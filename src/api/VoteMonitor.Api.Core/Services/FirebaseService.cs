@@ -10,7 +10,7 @@ public class FirebaseService : IFirebaseService
     {
         if (FirebaseApp.DefaultInstance == null)
         {
-            FirebaseApp.Create(new AppOptions()
+            FirebaseApp.Create(new AppOptions
             {
                 Credential = GoogleCredential.GetApplicationDefault(),
             });
