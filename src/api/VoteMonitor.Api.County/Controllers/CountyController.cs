@@ -149,7 +149,7 @@ public class CountyController : Controller
     [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> GetAllMunicipalitiesAsync([FromRoute] string countyCode)
     {
-        var response = await _mediator.Send(new GetAllMunicipalities(countyCode));
+        var response = await _mediator.Send(new GetAllMunicipalitiesByCountyCode(countyCode));
         if (response.IsSuccess)
         {
             return Ok(response.Value);

@@ -4,4 +4,4 @@ using VoteMonitor.Api.County.Models;
 
 namespace VoteMonitor.Api.County.Queries;
 
-public record GetAllMunicipalities : IRequest<Result<List<MunicipalityModelV2>>>;
+public record GetAllMunicipalitiesByCountyCode(string CountyCode) : IRequest<Result<List<MunicipalityModel>>>;

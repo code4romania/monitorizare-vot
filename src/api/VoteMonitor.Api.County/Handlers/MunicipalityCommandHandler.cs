@@ -14,7 +14,8 @@ namespace VoteMonitor.Api.County.Handlers;
 
 public class MunicipalityCommandHandler : IRequestHandler<GetMunicipalitiesForExport, Result<List<MunicipalityCsvModel>>>,
     IRequestHandler<CreateOrUpdateMunicipalities, Result>,
-    IRequestHandler<GetAllMunicipalities, Result<List<MunicipalityModel>>>,
+    IRequestHandler<GetAllMunicipalitiesByCountyCode, Result<List<MunicipalityModel>>>,
+    IRequestHandler<GetAllMunicipalities, Result<List<MunicipalityModelV2>>>,
     IRequestHandler<GetMunicipalityById, Result<MunicipalityModel>>,
     IRequestHandler<UpdateMunicipality, Result>
 
@@ -164,7 +165,7 @@ public class MunicipalityCommandHandler : IRequestHandler<GetMunicipalitiesForEx
         return Result.Success(municipalities);
     }
 
-    public async Task<Result<List<MunicipalityModel>>> Handle(GetAllMunicipalities request, CancellationToken cancellationToken)
+    public async Task<Result<List<MunicipalityModel>>> Handle(GetAllMunicipalitiesByCountyCode request, CancellationToken cancellationToken)
     {
         List<MunicipalityModel> municipalities;
 
@@ -188,6 +189,39 @@ public class MunicipalityCommandHandler : IRequestHandler<GetMunicipalitiesForEx
         {
             _logger.LogError(e, "Unable to load all municipalities");
             return Result.Failure<List<MunicipalityModel>>("Unable to load all municipalities");
+        }
+
+        return Result.Success(municipalities);
+    }
+
+    public async Task<Result<List<MunicipalityModelV2>>> Handle(GetAllMunicipalities request, CancellationToken cancellationToken)
+    {
+        List<MunicipalityModelV2> municipalities;
+
+        try
+        {
+            municipalities = await _context.Municipalities
+                .Include(m=>m.County)
+                .OrderBy(c => c.Order)
+                .Select(x => new MunicipalityModelV2
+                {
+                    Id = x.Id,
+                    Code = x.Code,
+                    CountyId = x.CountyId,
+                    CountyCode = x.County.Code,
+                    Diaspora = x.County.Diaspora,
+                    CountyName = x.County.Name,
+                    CountyOrder = x.County.Order,
+                    Name = x.Name,
+                    Order = x.Order,
+                    NumberOfPollingStations = x.PollingStations.Count
+                })
+                .ToListAsync(cancellationToken);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Unable to load all municipalities");
+            return Result.Failure<List<MunicipalityModelV2>>("Unable to load all municipalities");
         }
 
         return Result.Success(municipalities);

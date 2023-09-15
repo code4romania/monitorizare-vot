@@ -125,4 +125,20 @@ public class MunicipalityController : Controller
 
         return BadRequest(new ErrorModel { Message = response.Error });
     }
+
+    [Authorize]
+    [HttpGet("all")]
+    [ProducesResponseType(typeof(List<MunicipalityModelV2>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> GetAllMunicipalitiesAsync()
+    {
+        var response = await _mediator.Send(new GetAllMunicipalities());
+        if (response.IsSuccess)
+        {
+            return Ok(response.Value);
+        }
+
+        return BadRequest(new ErrorModel { Message = response.Error });
+    }
 }
