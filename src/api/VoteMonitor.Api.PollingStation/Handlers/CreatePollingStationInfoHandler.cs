@@ -26,7 +26,6 @@ public class CreatePollingStationInfoHandler : IRequestHandler<CreatePollingStat
                 IdPollingStation = request.PollingStationId,
                 ObserverArrivalTime = request.ObserverArrivalTime,
                 ObserverLeaveTime = request.ObserverLeaveTime,
-                IsPollingStationPresidentFemale = request.IsPollingStationPresidentFemale,
                 LastModified = DateTime.UtcNow
             };
 
