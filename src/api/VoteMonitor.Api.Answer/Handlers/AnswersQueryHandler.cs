@@ -50,12 +50,12 @@ public class AnswersQueryHandler :
             query = query.Where(a => a.Observer.Phone.Contains(message.ObserverPhoneNumber));
         }
 
-        var answerQueryInfosQuery = query.GroupBy(a => new { a.IdPollingStation, a.CountyCode, a.PollingStationNumber, a.IdObserver, ObserverPhoneNumber = a.Observer.Phone, ObserverName = a.Observer.Name })
+        var answerQueryInfosQuery = query.GroupBy(a => new { a.IdPollingStation, CountyCode =  a.PollingStation.Municipality.County.Code, MunicipalityCode = a.PollingStation.Municipality.Code, a.PollingStationNumber, a.IdObserver, ObserverPhoneNumber = a.Observer.Phone, ObserverName = a.Observer.Name })
             .Select(x => new AnswerQueryInfo
             {
                 IdObserver = x.Key.IdObserver,
                 IdPollingStation = x.Key.IdPollingStation,
-                PollingStation = x.Key.CountyCode + " " + x.Key.PollingStationNumber.ToString(),
+                PollingStation = x.Key.CountyCode + " " + x.Key.MunicipalityCode + " " + x.Key.PollingStationNumber,
                 ObserverName = x.Key.ObserverName,
                 ObserverPhoneNumber = x.Key.ObserverPhoneNumber,
                 LastModified = x.Max(a => a.LastModified)
@@ -77,7 +77,8 @@ public class AnswersQueryHandler :
                 ObserverName = x.ObserverName,
                 ObserverPhoneNumber = x.ObserverPhoneNumber,
                 PollingStationId = x.IdPollingStation,
-                PollingStationName = x.PollingStation
+                PollingStationName = x.PollingStation,
+                LastModified = x.LastModified
             }).ToList(),
             Page = message.Page,
             PageSize = message.PageSize,
@@ -122,12 +123,20 @@ public class AnswersQueryHandler :
         var pollingStationInfo = await _context.PollingStationInfos
             .FirstOrDefaultAsync(rd => rd.IdObserver == message.ObserverId
                                        && rd.IdPollingStation == message.PollingStationId, cancellationToken: cancellationToken);
+        
+        if (pollingStationInfo == null) return null;
 
         return new PollingStationInfoDto
         {
             ObserverArrivalTime = pollingStationInfo.ObserverArrivalTime,
             ObserverLeaveTime = pollingStationInfo.ObserverLeaveTime,
-            IsPollingStationPresidentFemale = pollingStationInfo.IsPollingStationPresidentFemale,
+            NumberOfVotersOnTheList = pollingStationInfo.NumberOfVotersOnTheList,
+            NumberOfCommissionMembers = pollingStationInfo.NumberOfCommissionMembers,
+            NumberOfFemaleMembers = pollingStationInfo.NumberOfFemaleMembers,
+            MinPresentMembers = pollingStationInfo.MinPresentMembers,
+            ChairmanPresence = pollingStationInfo.ChairmanPresence,
+            SinglePollingStationOrCommission = pollingStationInfo.SinglePollingStationOrCommission,
+            AdequatePollingStationSize = pollingStationInfo.AdequatePollingStationSize,
             LastModified = pollingStationInfo.LastModified
         };
     }

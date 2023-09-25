@@ -23,30 +23,41 @@ public class NoteQueriesHandler :
     {
         var query = _context.Notes.Include(c => c.Question).AsQueryable();
 
-        if (message.IdObserver.HasValue)
-            query = query.Where(x => x.IdObserver == message.IdObserver);
+        if (message.ObserverId.HasValue)
+            query = query.Where(x => x.IdObserver == message.ObserverId);
 
         if (message.IdQuestion.HasValue)
             query = query.Where(x => x.Question.Id == message.IdQuestion);
 
-        if (message.IdPollingStation.HasValue)
-            query = query.Where(x => x.IdPollingStation == message.IdPollingStation);
+        if (message.PollingStationId.HasValue)
+            query = query.Where(x => x.IdPollingStation == message.PollingStationId);
 
-        return await query
+        var notes =  await query
             .OrderBy(n => n.LastModified)
             .Include(n => n.Attachments)
-            .Select(n => new NoteModel
-            {
+            .Select(n=> new {
                 AttachmentsPaths = n.Attachments.Select(x => x.Path).ToArray(),
                 Text = n.Text,
-                FormCode = n.Question.FormSection.Form.Code,
-                FormId = n.Question.FormSection.Form.Id,
-                QuestionId = n.Question.Id,
+                FormCode = (string?)n.Question.FormSection.Form.Code,
+                FormId = (int?)n.Question.FormSection.Form.Id,
+                QuestionId = (int?)n.Question.Id,
                 CountyCode = n.PollingStation.Municipality.County.Code,
                 MunicipalityCode = n.PollingStation.Municipality.Code,
                 PollingStationNumber = n.PollingStation.Number
             })
             .ToListAsync(cancellationToken: token);
+
+        return notes.Select(n => new NoteModel
+        {
+            AttachmentsPaths = n.AttachmentsPaths,
+            Text = n.Text,
+            FormCode = n.FormCode,
+            FormId = n.FormId ?? -1,
+            QuestionId = n.QuestionId,
+            CountyCode = n.CountyCode,
+            MunicipalityCode = n.MunicipalityCode,
+            PollingStationNumber = n.PollingStationNumber
+        }).ToList();
     }
 
     public async Task<int> Handle(AddNoteCommandV2 request, CancellationToken cancellationToken)
@@ -54,13 +65,13 @@ public class NoteQueriesHandler :
         var noteEntity = new Entities.Note
         {
             Text = request.Text,
-            IdPollingStation = request.IdPollingStation,
+            IdPollingStation = request.PollingStationId,
             // A note can be added to a polling station as well.
             // In that case IdQuestion is either null or 0
-            IdQuestion = request.IdQuestion == 0 ? null : request.IdQuestion,
-            IdObserver = request.IdObserver,
+            IdQuestion = request.QuestionId == 0 ? null : request.QuestionId,
+            IdObserver = request.ObserverId,
             LastModified = DateTime.UtcNow,
-            Attachments = request.AttachmentPaths.Select(path => new NotesAttachments { Path = path }).ToList()
+            Attachments = request.Attachments.Select(a => new NotesAttachments { Path = a.Path, FileName= a.FileName }).ToList()
         };
 
         _context.Notes.Add(noteEntity);
@@ -82,11 +93,12 @@ public class NoteQueriesHandler :
             Attachments = new List<NotesAttachments>()
         };
 
-        if (!string.IsNullOrEmpty(request.AttachementPath))
+        if (request.Attachement!=null)
         {
             noteEntity.Attachments.Add(new NotesAttachments
             {
-                Path = request.AttachementPath
+                Path = request.Attachement.Path,
+                FileName = request.Attachement.FileName
             });
         }
 

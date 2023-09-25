@@ -2,7 +2,7 @@ using CsvHelper.Configuration.Attributes;
 
 namespace VoteMonitor.Api.County.Models;
 
-public class CountyCsvModel
+public class ProvinceCsvModel
 {
     [Index(0)]
     public int Id { get; set; }
@@ -14,12 +14,5 @@ public class CountyCsvModel
     public string Name { get; set; }
 
     [Index(3)]
-    public string ProvinceCode { get; set; }
-
-    [Index(4)]
-    public bool Diaspora { get; set; }
-
-    [Index(5)]
     public int Order { get; set; }
-
 }

@@ -3,6 +3,7 @@ using Amazon.S3.Model;
 using Amazon.S3.Util;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Options;
+using VoteMonitor.Api.Core.Models;
 using VoteMonitor.Api.Core.Options;
 
 namespace VoteMonitor.Api.Core.Services;
@@ -33,10 +34,9 @@ public class S3Service : IFileService
         }
     }
 
-    public async Task<string> UploadFromStreamAsync(Stream sourceStream, string mimeType, string extension, UploadType uploadType)
+    public async Task<UploadedFileModel> UploadFromStreamAsync(Stream sourceStream, string contentType, string extension, UploadType uploadType)
     {
         var fileKey = Guid.NewGuid().ToString("N") + extension;
-        new FileExtensionContentTypeProvider().TryGetContentType(extension, out var contentType);
         
         var request = new PutObjectRequest
         {
@@ -51,15 +51,15 @@ public class S3Service : IFileService
         return GetPreSignedUrl(fileKey);
     }
 
-    private string GetPreSignedUrl(string fileKey)
+    private UploadedFileModel GetPreSignedUrl(string fileKey)
     {
         var request = new GetPreSignedUrlRequest
         {
             BucketName = _options.BucketName,
             Key = fileKey,
-            Expires = DateTime.Now.AddMinutes(_options.PresignedUrlExpirationInMinutes)
+            Expires = DateTime.UtcNow.AddMinutes(_options.PresignedUrlExpirationInMinutes)
         };
 
-        return _s3Client.GetPreSignedURL(request);
+        return new UploadedFileModel() { FileName = fileKey, Path = _s3Client.GetPreSignedURL(request) };
     }
 }

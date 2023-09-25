@@ -1,5 +1,6 @@
 using Amazon;
 using Amazon.S3;
+using Microsoft.AspNetCore.StaticFiles;
 using VoteMonitor.Api.Core.Extensions;
 using VoteMonitor.Api.Core.Options;
 using VoteMonitor.Api.Core.Services;
@@ -63,6 +64,7 @@ public static class ServicesExtensions
     public static IServiceCollection AddFileService(this IServiceCollection services,
         IConfiguration configuration)
     {
+        services.AddSingleton<FileExtensionContentTypeProvider>();
         var fileStorageType = configuration.GetValue<FileStorageType>("FileStorageType");
 
         if (fileStorageType == FileStorageType.LocalFileService)

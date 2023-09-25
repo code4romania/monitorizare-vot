@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using VoteMonitor.Entities;
@@ -11,9 +12,11 @@ using VoteMonitor.Entities;
 namespace VotingIrregularities.Domain.Seed.Migrations
 {
     [DbContext(typeof(VoteMonitorContext))]
-    partial class VoteMonitorContextModelSnapshot : ModelSnapshot
+    [Migration("20230922074009_AddAttachmentFileName")]
+    partial class AddAttachmentFileName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -135,13 +138,8 @@ namespace VotingIrregularities.Domain.Seed.Migrations
                         .HasColumnType("integer")
                         .HasDefaultValue(0);
 
-                    b.Property<int>("ProvinceId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id")
                         .HasName("PK_County");
-
-                    b.HasIndex("ProvinceId");
 
                     b.ToTable("Counties");
                 });
@@ -693,32 +691,6 @@ namespace VotingIrregularities.Domain.Seed.Migrations
                     b.ToTable("PollingStationInfos");
                 });
 
-            modelBuilder.Entity("VoteMonitor.Entities.Province", b =>
-                {
-                    b.Property<int>("Id")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<int>("Order")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasDefaultValue(0);
-
-                    b.HasKey("Id")
-                        .HasName("PK_Province");
-
-                    b.ToTable("Provinces");
-                });
-
             modelBuilder.Entity("VoteMonitor.Entities.Question", b =>
                 {
                     b.Property<int>("Id")
@@ -796,17 +768,6 @@ namespace VotingIrregularities.Domain.Seed.Migrations
                     b.Navigation("OptionAnswered");
 
                     b.Navigation("PollingStation");
-                });
-
-            modelBuilder.Entity("VoteMonitor.Entities.County", b =>
-                {
-                    b.HasOne("VoteMonitor.Entities.Province", "Province")
-                        .WithMany("Counties")
-                        .HasForeignKey("ProvinceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Province");
                 });
 
             modelBuilder.Entity("VoteMonitor.Entities.FormSection", b =>
@@ -1065,11 +1026,6 @@ namespace VotingIrregularities.Domain.Seed.Migrations
                     b.Navigation("Notes");
 
                     b.Navigation("PollingStationInfos");
-                });
-
-            modelBuilder.Entity("VoteMonitor.Entities.Province", b =>
-                {
-                    b.Navigation("Counties");
                 });
 
             modelBuilder.Entity("VoteMonitor.Entities.Question", b =>

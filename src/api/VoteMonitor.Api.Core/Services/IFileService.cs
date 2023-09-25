@@ -1,3 +1,5 @@
+using VoteMonitor.Api.Core.Models;
+
 namespace VoteMonitor.Api.Core.Services;
 
 /// <summary>
@@ -9,8 +11,8 @@ public interface IFileService
     /// Upload stream into file storage
     /// </summary>
     /// <param name="sourceStream"></param>
-    /// <param name="mimeType"></param>
+    /// <param name="contentType"></param>
     /// <param name="extension"></param>
     /// <returns>the reference to the resource just uploaded</returns>
-    Task<string> UploadFromStreamAsync(Stream sourceStream, string mimeType, string extension, UploadType uploadType);
+    Task<UploadedFileModel> UploadFromStreamAsync(Stream sourceStream, string contentType, string extension, UploadType uploadType);
 }

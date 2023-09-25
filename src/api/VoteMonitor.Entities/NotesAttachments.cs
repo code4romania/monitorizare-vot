@@ -15,4 +15,5 @@ public class NotesAttachments : IIdentifiableEntity
     [Required, MaxLength(1000)]
     public string Path { get; set; }
 
+    public string FileName { get; set; }
 }

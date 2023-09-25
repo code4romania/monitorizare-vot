@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VoteMonitor.Api.Core;
 using VoteMonitor.Api.Core.Commands;
+using VoteMonitor.Api.Core.Models;
 using VoteMonitor.Api.Location.Queries;
 using VoteMonitor.Api.Note.Commands;
 using VoteMonitor.Api.Note.Models;
@@ -26,12 +27,12 @@ public class NoteController : Controller
     [Produces(type: typeof(List<NoteModel>))]
     public async Task<IActionResult> GetNotes([FromQuery] NoteQuery filter)
     {
-        if (filter.IdQuestion.HasValue && !filter.IdPollingStation.HasValue)
-            return BadRequest($"If the {nameof(filter.IdQuestion)} param is provided then the {nameof(filter.IdPollingStation)} param is required !");
+        if (filter.IdQuestion.HasValue && !filter.PollingStationId.HasValue)
+            return BadRequest($"If the {nameof(filter.IdQuestion)} param is provided then the {nameof(filter.PollingStationId)} param is required !");
 
-        if (!filter.IdObserver.HasValue)
+        if (!filter.ObserverId.HasValue)
         {
-            filter.IdObserver = this.GetIdObserver();
+            filter.ObserverId = this.GetIdObserver();
         }
 
         return Ok(await _mediator.Send(filter));
@@ -51,20 +52,14 @@ public class NoteController : Controller
             return NotFound();
         }
 
-        var command = new AddNoteCommandV2
-        {
-            IdObserver = this.GetIdObserver(),
-            IdPollingStation = pollingStationId,
-            Text = note.Text,
-            IdQuestion = note.QuestionId
-        };
-
+        UploadedFileModel[] attachments = { };
         if (note.Files != null && note.Files.Any())
         {
             var files = await _mediator.Send(new UploadFileCommandV2(note.Files, UploadType.Notes));
-            command.AttachmentPaths = files;
+            attachments = files;
         }
 
+        var command = new AddNoteCommandV2(this.GetIdObserver(), pollingStationId, note.QuestionId, note.Text, attachments);
         var result = await _mediator.Send(command);
 
         if (result < 0)
@@ -72,7 +67,7 @@ public class NoteController : Controller
             return NotFound();
         }
 
-        return Ok(new UploadNoteResultV2 { FilesAddress = command.AttachmentPaths, Note = note });
+        return Ok(new UploadNoteResultV2 { FilesAddress = command.Attachments.Select(x => x.Path).ToArray(), Note = note });
     }
 
 
@@ -114,7 +109,7 @@ public class NoteController : Controller
         if (note.File != null)
         {
             var fileAddress = await _mediator.Send(new UploadFileCommand(note.File, UploadType.Notes));
-            command.AttachementPath = fileAddress;
+            command.Attachement = fileAddress;
         }
 
         var result = await _mediator.Send(command);
@@ -124,6 +119,6 @@ public class NoteController : Controller
             return NotFound();
         }
 
-        return Ok(new UploadNoteResult { FileAddress = command.AttachementPath, Note = note });
+        return Ok(new UploadNoteResult { FileAddress = command.Attachement.Path, Note = note });
     }
 }

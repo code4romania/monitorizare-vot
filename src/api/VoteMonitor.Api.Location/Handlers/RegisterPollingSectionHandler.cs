@@ -1,3 +1,4 @@
+using Azure.Core;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -42,23 +43,36 @@ public class RegisterPollingSectionHandler : IRequestHandler<RegisterPollingStat
             if (pollingStationInfo == null)
             {
                 pollingStationInfo = new PollingStationInfo
-                    {
-                        IdPollingStation = pollingStation.Id,
-                        IdObserver = message.IdObserver,
-                        IsPollingStationPresidentFemale = message.IsPollingStationPresidentFemale,
-                        LastModified = DateTime.UtcNow,
-                        ObserverArrivalTime = message.ObserverArrivalTime,
-                        ObserverLeaveTime = message.ObserverLeaveTime
-                    };
+                {
+                    IdPollingStation = pollingStation.Id,
+                    IdObserver = message.IdObserver,
+
+                    LastModified = DateTime.UtcNow,
+                    ObserverArrivalTime = message.ObserverArrivalTime,
+                    ObserverLeaveTime = message.ObserverLeaveTime,
+                    NumberOfVotersOnTheList = message.NumberOfVotersOnTheList,
+                    NumberOfCommissionMembers = message.NumberOfCommissionMembers,
+                    NumberOfFemaleMembers = message.NumberOfFemaleMembers,
+                    MinPresentMembers = message.MinPresentMembers,
+                    ChairmanPresence = message.ChairmanPresence,
+                    SinglePollingStationOrCommission = message.SinglePollingStationOrCommission,
+                    AdequatePollingStationSize = message.AdequatePollingStationSize,
+                };
 
                 _context.Add(pollingStationInfo);
             }
             else
             {
-                pollingStationInfo.IsPollingStationPresidentFemale = message.IsPollingStationPresidentFemale;
                 pollingStationInfo.LastModified = DateTime.UtcNow;
                 pollingStationInfo.ObserverArrivalTime = message.ObserverArrivalTime;
                 pollingStationInfo.ObserverLeaveTime = message.ObserverLeaveTime;
+                pollingStationInfo.NumberOfVotersOnTheList = message.NumberOfVotersOnTheList;
+                pollingStationInfo.NumberOfCommissionMembers = message.NumberOfCommissionMembers;
+                pollingStationInfo.NumberOfFemaleMembers = message.NumberOfFemaleMembers;
+                pollingStationInfo.MinPresentMembers = message.MinPresentMembers;
+                pollingStationInfo.ChairmanPresence = message.ChairmanPresence;
+                pollingStationInfo.SinglePollingStationOrCommission = message.SinglePollingStationOrCommission;
+                pollingStationInfo.AdequatePollingStationSize = message.AdequatePollingStationSize;
             }
 
             return await _context.SaveChangesAsync();

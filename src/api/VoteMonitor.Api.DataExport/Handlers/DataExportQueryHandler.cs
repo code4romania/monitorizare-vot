@@ -62,7 +62,7 @@ public class DataExportQueryHandler : IRequestHandler<GetDataForExport, IEnumera
             if (request.To.HasValue)
             {
                 query += @" AND a.""LastModified"" <= @to ";
-                parameters.Add("to", request.To ?? DateTime.Now.AddDays(2));
+                parameters.Add("to", request.To ?? DateTime.UtcNow.AddDays(2));
             }
 
             if (request.ObserverId.HasValue)
@@ -200,7 +200,7 @@ public class DataExportQueryHandler : IRequestHandler<GetDataForExport, IEnumera
                 queryNotesNotAttachedToQuestions += @" AND n.""LastModified"" <= @to ";
                 queryNotesForAnsweredQuestions += @" AND n.""LastModified"" <= @to ";
                 queryForNotesAttachedToQuestionsButNoAnswers += @" AND n.""LastModified"" <= @to ";
-                parameters.Add("to", request.To ?? DateTime.Now.AddDays(2));
+                parameters.Add("to", request.To ?? DateTime.UtcNow.AddDays(2));
             }
 
             if (request.ObserverId.HasValue)

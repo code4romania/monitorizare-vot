@@ -7,4 +7,5 @@ public class AnswerQueryDto
     public string ObserverName { get; set; }
     public string ObserverPhoneNumber { get; set; }
     public string PollingStationName { get; set; }
+    public DateTime LastModified { get; set; }
 }

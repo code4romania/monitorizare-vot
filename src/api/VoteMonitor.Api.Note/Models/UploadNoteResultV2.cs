@@ -1,4 +1,4 @@
-﻿namespace VoteMonitor.Api.Note.Models;
+namespace VoteMonitor.Api.Note.Models;
 
 public class UploadNoteResultV2
 {

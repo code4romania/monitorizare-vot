@@ -68,7 +68,7 @@ public class FormQuestionQueryHandler : IRequestHandler<FormQuestionQuery, IEnum
                                 Text = x.Option.Text,
                                 IsFreeText = x.Option.IsFreeText,
                                 OrderNumber = x.Option.OrderNumber,
-                                IdOption = x.Id
+                                OptionId = x.Id
                             }).ToList()
                         }).ToList()
                 }).ToList();

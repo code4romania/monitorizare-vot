@@ -42,6 +42,7 @@ public class CountiesCommandHandler : IRequestHandler<GetCountiesForExport, Resu
                     Id = c.Id,
                     Code = c.Code,
                     Name = c.Name,
+                    ProvinceCode = c.Province.Code,
                     Diaspora = c.Diaspora,
                     Order = c.Order
                 })
@@ -67,6 +68,7 @@ public class CountiesCommandHandler : IRequestHandler<GetCountiesForExport, Resu
     {
         var countiesIdUpdated = new List<int>();
         var countiesDictionary = counties.ToDictionary(c => c.Id, y => y);
+        var provincesDictionary = _context.Provinces.ToDictionary(x => x.Code, y => y.Id);
 
         try
         {
@@ -79,7 +81,7 @@ public class CountiesCommandHandler : IRequestHandler<GetCountiesForExport, Resu
                     county.Name = csvModel.Name;
                     county.Diaspora = csvModel.Diaspora;
                     county.Order = csvModel.Order;
-
+                    county.ProvinceId = provincesDictionary[csvModel.ProvinceCode];
                     countiesIdUpdated.Add(county.Id);
                 }
             }
@@ -94,6 +96,7 @@ public class CountiesCommandHandler : IRequestHandler<GetCountiesForExport, Resu
                     Code = csvModel.Code,
                     Name = csvModel.Name,
                     Diaspora = csvModel.Diaspora,
+                    ProvinceId = provincesDictionary[csvModel.ProvinceCode],
                     Order = csvModel.Order
                 };
 
@@ -132,6 +135,14 @@ public class CountiesCommandHandler : IRequestHandler<GetCountiesForExport, Resu
             return Result.Success(counties);
         }
 
+        var provinces = _context.Provinces.Select(x => x.Code).ToHashSet();
+        var municipalityWithInvalidCountyCode = counties.FirstOrDefault(x => !provinces.Contains(x.ProvinceCode));
+
+        if (municipalityWithInvalidCountyCode != null)
+        {
+            return Result.Failure<List<CountyCsvModel>>($"Municipality with invalid county code: {JsonConvert.SerializeObject(municipalityWithInvalidCountyCode)}");
+        }
+
         return Result.Failure<List<CountyCsvModel>>($"Invalid county entry found: {JsonConvert.SerializeObject(invalidCounty)}");
     }
 
@@ -167,6 +178,7 @@ public class CountiesCommandHandler : IRequestHandler<GetCountiesForExport, Resu
                 {
                     Id = x.Id,
                     Code = x.Code,
+                    ProvinceCode = x.Province.Code,
                     Name = x.Name,
                     Diaspora = x.Diaspora,
                     Order = x.Order
@@ -192,6 +204,7 @@ public class CountiesCommandHandler : IRequestHandler<GetCountiesForExport, Resu
                 {
                     Id = request.CountyId,
                     Code = c.Code,
+                    ProvinceCode = c.Province.Code,
                     Name = c.Name,
                     Order = c.Order,
                     Diaspora = c.Diaspora,

@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using VoteMonitor.Api.Form.Models;
 using VoteMonitor.Entities;
 
@@ -23,6 +23,6 @@ public class OptionToQuestionProfile : Profile
             .ForMember(dest => dest.Text, c => c.MapFrom(src => src.Option.Text))
             .ForMember(dest => dest.IsFreeText, c => c.MapFrom(src => src.Option.IsFreeText))
             .ForMember(dest => dest.OrderNumber, c => c.MapFrom(src => src.Option.OrderNumber))
-            .ForMember(dest => dest.IdOption, c => c.MapFrom(src => src.Id));
+            .ForMember(dest => dest.OptionId, c => c.MapFrom(src => src.Id));
     }
 }

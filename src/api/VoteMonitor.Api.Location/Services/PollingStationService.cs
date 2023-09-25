@@ -25,18 +25,20 @@ public class PollingStationService : IPollingStationService
         {
             var cacheKey = $"polling-station-{countyCode}-{municipalityCode}-{pollingStationNumber}";
 
-            return await _cacheService.GetOrSaveDataInCacheAsync(cacheKey, async () =>
+            var pollingStationId =  await _cacheService.GetOrSaveDataInCacheAsync<int?>(cacheKey, async () =>
             {
                 var municipalityId = _context.Municipalities.FirstOrDefault(c =>c.County.Code == countyCode && c.Code == municipalityCode)?.Id;
                 if (municipalityId == null)
                     throw new ArgumentException($"Could not find municipality with code: {countyCode} {municipalityCode}");
 
-                return await GetPollingStationByMunicipalityId(pollingStationNumber, municipalityId.Value);
+                return await GetPollingStationByMunicipalityId(municipalityId.Value, pollingStationNumber);
             });
+
+            return pollingStationId ?? -1;
         }
         catch (Exception ex)
         {
-            _logger.LogError(new EventId(), ex.Message);
+            _logger.LogError(ex, ex.Message);
         }
 
         return -1;
@@ -47,7 +49,7 @@ public class PollingStationService : IPollingStationService
         try
         {
             var cacheKey = $"polling-station-{municipalityId}-{pollingStationNumber}";
-            return await _cacheService.GetOrSaveDataInCacheAsync<int>(cacheKey, async () =>
+            var pollingStationId = await _cacheService.GetOrSaveDataInCacheAsync<int?>(cacheKey, async () =>
             {
                 var pollingStationIds = await
                     _context.PollingStations
@@ -59,10 +61,12 @@ public class PollingStationService : IPollingStationService
 
 
                 if (pollingStationIds.Count > 1)
-                    throw new ArgumentException($"More than one polling station found for: {new { municipalityId, pollingStationIds }}");
+                    throw new ArgumentException($"More than one polling station found for: {new { municipalityId, pollingStationNumber }}");
 
                 return pollingStationIds.Single();
             });
+
+            return pollingStationId ?? -1;
         }
         catch (Exception ex)
         {

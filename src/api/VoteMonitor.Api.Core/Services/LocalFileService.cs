@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Options;
+using VoteMonitor.Api.Core.Models;
 using VoteMonitor.Api.Core.Options;
 
 namespace VoteMonitor.Api.Core.Services;
@@ -18,7 +19,7 @@ public class LocalFileService : IFileService
     {
         _localFileOptions = options.Value;
     }
-    public Task<string> UploadFromStreamAsync(Stream sourceStream, string mimeType, string extension, UploadType uploadType)
+    public Task<UploadedFileModel> UploadFromStreamAsync(Stream sourceStream, string contentType, string extension, UploadType uploadType)
     {
         var uploadDirectory = _localFileOptions.StoragePaths[uploadType.ToString()];
 
@@ -28,16 +29,21 @@ public class LocalFileService : IFileService
         }
 
         // set name
-        var localFile = Path.Combine(uploadDirectory, Guid.NewGuid().ToString("N") + extension);
+        var fileName = Guid.NewGuid().ToString("N") + extension;
+        var localFilePath = Path.Combine(uploadDirectory, fileName);
 
         // save to local path
-        using (var fileStream = File.Create(localFile))
+        using (var fileStream = File.Create(localFilePath))
         {
             sourceStream.Seek(0, SeekOrigin.Begin);
             sourceStream.CopyTo(fileStream);
         }
 
         // return relative path
-        return Task.FromResult(localFile);
+        return Task.FromResult(new UploadedFileModel()
+        {
+            FileName = fileName,
+            Path = localFilePath
+        });
     }
 }

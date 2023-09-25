@@ -114,14 +114,14 @@ public class VotingContextSeeder
             Draft = false,
             FormSections = new List<FormSection>
             {
-                new FormSection
+                new()
                 {
                     Code = "A-1",
                     Description = $"From A section 1",
                     OrderNumber = 1,
                     Questions = new List<Question>
                     {
-                        new Question
+                        new()
                         {
                             Code =  "A-1-1",
                             Text = "Do you drink beer?",
@@ -129,11 +129,11 @@ public class VotingContextSeeder
                             QuestionType = QuestionType.SingleOption,
                             OptionsToQuestions = new List<OptionToQuestion>
                             {
-                                new OptionToQuestion {Option = new Option { Text = "Yes", IsFreeText = true }},
-                                new OptionToQuestion {Option = new Option { Text = "No", IsFreeText = true }}
+                                new() {Option = new Option { Text = "Yes", IsFreeText = true }},
+                                new() {Option = new Option { Text = "No", IsFreeText = true }}
                             }
                         },
-                        new Question
+                        new()
                         {
                             Code =  "A-1-2",
                             Text = "What is your favorite brand?",
@@ -141,22 +141,22 @@ public class VotingContextSeeder
                             QuestionType = QuestionType.SingleOptionWithText,
                             OptionsToQuestions = new List<OptionToQuestion>
                             {
-                                new OptionToQuestion {Option = new Option { Text = "Carlsberg" }},
-                                new OptionToQuestion {Option = new Option { Text = "Tuborg" }},
-                                new OptionToQuestion {Option = new Option { Text = "Heineken" }, Flagged = true},
-                                new OptionToQuestion {Option = otherOption}
+                                new() {Option = new Option { Text = "Carlsberg" }},
+                                new() {Option = new Option { Text = "Tuborg" }},
+                                new() {Option = new Option { Text = "Heineken" }, Flagged = true},
+                                new() {Option = otherOption}
                             }
                         }
                     }
                 },
-                new FormSection
+                new()
                 {
                     Code = "A-2",
                     Description = "From A section 2",
                     OrderNumber = 2,
                     Questions = new List<Question>
                     {
-                        new Question
+                        new()
                         {
                             Code =  "A-2-1",
                             Text = "What social networking sites are you using?",
@@ -164,13 +164,13 @@ public class VotingContextSeeder
                             QuestionType = QuestionType.MultipleOption,
                             OptionsToQuestions = new List<OptionToQuestion>
                             {
-                                new OptionToQuestion {Option = new Option { Text = "Facebook" }},
-                                new OptionToQuestion {Option = new Option { Text = "Twitter" }, Flagged = true},
-                                new OptionToQuestion {Option = new Option { Text = "Linkedin" }},
-                                new OptionToQuestion {Option = new Option { Text = "None" }}
+                                new() {Option = new Option { Text = "Facebook" }},
+                                new() {Option = new Option { Text = "Twitter" }, Flagged = true},
+                                new() {Option = new Option { Text = "Linkedin" }},
+                                new() {Option = new Option { Text = "None" }}
                             }
                         },
-                        new Question
+                        new()
                         {
                             Code =  "A-2-2",
                             Text = "What means of transportation do you use?",
@@ -178,10 +178,10 @@ public class VotingContextSeeder
                             QuestionType = QuestionType.MultipleOptionWithText,
                             OptionsToQuestions = new List<OptionToQuestion>
                             {
-                                new OptionToQuestion {Option = new Option { Text = "Metro" }},
-                                new OptionToQuestion {Option = new Option { Text = "Tram" }},
-                                new OptionToQuestion {Option = new Option { Text = "Bus" } },
-                                new OptionToQuestion {Option = otherOption,Flagged = true}
+                                new() {Option = new Option { Text = "Metro" }},
+                                new() {Option = new Option { Text = "Tram" }},
+                                new() {Option = new Option { Text = "Bus" } },
+                                new() {Option = otherOption,Flagged = true}
                             }
                         }
                     }
@@ -198,14 +198,14 @@ public class VotingContextSeeder
             Draft = false,
             FormSections = new List<FormSection>
             {
-                new FormSection
+                new()
                 {
                     Code = "B-1",
                     Description = "From B section 1",
                     OrderNumber = 1,
                     Questions = new List<Question>
                     {
-                        new Question
+                        new()
                         {
                             Code =  "B-1-1",
                             Text = "How many hours do you play video games on average per day?",
@@ -213,25 +213,25 @@ public class VotingContextSeeder
                             QuestionType = QuestionType.SingleOption,
                             OptionsToQuestions = new List<OptionToQuestion>
                             {
-                                new OptionToQuestion {Option = new Option { Text = "I do not play video games" },Flagged = true},
-                                new OptionToQuestion {Option = new Option { Text = "1 hrs" } },
-                                new OptionToQuestion {Option = new Option { Text = "2 hrs" } },
-                                new OptionToQuestion {Option = new Option { Text = "4 hrs" } },
-                                new OptionToQuestion {Option = new Option { Text = "8 hrs" } },
-                                new OptionToQuestion {Option = new Option { Text = "16 hrs" } },
-                                new OptionToQuestion {Option = new Option { Text = "24 hrs" } }
+                                new() {Option = new Option { Text = "I do not play video games" },Flagged = true},
+                                new() {Option = new Option { Text = "1 hrs" } },
+                                new() {Option = new Option { Text = "2 hrs" } },
+                                new() {Option = new Option { Text = "4 hrs" } },
+                                new() {Option = new Option { Text = "8 hrs" } },
+                                new() {Option = new Option { Text = "16 hrs" } },
+                                new() {Option = new Option { Text = "24 hrs" } }
                             }
                         }
                     }
                 },
-                new FormSection
+                new()
                 {
                     Code = "B-2",
                     Description = "From B section 2",
                     OrderNumber = 2,
                     Questions = new List<Question>
                     {
-                        new Question
+                        new()
                         {
                             Code =  "B-2-1",
                             Text = "What is your goto news website?",
@@ -239,10 +239,10 @@ public class VotingContextSeeder
                             QuestionType = QuestionType.SingleOptionWithText,
                             OptionsToQuestions = new List<OptionToQuestion>
                             {
-                                new OptionToQuestion {Option = new Option { Text = "bbc.com" }},
-                                new OptionToQuestion {Option = new Option { Text = "nytimes.com" }},
-                                new OptionToQuestion {Option = new Option { Text = "dailymail.co.uk" }, Flagged = true},
-                                new OptionToQuestion {Option = otherOption}
+                                new() {Option = new Option { Text = "bbc.com" }},
+                                new() {Option = new Option { Text = "nytimes.com" }},
+                                new() {Option = new Option { Text = "dailymail.co.uk" }, Flagged = true},
+                                new() {Option = otherOption}
                             }
                         }
                     }

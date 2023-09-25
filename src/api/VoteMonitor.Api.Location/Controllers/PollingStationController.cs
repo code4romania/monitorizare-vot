@@ -36,15 +36,21 @@ public class PollingStationController : Controller
     /// <returns></returns>
     [HttpPost]
     [Authorize]
-    public async Task<IAsyncResult> Register([FromBody] AddPollingStationInfo request)
+    public async Task<IActionResult> Register([FromBody] AddPollingStationInfo request)
     {
         var command = new RegisterPollingStationCommand
         {
             CountyCode = request.CountyCode,
             MunicipalityCode = request.MunicipalityCode,
             ObserverArrivalTime = request.ObserverArrivalTime,
-            ObserverLeaveTime = request.ObserverLeaveTime,
-            IsPollingStationPresidentFemale = request.IsPollingStationPresidentFemale,
+
+            NumberOfVotersOnTheList = request.NumberOfVotersOnTheList!.Value,
+            NumberOfCommissionMembers = request.NumberOfCommissionMembers!.Value,
+            NumberOfFemaleMembers = request.NumberOfFemaleMembers!.Value,
+            MinPresentMembers = request.MinPresentMembers!.Value,
+            ChairmanPresence = request.ChairmanPresence!.Value,
+            SinglePollingStationOrCommission = request.SinglePollingStationOrCommission!.Value,
+            AdequatePollingStationSize = request.AdequatePollingStationSize!.Value,
             IdObserver = int.Parse(User.Claims.First(c => c.Type == ClaimsHelper.ObserverIdProperty).Value),
             PollingStationNumber = request.PollingStationNumber
         };
@@ -52,7 +58,9 @@ public class PollingStationController : Controller
 
         var result = await _mediator.Send(command);
 
-        return this.ResultAsync(result < 0 ? HttpStatusCode.NotFound : HttpStatusCode.OK);
+        if (result < 0) return NotFound();
+
+        return Ok();
     }
 
     /// <summary>

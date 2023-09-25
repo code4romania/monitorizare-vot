@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using System.Collections;
 
 namespace VoteMonitor.Entities;
 
@@ -40,6 +41,28 @@ public class VoteMonitorContext : DbContext
                 .HasConstraintName("FK_NgoAdmin_Ngo");
         });
 
+
+        modelBuilder.Entity<Province>(entity =>
+        {
+            entity.HasKey(e => e.Id)
+                .HasName("PK_Province");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+
+            entity.Property(e => e.Code)
+                .IsRequired()
+                .HasMaxLength(20);
+
+            entity.Property(e => e.Name)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            entity
+                .Property(x => x.Order)
+                .HasDefaultValue(0);
+        });
+
+
         modelBuilder.Entity<County>(entity =>
         {
             entity.HasKey(e => e.Id)
@@ -62,6 +85,12 @@ public class VoteMonitorContext : DbContext
             entity
                 .Property(x => x.Order)
                 .HasDefaultValue(0);
+
+            entity
+                .HasOne(e => e.Province)
+                .WithMany(c => c.Counties)
+                .HasForeignKey(x => x.ProvinceId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<Municipality>(entity =>
@@ -263,10 +292,17 @@ public class VoteMonitorContext : DbContext
 
             entity.Property(e => e.LastModified)
                 .HasDefaultValueSql("timezone('utc', now())");
-
-            entity.Property(e => e.ObserverLeaveTime);
+     
+            entity.Property(e => e.NumberOfVotersOnTheList);
+            entity.Property(e => e.NumberOfCommissionMembers);
+            entity.Property(e => e.NumberOfFemaleMembers);
+            entity.Property(e => e.MinPresentMembers);
+            entity.Property(e => e.ChairmanPresence);
+            entity.Property(e => e.SinglePollingStationOrCommission);
+            entity.Property(e => e.AdequatePollingStationSize);
 
             entity.Property(e => e.ObserverArrivalTime);
+            entity.Property(e => e.ObserverLeaveTime);
 
             entity.HasOne(d => d.Observer)
                 .WithMany(p => p.PollingStationInfos)
@@ -468,6 +504,8 @@ public class VoteMonitorContext : DbContext
 
     public virtual DbSet<NgoAdmin> NgoAdmins { get; set; }
     public virtual DbSet<Question> Questions { get; set; }
+    public DbSet<Province> Provinces { get; set; }
+
     public virtual DbSet<County> Counties { get; set; }
     public virtual DbSet<Municipality> Municipalities { get; set; }
     public virtual DbSet<Note> Notes { get; set; }

@@ -2,6 +2,7 @@ using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Specialized;
 using Azure.Storage.Sas;
 using Microsoft.Extensions.Options;
+using VoteMonitor.Api.Core.Models;
 using VoteMonitor.Api.Core.Options;
 
 namespace VoteMonitor.Api.Core.Services;
@@ -34,14 +35,15 @@ public class BlobService : IFileService
     /// <summary>
     /// Uploads a file from a stream in azure blob storage
     /// </summary>
-    public async Task<string> UploadFromStreamAsync(Stream sourceStream, string mimeType, string extension, UploadType uploadType)
+    public async Task<UploadedFileModel> UploadFromStreamAsync(Stream sourceStream, string contentType, string extension, UploadType uploadType)
     {
         // Get a reference to a blob
-        BlobClient blobClient = _blobContainerClient.GetBlobClient(Guid.NewGuid().ToString("N") + extension);
+        var fileName = Guid.NewGuid().ToString("N") + extension;
+        BlobClient blobClient = _blobContainerClient.GetBlobClient(fileName);
         await blobClient.UploadAsync(sourceStream);
 
         var blobUri = GetBlobURI(blobClient);
-        return blobUri.ToString();
+        return new UploadedFileModel() { FileName = fileName, Path = blobUri.ToString() };
     }
 
     private Uri GetBlobURI(BlobClient blobClient)
