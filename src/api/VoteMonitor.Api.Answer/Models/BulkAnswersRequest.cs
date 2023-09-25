@@ -1,7 +1,6 @@
-namespace VoteMonitor.Api.Answer.Models
+namespace VoteMonitor.Api.Answer.Models;
+
+public class BulkAnswersRequest
 {
-    public class BulkAnswersRequest
-    {
-        public BulkAnswerDto[] Answers { get; set; }
-    }
+    public BulkAnswerDto[] Answers { get; set; }
 }

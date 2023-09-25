@@ -1,12 +1,5 @@
-﻿using MediatR;
-using System;
+using MediatR;
 
-namespace VoteMonitor.Api.PollingStation.Queries
-{
-    public class UpdatePollingStationInfo : IRequest
-    {
-        public int ObserverId { get; set; }
-        public int PollingStationId { get; set; }
-        public DateTime ObserverLeaveTime { get; set; }
-    }
-}
+namespace VoteMonitor.Api.PollingStation.Queries;
+
+public record UpdatePollingStationInfo(int ObserverId, int PollingStationId, DateTime ObserverLeaveTime) : IRequest;

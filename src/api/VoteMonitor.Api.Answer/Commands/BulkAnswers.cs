@@ -1,19 +1,17 @@
 using MediatR;
-using System.Collections.Generic;
-using System.Linq;
 using VoteMonitor.Api.Answer.Models;
 
-namespace VoteMonitor.Api.Answer.Commands
+namespace VoteMonitor.Api.Answer.Commands;
+
+public record BulkAnswers : IRequest<FillInAnswerCommand>
 {
-    public class BulkAnswers : IRequest<FillInAnswerCommand>
+    public BulkAnswers(int observerId, IEnumerable<BulkAnswerDto> answers)
     {
-        public BulkAnswers(IEnumerable<BulkAnswerDto> answers)
-        {
-            Answers = answers.ToList();
-        }
-
-        public int ObserverId { get; set; }
-
-        public List<BulkAnswerDto> Answers { get; set; }
+        ObserverId = observerId;
+        Answers = answers.ToList().AsReadOnly();
     }
+
+    public int ObserverId { get; }
+
+    public IReadOnlyCollection<BulkAnswerDto> Answers { get; }
 }

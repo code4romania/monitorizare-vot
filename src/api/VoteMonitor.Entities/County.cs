@@ -1,20 +1,13 @@
-using System.Collections.Generic;
+namespace VoteMonitor.Entities;
 
-namespace VoteMonitor.Entities
+public class County : IIdentifiableEntity
 {
-    public class County : IIdentifiableEntity
-    {
-        public County()
-        {
-            PollingStations = new HashSet<PollingStation>();
-        }
-
-        public int Id { get; set; }
-        public string Code { get; set; }
-        public string Name { get; set; }
-        public bool Diaspora { get; set; }
-        public int Order { get; set; }
-
-        public virtual ICollection<PollingStation> PollingStations { get; set; }
-    }
+    public int Id { get; set; }
+    public string Code { get; set; }
+    public string Name { get; set; }
+    public bool Diaspora { get; set; }
+    public int Order { get; set; }
+    public int ProvinceId { get; set; }
+    public Province Province { get; set; }
+    public virtual ICollection<Municipality> Municipalities { get; set; } = new HashSet<Municipality>();
 }

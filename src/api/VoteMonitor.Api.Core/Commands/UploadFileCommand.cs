@@ -1,13 +1,8 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Http;
-using System;
+using VoteMonitor.Api.Core.Models;
 
-namespace VoteMonitor.Api.Core.Commands
-{
-    [Obsolete("Will be removed when ui will use multiple files upload")]
-    public class UploadFileCommand : IRequest<string>
-    {  
-        public IFormFile File { get; set; }
-        public UploadType UploadType { get; set; }
-    }
-}
+namespace VoteMonitor.Api.Core.Commands;
+
+[Obsolete("Will be removed when ui will use multiple files upload")]
+public record UploadFileCommand(IFormFile File, UploadType UploadType) : IRequest<UploadedFileModel>;

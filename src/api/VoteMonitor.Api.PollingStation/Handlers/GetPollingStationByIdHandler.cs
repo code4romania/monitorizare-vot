@@ -1,47 +1,46 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using VoteMonitor.Api.PollingStation.Models;
 using VoteMonitor.Api.PollingStation.Queries;
 using VoteMonitor.Entities;
 
-namespace VoteMonitor.Api.PollingStation.Handlers
+namespace VoteMonitor.Api.PollingStation.Handlers;
+
+public class GetPollingStationByIdHandler : IRequestHandler<GetPollingStationById, GetPollingStationModel>
 {
-    public class GetPollingStationByIdHandler : IRequestHandler<GetPollingStationById, GetPollingStationModel>
+    private readonly VoteMonitorContext _context;
+    private readonly ILogger _logger;
+
+    public GetPollingStationByIdHandler(VoteMonitorContext context, ILogger<GetPollingStationByIdHandler> logger)
     {
-        private readonly VoteMonitorContext _context;
-        private readonly IMapper _mapper;
-        private readonly ILogger _logger;
+        _context = context;
+        _logger = logger;
+    }
 
-        public GetPollingStationByIdHandler(VoteMonitorContext context, IMapper mapper, ILogger<GetPollingStationByIdHandler> logger)
+    public Task<GetPollingStationModel> Handle(GetPollingStationById request, CancellationToken cancellationToken)
+    {
+        try
         {
-            _context = context;
-            _mapper = mapper;
-            _logger = logger;
-        }
+            var pollingStation = _context.PollingStations.Find(request.PollingStationId);
 
-        public Task<GetPollingStationModel> Handle(GetPollingStationById request, CancellationToken cancellationToken)
-        {
-            try
+            GetPollingStationModel pollingStationData = null;
+            if (pollingStation != null)
             {
-                var pollingStation = _context.PollingStations.Find(request.PollingStationId);
-
-                GetPollingStationModel pollingStationData = null;
-                if (pollingStation != null)
+                pollingStationData = new GetPollingStationModel()
                 {
-                    pollingStationData = _mapper.Map<GetPollingStationModel>(pollingStation);
-                }
+                    Id = pollingStation.Id,
+                    Number = pollingStation.Number,
+                    Address = pollingStation.Address,
+                    MunicipalityId = pollingStation.MunicipalityId,
+                };
+            }
 
-                return Task.FromResult(pollingStationData);
-            }
-            catch (Exception ex)
-            {
-                _logger.Log(LogLevel.Error, "Error retrieving Polling Station by ID", ex);
-                throw;
-            }
+            return Task.FromResult(pollingStationData);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error retrieving Polling Station by ID");
+            throw;
         }
     }
 }

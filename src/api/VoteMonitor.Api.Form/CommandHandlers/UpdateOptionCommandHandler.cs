@@ -1,39 +1,35 @@
-﻿using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using VoteMonitor.Api.Form.Commands;
 using VoteMonitor.Entities;
 
-namespace VoteMonitor.Api.Form.CommandHandlers
+namespace VoteMonitor.Api.Form.CommandHandlers;
+
+public class UpdateOptionCommandHandler : IRequestHandler<UpdateOptionCommand, int>
 {
-    public class UpdateOptionCommandHandler : IRequestHandler<UpdateOptionCommand, int>
+    private readonly VoteMonitorContext _context;
+
+    public UpdateOptionCommandHandler(VoteMonitorContext context)
     {
-        private readonly VoteMonitorContext _context;
-        private readonly IMapper _mapper;
+        _context = context;
+    }
 
-        public UpdateOptionCommandHandler(VoteMonitorContext context, IMapper mapper)
+    public async Task<int> Handle(UpdateOptionCommand request, CancellationToken cancellationToken)
+    {
+        var option = await _context.Options
+            .FirstOrDefaultAsync(a => a.Id == request.OptionId, cancellationToken);
+
+        if (option == null)
         {
-            _context = context;
-            _mapper = mapper;
+            throw new ArgumentException($"Can't find this option by id = {request.OptionId}");
         }
 
-        public async Task<int> Handle(UpdateOptionCommand request, CancellationToken cancellationToken)
-        {
-            var option = await _context.Options
-                .FirstOrDefaultAsync(a => a.Id == request.Option.Id, cancellationToken);
+        option.IsFreeText = request.IsFreeText;
+        option.Text = request.Text;
+        option.Hint = request.Hint;
+        
+        _context.Update(option);
 
-            if (option == null)
-            {
-                throw new ArgumentException($"Can't find this option by id = {request.Option.Id}");
-            }
-
-            _mapper.Map(request.Option, option);
-            _context.Update(option);
-
-            return await _context.SaveChangesAsync(cancellationToken);
-        }
+        return await _context.SaveChangesAsync(cancellationToken);
     }
 }

@@ -1,57 +1,55 @@
-﻿using System.IO;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using VoteMonitor.Api.Core.Options;
 using VoteMonitor.Api.Core.Services;
 using Xunit;
 
-namespace VotingIrregularities.Tests
+namespace VotingIrregularities.Tests;
+
+public class HashTests
 {
-    public class HashTests
+    public HashTests()
     {
-        public HashTests()
-        {
 
-            var builder = new ConfigurationBuilder()
-               .SetBasePath(Directory.GetCurrentDirectory())
-               .AddJsonFile("appsettings.json", true, true)
-               .AddJsonFile("appsettings.hash.json", true, true);
+        var builder = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", true, true)
+            .AddJsonFile("appsettings.hash.json", true, true);
 
-            builder.AddEnvironmentVariables();
-            Configuration = builder.Build();
-        }
+        builder.AddEnvironmentVariables();
+        Configuration = builder.Build();
+    }
 
-        private IConfigurationRoot Configuration { get; set; }
+    private IConfigurationRoot Configuration { get; set; }
 
      
 #pragma warning disable xUnit1004 // Test methods should not be skipped
-        [Fact(Skip = "Used for generating the password files")]
+    [Fact(Skip = "Used for generating the password files")]
 #pragma warning restore xUnit1004 // Test methods should not be skipped
-        public void SetPasswords()
+    public void SetPasswords()
+    {
+        var hashOptions = new HashOptions();
+        Configuration.GetSection("HashOptions").Bind(hashOptions);
+
+        var optionsList = Options.Create(hashOptions);
+
+        var hashService = new SHA256HashService(optionsList);
+
+        var pathToFile = Directory.GetCurrentDirectory()
+                         + Path.DirectorySeparatorChar
+                         + "conturi.txt";
+
+        using var newfile = File.Create("conturi-cu-parole.txt");
+        using var logWriter = new StreamWriter(newfile);
+        using var reader = File.OpenText(pathToFile);
+        while (reader.Peek() >= 0)
         {
-            var hashOptions = new HashOptions();
-            Configuration.GetSection("HashOptions").Bind(hashOptions);
+            var fileContent = reader.ReadLine();
 
-            var optionsList = Options.Create(hashOptions);
+            var data = fileContent.Split('\t');
+            var hashed = hashService.GetHash(data[1]);
 
-            var hashService = new SHA256HashService(optionsList);
-
-            var pathToFile = Directory.GetCurrentDirectory()
-               + Path.DirectorySeparatorChar
-               + "conturi.txt";
-
-            using var newfile = File.Create("conturi-cu-parole.txt");
-            using var logWriter = new StreamWriter(newfile);
-            using var reader = File.OpenText(pathToFile);
-            while (reader.Peek() >= 0)
-            {
-                var fileContent = reader.ReadLine();
-
-                var data = fileContent.Split('\t');
-                var hashed = hashService.GetHash(data[1]);
-
-                logWriter.WriteLine(fileContent + '\t' + hashed);
-            }
-        }
+            logWriter.WriteLine(fileContent + '\t' + hashed);
         }
     }
+}

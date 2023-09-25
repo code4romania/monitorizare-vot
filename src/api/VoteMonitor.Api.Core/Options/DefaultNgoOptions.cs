@@ -1,7 +1,6 @@
-﻿namespace VoteMonitor.Api.Core.Options
+﻿namespace VoteMonitor.Api.Core.Options;
+
+public class DefaultNgoOptions
 {
-    public class DefaultNgoOptions
-    {
-        public int DefaultNgoId { get; set; }
-    }
+    public int DefaultNgoId { get; set; }
 }

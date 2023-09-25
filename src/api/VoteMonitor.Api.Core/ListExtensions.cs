@@ -1,16 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿namespace VoteMonitor.Api.Core;
 
-namespace VoteMonitor.Api.Core
+public static class ListExtensions
 {
-    public static class ListExtensions
+    public static List<T> Paginate<T>(this List<T> unPagedList, int page, int pageSize)
     {
-        public static List<T> Paginate<T>(this List<T> unPagedList, int page, int pageSize)
-        {
-            return unPagedList
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
-        }
+        return unPagedList
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
     }
 }

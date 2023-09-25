@@ -1,15 +1,6 @@
-﻿using MediatR;
+using MediatR;
 using VoteMonitor.Api.Form.Models.Options;
 
-namespace VoteMonitor.Api.Form.Queries
-{
-    public class GetOptionByIdQuery : IRequest<OptionDTO>
-    {
-        public int OptionId { get; }
+namespace VoteMonitor.Api.Form.Queries;
 
-        public GetOptionByIdQuery(int optionId)
-        {
-            OptionId = optionId;
-        }
-    }
-}
+public record GetOptionByIdQuery(int OptionId) : IRequest<OptionDTO>;

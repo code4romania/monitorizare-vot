@@ -1,16 +1,5 @@
-﻿using MediatR;
+using MediatR;
 
-namespace VoteMonitor.Api.Observer.Commands
-{
-    public class ObserverCountCommand : IRequest<int>
-    {
-        public int NgoId { get; }
-        public bool IsCallerOrganizer { get; }
+namespace VoteMonitor.Api.Observer.Commands;
 
-        public ObserverCountCommand(int ngoId, bool isCallerOrganizer)
-        {
-            NgoId = ngoId;
-            IsCallerOrganizer = isCallerOrganizer;
-        }
-    }
-}
+public record ObserverCountCommand(int NgoId, bool IsCallerOrganizer) : IRequest<int>;

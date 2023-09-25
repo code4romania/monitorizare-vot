@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
+﻿namespace VoteMonitor.Api.Form.Models;
 
-namespace VoteMonitor.Api.Form.Models
+public class FormVersionsModel
 {
-    public class FormVersionsModel
-    {
-        public List<FormDetailsModel> FormVersions { get; set; }
-    }
+    public List<FormDetailsModel> FormVersions { get; set; }
 }

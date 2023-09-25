@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
+﻿namespace VoteMonitor.Api.Core;
 
-namespace VoteMonitor.Api.Core
+public class ApiListResponse<T> : PagingResponseModel
 {
-    public class ApiListResponse<T> : PagingResponseModel
-    {
-        public List<T> Data { get; set; }
-    }
+    public List<T> Data { get; set; }
 }

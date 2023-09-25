@@ -1,9 +1,8 @@
-﻿namespace VoteMonitor.Api.Core.Options
+﻿namespace VoteMonitor.Api.Core.Options;
+
+public enum FileStorageType
 {
-    public enum FileStorageType
-    {
-        LocalFileService,
-        BlobService,
-        S3Service,
-    }
+    LocalFileService,
+    BlobService,
+    S3Service,
 }

@@ -1,139 +1,135 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using VoteMonitor.Api.Core;
 using VoteMonitor.Api.Ngo.Commands;
 using VoteMonitor.Api.Ngo.Models;
 using VoteMonitor.Api.Ngo.Queries;
 
-namespace VoteMonitor.Api.Ngo.Controllers
+namespace VoteMonitor.Api.Ngo.Controllers;
+
+[Route("api/v1/ngo")]
+[Authorize("NgoAdmin")]
+public class NgoAdminController : Controller
 {
-    [Route("api/v1/ngo")]
-    [Authorize("NgoAdmin")]
-    public class NgoAdminController : Controller
+    private readonly IMediator _mediator;
+
+    private int UserNgoId => this.GetIdOngOrDefault(-1);
+
+
+    public NgoAdminController(IMediator mediator)
     {
-        private readonly IMediator _mediator;
+        _mediator = mediator;
+    }
 
-        private int NgoId => this.GetIdOngOrDefault(-1);
-
-
-        public NgoAdminController(IMediator mediator)
+    [HttpGet]
+    [Route("{ngoId}/ngoadmin/")]
+    [ProducesResponseType(typeof(List<NgoModel>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> GetAllNgosAsync([FromRoute] int ngoId)
+    {
+        if(UserNgoId != ngoId)
         {
-            _mediator = mediator;
+            return Problem(detail: "Cannot edit that are not in your Ngo", statusCode: StatusCodes.Status400BadRequest);
         }
 
-        [HttpGet]
-        [Route("{idNgo}/ngoadmin/")]
-        [ProducesResponseType(typeof(List<NgoModel>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetAllNgosAsync(int idNgo)
+        var ngosListResult = await _mediator.Send(new GetAllNgoAdmins(ngoId));
+
+        if (ngosListResult.IsFailure)
         {
-            if(NgoId != idNgo)
-            {
-                return Problem(detail: "Cannot edit that are not in your Ngo", statusCode: StatusCodes.Status400BadRequest);
-            }
-
-            var ngosListResult = await _mediator.Send(new GetAllNgoAdmins(idNgo));
-
-            if (ngosListResult.IsFailure)
-            {
-                return Problem(detail: ngosListResult.Error, statusCode: StatusCodes.Status400BadRequest);
-            }
-
-            return Ok(ngosListResult.Value);
+            return Problem(detail: ngosListResult.Error, statusCode: StatusCodes.Status400BadRequest);
         }
 
-        [HttpGet]
-        [Route("{idNgo}/ngoadmin/{ngoAdminId}")]
-        [ProducesResponseType(typeof(NgoModel), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetNgoByIdAsync([FromRoute] int idNgo, [FromRoute] int ngoAdminId)
+        return Ok(ngosListResult.Value);
+    }
+
+    [HttpGet]
+    [Route("{ngoId}/ngoadmin/{adminId}")]
+    [ProducesResponseType(typeof(NgoModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> GetNgoByIdAsync([FromRoute] int ngoId, [FromRoute] int adminId)
+    {
+        if (UserNgoId != ngoId)
         {
-            if (NgoId != idNgo)
-            {
-                return Problem(detail: "Cannot get admins that are not in your Ngo", statusCode: StatusCodes.Status400BadRequest);
-            }
-
-            var ngoDetailsResult = await _mediator.Send(new GetNgoAdminDetails(idNgo, ngoAdminId));
-
-            if (ngoDetailsResult.IsFailure)
-            {
-                return Problem(detail: ngoDetailsResult.Error, statusCode: StatusCodes.Status400BadRequest);
-            }
-
-            return Ok(ngoDetailsResult.Value);
+            return Problem(detail: "Cannot get admins that are not in your Ngo", statusCode: StatusCodes.Status400BadRequest);
         }
 
-        [HttpPost]
-        [Route("{idNgo}/ngoadmin/{ngoAdminId}")]
-        [ProducesResponseType(typeof(List<NgoModel>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> UpdateNgoAdminAsync([FromRoute] int idNgo, [FromRoute] int ngoAdminId, [FromBody] CreateUpdateNgoAdminModel model)
+        var ngoDetailsResult = await _mediator.Send(new GetNgoAdminDetails(ngoId, adminId));
+
+        if (ngoDetailsResult.IsFailure)
         {
-            if (NgoId != idNgo)
-            {
-                return Problem(detail: "Cannot edit admins that are not in your Ngo", statusCode: StatusCodes.Status400BadRequest);
-            }
-
-            var result = await _mediator.Send(new UpdateNgoAdmin(idNgo, ngoAdminId, model));
-
-            if (result.IsFailure)
-            {
-                return Problem(detail: result.Error, statusCode: StatusCodes.Status400BadRequest);
-            }
-
-            return Ok();
+            return Problem(detail: ngoDetailsResult.Error, statusCode: StatusCodes.Status400BadRequest);
         }
 
-        [HttpPost]
-        [Route("{idNgo}/ngoadmin")]
-        [ProducesResponseType(typeof(List<NgoModel>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> CreateNgoAdminAsync([FromRoute] int idNgo, [FromBody] CreateUpdateNgoAdminModel model)
+        return Ok(ngoDetailsResult.Value);
+    }
+
+    [HttpPost]
+    [Route("{idNgo}/ngoadmin/{ngoAdminId}")]
+    [ProducesResponseType(typeof(List<NgoModel>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> UpdateNgoAdminAsync([FromRoute] int idNgo, [FromRoute] int ngoAdminId, [FromBody] CreateUpdateNgoAdminModel model)
+    {
+        if (UserNgoId != idNgo)
         {
-            if (NgoId != idNgo)
-            {
-                return Problem(detail: "Cannot create admins that are not in your Ngo", statusCode: StatusCodes.Status400BadRequest);
-            }
-
-            var result = await _mediator.Send(new CreateNgoAdmin(idNgo, model));
-
-            if (result.IsFailure)
-            {
-                return Problem(detail: result.Error, statusCode: StatusCodes.Status400BadRequest);
-            }
-
-            return Ok();
+            return Problem(detail: "Cannot edit admins that are not in your Ngo", statusCode: StatusCodes.Status400BadRequest);
         }
 
-        [HttpDelete]
-        [Route("{idNgo}/ngoadmin/{ngoAdminId}")]
-        [ProducesResponseType(typeof(List<NgoModel>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> DeleteNgoAdminAsync([FromRoute] int idNgo, [FromRoute] int ngoAdminId)
+        var result = await _mediator.Send(new UpdateNgoAdmin(idNgo, ngoAdminId, model));
+
+        if (result.IsFailure)
         {
-            if (NgoId != idNgo)
-            {
-                return Problem(detail: "Cannot delete admins that are not in your Ngo", statusCode: StatusCodes.Status400BadRequest);
-            }
-
-            var result = await _mediator.Send(new DeleteNgoAdmin(idNgo, ngoAdminId));
-
-            if (result.IsFailure)
-            {
-                return Problem(detail: result.Error, statusCode: StatusCodes.Status400BadRequest);
-            }
-
-            return Ok();
+            return Problem(detail: result.Error, statusCode: StatusCodes.Status400BadRequest);
         }
+
+        return Ok();
+    }
+
+    [HttpPost]
+    [Route("{idNgo}/ngoadmin")]
+    [ProducesResponseType(typeof(List<NgoModel>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> CreateNgoAdminAsync([FromRoute] int idNgo, [FromBody] CreateUpdateNgoAdminModel model)
+    {
+        if (UserNgoId != idNgo)
+        {
+            return Problem(detail: "Cannot create admins that are not in your Ngo", statusCode: StatusCodes.Status400BadRequest);
+        }
+
+        var result = await _mediator.Send(new CreateNgoAdmin(idNgo, model));
+
+        if (result.IsFailure)
+        {
+            return Problem(detail: result.Error, statusCode: StatusCodes.Status400BadRequest);
+        }
+
+        return Ok();
+    }
+
+    [HttpDelete]
+    [Route("{idNgo}/ngoadmin/{ngoAdminId}")]
+    [ProducesResponseType(typeof(List<NgoModel>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> DeleteNgoAdminAsync([FromRoute] int idNgo, [FromRoute] int ngoAdminId)
+    {
+        if (UserNgoId != idNgo)
+        {
+            return Problem(detail: "Cannot delete admins that are not in your Ngo", statusCode: StatusCodes.Status400BadRequest);
+        }
+
+        var result = await _mediator.Send(new DeleteNgoAdmin(idNgo, ngoAdminId));
+
+        if (result.IsFailure)
+        {
+            return Problem(detail: result.Error, statusCode: StatusCodes.Status400BadRequest);
+        }
+
+        return Ok();
     }
 }

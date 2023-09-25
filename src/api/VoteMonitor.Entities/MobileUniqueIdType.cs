@@ -1,8 +1,7 @@
-﻿namespace VoteMonitor.Entities
+﻿namespace VoteMonitor.Entities;
+
+public enum MobileDeviceIdType
 {
-    public enum MobileDeviceIdType
-    {
-        UserGeneratedGuid,
-        FcmToken
-    }
+    UserGeneratedGuid,
+    FcmToken
 }

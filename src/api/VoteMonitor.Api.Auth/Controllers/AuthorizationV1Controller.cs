@@ -1,87 +1,80 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System.Linq;
-using System.Threading.Tasks;
 using VoteMonitor.Api.Auth.Models;
 using VoteMonitor.Api.Core.Models;
 using VoteMonitor.Api.Core.Options;
 using VoteMonitor.Entities;
 
-namespace VoteMonitor.Api.Auth.Controllers
+namespace VoteMonitor.Api.Auth.Controllers;
+
+/// <inheritdoc />
+[ApiController]
+[Route("api/v1/access")]
+public class AuthorizationV1Controller : AuthorizationControllerBase
 {
+    private readonly ILogger _logger;
+    private readonly MobileSecurityOptions _mobileSecurityOptions;
+    private readonly JwtIssuerOptions _jwtOptions;
+
     /// <inheritdoc />
-    [Route("api/v1/access")]
-    public class AuthorizationV1Controller : AuthorizationControllerBase
+    public AuthorizationV1Controller(IOptions<JwtIssuerOptions> jwtOptions, ILogger<AuthorizationV1Controller> logger, IMediator mediator, IOptions<MobileSecurityOptions> mobileSecurityOptions)
+        : base(jwtOptions, mediator, mobileSecurityOptions)
     {
-        private readonly ILogger _logger;
-        private readonly MobileSecurityOptions _mobileSecurityOptions;
-        private readonly JwtIssuerOptions _jwtOptions;
+        _logger = logger;
+        _mobileSecurityOptions = mobileSecurityOptions.Value;
+        _jwtOptions = jwtOptions.Value;
+    }
 
-        /// <inheritdoc />
-        public AuthorizationV1Controller(IOptions<JwtIssuerOptions> jwtOptions, ILogger<AuthorizationV1Controller> logger, IMediator mediator, IOptions<MobileSecurityOptions> mobileSecurityOptions)
-            : base(jwtOptions, mediator, mobileSecurityOptions)
+    [HttpPost("authorize")]
+    [AllowAnonymous]
+    [ProducesResponseType(typeof(AuthenticationResponseModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> AuthenticateUser([FromBody] AuthenticateUserRequest request)
+    {
+        var identity = await GetClaimsIdentity(request.User, request.Password, request.UniqueId, MobileDeviceIdType.UserGeneratedGuid);
+
+        if (identity == null)
         {
-            _logger = logger;
-            _mobileSecurityOptions = mobileSecurityOptions.Value;
-            _jwtOptions = jwtOptions.Value;
+            var haveUniqueId = !string.IsNullOrEmpty(request.UniqueId);
+
+            _logger.LogInformation($"Invalid {(haveUniqueId ? "Phone" : "UserName")} ({request.User}) or password");
+
+            return BadRequest(haveUniqueId
+                ? _mobileSecurityOptions.InvalidCredentialsErrorMessage
+                : "Invalid credentials");
         }
 
-        [HttpPost("authorize")]
-        [AllowAnonymous]
-        [ProducesResponseType(typeof(AuthenticationResponseModel), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> AuthenticateUser([FromBody] AuthenticateUserRequest request)
+        var token = GetTokenFromIdentity(identity);
+
+        // Serialize and return the response
+        var response = new AuthenticationResponseModel
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            access_token = token,
+            expires_in = (int)_jwtOptions.ValidFor.TotalSeconds
+        };
 
-            var identity = await GetClaimsIdentity(request.User, request.Password, request.UniqueId, MobileDeviceIdType.UserGeneratedGuid);
+        return Ok(response);
+    }
 
-            if (identity == null)
-            {
-                var haveUniqueId = !string.IsNullOrEmpty(request.UniqueId);
-
-                _logger.LogInformation($"Invalid {(haveUniqueId ? "Phone" : "UserName")} ({request.User}) or password");
-
-                return BadRequest(haveUniqueId
-                    ? _mobileSecurityOptions.InvalidCredentialsErrorMessage
-                    : "Invalid credentials");
-            }
-
-            var token = GetTokenFromIdentity(identity);
-
-            // Serialize and return the response
-            var response = new AuthenticationResponseModel
-            {
-                access_token = token,
-                expires_in = (int)_jwtOptions.ValidFor.TotalSeconds
-            };
-
-            return Ok(response);
-        }
-
-        /// <summary>
-        /// Test action to get claims
-        /// </summary>
-        /// <returns></returns>
-        [Authorize]
-        [HttpPost("test")]
-        public async Task<object> Test()
+    /// <summary>
+    /// Test action to get claims
+    /// </summary>
+    /// <returns></returns>
+    [Authorize]
+    [HttpPost("test")]
+    public async Task<object> Test()
+    {
+        var claims = User.Claims.Select(c => new
         {
-            var claims = User.Claims.Select(c => new
-            {
-                c.Type,
-                c.Value
-            });
+            c.Type,
+            c.Value
+        });
 
-            return await Task.FromResult(claims);
-        }
+        return await Task.FromResult(claims);
     }
 }

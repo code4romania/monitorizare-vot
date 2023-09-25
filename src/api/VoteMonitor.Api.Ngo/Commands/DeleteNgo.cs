@@ -1,15 +1,6 @@
-﻿using CSharpFunctionalExtensions;
+using CSharpFunctionalExtensions;
 using MediatR;
 
-namespace VoteMonitor.Api.Ngo.Commands
-{
-    public class DeleteNgo : IRequest<Result>
-    {
-        public int Id { get; }
+namespace VoteMonitor.Api.Ngo.Commands;
 
-        public DeleteNgo(int id)
-        {
-            Id = id;
-        }
-    }
-}
+public record DeleteNgo(int Id) : IRequest<Result>;

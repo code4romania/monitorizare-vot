@@ -1,65 +1,75 @@
-﻿using MediatR;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+using MediatR;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.StaticFiles;
 using VoteMonitor.Api.Core.Commands;
+using VoteMonitor.Api.Core.Models;
 using VoteMonitor.Api.Core.Services;
 
-namespace VoteMonitor.Api.Core.Handlers
+namespace VoteMonitor.Api.Core.Handlers;
+
+public class UploadFileHandler : IRequestHandler<UploadFileCommandV2, UploadedFileModel[]>,
+    IRequestHandler<UploadFileCommand, UploadedFileModel>
 {
-    public class UploadFileHandler : IRequestHandler<UploadFileCommandV2, string[]>,
-        IRequestHandler<UploadFileCommand, string>
+    private readonly IFileService _fileService;
+    private readonly FileExtensionContentTypeProvider _fileExtensionContentTypeProvider;
+
+    public UploadFileHandler(IFileService fileService, FileExtensionContentTypeProvider fileExtensionContentTypeProvider)
     {
-        private readonly IFileService _fileService;
+        _fileService = fileService;
+        _fileExtensionContentTypeProvider = fileExtensionContentTypeProvider;
+    }
 
-        public UploadFileHandler(IFileService fileService)
+    /// <summary>
+    ///  Uploads a list of files in blob storage
+    /// </summary>
+    /// <returns>The url of the blob</returns>
+    public async Task<UploadedFileModel[]> Handle(UploadFileCommandV2 message, CancellationToken cancellationToken)
+    {
+        if (message.Files != null && message.Files.Any())
         {
-            _fileService = fileService;
-        }
+            var uploadTasks = new List<Task<UploadedFileModel>>();
 
-        /// <summary>
-        ///  Uploads a list of files in blob storage
-        /// </summary>
-        /// <returns>The url of the blob</returns>
-        public async Task<string[]> Handle(UploadFileCommandV2 message, CancellationToken cancellationToken)
-        {
-            if (message.Files != null && message.Files.Any())
+            foreach (var file in message.Files)
             {
-                List<Task<string>> uploadTasks = new List<Task<string>>();
+                var uploadTask = UploadFileAsync(file, message.UploadType);
 
-                foreach (var file in message.Files)
-                {
-                    var uploadTask =  _fileService.UploadFromStreamAsync(file.OpenReadStream(),
-                    file.ContentType,
-                    Path.GetExtension(file.FileName),
-                    message.UploadType);
-
-                    uploadTasks.Add(uploadTask);
-                }
-
-                string[] files = await Task.WhenAll(uploadTasks);
-
-                return files;
+                uploadTasks.Add(uploadTask);
             }
 
-            return new string[0];
+            UploadedFileModel[] paths = await Task.WhenAll(uploadTasks);
+
+            return paths;
         }
 
-        [Obsolete("Will be removed when ui will use multiple files upload")]
-        public async Task<string> Handle(UploadFileCommand message, CancellationToken cancellationToken)
+        return Array.Empty<UploadedFileModel>();
+    }
+
+
+
+    [Obsolete("Will be removed when ui will use multiple files upload")]
+    public async Task<UploadedFileModel> Handle(UploadFileCommand message, CancellationToken cancellationToken)
+    {
+        if (message.File != null)
         {
-            if (message.File != null)
-            {
-                return await _fileService.UploadFromStreamAsync(message.File.OpenReadStream(),
-                    message.File.ContentType,
-                    Path.GetExtension(message.File.FileName),
-                    message.UploadType);
-            }
+            var fileExtension = Path.GetExtension(message.File.FileName);
+            _fileExtensionContentTypeProvider.TryGetContentType(fileExtension, out var contentType);
 
-            return string.Empty;
+            return await UploadFileAsync(message.File, message.UploadType);
         }
+
+        return null;
+    }
+
+    private async Task<UploadedFileModel> UploadFileAsync(IFormFile file, UploadType uploadType)
+    {
+        var fileExtension = Path.GetExtension(file.FileName);
+        _fileExtensionContentTypeProvider.TryGetContentType(fileExtension, out var contentType);
+
+        var path = await _fileService.UploadFromStreamAsync(file.OpenReadStream(),
+            contentType ?? file.ContentType,
+            fileExtension,
+            uploadType);
+
+        return path;
     }
 }

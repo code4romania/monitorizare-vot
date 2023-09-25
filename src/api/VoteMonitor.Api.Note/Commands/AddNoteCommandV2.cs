@@ -1,13 +1,22 @@
-﻿using MediatR;
+using MediatR;
+using VoteMonitor.Api.Core.Models;
 
-namespace VoteMonitor.Api.Note.Commands
+namespace VoteMonitor.Api.Note.Commands;
+
+public record AddNoteCommandV2 : IRequest<int>
 {
-    public class AddNoteCommandV2 : IRequest<int>
+    public int ObserverId { get;  }
+    public int PollingStationId { get;  }
+    public int? QuestionId { get;  }
+    public string Text { get;  }
+    public UploadedFileModel[] Attachments { get;  }
+
+    public AddNoteCommandV2(int observerId, int pollingStationId, int? questionId, string text, UploadedFileModel[] attachments = null)
     {
-        public int IdObserver { get; set; }
-        public int IdPollingStation { get; set; }
-        public int? IdQuestion { get; set; }
-        public string Text { get; set; }
-        public string[] AttachmentPaths { get; set; }
+        ObserverId = observerId;
+        PollingStationId = pollingStationId;
+        QuestionId = questionId;
+        Text = text;
+        Attachments = attachments ?? Array.Empty<UploadedFileModel>();
     }
 }

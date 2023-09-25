@@ -1,11 +1,7 @@
-﻿using System.Collections.Generic;
 using CSharpFunctionalExtensions;
 using MediatR;
 using VoteMonitor.Api.County.Models;
 
-namespace VoteMonitor.Api.County.Queries
-{
-    public class GetAllCounties : IRequest<Result<List<CountyModel>>>
-    {
-    }
-}
+namespace VoteMonitor.Api.County.Queries;
+
+public record GetAllCounties : IRequest<Result<List<CountyModel>>>;

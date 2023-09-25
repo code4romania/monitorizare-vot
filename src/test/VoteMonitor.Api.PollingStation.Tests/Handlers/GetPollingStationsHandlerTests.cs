@@ -1,141 +1,165 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoMapper;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Logging;
 using Moq;
 using VoteMonitor.Api.PollingStation.Handlers;
-using VoteMonitor.Api.PollingStation.Profiles;
 using VoteMonitor.Api.PollingStation.Queries;
 using VoteMonitor.Entities;
 using Xunit;
 
-namespace VoteMonitor.Api.PollingStation.Tests.Handlers
+namespace VoteMonitor.Api.PollingStation.Tests.Handlers;
+
+public class GetPollingStationsHandlerTests
 {
-    public class GetPollingStationsHandlerTests
+    private readonly DbContextOptions<VoteMonitorContext> _dbContextOptions;
+    private readonly Mock<ILogger<GetPollingStationsHandler>> _mockLogger;
+
+    public GetPollingStationsHandlerTests()
     {
-        private readonly DbContextOptions<VoteMonitorContext> _dbContextOptions;
-        private readonly MapperConfiguration _mapperConfiguration;
-        private readonly Mock<ILogger<GetPollingStationsHandler>> _mockLogger;
+        _dbContextOptions = new DbContextOptionsBuilder<VoteMonitorContext>()
+            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+            .ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning))
+            .Options;
 
-        public GetPollingStationsHandlerTests()
+        _mockLogger = new Mock<ILogger<GetPollingStationsHandler>>();
+    }
+
+    [Fact]
+    public async Task Handle_WithDefaultPage_ReturnsFirstPageResults()
+    {
+        SetupContextWithPollingStations(new List<Entities.PollingStation>
         {
-            _dbContextOptions = new DbContextOptionsBuilder<VoteMonitorContext>()
-                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-                .ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning))
-                .Options;
+            new PollingStationBuilder().WithId(1).Build()
+        });
 
-            _mapperConfiguration = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<PollingStationProfile>();
-            });
+        using (var context = new VoteMonitorContext(_dbContextOptions))
+        {
+            var sut = new GetPollingStationsHandler(context, _mockLogger.Object);
 
-            _mockLogger = new Mock<ILogger<GetPollingStationsHandler>>();
+            var getPollingStations = new GetPollingStations(CountyId: 0, Page: 1, PageSize: 10);
+            var result = await sut.Handle(getPollingStations, new CancellationToken());
+
+            result.Count().Should().Be(1);
+            result.First().Id.Should().Be(1);
         }
+    }
 
-        [Fact]
-        public async Task Handle_WithDefaultPage_ReturnsFirstPageResults()
+    [Fact]
+    public async Task Handle_WithSecondPage_ReturnsSecondPageResults()
+    {
+        SetupContextWithMunicipalities(new[]
         {
-            SetupContextWithPollingStations(new List<Entities.PollingStation>
+            new Municipality()
             {
-                new PollingStationBuilder().WithId(1).Build()
-            });
-
-            using (var context = new VoteMonitorContext(_dbContextOptions))
-            {
-                var sut = new GetPollingStationsHandler(context, new Mapper(_mapperConfiguration), _mockLogger.Object);
-
-                var getPollingStations = new GetPollingStations
+                Id = 13,
+                Code = "m",
+                Name = "municipality",
+                County = new County()
                 {
-                    PageSize = 10
-                };
-                var result = await sut.Handle(getPollingStations, new CancellationToken());
-
-                result.Count().Should().Be(1);
-                result.First().Id.Should().Be(1);
+                    Id = 10,
+                    Code = "c",
+                    Name = "county",
+                }
             }
-        }
-
-        [Fact]
-        public async Task Handle_WithSecondPage_ReturnsSecondPageResults()
+        });
+        SetupContextWithPollingStations(new List<Entities.PollingStation>
         {
-            SetupContextWithPollingStations(new List<Entities.PollingStation>
-            {
-                new PollingStationBuilder().WithId(1).Build(),
-                new PollingStationBuilder().WithId(2).Build()
-            });
+            new PollingStationBuilder().WithId(1).WithMunicipalityId(13).Build(),
+            new PollingStationBuilder().WithId(2).WithMunicipalityId(13).Build()
+        });
 
-            using (var context = new VoteMonitorContext(_dbContextOptions))
-            {
-                var sut = new GetPollingStationsHandler(context, new Mapper(_mapperConfiguration), _mockLogger.Object);
+        using (var context = new VoteMonitorContext(_dbContextOptions))
+        {
+            var sut = new GetPollingStationsHandler(context, _mockLogger.Object);
+            var getPollingStations = new GetPollingStations(CountyId: 10, Page: 2, PageSize: 1);
+            var result = await sut.Handle(getPollingStations, new CancellationToken());
 
-                var getPollingStations = new GetPollingStations
+            result.Count().Should().Be(1);
+            result.First().Id.Should().Be(2);
+        }
+    }
+
+    [Fact]
+    public async Task Handle_WithIdCounty_ReturnsCorrectResults()
+    {
+        SetupContextWithMunicipalities(new[]
+        {
+            new Municipality()
+            {
+                Id = 13,
+                Code = "m1",
+                Name = "municipality1",
+                County = new County()
                 {
-                    Page = 2,
-                    PageSize = 1
-                };
-                var result = await sut.Handle(getPollingStations, new CancellationToken());
-
-                result.Count().Should().Be(1);
-                result.First().Id.Should().Be(2);
-            }
-        }
-
-        [Fact]
-        public async Task Handle_WithIdCounty_ReturnsCorrectResults()
-        {
-            SetupContextWithPollingStations(new List<Entities.PollingStation>
+                    Id = 10,
+                    Code = "c1",
+                    Name = "county1",
+                }
+            },
+            new Municipality()
             {
-                new PollingStationBuilder().WithId(1).WithIdCounty(5).Build(),
-                new PollingStationBuilder().WithId(2).WithIdCounty(20).Build()
-            });
-
-            using (var context = new VoteMonitorContext(_dbContextOptions))
-            {
-                var sut = new GetPollingStationsHandler(context, new Mapper(_mapperConfiguration), _mockLogger.Object);
-
-                var getPollingStations = new GetPollingStations
+                Id = 14,
+                Code = "m2",
+                Name = "municipality2",
+                County = new County()
                 {
-                    CountyId = 20,
-                    Page = 1,
-                    PageSize = 1
-                };
-                var result = await sut.Handle(getPollingStations, new CancellationToken());
-
-                result.Count().Should().Be(1);
-                result.First().Id.Should().Be(2);
+                    Id = 20,
+                    Code = "c2",
+                    Name = "county2",
+                }
             }
-        }
+        });
 
-        [Fact]
-        public async Task Handle_WhenExceptionIsThrown_ShouldLogError()
+        SetupContextWithPollingStations(new List<Entities.PollingStation>
         {
-            var mockContext = new Mock<VoteMonitorContext>(_dbContextOptions);
-            mockContext.Setup(m => m.PollingStations).Throws(new Exception());
-            var sut = new GetPollingStationsHandler(mockContext.Object, new Mapper(_mapperConfiguration), _mockLogger.Object);
+            new PollingStationBuilder().WithId(1).WithMunicipalityId(13).Build(),
+            new PollingStationBuilder().WithId(2).WithMunicipalityId(14).Build()
+        });
 
-            await Record.ExceptionAsync(async () => await sut.Handle(new GetPollingStations(), new CancellationToken()));
-
-            _mockLogger.Verify(x => x.Log(
-                LogLevel.Error,
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => true),
-                It.IsAny<Exception>(),
-                It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)), Times.Once);
-        }
-
-        private void SetupContextWithPollingStations(IEnumerable<Entities.PollingStation> pollingStations)
+        using (var context = new VoteMonitorContext(_dbContextOptions))
         {
-            using (var context = new VoteMonitorContext(_dbContextOptions))
-            {
-                context.PollingStations.AddRange(pollingStations);
-                context.SaveChanges();
-            }
+            var sut = new GetPollingStationsHandler(context, _mockLogger.Object);
+
+            var getPollingStations = new GetPollingStations(CountyId: 20, Page: 1, PageSize: 1);
+            var result = await sut.Handle(getPollingStations, new CancellationToken());
+
+            result.Count().Should().Be(1);
+            result.First().Id.Should().Be(2);
+        }
+    }
+
+    [Fact]
+    public async Task Handle_WhenExceptionIsThrown_ShouldLogError()
+    {
+        var mockContext = new Mock<VoteMonitorContext>(_dbContextOptions);
+        mockContext.Setup(m => m.PollingStations).Throws(new Exception());
+        var sut = new GetPollingStationsHandler(mockContext.Object, _mockLogger.Object);
+
+        await Record.ExceptionAsync(async () => await sut.Handle(new GetPollingStations(CountyId: 0, Page: 1, PageSize: 10), new CancellationToken()));
+
+        _mockLogger.Verify(x => x.Log(
+            LogLevel.Error,
+            It.IsAny<EventId>(),
+            It.Is<It.IsAnyType>((v, t) => true),
+            It.IsAny<Exception>(),
+            It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)), Times.Once);
+    }
+
+    private void SetupContextWithMunicipalities(IEnumerable<Municipality> municipalities)
+    {
+        using (var context = new VoteMonitorContext(_dbContextOptions))
+        {
+            context.Municipalities.AddRange(municipalities);
+            context.SaveChanges();
+        }
+    }
+    private void SetupContextWithPollingStations(IEnumerable<Entities.PollingStation> pollingStations)
+    {
+        using (var context = new VoteMonitorContext(_dbContextOptions))
+        {
+            context.PollingStations.AddRange(pollingStations);
+            context.SaveChanges();
         }
     }
 }

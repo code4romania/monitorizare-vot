@@ -1,8 +1,7 @@
-﻿namespace VoteMonitor.Api.Core.Options
+﻿namespace VoteMonitor.Api.Core.Options;
+
+public class PollingStationsOptions
 {
-    public class PollingStationsOptions
-    {
-        public bool OverrideDefaultSorting { get; set; }
-        public string CodeOfFirstToDisplayCounty { get; set; }
-    }
+    public bool OverrideDefaultSorting { get; set; }
+    public string CodeOfFirstToDisplayCounty { get; set; }
 }

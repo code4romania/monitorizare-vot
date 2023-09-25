@@ -1,8 +1,7 @@
-﻿namespace VoteMonitor.Api.Note.Models
+﻿namespace VoteMonitor.Api.Note.Models;
+
+public class NoteFilterModel
 {
-    public class NoteFilterModel
-    {
-        public int IdPollingStaion { get; set; }
-        public int IdObserver { get; set; }
-    }
+    public int IdPollingStaion { get; set; }
+    public int IdObserver { get; set; }
 }

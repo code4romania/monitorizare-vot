@@ -1,8 +1,7 @@
-namespace VotingIrregularities.Domain.Seed.Options
+namespace VotingIrregularities.Domain.Seed.Options;
+
+public enum HashServiceType
 {
-    public enum HashServiceType
-    {
-        Hash,
-        ClearText
-    }
+    Hash,
+    ClearText
 }

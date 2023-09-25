@@ -1,9 +1,5 @@
-﻿using MediatR;
+using MediatR;
 
-namespace VoteMonitor.Api.Form.Queries
-{
-    public class GetFormExistsByIdQuery : IRequest<bool>
-    {
-        public int Id { get; set; }
-    }
-}
+namespace VoteMonitor.Api.Form.Queries;
+
+public record GetFormExistsByIdQuery(int Id) : IRequest<bool>;

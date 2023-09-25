@@ -1,12 +1,17 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Http;
-using System.Collections.Generic;
+using VoteMonitor.Api.Core.Models;
 
-namespace VoteMonitor.Api.Core.Commands
+namespace VoteMonitor.Api.Core.Commands;
+
+public class UploadFileCommandV2 : IRequest<UploadedFileModel[]>
 {
-    public class UploadFileCommandV2 : IRequest<string[]>
+    public UploadFileCommandV2(List<IFormFile> files, UploadType uploadType)
     {
-        public List<IFormFile> Files { get; set; }
-        public UploadType UploadType { get; set; }
+        Files = files.ToList().AsReadOnly();
+        UploadType = uploadType;
     }
+
+    public IReadOnlyCollection<IFormFile> Files { get; }
+    public UploadType UploadType { get; }
 }

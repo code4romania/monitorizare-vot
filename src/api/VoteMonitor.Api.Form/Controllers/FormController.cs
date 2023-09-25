@@ -3,176 +3,158 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using VoteMonitor.Api.Core.Options;
 using VoteMonitor.Api.Form.Commands;
 using VoteMonitor.Api.Form.Models;
 using VoteMonitor.Api.Form.Queries;
 
-namespace VoteMonitor.Api.Form.Controllers
+namespace VoteMonitor.Api.Form.Controllers;
+
+/// <inheritdoc />
+/// <summary>
+/// Form Controller offers support for CRUD Operations on the forms completed by observers.
+/// </summary>
+[ApiController]
+[Route("api/v1/form")]
+public class FormController : Controller
 {
-    /// <inheritdoc />
-    /// <summary>
-    /// Form Controller offers support for CRUD Operations on the forms completed by observers.
-    /// </summary>
+    private readonly ApplicationCacheOptions _cacheOptions;
+    private readonly IMediator _mediator;
 
-    [Route("api/v1/form")]
-    public class FormController : Controller
+    public FormController(IMediator mediator, IOptions<ApplicationCacheOptions> cacheOptions)
     {
-        private readonly ApplicationCacheOptions _cacheOptions;
-        private readonly IMediator _mediator;
+        _cacheOptions = cacheOptions.Value;
+        _mediator = mediator;
+    }
 
-        public FormController(IMediator mediator, IOptions<ApplicationCacheOptions> cacheOptions)
+    [HttpPost]
+    [Authorize("NgoAdmin")]
+    public async Task<ActionResult<int>> AddForm([FromBody] FormDTO newForm)
+    {
+        var formExists = await _mediator.Send(new ExistsFormByCodeOrIdQuery(newForm.Id, newForm.Code));
+
+        if (formExists)
         {
-            _cacheOptions = cacheOptions.Value;
-            _mediator = mediator;
+            return BadRequest($"The form with the given code/id already exists");
         }
 
-        [HttpPost]
-        [Authorize("NgoAdmin")]
-        public async Task<ActionResult<int>> AddForm([FromBody] FormDTO newForm)
-        {
-            var formExists = await _mediator.Send(new ExistsFormByCodeOrIdQuery()
-            {
-                Id = newForm.Id,
-                Code = newForm.Code
-            });
+        var result = await _mediator.Send(new AddFormCommand(newForm));
+        return result.Id;
+    }
 
-            if (formExists)
+    [HttpPut]
+    [Authorize("Organizer")]
+    public async Task<ActionResult> UpdateForm([FromBody] FormDTO newForm)
+    {
+        var formExists = await _mediator.Send(new GetFormExistsByIdQuery(newForm.Id));
+        if (!formExists)
+        {
+            return NotFound($"The form with id {newForm.Id} was not found.");
+        }
+
+        var result = await _mediator.Send(new UpdateFormCommand(newForm, newForm.Id));
+        return Ok(result.Id);
+    }
+    /// <summary>
+    /// Returneaza versiunea tuturor formularelor sub forma unui array. 
+    /// Daca versiunea returnata difera de cea din aplicatie, atunci trebuie incarcat formularul din nou 
+    /// </summary>
+    /// <returns></returns>
+    [Authorize]
+    [HttpGet("versions")]
+    [Produces(typeof(Dictionary<string, int>))]
+    public async Task<IActionResult> GetFormVersions()
+    {
+        var formsAsDict = new Dictionary<string, int>();
+        (await _mediator.Send(new FormVersionQuery(null, null))).ForEach(form => formsAsDict.Add(form.Code, form.CurrentVersion));
+
+        return Ok(new { Versions = formsAsDict });
+    }
+
+    /// <summary>
+    /// Returns an array of forms
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> GetFormsAsync(bool? diaspora, bool? draft)
+        => Ok(new FormVersionsModel { FormVersions = await _mediator.Send(new FormVersionQuery(diaspora, draft)) });
+
+    /// <summary>
+    /// Se interogheaza ultima versiunea a formularului pentru observatori si se primeste definitia lui. 
+    /// In definitia unui formular nu intra intrebarile standard (ora sosirii, etc). 
+    /// Acestea se considera implicite pe fiecare formular.
+    /// </summary>
+    /// <param name="formId">Id-ul formularului pentru care trebuie preluata definitia</param>
+    /// <returns></returns>
+    [HttpGet("{formId}")]
+    [Authorize]
+    public async Task<IEnumerable<FormSectionDTO>> GetFormAsync([FromRoute] int formId)
+    {
+        var result = await _mediator.Send(new FormQuestionQuery(formId,
+            _cacheOptions.Hours,
+           _cacheOptions.Minutes,
+           _cacheOptions.Seconds
+        ));
+
+        return result;
+    }
+
+    [HttpDelete]
+    [Authorize("Organizer")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> DeleteForm(int formId)
+    {
+        var result = await _mediator.Send(new DeleteFormCommand(formId));
+
+        if (result.IsFailure)
+        {
+            switch (result.Error)
             {
-                return BadRequest($"The form with the given code/id already exists");
+                case DeleteFormErrorType.FormHasAnswers:
+                    return BadRequest("Could not delete with form that has answers.");
+                case DeleteFormErrorType.FormNotFound:
+                    return BadRequest("Could not find form with requested id.");
+                case DeleteFormErrorType.FormNotDraft:
+                    return BadRequest("Could not delete a non draft form.");
+                default:
+                    return BadRequest("An error occured when deleting form.");
             }
-
-            var result = await _mediator.Send(new AddFormCommand { Form = newForm });
-            return result.Id;
         }
 
-        [HttpPut]
-        [Authorize("Organizer")]
-        public async Task<ActionResult> UpdateForm([FromBody] FormDTO newForm)
+        return Ok();
+    }
+
+    [HttpDelete("section/{sectionId}")]
+    [Authorize("Organizer")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> DeleteSection(int sectionId)
+    {
+        var deleted = await _mediator.Send(new DeleteSectionCommand(sectionId));
+
+        if (!deleted)
         {
-            var formExists = await _mediator.Send(new GetFormExistsByIdQuery() { Id = newForm.Id });
-            if (!formExists)
-            {
-                return NotFound($"The form with id {newForm.Id} was not found.");
-            }
-
-            var result = await _mediator.Send(new UpdateFormCommand { Id = newForm.Id, Form = newForm });
-            return Ok(result.Id);
+            return BadRequest("The section could not be deleted. Make sure the section exists and it doesn't already have saved answers.");
         }
-        /// <summary>
-        /// Returneaza versiunea tuturor formularelor sub forma unui array. 
-        /// Daca versiunea returnata difera de cea din aplicatie, atunci trebuie incarcat formularul din nou 
-        /// </summary>
-        /// <returns></returns>
-        [Authorize]
-        [HttpGet("versions")]
-        [Produces(typeof(Dictionary<string, int>))]
-        public async Task<IActionResult> GetFormVersions()
+
+        return Ok();
+    }
+
+    [HttpDelete("section/{sectionId}/question/{questionId}")]
+    [Authorize("Organizer")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> DeleteQuestionAsync(int sectionId, int questionId)
+    {
+        var deleted = await _mediator.Send(new DeleteQuestionCommand(sectionId, questionId));
+
+        if (!deleted)
         {
-            var formsAsDict = new Dictionary<string, int>();
-            (await _mediator.Send(new FormVersionQuery(null, null))).ForEach(form => formsAsDict.Add(form.Code, form.CurrentVersion));
-
-            return Ok(new { Versions = formsAsDict });
+            return BadRequest("The question could not be deleted. Make sure the question exists.");
         }
 
-        /// <summary>
-        /// Returns an array of forms
-        /// </summary>
-        /// <returns></returns>
-        [Authorize]
-        [HttpGet]
-        public async Task<IActionResult> GetFormsAsync(bool? diaspora, bool? draft)
-            => Ok(new FormVersionsModel { FormVersions = await _mediator.Send(new FormVersionQuery(diaspora, draft)) });
-
-        /// <summary>
-        /// Se interogheaza ultima versiunea a formularului pentru observatori si se primeste definitia lui. 
-        /// In definitia unui formular nu intra intrebarile standard (ora sosirii, etc). 
-        /// Acestea se considera implicite pe fiecare formular.
-        /// </summary>
-        /// <param name="formId">Id-ul formularului pentru care trebuie preluata definitia</param>
-        /// <returns></returns>
-        [Authorize]
-        [HttpGet("{formId}")]
-        public async Task<IEnumerable<FormSectionDTO>> GetFormAsync(int formId)
-        {
-            var result = await _mediator.Send(new FormQuestionQuery
-            {
-                FormId = formId,
-                CacheHours = _cacheOptions.Hours,
-                CacheMinutes = _cacheOptions.Minutes,
-                CacheSeconds = _cacheOptions.Seconds
-            });
-
-            return result;
-        }
-
-        [HttpDelete]
-        [Authorize("Organizer")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> DeleteForm(int formId)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var result = await _mediator.Send(new DeleteFormCommand { FormId = formId });
-
-            if (result.IsFailure)
-            {
-                switch (result.Error)
-                {
-                    case DeleteFormErrorType.FormHasAnswers:
-                        return BadRequest("Could not delete with form that has answers.");
-                    case DeleteFormErrorType.FormNotFound:
-                        return BadRequest("Could not find form with requested id.");
-                    case DeleteFormErrorType.FormNotDraft:
-                        return BadRequest("Could not delete a non draft form.");
-                    default:
-                        return BadRequest("An error occured when deleting form.");
-                }
-            }
-
-            return Ok();
-        }
-
-        [HttpDelete("section/{sectionId}")]
-        [Authorize("Organizer")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> DeleteSection(int sectionId)
-        {
-            var deleted = await _mediator.Send(new DeleteSectionCommand { SectionId = sectionId });
-
-            if (!deleted)
-            {
-                return BadRequest("The section could not be deleted. Make sure the section exists and it doesn't already have saved answers.");
-            }
-
-            return Ok();
-        }
-
-        [HttpDelete("section/{sectionId}/question/{questionId}")]
-        [Authorize("Organizer")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> DeleteQuestionAsync(int sectionId, int questionId)
-        {
-            var deleted = await _mediator.Send(new DeleteQuestionCommand()
-            {
-                QuestionId = questionId,
-                SectionId = sectionId
-            });
-
-            if (!deleted)
-            {
-                return BadRequest("The question could not be deleted. Make sure the question exists.");
-            }
-
-            return Ok();
-        }
+        return Ok();
     }
 }

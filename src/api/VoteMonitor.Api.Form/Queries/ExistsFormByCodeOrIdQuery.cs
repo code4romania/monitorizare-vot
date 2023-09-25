@@ -1,10 +1,5 @@
 using MediatR;
 
-namespace VoteMonitor.Api.Form.Queries
-{
-    public class ExistsFormByCodeOrIdQuery : IRequest<bool>
-    {
-        public int Id { get; set; }
-        public string Code { get; set; }
-    }
-}
+namespace VoteMonitor.Api.Form.Queries;
+
+public record ExistsFormByCodeOrIdQuery(int Id, string Code) : IRequest<bool>;

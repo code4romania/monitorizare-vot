@@ -1,7 +1,6 @@
-﻿namespace VoteMonitor.Api.Observer.Models
+namespace VoteMonitor.Api.Observer.Models;
+
+public class RemoveDeviceIdModel
 {
-    public class RemoveDeviceIdModel
-    {
-        public int Id { get; set; }
-    }
+    public int Id { get; set; }
 }

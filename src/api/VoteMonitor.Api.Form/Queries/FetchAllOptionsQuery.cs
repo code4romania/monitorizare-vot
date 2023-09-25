@@ -1,11 +1,6 @@
-﻿using MediatR;
-using System.Collections.Generic;
+using MediatR;
 using VoteMonitor.Api.Form.Models.Options;
 
-namespace VoteMonitor.Api.Form.Queries
-{
-    public class FetchAllOptionsQuery : IRequest<List<OptionDTO>>
-    {
+namespace VoteMonitor.Api.Form.Queries;
 
-    }
-}
+public record FetchAllOptionsQuery : IRequest<List<OptionDTO>>;

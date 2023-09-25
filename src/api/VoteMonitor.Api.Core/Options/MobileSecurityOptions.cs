@@ -1,8 +1,7 @@
-﻿namespace VoteMonitor.Api.Core.Options
+﻿namespace VoteMonitor.Api.Core.Options;
+
+public class MobileSecurityOptions
 {
-    public class MobileSecurityOptions
-    {
-        public bool LockDevice { get; set; }
-        public string InvalidCredentialsErrorMessage { get; set; }
-    }
+    public bool LockDevice { get; set; }
+    public string InvalidCredentialsErrorMessage { get; set; }
 }

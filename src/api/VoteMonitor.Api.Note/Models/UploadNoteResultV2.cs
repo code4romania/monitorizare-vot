@@ -1,8 +1,7 @@
-﻿namespace VoteMonitor.Api.Note.Models
+namespace VoteMonitor.Api.Note.Models;
+
+public class UploadNoteResultV2
 {
-    public class UploadNoteResultV2
-    {
-        public string[] FilesAddress { get; set; }
-        public UploadNoteModelV2 Note { get; set; }
-    }
+    public string[] FilesAddress { get; set; }
+    public UploadNoteModelV2 Note { get; set; }
 }

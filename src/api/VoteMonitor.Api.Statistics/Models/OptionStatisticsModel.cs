@@ -1,8 +1,7 @@
-﻿namespace VoteMonitor.Api.Statistics.Models
+﻿namespace VoteMonitor.Api.Statistics.Models;
+
+public class OptionStatisticsModel : SimpleStatisticsModel
 {
-    public class OptionStatisticsModel : SimpleStatisticsModel
-    {
-        public int OptionId { get; set; }
-        public bool IsFlagged { get; set; }
-    }
+    public int OptionId { get; set; }
+    public bool IsFlagged { get; set; }
 }

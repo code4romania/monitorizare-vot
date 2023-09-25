@@ -1,32 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
+namespace VoteMonitor.Entities;
 
-namespace VoteMonitor.Entities
+public class Observer : IIdentifiableEntity
 {
-    public partial class Observer : IIdentifiableEntity
-    {
-        public Observer()
-        {
-            Notes = new HashSet<Note>();
-            Answers = new HashSet<Answer>();
-            PollingStationInfos = new HashSet<PollingStationInfo>();
-        }
+    public int Id { get; set; }
+    public bool FromTeam { get; set; }
+    public int IdNgo { get; set; }
+    public string Phone { get; set; }
+    public string Name { get; set; }
+    public string Pin { get; set; }
+    public string MobileDeviceId { get; set; }
+    public MobileDeviceIdType MobileDeviceIdType { get; set; }
+    public DateTime? DeviceRegisterDate { get; set; }
+    public bool IsTestObserver { get; set; }
 
-        public int Id { get; set; }
-        public bool FromTeam { get; set; }
-        public int IdNgo { get; set; }
-        public string Phone { get; set; }
-        public string Name { get; set; }
-        public string Pin { get; set; }
-        public string MobileDeviceId { get; set; }
-        public MobileDeviceIdType MobileDeviceIdType { get; set; }
-        public DateTime? DeviceRegisterDate { get; set; }
-        public bool IsTestObserver { get; set; }
-
-        public virtual ICollection<Note> Notes { get; set; }
-        public virtual ICollection<Answer> Answers { get; set; }
-        public virtual ICollection<PollingStationInfo> PollingStationInfos { get; set; }
-        public virtual Ngo Ngo { get; set; }
-        public virtual ICollection<NotificationRecipient> Notifications { get; set; }
-    }
+    public ICollection<Note> Notes { get; set; } = new HashSet<Note>();
+    public ICollection<Answer> Answers { get; set; } = new HashSet<Answer>();
+    public ICollection<PollingStationInfo> PollingStationInfos { get; set; } = new HashSet<PollingStationInfo>();
+    public Ngo Ngo { get; set; }
+    public ICollection<NotificationRecipient> Notifications { get; set; }
 }
