@@ -31,6 +31,7 @@ public class CountiesCommandHandlerTests
     [Fact]
     public async Task When_loading_2_counties_from_db_for_export()
     {
+        SetupProvinces();
         using (var context = new VoteMonitorContext(_dbContextOptions))
         {
             context.Counties.Add(new County
@@ -40,9 +41,17 @@ public class CountiesCommandHandlerTests
                 Id = 1,
                 Name = "Name1",
                 Order = 12,
+                ProvinceId = 1
             });
             context.Counties.Add(new County
-                { Code = "Code2", Diaspora = true, Id = 3, Name = "Name2", Order = 1 });
+            {
+                Code = "Code2",
+                Diaspora = true,
+                Id = 3,
+                Name = "Name2",
+                Order = 1,
+                ProvinceId = 1
+            });
             context.SaveChanges();
         }
 
@@ -95,7 +104,8 @@ public class CountiesCommandHandlerTests
             var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object);
             var memoryStream = new MemoryStream(Convert.FromBase64String(base64Encoded));
             var formFile = new FormFile(memoryStream, 0, memoryStream.Length, "Data", "dummy.jpg");
-            var result = await countiesCommandHandler.Handle(new CreateOrUpdateCounties(formFile), new CancellationToken(false));
+            var result =
+                await countiesCommandHandler.Handle(new CreateOrUpdateCounties(formFile), new CancellationToken(false));
 
             result.IsFailure.ShouldBeTrue();
             result.Error.ShouldBe("No counties to add or update");
@@ -109,17 +119,18 @@ public class CountiesCommandHandlerTests
         {
             var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object);
 
-            StringBuilder sb = new StringBuilder("Id,Code,Name,Diaspora,Order");
+            StringBuilder sb = new StringBuilder("Id,Code,Name,ProvinceCode,Diaspora,Order");
             sb.Append(Environment.NewLine);
-            sb.Append("2,Iasi,Iasi,TRUE,");
+            sb.Append("2,Iasi,Iasi,PR,TRUE,");
             sb.Append(Environment.NewLine);
-            sb.Append("3,Cluj,Cluj,TRUE,1");
+            sb.Append("3,Cluj,Cluj,PR,TRUE,1");
 
             var buffer = Encoding.UTF8.GetBytes(sb.ToString());
             var formFile = new FormFile(new MemoryStream(buffer), 0, buffer.Length, "Data", "dummy.csv");
 
 
-            var result = await countiesCommandHandler.Handle(new CreateOrUpdateCounties(formFile), new CancellationToken(false));
+            var result =
+                await countiesCommandHandler.Handle(new CreateOrUpdateCounties(formFile), new CancellationToken(false));
 
             result.IsFailure.ShouldBeTrue();
             result.Error.ShouldStartWith("Cannot read csv file provided");
@@ -128,23 +139,26 @@ public class CountiesCommandHandlerTests
     }
 
     [Fact]
-    public async Task When_importing_counties_and_has_invalid_county_code_entry_should_not_update_db_and_invalidate_request()
+    public async Task
+        When_importing_counties_and_has_invalid_county_code_entry_should_not_update_db_and_invalidate_request()
     {
+        SetupProvinces();
         using (var context = new VoteMonitorContext(_dbContextOptions))
         {
             var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object);
 
-            StringBuilder sb = new StringBuilder("Id,Code,Name,Diaspora,Order");
+            StringBuilder sb = new StringBuilder("Id,Code,Name,ProvinceCode,Diaspora,Order");
             sb.Append(Environment.NewLine);
-            sb.Append("2,Iasi11111111111111111111111111111111111111111111111111111111111111,Iasi,TRUE,1");
+            sb.Append("2,Iasi11111111111111111111111111111111111111111111111111111111111111,Iasi,PR,TRUE,1");
             sb.Append(Environment.NewLine);
-            sb.Append("3,Cluj,Cluj,TRUE,1");
+            sb.Append("3,Cluj,Cluj,PR,TRUE,1");
 
             var buffer = Encoding.UTF8.GetBytes(sb.ToString());
             var formFile = new FormFile(new MemoryStream(buffer), 0, buffer.Length, "Data", "dummy.csv");
 
 
-            var result = await countiesCommandHandler.Handle(new CreateOrUpdateCounties(formFile), new CancellationToken(false));
+            var result =
+                await countiesCommandHandler.Handle(new CreateOrUpdateCounties(formFile), new CancellationToken(false));
 
             result.IsFailure.ShouldBeTrue();
             result.Error.ShouldStartWith("Invalid county entry found:");
@@ -153,23 +167,27 @@ public class CountiesCommandHandlerTests
     }
 
     [Fact]
-    public async Task When_importing_counties_and_has_invalid_county_name_entry_should_not_update_db_and_invalidate_request()
+    public async Task
+        When_importing_counties_and_has_invalid_county_name_entry_should_not_update_db_and_invalidate_request()
     {
+        SetupProvinces();
         using (var context = new VoteMonitorContext(_dbContextOptions))
         {
             var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object);
 
-            StringBuilder sb = new StringBuilder("Id,Code,Name,Diaspora,Order");
+            StringBuilder sb = new StringBuilder("Id,Code,Name,ProvinceCode,Diaspora,Order");
             sb.Append(Environment.NewLine);
-            sb.Append("2,Iasi,IasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiI,TRUE,1");
+            sb.Append(
+                "2,Iasi,IasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiIasiI,PR,TRUE,1");
             sb.Append(Environment.NewLine);
-            sb.Append("3,Cluj,Cluj,TRUE,1");
+            sb.Append("3,Cluj,Cluj,PR,TRUE,1");
 
             var buffer = Encoding.UTF8.GetBytes(sb.ToString());
             var formFile = new FormFile(new MemoryStream(buffer), 0, buffer.Length, "Data", "dummy.csv");
 
 
-            var result = await countiesCommandHandler.Handle(new CreateOrUpdateCounties(formFile), new CancellationToken(false));
+            var result =
+                await countiesCommandHandler.Handle(new CreateOrUpdateCounties(formFile), new CancellationToken(false));
 
             result.IsFailure.ShouldBeTrue();
             result.Error.ShouldStartWith("Invalid county entry found:");
@@ -184,17 +202,18 @@ public class CountiesCommandHandlerTests
         {
             var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object);
 
-            StringBuilder sb = new StringBuilder("Id,Code,Name,Diaspora,Order");
+            StringBuilder sb = new StringBuilder("Id,Code,Name,ProvinceCode,Diaspora,Order");
             sb.Append(Environment.NewLine);
-            sb.Append("2,Iasi,Iasi_,TRUE,1");
+            sb.Append("2,Iasi,Iasi_,PR,TRUE,1");
             sb.Append(Environment.NewLine);
-            sb.Append("2,Cluj,Cluj_,TRUE,1");
+            sb.Append("2,Cluj,Cluj_,PR,TRUE,1");
 
             var buffer = Encoding.UTF8.GetBytes(sb.ToString());
             var formFile = new FormFile(new MemoryStream(buffer), 0, buffer.Length, "Data", "dummy.csv");
 
 
-            var result = await countiesCommandHandler.Handle(new CreateOrUpdateCounties(formFile), new CancellationToken(false));
+            var result =
+                await countiesCommandHandler.Handle(new CreateOrUpdateCounties(formFile), new CancellationToken(false));
 
             result.IsFailure.ShouldBeTrue();
             result.Error.ShouldBe("Duplicated id in csv found");
@@ -205,6 +224,7 @@ public class CountiesCommandHandlerTests
     [Fact]
     public async Task When_importing_counties_should_update_counties_by_id()
     {
+        SetupProvinces();
         using (var context = new VoteMonitorContext(_dbContextOptions))
         {
             context.Counties.Add(new County
@@ -223,15 +243,16 @@ public class CountiesCommandHandlerTests
         {
             var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object);
 
-            StringBuilder sb = new StringBuilder("Id,Code,Name,Diaspora,Order");
+            StringBuilder sb = new StringBuilder("Id,Code,Name,ProvinceCode,Diaspora,Order");
             sb.Append(Environment.NewLine);
-            sb.Append("3,Cluj,Cluuuuuuuuuj,TRUE,1");
+            sb.Append("3,Cluj,Cluuuuuuuuuj,PR,TRUE,1");
 
             var buffer = Encoding.UTF8.GetBytes(sb.ToString());
             var formFile = new FormFile(new MemoryStream(buffer), 0, buffer.Length, "Data", "dummy.csv");
 
 
-            var result = await countiesCommandHandler.Handle(new CreateOrUpdateCounties(formFile), new CancellationToken(false));
+            var result =
+                await countiesCommandHandler.Handle(new CreateOrUpdateCounties(formFile), new CancellationToken(false));
 
             result.IsSuccess.ShouldBeTrue();
 
@@ -248,22 +269,24 @@ public class CountiesCommandHandlerTests
     [Fact]
     public async Task When_importing_counties_should_insert_records_for_nonexistent_ids()
     {
+        SetupProvinces();
 
         using (var context = new VoteMonitorContext(_dbContextOptions))
         {
             var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object);
 
-            StringBuilder sb = new StringBuilder("Id,Code,Name,Diaspora,Order");
+            StringBuilder sb = new StringBuilder("Id,Code,Name,ProvinceCode,Diaspora,Order");
             sb.Append(Environment.NewLine);
-            sb.Append("3,Cluj,Cluuuuuuuuuj,TRUE,999");
+            sb.Append("3,Cluj,Cluuuuuuuuuj,PR,TRUE,999");
             sb.Append(Environment.NewLine);
-            sb.Append("1,Iasi,Iasi The Best,False,5");
+            sb.Append("1,Iasi,Iasi The Best,PR,False,5");
 
             var buffer = Encoding.UTF8.GetBytes(sb.ToString());
             var formFile = new FormFile(new MemoryStream(buffer), 0, buffer.Length, "Data", "dummy.csv");
 
 
-            var result = await countiesCommandHandler.Handle(new CreateOrUpdateCounties(formFile), new CancellationToken(false));
+            var result =
+                await countiesCommandHandler.Handle(new CreateOrUpdateCounties(formFile), new CancellationToken(false));
 
             result.IsSuccess.ShouldBeTrue();
 
@@ -288,6 +311,7 @@ public class CountiesCommandHandlerTests
     [Fact]
     public async Task When_importing_counties_should_insert_records_for_nonexistent_ids_and_update_the_rest()
     {
+        SetupProvinces();
         using (var context = new VoteMonitorContext(_dbContextOptions))
         {
             context.Counties.Add(new County
@@ -297,9 +321,17 @@ public class CountiesCommandHandlerTests
                 Id = 1,
                 Name = "Name1",
                 Order = 12,
+                ProvinceId = 1
             });
             context.Counties.Add(new County
-                { Code = "Code2", Diaspora = true, Id = 3, Name = "Name2", Order = 1 });
+            {
+                Code = "Code2",
+                Diaspora = true,
+                Id = 3,
+                Name = "Name2",
+                Order = 1,
+                ProvinceId = 1
+            });
             context.SaveChanges();
         }
 
@@ -307,16 +339,17 @@ public class CountiesCommandHandlerTests
         {
             var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object);
 
-            StringBuilder sb = new StringBuilder("Id,Code,Name,Diaspora,Order");
+            StringBuilder sb = new StringBuilder("Id,Code,Name,ProvinceCode,Diaspora,Order");
             sb.Append(Environment.NewLine);
-            sb.Append("1,Cluj,Cluuuuuuuuuj,TRUE,999");
+            sb.Append("1,Cluj,Cluuuuuuuuuj,PR,TRUE,999");
             sb.Append(Environment.NewLine);
-            sb.Append("3,Iasi,Iasi The Best,False,5");
+            sb.Append("3,Iasi,Iasi The Best,PR,False,5");
 
             var buffer = Encoding.UTF8.GetBytes(sb.ToString());
             var formFile = new FormFile(new MemoryStream(buffer), 0, buffer.Length, "Data", "dummy.csv");
 
-            var result = await countiesCommandHandler.Handle(new CreateOrUpdateCounties(formFile), new CancellationToken(false));
+            var result =
+                await countiesCommandHandler.Handle(new CreateOrUpdateCounties(formFile), new CancellationToken(false));
 
             result.IsSuccess.ShouldBeTrue();
 
@@ -341,11 +374,36 @@ public class CountiesCommandHandlerTests
     [Fact]
     public async Task When_loading_all_counties_should_return_them_ordered()
     {
+        SetupProvinces();
         using (var context = new VoteMonitorContext(_dbContextOptions))
         {
-            context.Counties.Add(new County { Code = "Code1", Diaspora = false, Id = 1, Name = "Name1", Order = 12 });
-            context.Counties.Add(new County { Code = "Code2", Diaspora = true, Id = 2, Name = "Name2", Order = 3 });
-            context.Counties.Add(new County { Code = "Code3", Diaspora = true, Id = 3, Name = "Name3", Order = 1 });
+            context.Counties.Add(new County
+            {
+                Code = "Code1",
+                Diaspora = false,
+                Id = 1,
+                Name = "Name1",
+                Order = 12,
+                ProvinceId = 1
+            });
+            context.Counties.Add(new County
+            {
+                Code = "Code2",
+                Diaspora = true,
+                Id = 2,
+                Name = "Name2",
+                Order = 3,
+                ProvinceId = 1
+            });
+            context.Counties.Add(new County
+            {
+                Code = "Code3",
+                Diaspora = true,
+                Id = 3,
+                Name = "Name3",
+                Order = 1,
+                ProvinceId = 1
+            });
             context.SaveChanges();
         }
 
@@ -386,9 +444,33 @@ public class CountiesCommandHandlerTests
     {
         using (var context = new VoteMonitorContext(_dbContextOptions))
         {
-            context.Counties.Add(new County { Code = "Code1", Diaspora = false, Id = 1, Name = "Name1", Order = 12 });
-            context.Counties.Add(new County { Code = "Code2", Diaspora = true, Id = 2, Name = "Name2", Order = 3 });
-            context.Counties.Add(new County { Code = "Code3", Diaspora = true, Id = 3, Name = "Name3", Order = 1 });
+            context.Counties.Add(new County
+            {
+                Code = "Code1",
+                Diaspora = false,
+                Id = 1,
+                Name = "Name1",
+                Order = 12,
+                ProvinceId = 1
+            });
+            context.Counties.Add(new County
+            {
+                Code = "Code2",
+                Diaspora = true,
+                Id = 2,
+                Name = "Name2",
+                Order = 3,
+                ProvinceId = 1
+            });
+            context.Counties.Add(new County
+            {
+                Code = "Code3",
+                Diaspora = true,
+                Id = 3,
+                Name = "Name3",
+                Order = 1,
+                ProvinceId = 1
+            });
             context.SaveChanges();
         }
 
@@ -406,11 +488,36 @@ public class CountiesCommandHandlerTests
     [Fact]
     public async Task When_loading_county_by_existent_id()
     {
+        SetupProvinces();
         using (var context = new VoteMonitorContext(_dbContextOptions))
         {
-            context.Counties.Add(new County { Code = "Code1", Diaspora = false, Id = 11, Name = "Name1", Order = 12 });
-            context.Counties.Add(new County { Code = "Code2", Diaspora = true, Id = 2, Name = "Name2", Order = 3 });
-            context.Counties.Add(new County { Code = "Code3", Diaspora = true, Id = 3, Name = "Name3", Order = 1 });
+            context.Counties.Add(new County
+            {
+                Code = "Code1",
+                Diaspora = false,
+                Id = 11,
+                Name = "Name1",
+                Order = 12,
+                ProvinceId = 1
+            });
+            context.Counties.Add(new County
+            {
+                Code = "Code2",
+                Diaspora = true,
+                Id = 2,
+                Name = "Name2",
+                Order = 3,
+                ProvinceId = 1
+            });
+            context.Counties.Add(new County
+            {
+                Code = "Code3",
+                Diaspora = true,
+                Id = 3,
+                Name = "Name3",
+                Order = 1,
+                ProvinceId = 1
+            });
             context.SaveChanges();
         }
 
@@ -435,9 +542,33 @@ public class CountiesCommandHandlerTests
     {
         using (var context = new VoteMonitorContext(_dbContextOptions))
         {
-            context.Counties.Add(new County { Code = "Code1", Diaspora = false, Id = 1, Name = "Name1", Order = 12 });
-            context.Counties.Add(new County { Code = "Code2", Diaspora = true, Id = 2, Name = "Name2", Order = 3 });
-            context.Counties.Add(new County { Code = "Code3", Diaspora = true, Id = 3, Name = "Name3", Order = 1 });
+            context.Counties.Add(new County
+            {
+                Code = "Code1",
+                Diaspora = false,
+                Id = 1,
+                Name = "Name1",
+                Order = 12,
+                ProvinceId = 1
+            });
+            context.Counties.Add(new County
+            {
+                Code = "Code2",
+                Diaspora = true,
+                Id = 2,
+                Name = "Name2",
+                Order = 3,
+                ProvinceId = 1
+            });
+            context.Counties.Add(new County
+            {
+                Code = "Code3",
+                Diaspora = true,
+                Id = 3,
+                Name = "Name3",
+                Order = 1,
+                ProvinceId = 1
+            });
             context.SaveChanges();
         }
 
@@ -445,7 +576,8 @@ public class CountiesCommandHandlerTests
         {
             var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object);
             var county =
-                await countiesCommandHandler.Handle(new UpdateCounty(588, new UpdateCountyRequest()), new CancellationToken(false));
+                await countiesCommandHandler.Handle(new UpdateCounty(588, new UpdateCountyRequest()),
+                    new CancellationToken(false));
 
             county.IsFailure.ShouldBeTrue();
             county.Error.ShouldBe("Could not find county with id = 588");
@@ -457,9 +589,33 @@ public class CountiesCommandHandlerTests
     {
         using (var context = new VoteMonitorContext(_dbContextOptions))
         {
-            context.Counties.Add(new County { Code = "Code1", Diaspora = false, Id = 1, Name = "Name1", Order = 12 });
-            context.Counties.Add(new County { Code = "Code2", Diaspora = true, Id = 2, Name = "Name2", Order = 3 });
-            context.Counties.Add(new County { Code = "Code3", Diaspora = true, Id = 3, Name = "Name3", Order = 1 });
+            context.Counties.Add(new County
+            {
+                Code = "Code1",
+                Diaspora = false,
+                Id = 1,
+                Name = "Name1",
+                Order = 12,
+                ProvinceId = 1
+            });
+            context.Counties.Add(new County
+            {
+                Code = "Code2",
+                Diaspora = true,
+                Id = 2,
+                Name = "Name2",
+                Order = 3,
+                ProvinceId = 1
+            });
+            context.Counties.Add(new County
+            {
+                Code = "Code3",
+                Diaspora = true,
+                Id = 3,
+                Name = "Name3",
+                Order = 1,
+                ProvinceId = 1
+            });
             context.SaveChanges();
         }
 
@@ -474,7 +630,8 @@ public class CountiesCommandHandlerTests
                 Diaspora = false,
             };
             var county =
-                await countiesCommandHandler.Handle(new UpdateCounty(2,updateCountyModel), new CancellationToken(false));
+                await countiesCommandHandler.Handle(new UpdateCounty(2, updateCountyModel),
+                    new CancellationToken(false));
 
             county.IsSuccess.ShouldBeTrue();
             context.Counties.Count().ShouldBe(3);
@@ -489,4 +646,20 @@ public class CountiesCommandHandlerTests
         }
     }
 
+    public void SetupProvinces()
+    {
+        using (var context = new VoteMonitorContext(_dbContextOptions))
+        {
+            context.Provinces.Add(new Province()
+            {
+                Code = "PR",
+                Id = 1,
+                Name = "Province",
+                Order = 1,
+            });
+
+            context.SaveChanges();
+        }
+
+    }
 }
