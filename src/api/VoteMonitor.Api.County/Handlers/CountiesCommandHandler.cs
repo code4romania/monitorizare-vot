@@ -5,6 +5,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using VoteMonitor.Api.Core.Services;
 using VoteMonitor.Api.County.Commands;
 using VoteMonitor.Api.County.Models;
 using VoteMonitor.Api.County.Queries;
@@ -20,14 +21,16 @@ public class CountiesCommandHandler : IRequestHandler<GetCountiesForExport, Resu
 
 {
     private readonly VoteMonitorContext _context;
+    private readonly ICacheService _cacheService;
     private readonly ILogger _logger;
 
     private const int NameMaxLength = 100;
     private const int CodeMaxLength = 20;
 
-    public CountiesCommandHandler(VoteMonitorContext context, ILogger<CountiesCommandHandler> logger)
+    public CountiesCommandHandler(VoteMonitorContext context, ICacheService cacheService, ILogger<CountiesCommandHandler> logger)
     {
         _context = context;
+        _cacheService = cacheService;
         _logger = logger;
     }
 
@@ -172,18 +175,23 @@ public class CountiesCommandHandler : IRequestHandler<GetCountiesForExport, Resu
 
         try
         {
-            counties = await _context.Counties
-                .OrderBy(c => c.Order)
-                .Select(x => new CountyModel
-                {
-                    Id = x.Id,
-                    Code = x.Code,
-                    ProvinceCode = x.Province.Code,
-                    Name = x.Name,
-                    Diaspora = x.Diaspora,
-                    Order = x.Order
-                })
-                .ToListAsync(cancellationToken);
+            counties = await _cacheService.GetOrSaveDataInCacheAsync("counties", async () =>
+            {
+                return await _context.Counties
+                    .Select(x => new CountyModel
+                    {
+                        Id = x.Id,
+                        Code = x.Code,
+                        ProvinceCode = x.Province.Code,
+                        Name = x.Name,
+                        Diaspora = x.Diaspora,
+                        Order = x.Order,
+                        NumberOfPollingStations = x.Municipalities.Sum(m => m.PollingStations.Count)
+                    })
+                    .OrderBy(c => c.Order)
+      
+                    .ToListAsync(cancellationToken);
+            });
         }
         catch (Exception e)
         {
@@ -206,6 +214,7 @@ public class CountiesCommandHandler : IRequestHandler<GetCountiesForExport, Resu
                     Code = c.Code,
                     ProvinceCode = c.Province.Code,
                     Name = c.Name,
+                    NumberOfPollingStations = c.Municipalities.Sum(x => x.PollingStations.Count),
                     Order = c.Order,
                     Diaspora = c.Diaspora,
                 })

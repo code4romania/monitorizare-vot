@@ -87,16 +87,18 @@ public class PollingStationService : IPollingStationService
 
         var data = await _cacheService
             .GetOrSaveDataInCacheAsync(cacheKey, async () => await _context.Counties
-                .Where(c => diaspora == null || c.Diaspora == diaspora)
-                .OrderBy(c => c.Order)
                 .Select(c => new CountyPollingStationLimit
                 {
                     Name = c.Name,
                     Code = c.Code,
                     Id = c.Id,
                     Diaspora = c.Diaspora,
-                    Order = c.Order
-                }).ToListAsync());
+                    Order = c.Order,
+                    Limit = c.Municipalities.Sum(x => x.PollingStations.Count)
+                })
+                .Where(c => diaspora == null || c.Diaspora == diaspora)
+                .OrderBy(c => c.Order)
+                .ToListAsync());
 
         return data;
     }

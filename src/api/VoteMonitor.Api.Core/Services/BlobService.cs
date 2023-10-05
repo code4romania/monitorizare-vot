@@ -46,6 +46,14 @@ public class BlobService : IFileService
         return new UploadedFileModel() { FileName = fileName, Path = blobUri.ToString() };
     }
 
+    public Task<string> GetPreSignedUrl(string filename)
+    {
+        BlobClient blobClient = _blobContainerClient.GetBlobClient(filename);
+
+        var blobUri = GetBlobURI(blobClient);
+        return Task.FromResult(blobUri.ToString());
+    }
+
     private Uri GetBlobURI(BlobClient blobClient)
     {
         // Check if BlobContainerClient object has been authorized with Shared Key

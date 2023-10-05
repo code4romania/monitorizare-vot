@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Globalization;
+using VoteMonitor.Api.Core.Services;
 using VoteMonitor.Api.County.Commands;
 using VoteMonitor.Api.County.Models;
 using VoteMonitor.Api.County.Queries;
@@ -21,14 +22,16 @@ public class MunicipalityCommandHandler : IRequestHandler<GetMunicipalitiesForEx
 
 {
     private readonly VoteMonitorContext _context;
+    private readonly ICacheService _cacheService;
     private readonly ILogger _logger;
 
     private const int NameMaxLength = 100;
     private const int CodeMaxLength = 20;
 
-    public MunicipalityCommandHandler(VoteMonitorContext context, ILogger<MunicipalityCommandHandler> logger)
+    public MunicipalityCommandHandler(VoteMonitorContext context, ICacheService cacheService, ILogger<MunicipalityCommandHandler> logger)
     {
         _context = context;
+        _cacheService = cacheService;
         _logger = logger;
     }
 
@@ -96,7 +99,7 @@ public class MunicipalityCommandHandler : IRequestHandler<GetMunicipalitiesForEx
                     Order = csvModel.Order,
                     CountyId = countiesDictionary[csvModel.CountyCode]
 
-            };
+                };
 
                 _context.Municipalities.Add(municipality);
             }
@@ -171,19 +174,20 @@ public class MunicipalityCommandHandler : IRequestHandler<GetMunicipalitiesForEx
 
         try
         {
-            municipalities = await _context.Municipalities
-                .Where(x => x.County.Code == request.CountyCode)
-                .OrderBy(c => c.Order)
-                .Select(x => new MunicipalityModel
-                {
-                    Id = x.Id,
-                    Code = x.Code,
-                    CountyCode = x.County.Code,
-                    Name = x.Name,
-                    Order = x.Order,
-                    NumberOfPollingStations = x.PollingStations.Count
-                })
-                .ToListAsync(cancellationToken);
+            municipalities = await _cacheService.GetOrSaveDataInCacheAsync(
+                $"county-{request.CountyCode}/municipalities", async () => await _context.Municipalities
+                    .Where(x => x.County.Code == request.CountyCode)
+                    .OrderBy(c => c.Order)
+                    .Select(x => new MunicipalityModel
+                    {
+                        Id = x.Id,
+                        Code = x.Code,
+                        CountyCode = x.County.Code,
+                        Name = x.Name,
+                        Order = x.Order,
+                        NumberOfPollingStations = x.PollingStations.Count
+                    })
+                    .ToListAsync(cancellationToken));
         }
         catch (Exception e)
         {
@@ -200,23 +204,26 @@ public class MunicipalityCommandHandler : IRequestHandler<GetMunicipalitiesForEx
 
         try
         {
-            municipalities = await _context.Municipalities
-                .Include(m=>m.County)
-                .OrderBy(c => c.Order)
-                .Select(x => new MunicipalityModelV2
-                {
-                    Id = x.Id,
-                    Code = x.Code,
-                    CountyId = x.CountyId,
-                    CountyCode = x.County.Code,
-                    Diaspora = x.County.Diaspora,
-                    CountyName = x.County.Name,
-                    CountyOrder = x.County.Order,
-                    Name = x.Name,
-                    Order = x.Order,
-                    NumberOfPollingStations = x.PollingStations.Count
-                })
-                .ToListAsync(cancellationToken);
+            municipalities = await _cacheService.GetOrSaveDataInCacheAsync("municipalities", async () =>
+            {
+                return await _context.Municipalities
+                    .Include(m => m.County)
+                    .OrderBy(c => c.Order)
+                    .Select(x => new MunicipalityModelV2
+                    {
+                        Id = x.Id,
+                        Code = x.Code,
+                        CountyId = x.CountyId,
+                        CountyCode = x.County.Code,
+                        Diaspora = x.County.Diaspora,
+                        CountyName = x.County.Name,
+                        CountyOrder = x.County.Order,
+                        Name = x.Name,
+                        Order = x.Order,
+                        NumberOfPollingStations = x.PollingStations.Count
+                    })
+                    .ToListAsync(cancellationToken);
+            });
         }
         catch (Exception e)
         {

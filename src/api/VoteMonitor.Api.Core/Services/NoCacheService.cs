@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace VoteMonitor.Api.Core.Services;
 
@@ -12,6 +12,6 @@ public class NoCacheService : ICacheService
 
     public Task<T> GetObjectSafeAsync<T>(string name) => throw new NotImplementedException();
 
-    public Task SaveObjectSafeAsync(string name, object value,
+    public Task SaveObjectSafeAsync<T>(string name, T value,
         DistributedCacheEntryOptions options = null) => throw new NotImplementedException();
 }

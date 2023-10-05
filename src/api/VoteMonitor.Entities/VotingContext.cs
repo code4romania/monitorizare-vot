@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using System.Collections;
 
 namespace VoteMonitor.Entities;
 
@@ -10,9 +9,6 @@ public class VoteMonitorContext : DbContext
     {
 
     }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.EnableSensitiveDataLogging();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -156,6 +152,7 @@ public class VoteMonitorContext : DbContext
             entity.HasKey(e => e.Id)
                 .HasName("PK_NoteAttachment");
 
+            entity.Property(e => e.FileName).HasMaxLength(1000);
             entity.Property(e => e.Path).HasMaxLength(1000);
 
             entity.HasOne(d => d.Note)

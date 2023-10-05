@@ -60,7 +60,7 @@ public class CacheService : ICacheService
         return result;
     }
 
-    public async Task SaveObjectSafeAsync(string name, object value, DistributedCacheEntryOptions options = null)
+    public async Task SaveObjectSafeAsync<T>(string name, T value, DistributedCacheEntryOptions options = null)
     {
         try
         {

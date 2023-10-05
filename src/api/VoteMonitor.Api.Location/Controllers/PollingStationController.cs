@@ -55,7 +55,6 @@ public class PollingStationController : Controller
             PollingStationNumber = request.PollingStationNumber
         };
 
-
         var result = await _mediator.Send(command);
 
         if (result < 0) return NotFound();
@@ -73,7 +72,7 @@ public class PollingStationController : Controller
     [Authorize]
     public async Task<IActionResult> Update([FromBody] UpdatePollingStationInfo request)
     {
-        var pollingStationId = await _mediator.Send(new GetPollingStationId(request.CountyCode,request.MunicipalityCode,request.PollingStationNumber));
+        var pollingStationId = await _mediator.Send(new GetPollingStationId(request.CountyCode, request.MunicipalityCode, request.PollingStationNumber));
         if (pollingStationId < 0)
         {
             return NotFound();
@@ -81,7 +80,7 @@ public class PollingStationController : Controller
 
         var command = new UpdatePollingSectionCommand
         {
-            ObserverId = this.GetIdObserver(), 
+            ObserverId = this.GetIdObserver(),
             PollingStationId = pollingStationId
         };
 
@@ -156,5 +155,13 @@ public class PollingStationController : Controller
             writer.Flush();
             return File(mem.ToArray(), "application/octet-stream", "observers-import-template.csv");
         }
+    }
+    [HttpGet]
+    [Route("polling-stations-cache/prefill")]
+    [Authorize("Organizer")]
+    public async Task<IActionResult> PrefillCache()
+    {
+        await _mediator.Send(new PrefillCache());
+        return NoContent();
     }
 }

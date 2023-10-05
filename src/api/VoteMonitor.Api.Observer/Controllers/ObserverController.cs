@@ -206,7 +206,6 @@ public class ObserverController : Controller
     /// <summary>
     /// Removes mobile device Id associated with Observer of given Id.
     /// </summary>
-    /// <param name="id">The Observer id</param>
     /// <returns>Boolean indicating whether or not the mobile device Id was removed successfully</returns>
     [HttpPost]
     [Route("removeDeviceId")]
