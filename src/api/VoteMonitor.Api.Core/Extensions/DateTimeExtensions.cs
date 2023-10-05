@@ -1,4 +1,4 @@
-﻿namespace VoteMonitor.Api.Core.Extensions;
+namespace VoteMonitor.Api.Core.Extensions;
 
 public static class DateTimeExtensions
 {
@@ -7,4 +7,9 @@ public static class DateTimeExtensions
         => (long)Math.Round((date.ToUniversalTime() -
                              new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero))
             .TotalSeconds);
+
+    public static DateTime? AsUtc(this DateTime? date) =>
+       date == null ? null : DateTime.SpecifyKind(
+            date.Value,
+            DateTimeKind.Utc);
 }

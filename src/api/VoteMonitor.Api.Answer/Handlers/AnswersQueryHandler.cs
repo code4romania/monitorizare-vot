@@ -50,12 +50,21 @@ public class AnswersQueryHandler :
             query = query.Where(a => a.Observer.Phone.Contains(message.ObserverPhoneNumber));
         }
 
-        var answerQueryInfosQuery = query.GroupBy(a => new { a.IdPollingStation, CountyCode =  a.PollingStation.Municipality.County.Code, MunicipalityCode = a.PollingStation.Municipality.Code, a.PollingStationNumber, a.IdObserver, ObserverPhoneNumber = a.Observer.Phone, ObserverName = a.Observer.Name })
+        var answerQueryInfosQuery = query.GroupBy(a => new
+        {
+            a.IdPollingStation,
+            County = a.PollingStation.Municipality.County.Name,
+            Municipality = a.PollingStation.Municipality.Name,
+            a.PollingStationNumber,
+            a.IdObserver,
+            ObserverPhoneNumber = a.Observer.Phone,
+            ObserverName = a.Observer.Name
+        })
             .Select(x => new AnswerQueryInfo
             {
                 IdObserver = x.Key.IdObserver,
                 IdPollingStation = x.Key.IdPollingStation,
-                PollingStation = x.Key.CountyCode + " " + x.Key.MunicipalityCode + " " + x.Key.PollingStationNumber,
+                PollingStation = x.Key.County + " " + x.Key.Municipality + " " + x.Key.PollingStationNumber,
                 ObserverName = x.Key.ObserverName,
                 ObserverPhoneNumber = x.Key.ObserverPhoneNumber,
                 LastModified = x.Max(a => a.LastModified)
@@ -123,7 +132,7 @@ public class AnswersQueryHandler :
         var pollingStationInfo = await _context.PollingStationInfos
             .FirstOrDefaultAsync(rd => rd.IdObserver == message.ObserverId
                                        && rd.IdPollingStation == message.PollingStationId, cancellationToken: cancellationToken);
-        
+
         if (pollingStationInfo == null) return null;
 
         return new PollingStationInfoDto

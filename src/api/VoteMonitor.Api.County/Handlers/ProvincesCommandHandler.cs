@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Globalization;
+using VoteMonitor.Api.Core.Services;
 using VoteMonitor.Api.County.Commands;
 using VoteMonitor.Api.County.Models;
 using VoteMonitor.Api.County.Queries;
@@ -21,14 +22,16 @@ public class ProvincesCommandHandler : IRequestHandler<GetProvincesForExport, Re
 
 {
     private readonly VoteMonitorContext _context;
+    private readonly ICacheService _cacheService;
     private readonly ILogger _logger;
 
     private const int NameMaxLength = 100;
     private const int CodeMaxLength = 20;
 
-    public ProvincesCommandHandler(VoteMonitorContext context, ILogger<ProvincesCommandHandler> logger)
+    public ProvincesCommandHandler(VoteMonitorContext context, ICacheService cacheService, ILogger<ProvincesCommandHandler> logger)
     {
         _context = context;
+        _cacheService = cacheService;
         _logger = logger;
     }
 
@@ -158,7 +161,7 @@ public class ProvincesCommandHandler : IRequestHandler<GetProvincesForExport, Re
 
         try
         {
-            provinces = await _context.Provinces
+            provinces = await _cacheService.GetOrSaveDataInCacheAsync("provinces", async () => await _context.Provinces
                 .OrderBy(c => c.Order)
                 .Select(x => new ProvinceModel
                 {
@@ -167,7 +170,7 @@ public class ProvincesCommandHandler : IRequestHandler<GetProvincesForExport, Re
                     Name = x.Name,
                     Order = x.Order
                 })
-                .ToListAsync(cancellationToken);
+                .ToListAsync(cancellationToken));
         }
         catch (Exception e)
         {
@@ -238,7 +241,7 @@ public class ProvincesCommandHandler : IRequestHandler<GetProvincesForExport, Re
 
         try
         {
-            counties = await _context.Counties
+            counties = await _cacheService.GetOrSaveDataInCacheAsync($"province-{request.ProvinceCode}/counties", async () => await _context.Counties
                 .Where(x => x.Province.Code == request.ProvinceCode)
                 .OrderBy(c => c.Order)
                 .Select(x => new CountyModel
@@ -248,9 +251,10 @@ public class ProvincesCommandHandler : IRequestHandler<GetProvincesForExport, Re
                     ProvinceCode = x.Province.Code,
                     Diaspora = x.Diaspora,
                     Name = x.Name,
+                    NumberOfPollingStations = x.Municipalities.Sum(x => x.PollingStations.Count),
                     Order = x.Order
                 })
-                .ToListAsync(cancellationToken);
+                .ToListAsync(cancellationToken));
         }
         catch (Exception e)
         {

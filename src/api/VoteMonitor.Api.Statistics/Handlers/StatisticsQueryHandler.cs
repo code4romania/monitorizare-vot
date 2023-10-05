@@ -27,7 +27,7 @@ public class StatisticsQueryHandler :
     {
         var queryBuilder = new StatisticsQueryBuilder
         {
-            Query = $@"SELECT O.""Text"" AS Label, O.""Id"" AS Code, OQ.""Flagged"" AS Flagged, COUNT(*) as Value
+            Query = $@"SELECT O.""{nameof(Option.Text)}"" AS Label, O.""Id"" AS Code, OQ.""{nameof(OptionToQuestion.Flagged)}"" AS Flagged, COUNT(*) as Value
                   FROM public.""Answers"" AS A
                   INNER JOIN public.""OptionsToQuestions"" AS OQ ON OQ.""Id"" = A.""IdOptionToQuestion""
                   INNER JOIN public.""Options"" AS O ON O.""Id"" = OQ.""IdOption""
@@ -72,16 +72,21 @@ public class StatisticsQueryHandler :
     {
         var queryBuilder = new StatisticsQueryBuilder
         {
-            Query = @"SELECT COUNT(distinct a.""IdObserver"") as Value, a.""CountyCode"" as Label
-                          FROM public.""Answers"" a
-                          INNER JOIN public.""Observers"" o on a.""IdObserver"" = o.""Id""
+            Query = @$"SELECT COUNT(distinct a.""IdObserver"") as Value, C.""Name"" || ' ' || M.""Name"" as Label
+                          FROM public.""Answers"" A
+                          INNER JOIN public.""Observers"" o on A.""IdObserver"" = o.""Id""
                           INNER JOIN public.""Ngos"" N ON O.""IdNgo"" = N.""Id""
+
+                          INNER JOIN public.""PollingStations"" PS ON A.""{nameof(Answer.IdPollingStation)}"" = PS.""Id""
+                          INNER JOIN public.""Municipalities"" M ON PS.""{nameof(PollingStation.MunicipalityId)}"" = M.""Id""
+                          INNER JOIN public.""Counties"" C ON M.""{nameof(Municipality.CountyId)}"" = C.""Id""
+
                           WHERE N.""IsActive"" = true AND o.""IsTestObserver"" = false",
             CacheKey = "StatisticiObservatori"
         };
 
         queryBuilder.AndOngFilter(message.IsOrganizer, message.NgoId);
-        queryBuilder.Append(@"group by a.""CountyCode"" order by Value desc");
+        queryBuilder.Append(@"group by C.""Name"", M.""Name"" order by Value desc");
 
         var records = await _cacheService.GetOrSaveDataInCacheAsync(
             queryBuilder.CacheKey,
@@ -120,21 +125,26 @@ public class StatisticsQueryHandler :
     {
         var queryBuilder = new StatisticsQueryBuilder
         {
-            Query = @"SELECT R.""CountyCode"" AS Label, COUNT(*) as Value
-                  FROM public.""Answers"" AS R 
-                  INNER JOIN public.""OptionsToQuestions"" AS RD ON RD.""Id"" = R.""IdOptionToQuestion""
-                  INNER JOIN public.""Observers"" O ON O.""Id"" = R.""IdObserver""
+            Query = @$"SELECT C.""Name"" || ' ' || M.""Name"" AS Label, COUNT(*) as Value
+                  FROM public.""Answers"" AS A 
+                  INNER JOIN public.""OptionsToQuestions"" AS RD ON RD.""Id"" = A.""IdOptionToQuestion""
+                  INNER JOIN public.""Observers"" O ON O.""Id"" = A.""IdObserver""
                   INNER JOIN public.""Questions"" I ON I.""Id"" = RD.""IdQuestion""
                   INNER JOIN public.""Ngos"" N ON O.""IdNgo"" = N.""Id""
                   INNER JOIN public.""FormSections"" fs on i.""IdSection"" = fs.""Id""
                   INNER JOIN public.""Forms"" f on fs.""IdForm"" = f.""Id""
+                  
+                  INNER JOIN public.""PollingStations"" PS ON A.""{nameof(Answer.IdPollingStation)}"" = PS.""Id""
+                  INNER JOIN public.""Municipalities"" M ON PS.""{nameof(PollingStation.MunicipalityId)}"" = M.""Id""
+                  INNER JOIN public.""Counties"" C ON M.""{nameof(Municipality.CountyId)}"" = C.""Id""
+                 
                   WHERE RD.""Flagged"" = true AND N.""IsActive"" = true AND O.""IsTestObserver"" = false",
             CacheKey = "StatisticiJudete"
         };
 
         queryBuilder.AndOngFilter(message.IsOrganizer, message.NgoId);
         queryBuilder.AndFormCodeFilter(message.FormCode);
-        queryBuilder.Append(@"GROUP BY R.""CountyCode"" ORDER BY Value DESC");
+        queryBuilder.Append(@"GROUP BY C.""Name"", M.""Name"" ORDER BY Value DESC");
 
         var records = await _cacheService.GetOrSaveDataInCacheAsync(queryBuilder.CacheKey,
             async () => await _context.SimpleStatistics
@@ -165,21 +175,26 @@ public class StatisticsQueryHandler :
     {
         var queryBuilder = new StatisticsQueryBuilder
         {
-            Query = @"SELECT R.""CountyCode"" AS Label, R.""PollingStationNumber"" AS Code, COUNT(*) as Value
-                  FROM public.""Answers"" AS R 
-                  INNER JOIN public.""OptionsToQuestions"" AS RD ON RD.""Id"" = R.""IdOptionToQuestion""
-                  INNER JOIN public.""Observers"" O ON O.""Id"" = R.""IdObserver""
+            Query = @$"SELECT C.""Name"" || ' ' || M.""Name"" || ' ' || A.""PollingStationNumber"" AS Label, A.""PollingStationNumber"" AS Code, COUNT(*) as Value
+                  FROM public.""Answers"" AS A
+                  INNER JOIN public.""OptionsToQuestions"" AS RD ON RD.""Id"" = A.""IdOptionToQuestion""
+                  INNER JOIN public.""Observers"" O ON O.""Id"" = A.""IdObserver""
                   INNER JOIN public.""Ngos"" N ON O.""IdNgo"" = N.""Id""
                   INNER JOIN public.""Questions"" I ON I.""Id"" = RD.""IdQuestion""
                   INNER JOIN public.""FormSections"" fs on i.""IdSection"" = fs.""Id""
                   INNER JOIN public.""Forms"" f on fs.""IdForm"" = f.""Id""
+                  
+                  INNER JOIN public.""PollingStations"" PS ON A.""{nameof(Answer.IdPollingStation)}"" = PS.""Id""
+                  INNER JOIN public.""Municipalities"" M ON PS.""{nameof(PollingStation.MunicipalityId)}"" = M.""Id""
+                  INNER JOIN public.""Counties"" C ON M.""{nameof(Municipality.CountyId)}"" = C.""Id""
+                  
                   WHERE RD.""Flagged"" = true AND N.""IsActive"" = true AND O.""IsTestObserver"" = false",
             CacheKey = "StatisticiSectii"
         };
 
         queryBuilder.AndOngFilter(message.IsOrganizer, message.NgoId);
         queryBuilder.AndFormCodeFilter(message.FormCode);
-        queryBuilder.Append(@"GROUP BY R.""CountyCode"", R.""PollingStationNumber""");
+        queryBuilder.Append(@"GROUP BY C.""Name"", M.""Name"", A.""PollingStationNumber""");
 
         return await _cacheService.GetOrSaveDataInCacheAsync($"{queryBuilder.CacheKey}-{message.Page}",
             async () =>

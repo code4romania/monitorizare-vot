@@ -67,7 +67,18 @@ public class NoteController : Controller
             return NotFound();
         }
 
-        return Ok(new UploadNoteResultV2 { FilesAddress = command.Attachments.Select(x => x.Path).ToArray(), Note = note });
+        return Ok(new UploadNoteResultV2
+        {
+            FilesAddress = command.Attachments.Select(x => x.Path).ToArray(),
+            Note = new UploadNoteModelV2()
+            {
+                CountyCode = note.CountyCode,
+                MunicipalityCode = note.MunicipalityCode,
+                Text = note.Text,
+                PollingStationNumber = note.PollingStationNumber,
+                QuestionId = note.QuestionId
+            }
+        });
     }
 
 
@@ -119,6 +130,17 @@ public class NoteController : Controller
             return NotFound();
         }
 
-        return Ok(new UploadNoteResult { FileAddress = command.Attachement.Path, Note = note });
+        return Ok(new UploadNoteResult
+        {
+            FileAddress = command.Attachement.Path,
+            Note = new UploadNoteModel
+            {
+                CountyCode = note.CountyCode,
+                MunicipalityCode = note.MunicipalityCode,
+                Text = note.Text,
+                PollingStationNumber = note.PollingStationNumber,
+                QuestionId = note.QuestionId
+            }
+        });
     }
 }

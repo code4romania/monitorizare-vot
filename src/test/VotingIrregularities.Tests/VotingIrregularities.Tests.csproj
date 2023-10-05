@@ -12,7 +12,6 @@
     <ProjectGuid>{6961F352-9908-40B1-A840-A96841CF2031}</ProjectGuid>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="AspNetCore.HealthChecks.Publisher.ApplicationInsights" Version="7.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.10" />
     <PackageReference Include="Microsoft.Extensions.Caching.Redis.Core" Version="1.0.3" />
     <PackageReference Include="Moq" Version="4.20.69" />
@@ -30,6 +29,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\api\VoteMonitor.Api.Answer\VoteMonitor.Api.Answer.csproj" />
     <ProjectReference Include="..\..\api\VoteMonitor.Api.County\VoteMonitor.Api.County.csproj" />
+    <ProjectReference Include="..\..\api\VoteMonitor.Api.Location\VoteMonitor.Api.Location.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="appsettings.json">

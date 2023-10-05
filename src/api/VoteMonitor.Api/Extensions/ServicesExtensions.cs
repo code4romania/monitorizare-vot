@@ -36,33 +36,32 @@ public static class ServicesExtensions
         switch (cacheOptions.Implementation)
         {
             case ApplicationCacheImplementationType.NoCache:
-            {
-                services.AddSingleton<ICacheService, NoCacheService>();
-                break;
-            }
-            case ApplicationCacheImplementationType.RedisCache:
-            {
-                services.AddSingleton<ICacheService, CacheService>();
-                services.AddStackExchangeRedisCache(options =>
                 {
-                    configuration.GetSection("RedisCacheOptions").Bind(options);
-                });
+                    services.AddSingleton<ICacheService, NoCacheService>();
+                    break;
+                }
+            case ApplicationCacheImplementationType.RedisCache:
+                {
+                    services.AddSingleton<ICacheService, CacheService>();
+                    services.AddStackExchangeRedisCache(options =>
+                    {
+                        configuration.GetSection("RedisCacheOptions").Bind(options);
+                    });
 
-                break;
-            }
+                    break;
+                }
             case ApplicationCacheImplementationType.MemoryDistributedCache:
-            {
-                services.AddSingleton<ICacheService, CacheService>();
-                services.AddDistributedMemoryCache();
-                break;
-            }
+                {
+                    services.AddSingleton<ICacheService, CacheService>();
+                    services.AddDistributedMemoryCache();
+                    break;
+                }
         }
 
         return services;
     }
 
-    public static IServiceCollection AddFileService(this IServiceCollection services,
-        IConfiguration configuration)
+    public static IServiceCollection AddFileService(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
     {
         services.AddSingleton<FileExtensionContentTypeProvider>();
         var fileStorageType = configuration.GetValue<FileStorageType>("FileStorageType");
@@ -79,7 +78,7 @@ public static class ServicesExtensions
         }
         if (fileStorageType == FileStorageType.S3Service)
         {
-            services.AddSingleton<IAmazonS3>(p =>
+            services.AddSingleton<IAmazonS3>(_ =>
             {
                 var config = new AmazonS3Config
                 {
@@ -87,7 +86,7 @@ public static class ServicesExtensions
                         .FirstOrDefault(r => r.DisplayName == configuration.GetValue<string>("AWS:Region"))
                 };
 
-                if (p.GetService<IHostEnvironment>().IsDevelopment())
+                if (environment.IsDevelopment())
                 {
                     //settings to use with localstack S3 service
                     var serviceUrl = configuration.GetValue<string>("AWS:ServiceURL");
@@ -96,11 +95,13 @@ public static class ServicesExtensions
                         config.ServiceURL = configuration.GetValue<string>("AWS:ServiceURL");
                     }
                     config.ForcePathStyle = true;
+
+                    var awsAccessKeyId = configuration.GetValue<string>("AWS:AWS_ACCESS_KEY_ID");
+                    var awsSecretAccessKey = configuration.GetValue<string>("AWS:AWS_SECRET_ACCESS_KEY");
+                    return new AmazonS3Client(awsAccessKeyId, awsSecretAccessKey, config);
                 }
 
-                var awsAccessKeyId = configuration.GetValue<string>("AWS:AWS_ACCESS_KEY_ID");
-                var awsSecretAccessKey = configuration.GetValue<string>("AWS:AWS_SECRET_ACCESS_KEY");
-                return new AmazonS3Client(awsAccessKeyId, awsSecretAccessKey, config);
+                return new AmazonS3Client(config);
             });
 
             services.Configure<S3StorageOptions>(configuration.GetSection(nameof(S3StorageOptions)));
@@ -115,7 +116,17 @@ public static class ServicesExtensions
         IConfiguration configuration)
     {
         var firebaseOptions = configuration.GetSection(nameof(FirebaseServiceOptions));
-        var privateKeyPath = firebaseOptions[nameof(FirebaseServiceOptions.ServerKey)];
+        var privateKey = firebaseOptions[nameof(FirebaseServiceOptions.ServerKey)]!;
+        var privateKeyPath = firebaseOptions[nameof(FirebaseServiceOptions.ServerPath)]!;
+
+        var directoryName = Path.GetDirectoryName(privateKeyPath);
+        if (!Directory.Exists(directoryName))
+        {
+            Directory.CreateDirectory(directoryName);
+        }
+
+        File.WriteAllText(privateKeyPath, privateKey);
+
         Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", Path.GetFullPath(privateKeyPath));
 
         services.AddSingleton<IFirebaseService, FirebaseService>();
@@ -136,8 +147,8 @@ public static class ServicesExtensions
             .AddFirebase("Firebase")
             .CheckOnlyWhen("Firebase", () => enableHealthChecks && !string.IsNullOrEmpty(configuration["FirebaseServiceOptions:ServerKey"]))
             .AddS3Storage("S3")
-            .CheckOnlyWhen("S3", () => enableHealthChecks && configuration["FileServiceOptions:Type"] == "S3Service")
-            .AddApplicationInsightsPublisher();
+            .CheckOnlyWhen("S3", () => enableHealthChecks && configuration["FileServiceOptions:Type"] == "S3Service");
+
         return services;
     }
 }

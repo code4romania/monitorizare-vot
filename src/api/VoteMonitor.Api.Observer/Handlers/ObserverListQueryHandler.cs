@@ -22,10 +22,7 @@ public class ObserverListQueryHandler : IRequestHandler<ObserverListCommand, Api
     {
         _logger.LogInformation($"Searching for Observers with the following filters (NgoId, Name, Phone): {request.NgoId}, {request.Name}, {request.Number}");
 
-        IQueryable<Entities.Observer> observers = _context.Observers
-            .Include(o => o.Ngo)
-            .Include(o => o.Notes)
-            .Include(o => o.PollingStationInfos);
+        IQueryable<Entities.Observer> observers = _context.Observers;
 
         if (request.NgoId > 0)
         {
@@ -45,23 +42,34 @@ public class ObserverListQueryHandler : IRequestHandler<ObserverListCommand, Api
         var count = await observers.CountAsync(cancellationToken);
 
         var requestedPageObservers = GetPagedQuery(observers, request.Page, request.PageSize)
-            .ToList()
-            .Select(o=> new ObserverModel
+            .Select(o => new
             {
                 Id = o.Id,
                 Phone = o.Phone,
                 Name = o.Name,
-                Ngo = o.Ngo.Name,
+                NgoName = o.Ngo.Name,
+                LastAnswer = o.Answers.Any() ? o.Answers.Max(a=>a.LastModified) : (DateTime?)null,
+                LastNote = o.Notes.Any() ? o.Notes.Max(a => a.LastModified) : (DateTime?)null,
                 NumberOfPollingStations = o.PollingStationInfos.Count,
                 NumberOfNotes = o.Notes.Count,
                 DeviceRegisterDate = o.DeviceRegisterDate
-            });
-
+            })
+            .ToList();
 
         return new ApiListResponse<ObserverModel>
         {
             TotalItems = count,
-            Data = requestedPageObservers.ToList(),
+            Data = requestedPageObservers.Select(o => new ObserverModel
+            {
+                Id = o.Id,
+                Phone = o.Phone,
+                Name = o.Name,
+                Ngo = o.NgoName,
+                LastSeen = (o.LastAnswer ?? DateTime.MinValue) > (o.LastNote ?? DateTime.MinValue) ? o.LastAnswer : o.LastNote,
+                NumberOfPollingStations = o.NumberOfPollingStations,
+                NumberOfNotes = o.NumberOfNotes,
+                DeviceRegisterDate = o.DeviceRegisterDate
+            }).ToList(),
             Page = request.Page,
             PageSize = request.PageSize
         };
