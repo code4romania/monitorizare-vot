@@ -30,7 +30,9 @@ public class AddPollingStationInfo
     [Required]
     public bool? ChairmanPresence { get; set; }
 
+    [Required]
     public bool? SinglePollingStationOrCommission { get; set; }
 
+    [Required]
     public bool? AdequatePollingStationSize { get; set; }
 }

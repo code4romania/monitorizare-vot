@@ -1,7 +1,7 @@
-using Azure.Core;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using VoteMonitor.Api.Core.Extensions;
 using VoteMonitor.Api.Location.Commands;
 using VoteMonitor.Entities;
 
@@ -32,7 +32,7 @@ public class RegisterPollingSectionHandler : IRequestHandler<RegisterPollingStat
 
             if (pollingStation == null)
             {
-                throw new ArgumentException($"polling station not found for {message.CountyCode} {message.MunicipalityCode}");
+                throw new ArgumentException($"polling station not found for {message.CountyCode} {message.MunicipalityCode} {message.PollingStationNumber}");
             }
 
             var pollingStationInfo = await _context.PollingStationInfos
@@ -48,8 +48,8 @@ public class RegisterPollingSectionHandler : IRequestHandler<RegisterPollingStat
                     IdObserver = message.IdObserver,
 
                     LastModified = DateTime.UtcNow,
-                    ObserverArrivalTime = message.ObserverArrivalTime,
-                    ObserverLeaveTime = message.ObserverLeaveTime,
+                    ObserverArrivalTime = message.ObserverArrivalTime.AsUtc(),
+                    ObserverLeaveTime = message.ObserverLeaveTime.AsUtc(),
                     NumberOfVotersOnTheList = message.NumberOfVotersOnTheList,
                     NumberOfCommissionMembers = message.NumberOfCommissionMembers,
                     NumberOfFemaleMembers = message.NumberOfFemaleMembers,
@@ -64,8 +64,8 @@ public class RegisterPollingSectionHandler : IRequestHandler<RegisterPollingStat
             else
             {
                 pollingStationInfo.LastModified = DateTime.UtcNow;
-                pollingStationInfo.ObserverArrivalTime = message.ObserverArrivalTime;
-                pollingStationInfo.ObserverLeaveTime = message.ObserverLeaveTime;
+                pollingStationInfo.ObserverArrivalTime = message.ObserverArrivalTime.AsUtc();
+                pollingStationInfo.ObserverLeaveTime = message.ObserverLeaveTime.AsUtc();
                 pollingStationInfo.NumberOfVotersOnTheList = message.NumberOfVotersOnTheList;
                 pollingStationInfo.NumberOfCommissionMembers = message.NumberOfCommissionMembers;
                 pollingStationInfo.NumberOfFemaleMembers = message.NumberOfFemaleMembers;
@@ -76,7 +76,6 @@ public class RegisterPollingSectionHandler : IRequestHandler<RegisterPollingStat
             }
 
             return await _context.SaveChangesAsync();
-
         }
         catch (Exception ex)
         {

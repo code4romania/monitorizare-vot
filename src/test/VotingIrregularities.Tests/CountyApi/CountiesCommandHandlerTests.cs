@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Shouldly;
+using VoteMonitor.Api.Core.Services;
 using VoteMonitor.Api.County.Commands;
 using VoteMonitor.Api.County.Handlers;
 using VoteMonitor.Api.County.Models;
@@ -16,7 +17,8 @@ namespace VotingIrregularities.Tests.CountyApi;
 
 public class CountiesCommandHandlerTests
 {
-    readonly Mock<ILogger<CountiesCommandHandler>> _fakeLogger = new Mock<ILogger<CountiesCommandHandler>>();
+    readonly Mock<ILogger<CountiesCommandHandler>> _fakeLogger = new();
+    readonly NoCacheService _cache = new();
     private readonly DbContextOptions<VoteMonitorContext> _dbContextOptions;
 
     public CountiesCommandHandlerTests()
@@ -57,7 +59,7 @@ public class CountiesCommandHandlerTests
 
         using (var context = new VoteMonitorContext(_dbContextOptions))
         {
-            var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object);
+            var countiesCommandHandler = new CountiesCommandHandler(context, _cache, _fakeLogger.Object);
             var exportResult =
                 await countiesCommandHandler.Handle(new GetCountiesForExport(), new CancellationToken(false));
 
@@ -88,7 +90,7 @@ public class CountiesCommandHandlerTests
     {
         using (var context = new VoteMonitorContext(_dbContextOptions))
         {
-            var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object);
+            var countiesCommandHandler = new CountiesCommandHandler(context, _cache, _fakeLogger.Object);
             var result = await countiesCommandHandler.Handle(new GetCountiesForExport(), new CancellationToken(false));
             result.IsSuccess.ShouldBeTrue();
             result.Value.Count.ShouldBe(0);
@@ -101,7 +103,7 @@ public class CountiesCommandHandlerTests
         using (var context = new VoteMonitorContext(_dbContextOptions))
         {
             string base64Encoded = "YmFzZTY0IGVuY29kZWQgc3RyaW5n";
-            var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object);
+            var countiesCommandHandler = new CountiesCommandHandler(context, _cache, _fakeLogger.Object);
             var memoryStream = new MemoryStream(Convert.FromBase64String(base64Encoded));
             var formFile = new FormFile(memoryStream, 0, memoryStream.Length, "Data", "dummy.jpg");
             var result =
@@ -117,7 +119,7 @@ public class CountiesCommandHandlerTests
     {
         using (var context = new VoteMonitorContext(_dbContextOptions))
         {
-            var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object);
+            var countiesCommandHandler = new CountiesCommandHandler(context, _cache, _fakeLogger.Object);
 
             StringBuilder sb = new StringBuilder("Id,Code,Name,ProvinceCode,Diaspora,Order");
             sb.Append(Environment.NewLine);
@@ -145,7 +147,7 @@ public class CountiesCommandHandlerTests
         SetupProvinces();
         using (var context = new VoteMonitorContext(_dbContextOptions))
         {
-            var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object);
+            var countiesCommandHandler = new CountiesCommandHandler(context, _cache, _fakeLogger.Object);
 
             StringBuilder sb = new StringBuilder("Id,Code,Name,ProvinceCode,Diaspora,Order");
             sb.Append(Environment.NewLine);
@@ -173,7 +175,7 @@ public class CountiesCommandHandlerTests
         SetupProvinces();
         using (var context = new VoteMonitorContext(_dbContextOptions))
         {
-            var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object);
+            var countiesCommandHandler = new CountiesCommandHandler(context, _cache, _fakeLogger.Object);
 
             StringBuilder sb = new StringBuilder("Id,Code,Name,ProvinceCode,Diaspora,Order");
             sb.Append(Environment.NewLine);
@@ -200,7 +202,7 @@ public class CountiesCommandHandlerTests
     {
         using (var context = new VoteMonitorContext(_dbContextOptions))
         {
-            var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object);
+            var countiesCommandHandler = new CountiesCommandHandler(context, _cache, _fakeLogger.Object);
 
             StringBuilder sb = new StringBuilder("Id,Code,Name,ProvinceCode,Diaspora,Order");
             sb.Append(Environment.NewLine);
@@ -241,7 +243,7 @@ public class CountiesCommandHandlerTests
 
         using (var context = new VoteMonitorContext(_dbContextOptions))
         {
-            var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object);
+            var countiesCommandHandler = new CountiesCommandHandler(context, _cache, _fakeLogger.Object);
 
             StringBuilder sb = new StringBuilder("Id,Code,Name,ProvinceCode,Diaspora,Order");
             sb.Append(Environment.NewLine);
@@ -273,7 +275,7 @@ public class CountiesCommandHandlerTests
 
         using (var context = new VoteMonitorContext(_dbContextOptions))
         {
-            var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object);
+            var countiesCommandHandler = new CountiesCommandHandler(context, _cache, _fakeLogger.Object);
 
             StringBuilder sb = new StringBuilder("Id,Code,Name,ProvinceCode,Diaspora,Order");
             sb.Append(Environment.NewLine);
@@ -337,7 +339,7 @@ public class CountiesCommandHandlerTests
 
         using (var context = new VoteMonitorContext(_dbContextOptions))
         {
-            var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object);
+            var countiesCommandHandler = new CountiesCommandHandler(context, _cache, _fakeLogger.Object);
 
             StringBuilder sb = new StringBuilder("Id,Code,Name,ProvinceCode,Diaspora,Order");
             sb.Append(Environment.NewLine);
@@ -409,7 +411,7 @@ public class CountiesCommandHandlerTests
 
         using (var context = new VoteMonitorContext(_dbContextOptions))
         {
-            var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object);
+            var countiesCommandHandler = new CountiesCommandHandler(context, _cache, _fakeLogger.Object);
             var counties =
                 await countiesCommandHandler.Handle(new GetCountiesForExport(), new CancellationToken(false));
 
@@ -476,7 +478,7 @@ public class CountiesCommandHandlerTests
 
         using (var context = new VoteMonitorContext(_dbContextOptions))
         {
-            var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object);
+            var countiesCommandHandler = new CountiesCommandHandler(context, _cache, _fakeLogger.Object);
             var county =
                 await countiesCommandHandler.Handle(new GetCountyById(588), new CancellationToken(false));
 
@@ -523,7 +525,7 @@ public class CountiesCommandHandlerTests
 
         using (var context = new VoteMonitorContext(_dbContextOptions))
         {
-            var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object);
+            var countiesCommandHandler = new CountiesCommandHandler(context, _cache, _fakeLogger.Object);
             var county =
                 await countiesCommandHandler.Handle(new GetCountyById(2), new CancellationToken(false));
 
@@ -574,7 +576,7 @@ public class CountiesCommandHandlerTests
 
         using (var context = new VoteMonitorContext(_dbContextOptions))
         {
-            var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object);
+            var countiesCommandHandler = new CountiesCommandHandler(context, _cache, _fakeLogger.Object);
             var county =
                 await countiesCommandHandler.Handle(new UpdateCounty(588, new UpdateCountyRequest()),
                     new CancellationToken(false));
@@ -621,7 +623,7 @@ public class CountiesCommandHandlerTests
 
         using (var context = new VoteMonitorContext(_dbContextOptions))
         {
-            var countiesCommandHandler = new CountiesCommandHandler(context, _fakeLogger.Object);
+            var countiesCommandHandler = new CountiesCommandHandler(context, _cache, _fakeLogger.Object);
             var updateCountyModel = new UpdateCountyRequest
             {
                 Name = "Super Iasi",
@@ -646,7 +648,7 @@ public class CountiesCommandHandlerTests
         }
     }
 
-    public void SetupProvinces()
+    private void SetupProvinces()
     {
         using (var context = new VoteMonitorContext(_dbContextOptions))
         {
@@ -660,6 +662,5 @@ public class CountiesCommandHandlerTests
 
             context.SaveChanges();
         }
-
     }
 }

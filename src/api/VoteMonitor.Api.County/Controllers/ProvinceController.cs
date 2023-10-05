@@ -142,7 +142,7 @@ public class ProvinceController : Controller
 
     [Authorize]
     [HttpGet("{provinceCode}/counties")]
-    [ProducesResponseType(typeof(List<MunicipalityModel>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(List<CountyModel>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> GetAllMunicipalitiesAsync([FromRoute] string provinceCode)
@@ -155,4 +155,5 @@ public class ProvinceController : Controller
 
         return BadRequest(new ErrorModel { Message = response.Error });
     }
+
 }

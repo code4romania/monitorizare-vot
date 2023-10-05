@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace VoteMonitor.Api.Core.Services;
 
@@ -9,6 +9,6 @@ public interface ICacheService
 {
     Task<T> GetOrSaveDataInCacheAsync<T>(string name, Func<Task<T>> source, DistributedCacheEntryOptions options = null);
     Task<T> GetObjectSafeAsync<T>(string name);
-    Task SaveObjectSafeAsync(string name, object value, DistributedCacheEntryOptions options = null);
+    Task SaveObjectSafeAsync<T>(string name, T value, DistributedCacheEntryOptions options = null);
 
 }

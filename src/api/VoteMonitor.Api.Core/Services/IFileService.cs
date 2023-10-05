@@ -15,4 +15,11 @@ public interface IFileService
     /// <param name="extension"></param>
     /// <returns>the reference to the resource just uploaded</returns>
     Task<UploadedFileModel> UploadFromStreamAsync(Stream sourceStream, string contentType, string extension, UploadType uploadType);
+
+    /// <summary>
+    /// Gets pre-signed url for a given file
+    /// </summary>
+    /// <param name="filename"></param>
+    /// <returns></returns>
+    Task<string> GetPreSignedUrl(string filename);
 }

@@ -1,4 +1,5 @@
 using CsvHelper;
+using EFCore.BulkExtensions;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -32,9 +33,9 @@ public class PollingStationHandler : IRequestHandler<ImportPollingStationsComman
 
                 var pollingStations = ParseUploadedPollingStations(request.File);
                 var newPollingStations = CreatePollingStationEntitiesFromDto(pollingStations, municipalities);
-                await  _context.PollingStations.BulkInsertAsync(newPollingStations, cancellationToken);
+                await _context.BulkInsertAsync(newPollingStations, cancellationToken: cancellationToken);
 
-                await _context.BulkSaveChangesAsync(cancellationToken);
+                await _context.BulkSaveChangesAsync(cancellationToken: cancellationToken);
 
                 transaction.Commit();
                 return PollingStationImportResultValue.SuccessValue;
