@@ -152,8 +152,8 @@ public class VoteMonitorContext : DbContext
             entity.HasKey(e => e.Id)
                 .HasName("PK_NoteAttachment");
 
-            entity.Property(e => e.FileName).HasMaxLength(1000);
-            entity.Property(e => e.Path).HasMaxLength(1000);
+            entity.Property(e => e.FileName);
+            entity.Property(e => e.Path);
 
             entity.HasOne(d => d.Note)
                 .WithMany(p => p.Attachments)

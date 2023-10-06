@@ -120,7 +120,7 @@ public static class ServicesExtensions
         var privateKeyPath = firebaseOptions[nameof(FirebaseServiceOptions.ServerPath)]!;
 
         var directoryName = Path.GetDirectoryName(privateKeyPath);
-        if (!Directory.Exists(directoryName))
+        if (!string.IsNullOrWhiteSpace(directoryName) && !Directory.Exists(directoryName))
         {
             Directory.CreateDirectory(directoryName);
         }
