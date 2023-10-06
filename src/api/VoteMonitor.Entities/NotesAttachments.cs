@@ -10,10 +10,6 @@ public class NotesAttachments : IIdentifiableEntity
     public int Id { get; set; }
     public int NoteId { get; set; }
     public virtual Note Note { get; set; }
-
-
-    [Required, MaxLength(1000)]
     public string Path { get; set; }
-
     public string FileName { get; set; }
 }
