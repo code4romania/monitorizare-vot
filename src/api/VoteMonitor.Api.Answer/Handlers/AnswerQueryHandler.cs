@@ -1,5 +1,4 @@
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using VoteMonitor.Api.Answer.Commands;
 using VoteMonitor.Api.Answer.Models;
 using VoteMonitor.Api.Core.Services;

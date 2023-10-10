@@ -2,12 +2,16 @@ import http from "k6/http";
 import { check, fail } from "k6";
 import { Trend } from 'k6/metrics';
 import { SharedArray } from 'k6/data';
-import { scenario } from 'k6/execution';
 
-import { uuidv4, randomItem } from 'https://jslib.k6.io/k6-utils/1.4.0/index.js';
+import { uuidv4, randomItem, randomIntBetween } from 'https://jslib.k6.io/k6-utils/1.4.0/index.js';
 import papaparse from 'https://jslib.k6.io/papaparse/5.1.1/index.js';
-import { getRandomAnswers } from './utils.js';
+import { getRandomAnswers, randomDateToday, randomBool } from './utils.js';
 const BASE_URL = "https://localhost:5001";
+
+const durationOnGetProvinces = new Trend('durationOnGetProvinces', true);
+const durationOnGetCounties = new Trend('durationOnGetCounties', true);
+const durationOnGetMunicipalities = new Trend('durationOnGetMunicipalities', true);
+const durationOnAddDetails = new Trend('durationOnAddDetails', true);
 
 const durationOnGetFormVersions = new Trend('durationOnGetFormVersions', true);
 const durationOnGetFormData = new Trend('durationOnGetFormData', true);
@@ -20,7 +24,20 @@ const users = new SharedArray('users', function () {
 
 const pollingStations = new SharedArray('polling-stations', function () {
     const data = papaparse.parse(open('./polling-stations.csv'), { header: true }).data;
-    return data;
+
+    return [data.reduce((result, item) => {
+        const { code, number } = item;
+
+        // Check if the code already exists in the result object
+        if (!result[code]) {
+            result[code] = [];
+        }
+
+        // Add the number to the list associated with the code
+        result[code].push(number);
+
+        return result;
+    }, {})];
 });
 
 
@@ -35,7 +52,7 @@ export const options = {
 
 
 // Retrieve authentication token for subsequent API requests
-export function setup() {
+const login = () => {
     const user = randomItem(users);
 
     const body = {
@@ -63,6 +80,93 @@ export function setup() {
 
     return authToken;
 }
+
+
+const getProvinces = (requestParams) => {
+    let url = BASE_URL + `/api/v1/province`;
+    let response = http.get(url, requestParams);
+
+    const isSuccess = check(response, {
+        "fetched provinces successfully": (r) => r.status === 200
+    });
+
+    durationOnGetProvinces.add(response.timings.duration);
+
+    if (isSuccess) {
+        return response.json();
+    }
+
+    console.log('getProvinces:', response);
+    fail('Failed to get provinces. Status code was *not* 200');
+}
+
+const getCounties = (requestParams, province) => {
+    let url = BASE_URL + `/api/v1/province/${province.code}/counties`;
+
+    let response = http.get(url, requestParams);
+
+    const isSuccess = check(response, {
+        "fetched counties successfully": (r) => r.status === 200
+    });
+
+    durationOnGetCounties.add(response.timings.duration);
+
+    if (isSuccess) {
+        return response.json();
+    }
+
+    console.log('getCounties:', response);
+    fail('Failed to get counties. Status code was *not* 200');
+}
+
+const getMunicipalities = (requestParams, county) => {
+    let url = BASE_URL + `/api/v1/county/${county.code}/municipalities`;
+
+    let response = http.get(url, requestParams);
+    durationOnGetMunicipalities.add(response.timings.duration);
+
+    const isSuccess = check(response, {
+        "fetched municipalities successfully": (r) => r.status === 200
+    });
+
+    if (isSuccess) {
+        return response.json();
+    }
+
+    console.log('getMunicipalities:', response);
+    fail('Failed to get municipalities. Status code was *not* 200');
+}
+
+const addPollingStationsDetails = (requestParams, countyCode, municipalityCode, pollingStationNumber) => {
+    let url = BASE_URL + `/api/v1/polling-station`;
+
+    const body = {
+        countyCode: countyCode,
+        municipalityCode: municipalityCode,
+        pollingStationNumber: pollingStationNumber,
+        observerArrivalTime: randomDateToday(),
+        numberOfVotersOnTheList: randomIntBetween(100, 10000),
+        numberOfCommissionMembers: randomIntBetween(5, 50),
+        numberOfFemaleMembers: randomIntBetween(5, 50),
+        minPresentMembers: randomIntBetween(5, 50),
+        chairmanPresence: randomBool(),
+        singlePollingStationOrCommission: randomBool(),
+        adequatePollingStationSize: randomBool()
+    };
+
+    let response = http.post(url, JSON.stringify(body), requestParams);
+    durationOnAddDetails.add(response.timings.duration);
+
+    const isSuccess = check(response, {
+        "added polling stations details successfully": (r) => r.status === 200
+    });
+
+    if (!isSuccess) {
+        console.log('addPollingStationsDetails', request);
+        fail('Failed to add polling stations details. Response code was *not* 200');
+    }
+}
+
 
 const getFormVersions = (requestParams) => {
     let url = BASE_URL + `/api/v1/form`;
@@ -123,7 +227,8 @@ const submitAnswers = (requestParams, answers) => {
     }
 }
 
-export default (authToken) => {
+export default () => {
+    const authToken = login();
     // set the authorization header on the session for the subsequent requests
     const requestConfig = {
         headers: {
@@ -132,13 +237,20 @@ export default (authToken) => {
         },
         timeout: "300s",
     };
+    const provinces = getProvinces(requestConfig);
+    const counties = getCounties(requestConfig, randomItem(provinces));
+    const county = randomItem(counties);
+    const municipalities = getMunicipalities(requestConfig, county);
+    const municipality = randomItem(municipalities);
+    const pollingStationNumber = randomItem(pollingStations[0][municipality.code]);
+    addPollingStationsDetails(requestConfig, county.code, municipality.code, pollingStationNumber);
 
     const data = getFormVersions(requestConfig);
     for (const formVersion of data.formVersions) {
         const formSections = getForm(requestConfig, formVersion.id);
-        const pollingStation = pollingStations[scenario.iterationInTest % pollingStations.length];
 
-        const randomAnswers = getRandomAnswers(formSections, pollingStation.code, pollingStation.number);
+
+        const randomAnswers = getRandomAnswers(formSections, municipality.code, pollingStationNumber);
         submitAnswers(requestConfig, randomAnswers);
     }
 };

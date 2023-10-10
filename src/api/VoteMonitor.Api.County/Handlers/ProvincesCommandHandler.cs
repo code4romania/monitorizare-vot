@@ -162,6 +162,7 @@ public class ProvincesCommandHandler : IRequestHandler<GetProvincesForExport, Re
         try
         {
             provinces = await _cacheService.GetOrSaveDataInCacheAsync("provinces", async () => await _context.Provinces
+                .AsNoTracking()
                 .OrderBy(c => c.Order)
                 .Select(x => new ProvinceModel
                 {
@@ -186,6 +187,7 @@ public class ProvincesCommandHandler : IRequestHandler<GetProvincesForExport, Re
         try
         {
             var province = await _context.Provinces
+                .AsNoTracking()
                 .Where(x => x.Id == request.ProvinceId)
                 .Select(c => new ProvinceModel
                 {
@@ -242,6 +244,7 @@ public class ProvincesCommandHandler : IRequestHandler<GetProvincesForExport, Re
         try
         {
             counties = await _cacheService.GetOrSaveDataInCacheAsync($"province-{request.ProvinceCode}/counties", async () => await _context.Counties
+             .AsNoTracking()
                 .Where(x => x.Province.Code == request.ProvinceCode)
                 .OrderBy(c => c.Order)
                 .Select(x => new CountyModel

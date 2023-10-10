@@ -176,6 +176,7 @@ public class MunicipalityCommandHandler : IRequestHandler<GetMunicipalitiesForEx
         {
             municipalities = await _cacheService.GetOrSaveDataInCacheAsync(
                 $"county-{request.CountyCode}/municipalities", async () => await _context.Municipalities
+                    .AsNoTracking()
                     .Where(x => x.County.Code == request.CountyCode)
                     .OrderBy(c => c.Order)
                     .Select(x => new MunicipalityModel
@@ -207,6 +208,7 @@ public class MunicipalityCommandHandler : IRequestHandler<GetMunicipalitiesForEx
             municipalities = await _cacheService.GetOrSaveDataInCacheAsync("municipalities", async () =>
             {
                 return await _context.Municipalities
+                    .AsNoTracking()
                     .Include(m => m.County)
                     .OrderBy(c => c.Order)
                     .Select(x => new MunicipalityModelV2

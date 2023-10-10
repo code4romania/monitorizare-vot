@@ -13,13 +13,17 @@ namespace VoteMonitor.Api.Answer.Controllers;
 public class AnswersController : Controller
 {
     private readonly IMediator _mediator;
-    private readonly IConfiguration _configuration;
+    private readonly bool _defaultOrganizator;
+    private readonly int _defaultIdOng;
 
     public AnswersController(IMediator mediator, IConfiguration configuration)
     {
         _mediator = mediator;
-        _configuration = configuration;
+
+        _defaultOrganizator = configuration.GetValue<bool>("DefaultOrganizator");
+        _defaultIdOng = configuration.GetValue<int>("DefaultIdOng");
     }
+
 
     /// <summary>
     /// Returns a list of polling stations where observers from the given NGO have submitted answers
@@ -30,8 +34,8 @@ public class AnswersController : Controller
     [HttpGet]
     public async Task<ApiListResponse<AnswerQueryDto>> Get([FromQuery] SectionAnswersRequest model)
     {
-        var organizer = this.GetOrganizatorOrDefault(_configuration.GetValue<bool>("DefaultOrganizator"));
-        var ngoId = this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
+        var organizer = this.GetOrganizatorOrDefault(_defaultOrganizator);
+        var ngoId = this.GetIdOngOrDefault(_defaultIdOng);
 
         return await _mediator.Send(new AnswersQuery
         {

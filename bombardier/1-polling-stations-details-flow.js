@@ -47,7 +47,7 @@ export const options = {
 };
 
 // Retrieve authentication token for subsequent API requests
-export function setup() {
+const login = () => {
     const user = randomItem(users);
 
     const body = {
@@ -161,8 +161,8 @@ const addPollingStationsDetails = (requestParams, county, municipality) => {
     }
 }
 
-
-export default (authToken) => {
+export default () => {
+    const authToken = login();
     // set the authorization header on the session for the subsequent requests
     const requestConfig = {
         headers: {
@@ -177,5 +177,5 @@ export default (authToken) => {
     const county = randomItem(counties);
     const municipalities = getMunicipalities(requestConfig, county);
     const municipality = randomItem(municipalities);
-    addPollingStationsDetails(requestConfig, county, municipality)
+    addPollingStationsDetails(requestConfig, county, municipality);
 };

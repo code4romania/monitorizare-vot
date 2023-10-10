@@ -1,6 +1,5 @@
 # @url = https://localhost:44335
 @url = https://localhost:5001
-# @url = https://api-staging.votemonitor.org
 # @url = http://localhost:53413
 
 # @name observerJwtToken
@@ -9,7 +8,6 @@ Content-Type: application/json
 
 {
   "user": "074",
-  "password": "1234",
   "channelName": "a channel name",
   "fcmToken": "fcmToken"
 }

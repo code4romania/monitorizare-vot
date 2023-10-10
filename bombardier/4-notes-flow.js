@@ -50,7 +50,7 @@ export const options = {
 
 
 // Retrieve authentication token for subsequent API requests
-export function setup() {
+const login = () => {
     const user = randomItem(users);
 
     const body = {
@@ -114,7 +114,9 @@ const addNote = (token, municipalityCode, pollingStationNumber) => {
     }
 }
 
-export default (token) => {
+export default () => {
+    const authToken = login();
+
     const pollingStation = pollingStations[scenario.iterationInTest % pollingStations.length];
-    addNote(token, pollingStation.code, pollingStation.number);
+    addNote(authToken, pollingStation.code, pollingStation.number);
 };
