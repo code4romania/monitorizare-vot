@@ -178,6 +178,7 @@ public class CountiesCommandHandler : IRequestHandler<GetCountiesForExport, Resu
             counties = await _cacheService.GetOrSaveDataInCacheAsync("counties", async () =>
             {
                 return await _context.Counties
+                    .AsNoTracking()
                     .Select(x => new CountyModel
                     {
                         Id = x.Id,
@@ -207,6 +208,7 @@ public class CountiesCommandHandler : IRequestHandler<GetCountiesForExport, Resu
         try
         {
             var county = await _context.Counties
+                .AsNoTracking()
                 .Where(x => x.Id == request.CountyId)
                 .Select(c => new CountyModel
                 {

@@ -21,7 +21,9 @@ public class AnswersQueryHandler :
 
     public async Task<ApiListResponse<AnswerQueryDto>> Handle(AnswersQuery message, CancellationToken cancellationToken)
     {
-        var query = _context.Answers.Where(a => a.OptionAnswered.Flagged == message.Urgent);
+        var query = _context.Answers
+            .AsNoTracking()
+            .Where(a => a.OptionAnswered.Flagged == message.Urgent);
 
         // Filter by the ngo id if the user is not of type organizer
         if (!message.Organizer)

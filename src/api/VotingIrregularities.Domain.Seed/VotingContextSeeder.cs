@@ -38,7 +38,9 @@ public class VotingContextSeeder
         if (_context.Ngos.Any()
             || _context.NgoAdmins.Any()
             || _context.Observers.Any()
+            || _context.Provinces.Any()
             || _context.Counties.Any()
+            || _context.Municipalities.Any()
             || _context.PollingStations.Any()
             || _context.Forms.Any()
             || _context.FormSections.Any()
@@ -95,8 +97,11 @@ public class VotingContextSeeder
         _context.Database.ExecuteSqlRaw(@"delete from public.""Questions""");
         _context.Database.ExecuteSqlRaw(@"delete from public.""FormSections""");
         _context.Database.ExecuteSqlRaw(@"delete from public.""Forms""");
+        _context.Database.ExecuteSqlRaw(@"delete from public.""PollingStationInfos""");
         _context.Database.ExecuteSqlRaw(@"delete from public.""PollingStations""");
+        _context.Database.ExecuteSqlRaw(@"delete from public.""Provinces""");
         _context.Database.ExecuteSqlRaw(@"delete from public.""Counties""");
+        _context.Database.ExecuteSqlRaw(@"delete from public.""Municipalities""");
         _context.Database.ExecuteSqlRaw(@"delete from public.""Observers""");
         _context.Database.ExecuteSqlRaw(@"delete from public.""NgoAdmin""");
         _context.Database.ExecuteSqlRaw(@"delete from public.""Ngos""");

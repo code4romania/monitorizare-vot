@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System.Collections.Concurrent;
 
 namespace VoteMonitor.Api.Core.Services;
 
@@ -9,7 +10,7 @@ public class CacheService : ICacheService
 {
     private readonly IDistributedCache _cache;
     private readonly ILogger _logger;
-
+    private readonly ConcurrentDictionary<string, string> _cacheKeys = new();
     public CacheService(IDistributedCache cache, ILogger<CacheService> logger)
     {
         _cache = cache;
@@ -66,6 +67,8 @@ public class CacheService : ICacheService
         {
             var obj = JsonConvert.SerializeObject(value);
 
+            _cacheKeys.TryAdd(name, string.Empty);
+
             if (options != null)
             {
                 await _cache.SetAsync(name, GetBytes(obj), options);
@@ -79,6 +82,22 @@ public class CacheService : ICacheService
         {
             _logger.LogError(GetHashCode(), exception, exception.Message);
         }
+    }
+
+    public async Task RemoveValueAsync(string cacheKey)
+    {
+        await _cache.RemoveAsync(cacheKey);
+    }
+
+    public async Task ClearAllValuesAsync()
+    {
+        var tasks = new List<Task>();
+        foreach (var cacheKey in _cacheKeys)
+        {
+            tasks.Add(_cache.RemoveAsync(cacheKey.Key));
+        }
+
+        await Task.WhenAll(tasks);
     }
 
     private static byte[] GetBytes(string str)

@@ -14,19 +14,21 @@ namespace VoteMonitor.Api.Statistics.Controllers;
 [Route("api/v1/statistics")]
 public class StatisticsController : Controller
 {
-    private readonly IConfiguration _configuration;
     private readonly ApplicationCacheOptions _cacheOptions;
     private readonly IMediator _mediator;
+    private readonly int _defaultIdOng;
+    private readonly bool _defaultOrganizator;
 
     public StatisticsController(IMediator mediator, IConfiguration configuration, IOptions<ApplicationCacheOptions> cacheOptions)
     {
         _mediator = mediator;
-        _configuration = configuration;
         _cacheOptions = cacheOptions.Value;
+        _defaultIdOng = configuration.GetValue<int>("DefaultIdOng");
+        _defaultOrganizator = configuration.GetValue<bool>("DefaultOrganizator");
     }
 
-    private int NgoId => this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
-    private bool IsOrganizer => this.GetOrganizatorOrDefault(_configuration.GetValue<bool>("DefaultOrganizator"));
+    private int NgoId => this.GetIdOngOrDefault(_defaultIdOng);
+    private bool IsOrganizer => this.GetOrganizatorOrDefault(_defaultOrganizator);
 
     /// <summary>
     /// Returns top counties by observer number

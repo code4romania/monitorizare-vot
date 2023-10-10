@@ -28,7 +28,7 @@ export const options = {
 
 
 // Retrieve authentication token for subsequent API requests
-export function setup() {
+const login = () => {
     const user = randomItem(users);
 
     const body = {
@@ -95,7 +95,8 @@ const getForms = (requestParams, form) => {
     fail('Failed to get forms. Status code was *not* 200');
 }
 
-export default (authToken) => {
+export default () => {
+    const authToken = login();
     // set the authorization header on the session for the subsequent requests
     const requestConfig = {
         headers: {

@@ -1,4 +1,3 @@
-using Amazon.Runtime.Internal.Util;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using VoteMonitor.Api.Core.Services;

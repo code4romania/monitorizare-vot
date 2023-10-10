@@ -72,7 +72,7 @@ public class StatisticsQueryHandler :
     {
         var queryBuilder = new StatisticsQueryBuilder
         {
-            Query = @$"SELECT COUNT(distinct a.""IdObserver"") as Value, C.""Name"" || ' ' || M.""Name"" as Label
+            Query = @$"SELECT COUNT(distinct a.""IdObserver"") as Value, C.""Name"" as Label
                           FROM public.""Answers"" A
                           INNER JOIN public.""Observers"" o on A.""IdObserver"" = o.""Id""
                           INNER JOIN public.""Ngos"" N ON O.""IdNgo"" = N.""Id""
@@ -86,7 +86,7 @@ public class StatisticsQueryHandler :
         };
 
         queryBuilder.AndOngFilter(message.IsOrganizer, message.NgoId);
-        queryBuilder.Append(@"group by C.""Name"", M.""Name"" order by Value desc");
+        queryBuilder.Append(@"group by C.""Name"" order by Value desc");
 
         var records = await _cacheService.GetOrSaveDataInCacheAsync(
             queryBuilder.CacheKey,
@@ -125,7 +125,7 @@ public class StatisticsQueryHandler :
     {
         var queryBuilder = new StatisticsQueryBuilder
         {
-            Query = @$"SELECT C.""Name"" || ' ' || M.""Name"" AS Label, COUNT(*) as Value
+            Query = @$"SELECT C.""Name"" AS Label, COUNT(*) as Value
                   FROM public.""Answers"" AS A 
                   INNER JOIN public.""OptionsToQuestions"" AS RD ON RD.""Id"" = A.""IdOptionToQuestion""
                   INNER JOIN public.""Observers"" O ON O.""Id"" = A.""IdObserver""
@@ -144,7 +144,7 @@ public class StatisticsQueryHandler :
 
         queryBuilder.AndOngFilter(message.IsOrganizer, message.NgoId);
         queryBuilder.AndFormCodeFilter(message.FormCode);
-        queryBuilder.Append(@"GROUP BY C.""Name"", M.""Name"" ORDER BY Value DESC");
+        queryBuilder.Append(@"GROUP BY C.""Name"" ORDER BY Value DESC");
 
         var records = await _cacheService.GetOrSaveDataInCacheAsync(queryBuilder.CacheKey,
             async () => await _context.SimpleStatistics
