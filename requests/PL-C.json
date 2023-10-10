@@ -1,0 +1,1726 @@
+{
+    "code": "PL-C",
+    "currentVersion": 1,
+    "description": "PL-C",
+    "formSections": [
+        {
+            "uniqueId": "C",
+            "code": "C",
+            "description": "",
+            "orderNumber": 1,
+            "questions": [
+                {
+                    "formCode": "PL-C",
+                    "code": "1",
+                    "questionType": 2,
+                    "text": "Czy lokal wyborczy został zamknięty punktualnie?",
+                    "orderNumber": 1,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": true,
+                            "isFlagged": false,
+                            "text": "Nie (opisz przyczynę)",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "1.1",
+                    "questionType": 1,
+                    "text": "Jeśli nie - to jakie było opóźnienie?",
+                    "orderNumber": 2,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "0-15 minut",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "15-30 minut",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "30-60 minut",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "> 60 minut",
+                            "orderNumber": 4
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "2",
+                    "questionType": 1,
+                    "text": "Czy wszyscy wyborcy znajdujący się w lokalu wyborczym w momencie zamknięcia lokalu mogli oddać głos?",
+                    "orderNumber": 3,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "3",
+                    "questionType": 1,
+                    "text": "Czy w momencie zamknięcia lokalu, obecna była wymagana liczba (minimum 2/3) członków komisji, w tym Przewodniczący/a lub Z-ca/czyni Przewodniczącego/ej?",
+                    "orderNumber": 4,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "4",
+                    "questionType": 1,
+                    "text": "Czy otwór urny wyborczej został prawidłowo opieczętowany po zamknięciu lokalu wyborczego?",
+                    "orderNumber": 5,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "5",
+                    "questionType": 1,
+                    "text": "Czy komisja ustaliła, na podstawie spisu wyborców, liczbę osób uprawnionych do głosowania (wraz z osobami dopisanymi do listy)?",
+                    "orderNumber": 6,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "6",
+                    "questionType": 1,
+                    "text": "Czy komisja ustaliła liczbę wyborców, którym wydano karty do głosowania (w każdym z trzech głosowań)?",
+                    "orderNumber": 7,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Sejm",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Senat",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Referendum",
+                            "orderNumber": 3
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "7",
+                    "questionType": 1,
+                    "text": "Czy komisja ustaliła liczbę niewykorzystanych kart do głosowania?",
+                    "orderNumber": 8,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Sejm",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Senat",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Referendum",
+                            "orderNumber": 3
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "7.1",
+                    "questionType": 1,
+                    "text": "Czy w którymś z głosowań była różnica między liczbą kart wydanych i niewykorzystanych względem kart otrzymanych?",
+                    "orderNumber": 9,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Sejm",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Senat",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Referendum",
+                            "orderNumber": 3
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "7.2",
+                    "questionType": 1,
+                    "text": "W przypadku Sejmu, czy większa była suma liczby kart wydanych i niewykorzystanych czy liczba kart otrzymanych?",
+                    "orderNumber": 10,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Więcej otrzymanych",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Mniej otrzymanych",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "7.3",
+                    "questionType": 1,
+                    "text": "W przypadku Senatu, czy większa była suma liczby kart wydanych i niewykorzystanych czy liczba kart otrzymanych?",
+                    "orderNumber": 11,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Więcej otrzymanych",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Mniej otrzymanych",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "7.4",
+                    "questionType": 1,
+                    "text": "W przypadku referendum, czy większa była suma liczby kart wydanych i niewykorzystanych czy liczba kart otrzymanych?",
+                    "orderNumber": 12,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Więcej otrzymanych",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Mniej otrzymanych",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "8",
+                    "questionType": 1,
+                    "text": "Czy plomby na urnie oraz plomba otworu urny były w nienaruszonym stanie?",
+                    "orderNumber": 13,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "9",
+                    "questionType": 1,
+                    "text": "Czy komisja oddzieliła karty przedarte/inne papiery i zapakowała do oddzielnych opakowań?",
+                    "orderNumber": 14,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "9.1",
+                    "questionType": 2,
+                    "text": "Ile było kart przedartych/innych? (liczba)",
+                    "orderNumber": 15,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": true,
+                            "isFlagged": false,
+                            "text": "liczba",
+                            "orderNumber": 1
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "10",
+                    "questionType": 0,
+                    "text": "Czy komisja policzyła karty całe wyjęte z urny (osobno dla poszczególnych głosowań)?",
+                    "orderNumber": 16,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Sejm",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Senat",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Referendum",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Żadne",
+                            "orderNumber": 4
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "11",
+                    "questionType": 2,
+                    "text": "Czy i jak komisja zabezpieczyła karty, których nie liczyła w kolejnych krokach procedur?",
+                    "orderNumber": 17,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak (opisz)",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie (opisz)",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "12",
+                    "questionType": 1,
+                    "text": "To i dalsze pytania dotyczą Sejmu: Czy komisja wydzieliła i policzyła karty nieważne (bez stempla komisji lub na druku innym niż oryginalny)?",
+                    "orderNumber": 18,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "12.1",
+                    "questionType": 2,
+                    "text": "Ile było kart nieważnych?",
+                    "orderNumber": 19,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": true,
+                            "isFlagged": false,
+                            "text": "liczba",
+                            "orderNumber": 1
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "13",
+                    "questionType": 1,
+                    "text": "Czy komisja policzyła karty ważne? (przez liczenie należy rozumieć osobną czynność, nie zsumowanie)",
+                    "orderNumber": 20,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "14",
+                    "questionType": 1,
+                    "text": "Czy liczba kart całych była równa liczbie kart ważnych i nieważnych?",
+                    "orderNumber": 21,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie policzono",
+                            "orderNumber": 3
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "15",
+                    "questionType": 1,
+                    "text": "Czy komisja ustaliła liczbę głosów ważnych i nieważnych?",
+                    "orderNumber": 22,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "15.1",
+                    "questionType": 1,
+                    "text": "Czy o ważności głosu komisja decydowała wspólnie?",
+                    "orderNumber": 23,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "20",
+                    "questionType": 1,
+                    "text": "Czy komisja prezentowała karty mężom zaufania i obserwatorom?",
+                    "orderNumber": 24,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "21",
+                    "questionType": 2,
+                    "text": "Czy komisja miała problemy z ustaleniem ważności głosów?",
+                    "orderNumber": 25,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": true,
+                            "isFlagged": false,
+                            "text": "Zdecydowanie tak (opisz)",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": true,
+                            "isFlagged": false,
+                            "text": "Raczej tak (opisz)",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Raczej nie",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Zdecydowanie nie",
+                            "orderNumber": 4
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "22",
+                    "questionType": 1,
+                    "text": "Czy komisja porównała sumę policzonych głosów ważnych i nieważnych z liczbą kart ważnych?",
+                    "orderNumber": 26,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "22.1",
+                    "questionType": 1,
+                    "text": "Czy, jeśli liczby te się nie zgadzały, komisja znalazła przyczynę i skorygowała błąd?",
+                    "orderNumber": 27,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "23",
+                    "questionType": 1,
+                    "text": "Czy komisja ustaliła liczbę głosów oddanych na poszczególne listy?",
+                    "orderNumber": 28,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "24",
+                    "questionType": 1,
+                    "text": "Czy komisja ustaliła liczbę głosów oddanych na poszczególnych kandydatów?",
+                    "orderNumber": 29,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "25",
+                    "questionType": 1,
+                    "text": "Czy suma głosów oddanych na poszczególnych kandydatów była równa liczbie głosów ważnych?",
+                    "orderNumber": 30,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie policzono",
+                            "orderNumber": 3
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "26",
+                    "questionType": 1,
+                    "text": "Czy komisja wypełniła projekt protokołu wyników?",
+                    "orderNumber": 31,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "27",
+                    "questionType": 1,
+                    "text": "To i dalsze pytanie dotyczą Senatu:Czy komisja wydzieliła i policzyła karty nieważne (bez stempla komisji lub na druku innym niż oryginalny)?",
+                    "orderNumber": 32,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "28",
+                    "questionType": 2,
+                    "text": "Ile było kart nieważnych?",
+                    "orderNumber": 33,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": true,
+                            "isFlagged": false,
+                            "text": "liczba",
+                            "orderNumber": 1
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "29",
+                    "questionType": 1,
+                    "text": "Czy komisja policzyła karty ważne? (przez liczenie należy rozumieć osobną czynność, nie zsumowanie)",
+                    "orderNumber": 34,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "30",
+                    "questionType": 1,
+                    "text": "Czy liczba kart całych była równa liczbie kart ważnych i nieważnych?",
+                    "orderNumber": 35,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie policzono",
+                            "orderNumber": 3
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "31",
+                    "questionType": 1,
+                    "text": "Czy komisja ustaliła liczbę głosów ważnych i nieważnych?",
+                    "orderNumber": 36,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "32",
+                    "questionType": 1,
+                    "text": "Czy o ważności głosu komisja decydowała wspólnie?",
+                    "orderNumber": 37,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "33",
+                    "questionType": 1,
+                    "text": "Czy komisja prezentowała karty mężom zaufania i obserwatorom?",
+                    "orderNumber": 38,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "34",
+                    "questionType": 2,
+                    "text": "Czy komisja miała problemy z ustaleniem ważności głosów?",
+                    "orderNumber": 39,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": true,
+                            "isFlagged": false,
+                            "text": "Zdecydowanie tak (opisz)",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": true,
+                            "isFlagged": false,
+                            "text": "Raczej tak (opisz)",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Raczej nie",
+                            "orderNumber": 3
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "35",
+                    "questionType": 1,
+                    "text": "Czy komisja porównała sumę policzonych głosów ważnych i nieważnych z liczbą kart ważnych?",
+                    "orderNumber": 40,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "36",
+                    "questionType": 1,
+                    "text": "Czy, jeśli liczby te się nie zgadzały, komisja znalazła przyczynę i skorygowała błąd?",
+                    "orderNumber": 41,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "37",
+                    "questionType": 1,
+                    "text": "Czy komisja ustaliła liczbę głosów oddanych na poszczególnych kandydatów?",
+                    "orderNumber": 42,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "38",
+                    "questionType": 1,
+                    "text": "Czy suma głosów oddanych na poszczególnych kandydatów była równa liczbie głosów ważnych?",
+                    "orderNumber": 43,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie policzono",
+                            "orderNumber": 3
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "39",
+                    "questionType": 1,
+                    "text": "Czy komisja wypełniła projekt protokołu wyników?",
+                    "orderNumber": 44,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "40",
+                    "questionType": 1,
+                    "text": "To i dalsze pytanie dotyczą referendum: Czy komisja wydzieliła i policzyła karty nieważne (bez stempla komisji lub na druku innym niż oryginalny)?",
+                    "orderNumber": 45,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "41",
+                    "questionType": 2,
+                    "text": "Ile było kart nieważnych?",
+                    "orderNumber": 46,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": true,
+                            "isFlagged": false,
+                            "text": "liczba",
+                            "orderNumber": 1
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "42",
+                    "questionType": 1,
+                    "text": "Czy komisja policzyła karty ważne? (przez liczenie należy rozumieć osobną czynność, nie zsumowanie)",
+                    "orderNumber": 47,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "43",
+                    "questionType": 1,
+                    "text": "Czy liczba kart całych była równa liczbie kart ważnych i nieważnych?",
+                    "orderNumber": 48,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "44",
+                    "questionType": 0,
+                    "text": "Czy komisja ustaliła liczbę głosów ważnych i nieważnych w przypadku poszczególnych pytań?",
+                    "orderNumber": 49,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak, dla pytania 1",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak, dla pytania 2",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak, dla pytania 3",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak, dla pytania 4",
+                            "orderNumber": 4
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Dla żadnego",
+                            "orderNumber": 5
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "45",
+                    "questionType": 1,
+                    "text": "Czy, jeśli liczby te się nie zgadzały, komisja znalazła przyczynę i skorygowała błąd?",
+                    "orderNumber": 50,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "46",
+                    "questionType": 0,
+                    "text": "Czy komisja ustaliła liczbę głosów oddanych na poszczególnych opcje dla kazdego pytania?",
+                    "orderNumber": 51,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak, dla pytania 1",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak, dla pytania 2",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak, dla pytania 3",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak, dla pytania 4",
+                            "orderNumber": 4
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Dla żadnego",
+                            "orderNumber": 5
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "47",
+                    "questionType": 0,
+                    "text": "Czy suma głosów oddanych na poszczególnych opcje była równa liczbie głosów ważnych?",
+                    "orderNumber": 52,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak, dla pytania 1",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak, dla pytania 2",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak, dla pytania 3",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak, dla pytania 4",
+                            "orderNumber": 4
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Dla żadnego",
+                            "orderNumber": 5
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "48",
+                    "questionType": 1,
+                    "text": "Czy komisja miała zapewnioną obsługę informatyczną?",
+                    "orderNumber": 53,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "49",
+                    "questionType": 2,
+                    "text": "Ilu członków komisji było obecnych podczas wprowadzania danych do aplikacji?",
+                    "orderNumber": 54,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": true,
+                            "isFlagged": false,
+                            "text": "liczba",
+                            "orderNumber": 1
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "50",
+                    "questionType": 1,
+                    "text": "Czy komisja pozwoliła obserwować proces wprowadzania projektu protokołu bez problemów?",
+                    "orderNumber": 55,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "51",
+                    "questionType": 2,
+                    "text": "Czy w aplikacji, do której wprowadzano wyniki, zostały wykazane błędy?",
+                    "orderNumber": 56,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": true,
+                            "isFlagged": false,
+                            "text": "Tak (opisz)",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "51.1",
+                    "questionType": 1,
+                    "text": "Czy komisja skorygowała wskazane błędy zgodnie ze stanem faktycznym?",
+                    "orderNumber": 57,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "52",
+                    "questionType": 1,
+                    "text": "Czy odczytano projekt protokołu na głos przed jego podpisaniem (lub przed wprowadzeniem do aplikacji WOW)?",
+                    "orderNumber": 58,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "53",
+                    "questionType": 2,
+                    "text": "Czy wniesiono uwagi do protokołu?",
+                    "orderNumber": 59,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": true,
+                            "isFlagged": false,
+                            "text": "Tak (opisz)",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "54",
+                    "questionType": 1,
+                    "text": "Czy wszyscy obecnie czlonkowie komisji podpisali protokół?",
+                    "orderNumber": 60,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "55",
+                    "questionType": 1,
+                    "text": "Czy komisja wywiesiła wyniki głosowania w miejscu łatwo dostępnym dla wszystkich wyborców?",
+                    "orderNumber": 61,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "56",
+                    "questionType": 1,
+                    "text": "Czy członkowie komisji pracowali wspólnie (w trakcie obserwacji)?",
+                    "orderNumber": 62,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "57",
+                    "questionType": 2,
+                    "text": "Czy w lokalu przebywały osoby nieuprawnione? (tj. inne niż obserwator, dziennikarz, mąż zaufania, członkowie komisji wyborczej, informatyk wezwany przez komisję, pełnomocnik komisji okregowej odbierajacy wyniki)",
+                    "orderNumber": 63,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": true,
+                            "isFlagged": false,
+                            "text": "Tak (opisz reakcję komisji)",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "58",
+                    "questionType": 2,
+                    "text": "Czy w lokalu dochodziło do zakłócania porządku publicznego lub utrudnianiu przeprowadzenia procedur?",
+                    "orderNumber": 64,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": true,
+                            "isFlagged": false,
+                            "text": "Tak (opisz kto i reakcję komisji)",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "59",
+                    "questionType": 2,
+                    "text": "Czy komisja pozwoliła obserwatorom i mężom zaufania na swobodną obserwację procedur zamknięcia lokalu i liczenia głosów?",
+                    "orderNumber": 65,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": true,
+                            "isFlagged": false,
+                            "text": "Nie (opisz)",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "60",
+                    "questionType": 1,
+                    "text": "Czy obserwatorzy/mężowie zaufania mogli nagrywać/robić zdjęcia w trakcie liczenia głosów i wypełniania protokołu?",
+                    "orderNumber": 66,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "61",
+                    "questionType": 3,
+                    "text": "Czy w lokalu byli obecni inni obserwatorzy i/lub mężowie zaufania?",
+                    "orderNumber": 67,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "KW PiS",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "KKW KO",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "KKW Trzecia Droga",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "KW Konfederacja",
+                            "orderNumber": 4
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "KW Nowa Lewica",
+                            "orderNumber": 5
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "RKW",
+                            "orderNumber": 6
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Obserwatorium Wyborcze",
+                            "orderNumber": 7
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "KOD",
+                            "orderNumber": 8
+                        },
+                        {
+                            "isFreeText": true,
+                            "isFlagged": false,
+                            "text": "Inne (podaj)",
+                            "orderNumber": 9
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "brak",
+                            "orderNumber": 10
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "62",
+                    "questionType": 1,
+                    "text": "Czy obserwatorzy otrzymali kopie protokołu wyników? (jeśli o nie poprosili)",
+                    "orderNumber": 68,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie dotyczy",
+                            "orderNumber": 3
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "63",
+                    "questionType": 2,
+                    "text": "Czy wystąpiły inne problemy lub sytuacje mogące mieć wpływ na przebieg wyborów?",
+                    "orderNumber": 69,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": true,
+                            "isFlagged": false,
+                            "text": "Tak (opisz)",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "64",
+                    "questionType": 1,
+                    "text": "Jak oceniasz wiedzę komisji odnośnie procedur liczenia głosów, ustalania wyników głosowania i przygotowywania protokołu?",
+                    "orderNumber": 70,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Bardzo dobrze",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Dobrze",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Źle",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Bardzo źle",
+                            "orderNumber": 4
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "65",
+                    "questionType": 1,
+                    "text": "Jak oceniasz pracę komisji na tym etapie?",
+                    "orderNumber": 71,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Bardzo dobrze",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Dobrze",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Źle",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Bardzo źle",
+                            "orderNumber": 4
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-C",
+                    "code": "66",
+                    "questionType": 1,
+                    "text": "Jak oceniasz przebieg procedur liczenia głosów, ustalania wyników głosowania i przygotowywania protokołu?",
+                    "orderNumber": 72,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Bardzo dobrze",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Dobrze",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Źle",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Bardzo źle",
+                            "orderNumber": 4
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "order": 3
+}
