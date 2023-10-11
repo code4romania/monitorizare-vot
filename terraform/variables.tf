@@ -8,6 +8,11 @@ variable "env" {
   }
 }
 
+variable "slug" {
+  description = "Deployment slug"
+  type        = string
+}
+
 variable "region" {
   description = "Region"
   type        = string

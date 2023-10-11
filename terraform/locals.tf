@@ -1,5 +1,5 @@
 locals {
-  namespace         = "votemonitor-${var.env}"
+  namespace         = "votemonitor-${var.slug}-${var.env}"
   availability_zone = data.aws_availability_zones.current.names[0]
 
   images = {
