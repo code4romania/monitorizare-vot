@@ -1,0 +1,727 @@
+{
+    "code": "EN-B",
+    "currentVersion": 1,
+    "description": "EN-B",
+    "formSections": [
+        {
+            "uniqueId": "B",
+            "code": "B",
+            "description": "",
+            "orderNumber": 1,
+            "questions": [
+                {
+                    "formCode": "EN-B",
+                    "code": "1",
+                    "questionType": 3,
+                    "text": "What aspects of the polling station design can be problematic for persons with disabilities?",
+                    "orderNumber": 1,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Architectural barriers",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Announcements are hung too high",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Polling station setup",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Inadquate voting booths",
+                            "orderNumber": 4
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Height of the ballot box",
+                            "orderNumber": 5
+                        },
+                        {
+                            "isFreeText": true,
+                            "isFlagged": false,
+                            "text": "Other (please describe)",
+                            "orderNumber": 6
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "None",
+                            "orderNumber": 7
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-B",
+                    "code": "2",
+                    "questionType": 1,
+                    "text": "Number of voters who voted (before your arrival",
+                    "orderNumber": 2,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-B",
+                    "code": "3",
+                    "questionType": 1,
+                    "text": "Where there any campaign mateirals or active campaigning present during your observation of the PEC?",
+                    "orderNumber": 3,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-B",
+                    "code": "4",
+                    "questionType": 3,
+                    "text": "If yes, what forms did it take ?",
+                    "orderNumber": 4,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Banners",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Flyers",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "In-person campaigning",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": true,
+                            "isFlagged": false,
+                            "text": "Instructing what party/candiate to select (describe)",
+                            "orderNumber": 4
+                        },
+                        {
+                            "isFreeText": true,
+                            "isFlagged": false,
+                            "text": "Other (please describe)",
+                            "orderNumber": 5
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-B",
+                    "code": "5",
+                    "questionType": 1,
+                    "text": "Did the PEC react to the situation?",
+                    "orderNumber": 5,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-B",
+                    "code": "6",
+                    "questionType": 1,
+                    "text": "Did the PEC check voters' IDs?",
+                    "orderNumber": 6,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Always",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Almost always",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Sometimes",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Never or barely ever",
+                            "orderNumber": 4
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-B",
+                    "code": "7",
+                    "questionType": 1,
+                    "text": "Did voters sign the electoral roll?",
+                    "orderNumber": 7,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Always",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Almost always",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Sometimes",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Never or barely ever",
+                            "orderNumber": 4
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-B",
+                    "code": "8",
+                    "questionType": 2,
+                    "text": "Did voters refuse receiving the referendum ballot?",
+                    "orderNumber": 8,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": true,
+                            "isFlagged": false,
+                            "text": "Yes (provide a number)",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-B",
+                    "code": "9",
+                    "questionType": 1,
+                    "text": "Did you observe any situation where the PEC hadn't noted the voter's refusal in the electoral roll?",
+                    "orderNumber": 9,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-B",
+                    "code": "10",
+                    "questionType": 1,
+                    "text": "Did you observe that PEC still handing out the referendum ballot depsite the voter's refusal to accept it?",
+                    "orderNumber": 10,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-B",
+                    "code": "11",
+                    "questionType": 1,
+                    "text": "Did you observe voters who returned the referendum ballot  (after previously accpeting it)?",
+                    "orderNumber": 11,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-B",
+                    "code": "12",
+                    "questionType": 1,
+                    "text": "Did the PEC accept such a ballot paper?",
+                    "orderNumber": 12,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-B",
+                    "code": "13",
+                    "questionType": 1,
+                    "text": "Did you observe the PEC handing out ballot papers without a stamp?",
+                    "orderNumber": 13,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Always",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Almost always",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Sometimes",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Never or barely ever",
+                            "orderNumber": 4
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-B",
+                    "code": "14",
+                    "questionType": 1,
+                    "text": "Did the polling station have a sufficient number of voting booths?",
+                    "orderNumber": 14,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-B",
+                    "code": "15",
+                    "questionType": 1,
+                    "text": "Where voting booths well placed and well lighted?",
+                    "orderNumber": 15,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-B",
+                    "code": "16",
+                    "questionType": 3,
+                    "text": "Did you notice any voters who did not cast their votes in secret?",
+                    "orderNumber": 16,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Group/family voting",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Voting outside of polling booths",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Coordinating/consulting the selection on the ballot",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": true,
+                            "isFlagged": false,
+                            "text": "Other (please describe)",
+                            "orderNumber": 4
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-B",
+                    "code": "17",
+                    "questionType": 1,
+                    "text": "Did the PEC react to such situations?",
+                    "orderNumber": 17,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Always",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Almost always",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Sometimes",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Never or barely ever",
+                            "orderNumber": 4
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-B",
+                    "code": "18",
+                    "questionType": 1,
+                    "text": "Was the ballot box properly sealed?",
+                    "orderNumber": 18,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-B",
+                    "code": "19",
+                    "questionType": 2,
+                    "text": "Was there any electoral silence breaches in the polling station?",
+                    "orderNumber": 19,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": true,
+                            "isFlagged": true,
+                            "text": "Yes (describe)",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-B",
+                    "code": "20",
+                    "questionType": 2,
+                    "text": "Were there any attempts to take a ballot out of the polling station?",
+                    "orderNumber": 20,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": true,
+                            "isFlagged": true,
+                            "text": "Yes (describe)",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-B",
+                    "code": "21",
+                    "questionType": 2,
+                    "text": "Were there any attempts to destroy a ballot paper?",
+                    "orderNumber": 21,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": true,
+                            "isFlagged": true,
+                            "text": "Yes (describe)",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-B",
+                    "code": "22",
+                    "questionType": 2,
+                    "text": "Did the PEC allow observers and party agents to conduct unobstructed observation?",
+                    "orderNumber": 22,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": true,
+                            "isFlagged": false,
+                            "text": "No (describe)",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-B",
+                    "code": "23",
+                    "questionType": 2,
+                    "text": "Were any other observers or party agents present?",
+                    "orderNumber": 23,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes (describe)",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-B",
+                    "code": "24",
+                    "questionType": 2,
+                    "text": "Did any problems occur in the course of the observation?",
+                    "orderNumber": 24,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": true,
+                            "isFlagged": false,
+                            "text": "Yes (please decribe)",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-B",
+                    "code": "25",
+                    "questionType": 1,
+                    "text": "How would you rate the PEC's knowledge?",
+                    "orderNumber": 25,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Very good",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Good",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Bad",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Very bad",
+                            "orderNumber": 4
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-B",
+                    "code": "26",
+                    "questionType": 1,
+                    "text": "How would you rate the work of the PEC?",
+                    "orderNumber": 26,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Very good",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Good",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Bad",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Very bad",
+                            "orderNumber": 4
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-B",
+                    "code": "27",
+                    "questionType": 1,
+                    "text": "How would you rate the conduct of the voting procedures?",
+                    "orderNumber": 27,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Very good",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Good",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Bad",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Very bad",
+                            "orderNumber": 4
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "order": 5
+}

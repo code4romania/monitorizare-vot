@@ -1,961 +1,895 @@
 {
-    "code": "PL-B",
+    "code": "EN-C",
     "currentVersion": 1,
-    "description": "PL-B",
+    "description": "EN-C",
     "formSections": [
         {
-            "uniqueId": "B",
-            "code": "B",
+            "uniqueId": "C",
+            "code": "C",
             "description": "",
             "orderNumber": 1,
             "questions": [
                 {
-                    "formCode": "PL-B",
+                    "formCode": "EN-C",
                     "code": "1",
-                    "questionType": 3,
-                    "text": "Jakie kwestie mogłyby sprawiać trudności osobom z niepelnosprawnosciami?",
+                    "questionType": 2,
+                    "text": "Was polling station closed on time?",
                     "orderNumber": 1,
                     "optionsToQuestions": [
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Bariery architektoniczne przed i na wejściu",
+                            "text": "Yes",
                             "orderNumber": 1
-                        },
-                        {
-                            "isFreeText": false,
-                            "isFlagged": false,
-                            "text": "Obwieszczenia zbyt wysoko",
-                            "orderNumber": 2
-                        },
-                        {
-                            "isFreeText": false,
-                            "isFlagged": false,
-                            "text": "Układ lokalu",
-                            "orderNumber": 3
-                        },
-                        {
-                            "isFreeText": false,
-                            "isFlagged": false,
-                            "text": "Miejsca zapewniające tajność",
-                            "orderNumber": 4
-                        },
-                        {
-                            "isFreeText": false,
-                            "isFlagged": false,
-                            "text": "Wysokość urny",
-                            "orderNumber": 5
                         },
                         {
                             "isFreeText": true,
                             "isFlagged": false,
-                            "text": "Inne (opisz)",
-                            "orderNumber": 6
-                        },
-                        {
-                            "isFreeText": false,
-                            "isFlagged": false,
-                            "text": "Żadne",
-                            "orderNumber": 7
+                            "text": "No (describe reason)",
+                            "orderNumber": 2
                         }
                     ]
                 },
                 {
-                    "formCode": "PL-B",
+                    "formCode": "EN-C",
                     "code": "2",
                     "questionType": 1,
-                    "text": "Czy w lokalu wyborczym znajdowały się wymagane obwieszczenia i informacje dla wyborców?",
+                    "text": "Was the required number of PEC members (at least 2/3) and the chairperson (or deputy) present during closing and counting?",
                     "orderNumber": 2,
                     "optionsToQuestions": [
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Tak",
+                            "text": "Yes",
                             "orderNumber": 1
                         },
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Nie",
+                            "text": "No",
                             "orderNumber": 2
                         }
                     ]
                 },
                 {
-                    "formCode": "PL-B",
+                    "formCode": "EN-C",
                     "code": "3",
-                    "questionType": 2,
-                    "text": "Liczba wyborców, która zagłosowała do momentu przybycia obserwatora do lokalu wyborczego (liczba podpisów)?",
+                    "questionType": 1,
+                    "text": "Was the ballot box inlet sealed?",
                     "orderNumber": 3,
                     "optionsToQuestions": [
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "liczba podpisów",
-                            "orderNumber": 1
-                        }
-                    ]
-                },
-                {
-                    "formCode": "PL-B",
-                    "code": "4",
-                    "questionType": 1,
-                    "text": "Czy w lokalu wyborczym lub na terenie, na którym się on znajduje, była prowadzona kampania/agitacja wyborcza?",
-                    "orderNumber": 4,
-                    "optionsToQuestions": [
-                        {
-                            "isFreeText": false,
-                            "isFlagged": true,
-                            "text": "Tak",
+                            "text": "Yes",
                             "orderNumber": 1
                         },
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Nie",
+                            "text": "No",
                             "orderNumber": 2
                         }
                     ]
                 },
                 {
-                    "formCode": "PL-B",
-                    "code": "4.1",
-                    "questionType": 3,
-                    "text": "Jeśli tak, to jakie były jej formy?",
+                    "formCode": "EN-C",
+                    "code": "4",
+                    "questionType": 1,
+                    "text": "Did the PEC identify the number of eligible voters (based on the electoral roll)",
+                    "orderNumber": 4,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-C",
+                    "code": "5",
+                    "questionType": 0,
+                    "text": "Did the PEC identify (based on the electoral roll) the number of the voters, who were issued ballots (for each election/referendum separately)?",
                     "orderNumber": 5,
                     "optionsToQuestions": [
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Banery",
+                            "text": "Sejm",
                             "orderNumber": 1
                         },
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Ulotki",
+                            "text": "Senat",
                             "orderNumber": 2
                         },
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Ustne namawianie wyborców",
+                            "text": "Referendum",
                             "orderNumber": 3
                         },
                         {
-                            "isFreeText": true,
+                            "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Instruowanie wyborców na kogo głosować (opisz)",
+                            "text": "None",
                             "orderNumber": 4
-                        },
-                        {
-                            "isFreeText": true,
-                            "isFlagged": false,
-                            "text": "Inne (podaj jakie)",
-                            "orderNumber": 5
                         }
                     ]
                 },
                 {
-                    "formCode": "PL-B",
-                    "code": "4.2",
-                    "questionType": 1,
-                    "text": "Czy komisja wyborcza zareagowała odpowiednio na przejawy prowadzonej kampanii wyborczej i wstrzymała takie działanie/a?",
+                    "formCode": "EN-C",
+                    "code": "6",
+                    "questionType": 0,
+                    "text": "Did the PEC identify the number of unused ballot papers?",
                     "orderNumber": 6,
                     "optionsToQuestions": [
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Tak",
+                            "text": "Sejm",
                             "orderNumber": 1
                         },
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Nie",
+                            "text": "Senat",
                             "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Referendum",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "None",
+                            "orderNumber": 4
                         }
                     ]
                 },
                 {
-                    "formCode": "PL-B",
-                    "code": "5",
+                    "formCode": "EN-C",
+                    "code": "7",
                     "questionType": 1,
-                    "text": "Czy komisja sprawdzała dokument tożsamości wyborcy zawierający zdjęcie przed wydaniem karty do głosowania?",
+                    "text": "Was the seal on the ballot box intact?",
                     "orderNumber": 7,
                     "optionsToQuestions": [
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Zawsze",
+                            "text": "Yes",
                             "orderNumber": 1
                         },
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Prawie zawsze",
+                            "text": "No",
                             "orderNumber": 2
-                        },
-                        {
-                            "isFreeText": false,
-                            "isFlagged": true,
-                            "text": "Czasami",
-                            "orderNumber": 3
-                        },
-                        {
-                            "isFreeText": false,
-                            "isFlagged": true,
-                            "text": "Nigdy lub prawie nigdy",
-                            "orderNumber": 4
                         }
                     ]
                 },
                 {
-                    "formCode": "PL-B",
-                    "code": "6",
+                    "formCode": "EN-C",
+                    "code": "8",
                     "questionType": 1,
-                    "text": "Czy wyborca potwierdzał otrzymanie kart własnym podpisem w odpowiedniej rubryce spisu wyborców?",
+                    "text": "Did the PEC separate torn ballots/other papers and put them in a separate package?",
                     "orderNumber": 8,
                     "optionsToQuestions": [
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Zawsze",
+                            "text": "Yes",
                             "orderNumber": 1
                         },
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Prawie zawsze",
+                            "text": "No",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-C",
+                    "code": "9",
+                    "questionType": 0,
+                    "text": "Did the PEC count whole (untorn) ballots taken out of the ballot box (per each election seperately)?",
+                    "orderNumber": 9,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Sejm",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Senat",
                             "orderNumber": 2
                         },
                         {
                             "isFreeText": false,
-                            "isFlagged": true,
-                            "text": "Czasami",
+                            "isFlagged": false,
+                            "text": "Referendum",
                             "orderNumber": 3
                         },
                         {
                             "isFreeText": false,
-                            "isFlagged": true,
-                            "text": "Nigdy lub prawie nigdy",
+                            "isFlagged": false,
+                            "text": "None",
                             "orderNumber": 4
                         }
                     ]
                 },
                 {
-                    "formCode": "PL-B",
-                    "code": "7",
-                    "questionType": 2,
-                    "text": "Czy wyborcy odmawiali przyjęcia karty do referendum?",
-                    "orderNumber": 9,
-                    "optionsToQuestions": [
-                        {
-                            "isFreeText": true,
-                            "isFlagged": false,
-                            "text": "Tak (podaj liczbę)",
-                            "orderNumber": 1
-                        },
-                        {
-                            "isFreeText": false,
-                            "isFlagged": false,
-                            "text": "Nie",
-                            "orderNumber": 2
-                        }
-                    ]
-                },
-                {
-                    "formCode": "PL-B",
-                    "code": "7.1",
+                    "formCode": "EN-C",
+                    "code": "10",
                     "questionType": 1,
-                    "text": "Czy zaobserwowałeś, by członkowie komisji nie odnotowywali w uwagach informacji o odmowie?",
+                    "text": "This and next questions are regarding the SEJM election: Did the PEC separate and count invalid ballots?",
                     "orderNumber": 10,
                     "optionsToQuestions": [
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Tak",
+                            "text": "Yes",
                             "orderNumber": 1
                         },
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Nie",
+                            "text": "No",
                             "orderNumber": 2
                         }
                     ]
                 },
                 {
-                    "formCode": "PL-B",
-                    "code": "7.2",
-                    "questionType": 1,
-                    "text": "Czy zaobserwowałeś/aś sytuację, kiedy komisja wydała wyborcy kartę do głosowania w referendum pomimo tego, że wyborca zgłosił, że nie chce głosować w referendum?",
+                    "formCode": "EN-C",
+                    "code": "11",
+                    "questionType": 2,
+                    "text": "How many invalid ballot papers were found?",
                     "orderNumber": 11,
                     "optionsToQuestions": [
                         {
-                            "isFreeText": false,
-                            "isFlagged": true,
-                            "text": "Tak",
-                            "orderNumber": 1
-                        },
-                        {
-                            "isFreeText": false,
+                            "isFreeText": true,
                             "isFlagged": false,
-                            "text": "Nie",
-                            "orderNumber": 2
+                            "text": "value",
+                            "orderNumber": 1
                         }
                     ]
                 },
                 {
-                    "formCode": "PL-B",
-                    "code": "8",
+                    "formCode": "EN-C",
+                    "code": "12",
                     "questionType": 1,
-                    "text": "Czy zaobserwowałeś/aś sytuację, kiedy wyborca zdecydował się oddać komisji otrzymaną wcześniej kartę do głosowania w referendum?",
+                    "text": "Did the PEC count valid ballots (as a separate activity, not just adding up the numers)?",
                     "orderNumber": 12,
                     "optionsToQuestions": [
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Tak",
+                            "text": "Yes",
                             "orderNumber": 1
                         },
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Nie",
+                            "text": "No",
                             "orderNumber": 2
                         }
                     ]
                 },
                 {
-                    "formCode": "PL-B",
-                    "code": "8.1",
+                    "formCode": "EN-C",
+                    "code": "13",
                     "questionType": 1,
-                    "text": "Czy komisja przyjęła kartę od wyborcy?",
+                    "text": "Did the PEC identify the number of valid and invalid votes?",
                     "orderNumber": 13,
                     "optionsToQuestions": [
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Tak",
+                            "text": "Yes",
                             "orderNumber": 1
                         },
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Nie",
+                            "text": "No",
                             "orderNumber": 2
                         }
                     ]
                 },
                 {
-                    "formCode": "PL-B",
-                    "code": "9",
+                    "formCode": "EN-C",
+                    "code": "14",
                     "questionType": 1,
-                    "text": "Czy zaobserwowałeś/aś wydanie wyborcy kart/y bez stempla komisji?",
+                    "text": "Did the PEC decide on the validity of the vote together?",
                     "orderNumber": 14,
                     "optionsToQuestions": [
                         {
                             "isFreeText": false,
-                            "isFlagged": true,
-                            "text": "Zawsze",
+                            "isFlagged": false,
+                            "text": "Yes",
                             "orderNumber": 1
                         },
                         {
                             "isFreeText": false,
-                            "isFlagged": true,
-                            "text": "Prawie zawsze",
+                            "isFlagged": false,
+                            "text": "No",
                             "orderNumber": 2
-                        },
-                        {
-                            "isFreeText": false,
-                            "isFlagged": false,
-                            "text": "Czasami",
-                            "orderNumber": 3
-                        },
-                        {
-                            "isFreeText": false,
-                            "isFlagged": false,
-                            "text": "Nigdy",
-                            "orderNumber": 4
                         }
                     ]
                 },
                 {
-                    "formCode": "PL-B",
-                    "code": "10",
+                    "formCode": "EN-C",
+                    "code": "15",
                     "questionType": 1,
-                    "text": "Czy członkowie komisji  korzystali z osłon na dane osobowe na spisie wyborców?",
+                    "text": "Did the PEC identify the number of votes per each list?",
                     "orderNumber": 15,
                     "optionsToQuestions": [
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Zawsze",
+                            "text": "Yes",
                             "orderNumber": 1
                         },
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Prawie zawsze",
+                            "text": "No",
                             "orderNumber": 2
-                        },
-                        {
-                            "isFreeText": false,
-                            "isFlagged": false,
-                            "text": "Czasami",
-                            "orderNumber": 3
-                        },
-                        {
-                            "isFreeText": false,
-                            "isFlagged": false,
-                            "text": "Nigdy lub prawie nigdy",
-                            "orderNumber": 4
                         }
                     ]
                 },
                 {
-                    "formCode": "PL-B",
-                    "code": "11",
+                    "formCode": "EN-C",
+                    "code": "16",
                     "questionType": 1,
-                    "text": "Czy w lokalu wyborczym była wystarczająca liczba miejsc zapewniających tajność głosowania? (ich liczba powinna pozwolić na głosowanie bez ‘nadmiernych’ kolejek w lokalu wyborczym)",
+                    "text": "Did the PEC identify the number of votes per each candidate?",
                     "orderNumber": 16,
                     "optionsToQuestions": [
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Tak",
+                            "text": "Yes",
                             "orderNumber": 1
                         },
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Nie",
+                            "text": "No",
                             "orderNumber": 2
                         }
                     ]
                 },
                 {
-                    "formCode": "PL-B",
-                    "code": "11.1",
+                    "formCode": "EN-C",
+                    "code": "17",
                     "questionType": 1,
-                    "text": "Czy miejsca zapewniające tajność głosowania były odpowiednio ustawione i wystarczająco oświetlone?",
+                    "text": "Was the sum of votes per canddiate equal to the number of valid votes?",
                     "orderNumber": 17,
                     "optionsToQuestions": [
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Tak",
+                            "text": "Yes",
                             "orderNumber": 1
                         },
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Nie",
+                            "text": "No",
                             "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Not counted",
+                            "orderNumber": 3
                         }
                     ]
                 },
                 {
-                    "formCode": "PL-B",
-                    "code": "12",
-                    "questionType": 3,
-                    "text": "Czy w lokalu odnotowałeś/aś naruszenia tajności głosowania?",
+                    "formCode": "EN-C",
+                    "code": "18",
+                    "questionType": 1,
+                    "text": "Did the PEC fill out the draft protocol?",
                     "orderNumber": 18,
                     "optionsToQuestions": [
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Głosowanie grupowe/rodzinne",
+                            "text": "Yes",
                             "orderNumber": 1
                         },
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Głosowanie poza miejscami przeznoacznymi do głosowania",
+                            "text": "No",
                             "orderNumber": 2
-                        },
-                        {
-                            "isFreeText": false,
-                            "isFlagged": false,
-                            "text": "Głośne ustalanie, na kogo oddać głos",
-                            "orderNumber": 3
-                        },
-                        {
-                            "isFreeText": true,
-                            "isFlagged": false,
-                            "text": "Inne (opisz)",
-                            "orderNumber": 4
                         }
                     ]
                 },
                 {
-                    "formCode": "PL-B",
-                    "code": "12.1",
+                    "formCode": "EN-C",
+                    "code": "19",
                     "questionType": 1,
-                    "text": "Czy komisja reagowała poprzez zwrócenie uwagi lub inaczej wymuszała zachowanie tajności głosowania?",
+                    "text": "This and next questions are regarding the SENATE elections: Did the PEC separate and count invalid ballots?",
                     "orderNumber": 19,
                     "optionsToQuestions": [
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Zawsze",
+                            "text": "Yes",
                             "orderNumber": 1
                         },
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Prawie zawsze",
+                            "text": "No",
                             "orderNumber": 2
-                        },
-                        {
-                            "isFreeText": false,
-                            "isFlagged": false,
-                            "text": "Czasami",
-                            "orderNumber": 3
-                        },
-                        {
-                            "isFreeText": false,
-                            "isFlagged": false,
-                            "text": "Nigdy lub prawie nigdy",
-                            "orderNumber": 4
                         }
                     ]
                 },
                 {
-                    "formCode": "PL-B",
-                    "code": "13",
-                    "questionType": 1,
-                    "text": "Czy urna była prawidłowo zaplombowana/ostemplowana?",
+                    "formCode": "EN-C",
+                    "code": "20",
+                    "questionType": 2,
+                    "text": "How many invalid ballots were found?",
                     "orderNumber": 20,
                     "optionsToQuestions": [
                         {
-                            "isFreeText": false,
+                            "isFreeText": true,
                             "isFlagged": false,
-                            "text": "Tak",
+                            "text": "value",
                             "orderNumber": 1
-                        },
-                        {
-                            "isFreeText": false,
-                            "isFlagged": true,
-                            "text": "Nie",
-                            "orderNumber": 2
                         }
                     ]
                 },
                 {
-                    "formCode": "PL-B",
-                    "code": "14",
+                    "formCode": "EN-C",
+                    "code": "21",
                     "questionType": 1,
-                    "text": "Czy któryś członek komisji pełnił cały czas dyżur przy urnie?",
+                    "text": "Did the PEC count valid ballots (as a separate activity, not just adding up the numers)?",
                     "orderNumber": 21,
                     "optionsToQuestions": [
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Tak",
+                            "text": "Yes",
                             "orderNumber": 1
                         },
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Nie",
+                            "text": "No",
                             "orderNumber": 2
                         }
                     ]
                 },
                 {
-                    "formCode": "PL-B",
-                    "code": "16",
-                    "questionType": 2,
-                    "text": "Czy dochodziło do prób głosowania \"za kogoś\"?",
+                    "formCode": "EN-C",
+                    "code": "22",
+                    "questionType": 1,
+                    "text": "Did the PEC identify the number of valid and invalid votes?",
                     "orderNumber": 22,
                     "optionsToQuestions": [
                         {
-                            "isFreeText": true,
+                            "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Tak (opisz reakcję komisji)",
+                            "text": "Yes",
                             "orderNumber": 1
                         },
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Nie",
+                            "text": "No",
                             "orderNumber": 2
                         }
                     ]
                 },
                 {
-                    "formCode": "PL-B",
-                    "code": "17",
-                    "questionType": 2,
-                    "text": "Czy w lokalu dochodziło do naruszenia ciszy wyborczej lub porządku publicznego?",
+                    "formCode": "EN-C",
+                    "code": "23",
+                    "questionType": 1,
+                    "text": "Did the PEC decide on the validity of the vote together?",
                     "orderNumber": 23,
                     "optionsToQuestions": [
                         {
-                            "isFreeText": true,
-                            "isFlagged": true,
-                            "text": "Tak (opisz)",
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
                             "orderNumber": 1
                         },
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Nie",
+                            "text": "No",
                             "orderNumber": 2
                         }
                     ]
                 },
                 {
-                    "formCode": "PL-B",
-                    "code": "18",
-                    "questionType": 2,
-                    "text": "Czy były próby wyniesienia karty do głosowania na zewnątrz lokalu wyborczego?",
+                    "formCode": "EN-C",
+                    "code": "24",
+                    "questionType": 1,
+                    "text": "Did the PEC identify the number of votes per each candidate?",
                     "orderNumber": 24,
                     "optionsToQuestions": [
                         {
-                            "isFreeText": true,
-                            "isFlagged": true,
-                            "text": "Tak (opisz)",
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
                             "orderNumber": 1
                         },
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Nie",
+                            "text": "No",
                             "orderNumber": 2
                         }
                     ]
                 },
                 {
-                    "formCode": "PL-B",
-                    "code": "19",
-                    "questionType": 2,
-                    "text": "Czy były przypadki wyborców, którzy przedzierali kartę do głosowania?",
+                    "formCode": "EN-C",
+                    "code": "25",
+                    "questionType": 1,
+                    "text": "Was the sum of votes per canddiate equal to the number of valid votes?",
                     "orderNumber": 25,
                     "optionsToQuestions": [
                         {
-                            "isFreeText": true,
+                            "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Tak (opisz)",
+                            "text": "Yes",
                             "orderNumber": 1
                         },
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Nie",
+                            "text": "No",
                             "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Not counted",
+                            "orderNumber": 3
                         }
                     ]
                 },
                 {
-                    "formCode": "PL-B",
-                    "code": "20",
-                    "questionType": 2,
-                    "text": "Czy były przerwy w głosowaniu?",
+                    "formCode": "EN-C",
+                    "code": "26",
+                    "questionType": 1,
+                    "text": "Did the PEC fill out the draft protocol?",
                     "orderNumber": 26,
                     "optionsToQuestions": [
                         {
-                            "isFreeText": true,
-                            "isFlagged": true,
-                            "text": "Tak (opisz)",
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
                             "orderNumber": 1
                         },
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Nie",
+                            "text": "No",
                             "orderNumber": 2
                         }
                     ]
                 },
                 {
-                    "formCode": "PL-B",
-                    "code": "21",
-                    "questionType": 2,
-                    "text": "Czy w lokalu przebywały osoby nieuprawnione? (osoby niebędące wyborcami, obserwatorami, mężami zaufania i członkami komisji wyborczej)",
+                    "formCode": "EN-C",
+                    "code": "27",
+                    "questionType": 1,
+                    "text": "This and the next questions are about the REFERENDUM: Did the PEC separate and count invalid ballots?",
                     "orderNumber": 27,
                     "optionsToQuestions": [
                         {
-                            "isFreeText": true,
+                            "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Tak (opisz)",
+                            "text": "Yes",
                             "orderNumber": 1
                         },
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Nie",
+                            "text": "No",
                             "orderNumber": 2
                         }
                     ]
                 },
                 {
-                    "formCode": "PL-B",
-                    "code": "22",
-                    "questionType": 2,
-                    "text": "Czy komisja pozwoliła obserwatorom i mężom zaufania na swobodną obserwację procedur głosowania?",
+                    "formCode": "EN-C",
+                    "code": "28",
+                    "questionType": 0,
+                    "text": "Did the PEC decide the number of valid votes for each question separately?",
                     "orderNumber": 28,
                     "optionsToQuestions": [
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Tak",
+                            "text": "Yes, for question no. 1",
                             "orderNumber": 1
                         },
                         {
-                            "isFreeText": true,
-                            "isFlagged": true,
-                            "text": "Nie (opisz)",
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes, for question no. 2",
                             "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes, for question no. 3",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes, for question no. 4",
+                            "orderNumber": 4
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "For none of the questions",
+                            "orderNumber": 5
                         }
                     ]
                 },
                 {
-                    "formCode": "PL-B",
-                    "code": "23",
-                    "questionType": 3,
-                    "text": "Z jakich organizacji/komitetów wyborczych byli obecnie obserwatorzy/mężowie zaufania?",
+                    "formCode": "EN-C",
+                    "code": "29",
+                    "questionType": 0,
+                    "text": "Was the sum of votes for \"yes\" and \"no\" answers equal to the number of valid votes?",
                     "orderNumber": 29,
                     "optionsToQuestions": [
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "KW PiS",
+                            "text": "Yes, for question no. 1",
                             "orderNumber": 1
                         },
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "KKW KO",
+                            "text": "Yes, for question no. 2",
                             "orderNumber": 2
                         },
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "KKW Trzecia Droga",
+                            "text": "Yes, for question no. 3",
                             "orderNumber": 3
                         },
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "KW Konfederacja",
+                            "text": "Yes, for question no. 4",
                             "orderNumber": 4
                         },
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "KW Nowa Lewica",
+                            "text": "For none of the questions",
                             "orderNumber": 5
-                        },
-                        {
-                            "isFreeText": false,
-                            "isFlagged": false,
-                            "text": "RKW",
-                            "orderNumber": 6
-                        },
-                        {
-                            "isFreeText": false,
-                            "isFlagged": false,
-                            "text": "Obserwatorium Wyborcze",
-                            "orderNumber": 7
-                        },
-                        {
-                            "isFreeText": false,
-                            "isFlagged": false,
-                            "text": "KOD",
-                            "orderNumber": 8
-                        },
-                        {
-                            "isFreeText": true,
-                            "isFlagged": false,
-                            "text": "Inne (wymień)",
-                            "orderNumber": 9
                         }
                     ]
                 },
                 {
-                    "formCode": "PL-B",
-                    "code": "24",
-                    "questionType": 2,
-                    "text": "Czy wystąpiły inne problemy lub sytuacje mogące mieć wpływ na przebieg wyborów?",
+                    "formCode": "EN-C",
+                    "code": "30",
+                    "questionType": 1,
+                    "text": "Did the PEC allow for the undisturbed observation of the entering of data into the online system?",
                     "orderNumber": 30,
                     "optionsToQuestions": [
                         {
-                            "isFreeText": true,
-                            "isFlagged": true,
-                            "text": "Tak (opisz)",
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
                             "orderNumber": 1
                         },
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Nie",
+                            "text": "No",
                             "orderNumber": 2
                         }
                     ]
                 },
                 {
-                    "formCode": "PL-B",
-                    "code": "25",
+                    "formCode": "EN-C",
+                    "code": "31",
                     "questionType": 1,
-                    "text": "Czy członkowie komisji odbyli szkolenia (organizowane przez urzędnika wyborczego/urząd gminy)?",
+                    "text": "Were the protocols read out loud before signing?",
                     "orderNumber": 31,
                     "optionsToQuestions": [
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Nikt",
+                            "text": "Yes",
                             "orderNumber": 1
                         },
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Przewodniczący komisji",
+                            "text": "No",
                             "orderNumber": 2
-                        },
-                        {
-                            "isFreeText": false,
-                            "isFlagged": false,
-                            "text": "Część komisji",
-                            "orderNumber": 3
-                        },
-                        {
-                            "isFreeText": false,
-                            "isFlagged": false,
-                            "text": "Cała komisja",
-                            "orderNumber": 4
                         }
                     ]
                 },
                 {
-                    "formCode": "PL-B",
-                    "code": "26",
+                    "formCode": "EN-C",
+                    "code": "32",
                     "questionType": 1,
-                    "text": "Jak w opinii przewodniczącego został przygotowany do pracy?",
+                    "text": "Were the PEC members working together, throughout the counting process?",
                     "orderNumber": 32,
                     "optionsToQuestions": [
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Bardzo dobrze",
+                            "text": "Yes",
                             "orderNumber": 1
                         },
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Dobrze",
+                            "text": "No",
                             "orderNumber": 2
-                        },
-                        {
-                            "isFreeText": false,
-                            "isFlagged": false,
-                            "text": "Źle",
-                            "orderNumber": 3
-                        },
-                        {
-                            "isFreeText": false,
-                            "isFlagged": false,
-                            "text": "Bardzo źle",
-                            "orderNumber": 4
                         }
                     ]
                 },
                 {
-                    "formCode": "PL-B",
-                    "code": "27",
-                    "questionType": 1,
-                    "text": "Jak oceniasz wiedzę komisji odnośnie procesu głosowania?",
+                    "formCode": "EN-C",
+                    "code": "33",
+                    "questionType": 2,
+                    "text": "Did the PEC allow observers and party agents to conduct an unobstructed observation of closing and counting procedures?",
                     "orderNumber": 33,
                     "optionsToQuestions": [
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Bardzo dobrze",
+                            "text": "Yes",
                             "orderNumber": 1
                         },
                         {
-                            "isFreeText": false,
+                            "isFreeText": true,
                             "isFlagged": false,
-                            "text": "Dobrze",
+                            "text": "No (describe)",
                             "orderNumber": 2
-                        },
-                        {
-                            "isFreeText": false,
-                            "isFlagged": false,
-                            "text": "Źle",
-                            "orderNumber": 3
-                        },
-                        {
-                            "isFreeText": false,
-                            "isFlagged": false,
-                            "text": "Bardzo źle",
-                            "orderNumber": 4
                         }
                     ]
                 },
                 {
-                    "formCode": "PL-B",
-                    "code": "28",
-                    "questionType": 1,
-                    "text": "Jak oceniasz pracę komisji na tym etapie?",
+                    "formCode": "EN-C",
+                    "code": "34",
+                    "questionType": 2,
+                    "text": "Did any problems occur?",
                     "orderNumber": 34,
                     "optionsToQuestions": [
                         {
-                            "isFreeText": false,
+                            "isFreeText": true,
                             "isFlagged": false,
-                            "text": "Bardzo dobrze",
+                            "text": "Yes (describe)",
                             "orderNumber": 1
                         },
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Dobrze",
+                            "text": "No",
                             "orderNumber": 2
-                        },
-                        {
-                            "isFreeText": false,
-                            "isFlagged": false,
-                            "text": "Źle",
-                            "orderNumber": 3
-                        },
-                        {
-                            "isFreeText": false,
-                            "isFlagged": false,
-                            "text": "Bardzo źle",
-                            "orderNumber": 4
                         }
                     ]
                 },
                 {
-                    "formCode": "PL-B",
-                    "code": "29",
+                    "formCode": "EN-C",
+                    "code": "35",
                     "questionType": 1,
-                    "text": "Jak oceniasz przebieg głosowania?",
+                    "text": "How would you rate the PEC's knowledge?",
                     "orderNumber": 35,
                     "optionsToQuestions": [
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Bardzo dobrze",
+                            "text": "Very good",
                             "orderNumber": 1
                         },
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Dobrze",
+                            "text": "Good",
                             "orderNumber": 2
                         },
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Źle",
+                            "text": "Bad",
                             "orderNumber": 3
                         },
                         {
                             "isFreeText": false,
                             "isFlagged": false,
-                            "text": "Bardzo źle",
+                            "text": "Very bad",
+                            "orderNumber": 4
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-C",
+                    "code": "36",
+                    "questionType": 1,
+                    "text": "How would you rate the work of the PEC?",
+                    "orderNumber": 36,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Very good",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Good",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Bad",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Very bad",
+                            "orderNumber": 4
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-C",
+                    "code": "37",
+                    "questionType": 1,
+                    "text": "How would you rate the conduct of the counting and closing procedures?",
+                    "orderNumber": 37,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Very good",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Good",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Bad",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Very bad",
                             "orderNumber": 4
                         }
                     ]
@@ -963,5 +897,5 @@
             ]
         }
     ],
-    "order": 2
+    "order": 6
 }

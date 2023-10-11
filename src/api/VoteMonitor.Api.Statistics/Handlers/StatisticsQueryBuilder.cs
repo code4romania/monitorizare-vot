@@ -29,7 +29,7 @@ public class StatisticsQueryBuilder
     {
         if (!string.IsNullOrEmpty(formCode))
         {
-            Query = $"{Query} AND f.\"Code\" = '{formCode}'";
+            Query = $"{Query} AND f.\"Code\" like '%{formCode}'";
             CacheKey = $"{CacheKey}-{formCode}";
         }
     }
