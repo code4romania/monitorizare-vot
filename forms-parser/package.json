@@ -1,0 +1,22 @@
+{
+   "name": "forms-parser",
+   "version": "1.0.0",
+   "description": "",
+   "main": "bin/index.js",
+   "type": "module",
+   "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+   },
+   "keywords": [],
+   "author": "Ion Dormenco",
+   "license": "MIT",
+   "bin": {
+      "hello": "./bin/index.js"
+   },
+   "dependencies": {
+      "lodash-es": "^4.17.21",
+      "nanoid": "^4.0.2",
+      "read-excel-file": "^5.6.1",
+      "yargs": "^17.7.2"
+   }
+}

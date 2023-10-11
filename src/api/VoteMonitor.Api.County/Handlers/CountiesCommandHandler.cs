@@ -25,7 +25,7 @@ public class CountiesCommandHandler : IRequestHandler<GetCountiesForExport, Resu
     private readonly ILogger _logger;
 
     private const int NameMaxLength = 100;
-    private const int CodeMaxLength = 20;
+    private const int CodeMaxLength = 256;
 
     public CountiesCommandHandler(VoteMonitorContext context, ICacheService cacheService, ILogger<CountiesCommandHandler> logger)
     {
@@ -126,12 +126,25 @@ public class CountiesCommandHandler : IRequestHandler<GetCountiesForExport, Resu
             return Result.Failure<List<CountyCsvModel>>("Duplicated id in csv found");
         }
 
-        var invalidCounty = counties.FirstOrDefault(x =>
-            x == null
-            || string.IsNullOrEmpty(x.Code)
-            || string.IsNullOrEmpty(x.Name)
-            || x.Name.Length > NameMaxLength
-            || x.Code.Length > CodeMaxLength);
+        var invalidCounty = counties
+                .Select(x =>
+                    new
+                    {
+                        IsNull = x == null,
+                        IsNullOrEmptyProvinceCode = string.IsNullOrEmpty(x?.ProvinceCode),
+                        IsNullOrEmptyCode = string.IsNullOrEmpty(x?.Code),
+                        IsNullOrEmptyName = string.IsNullOrEmpty(x?.Name),
+                        HasInvalidNameLength = x?.Name?.Length > NameMaxLength,
+                        HasInvalidCodeLength = x?.Code?.Length > CodeMaxLength,
+                        HasInvalidProvinceCodeLength = x?.ProvinceCode?.Length > CodeMaxLength,
+                        County = x
+                    }).FirstOrDefault(x => x.IsNull
+                                           || x.IsNullOrEmptyProvinceCode
+                                           || x.IsNullOrEmptyCode
+                                           || x.IsNullOrEmptyName
+                                           || x.HasInvalidNameLength
+                                           || x.HasInvalidCodeLength
+                                           || x.HasInvalidProvinceCodeLength);
 
         if (invalidCounty == null)
         {
@@ -178,6 +191,7 @@ public class CountiesCommandHandler : IRequestHandler<GetCountiesForExport, Resu
             counties = await _cacheService.GetOrSaveDataInCacheAsync("counties", async () =>
             {
                 return await _context.Counties
+                    .AsNoTracking()
                     .Select(x => new CountyModel
                     {
                         Id = x.Id,
@@ -207,6 +221,7 @@ public class CountiesCommandHandler : IRequestHandler<GetCountiesForExport, Resu
         try
         {
             var county = await _context.Counties
+                .AsNoTracking()
                 .Where(x => x.Id == request.CountyId)
                 .Select(c => new CountyModel
                 {

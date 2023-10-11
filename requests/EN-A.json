@@ -1,0 +1,343 @@
+{
+    "code": "EN-A",
+    "currentVersion": 1,
+    "description": "EN-A",
+    "formSections": [
+        {
+            "uniqueId": "A",
+            "code": "A",
+            "description": "",
+            "orderNumber": 1,
+            "questions": [
+                {
+                    "formCode": "EN-A",
+                    "code": "1",
+                    "questionType": 1,
+                    "text": "Did the PEC count the received ballot papers?",
+                    "orderNumber": 1,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-A",
+                    "code": "2",
+                    "questionType": 1,
+                    "text": "Did the PEC stamp all ballots before opening?",
+                    "orderNumber": 2,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-A",
+                    "code": "3",
+                    "questionType": 1,
+                    "text": "Did the PEC seal the ballot box?",
+                    "orderNumber": 3,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-A",
+                    "code": "4",
+                    "questionType": 2,
+                    "text": "Did the polling station open at 7 o'clock?",
+                    "orderNumber": 4,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": true,
+                            "isFlagged": false,
+                            "text": "No (reason?)",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-A",
+                    "code": "5",
+                    "questionType": 1,
+                    "text": "If not, what was the delay?",
+                    "orderNumber": 5,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "<15 min",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "15-30 min",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "30 min - 1h",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": ">1h",
+                            "orderNumber": 4
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-A",
+                    "code": "6",
+                    "questionType": 1,
+                    "text": "Did the PEC allow observers and party agents to conduct unobstructed observation of the preparation of the polling station?",
+                    "orderNumber": 6,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-A",
+                    "code": "7",
+                    "questionType": 3,
+                    "text": "Were there any other observers or party agents present?",
+                    "orderNumber": 7,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "KW PiS",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "KKW KO",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "KKW Trzecia Droga",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "KW Konfederacja",
+                            "orderNumber": 4
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "KW Nowa Lewica",
+                            "orderNumber": 5
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "RKW",
+                            "orderNumber": 6
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Obserwatorium Wyborcze",
+                            "orderNumber": 7
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "KOD",
+                            "orderNumber": 8
+                        },
+                        {
+                            "isFreeText": true,
+                            "isFlagged": false,
+                            "text": "Other (describe)",
+                            "orderNumber": 9
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "None",
+                            "orderNumber": 10
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-A",
+                    "code": "8",
+                    "questionType": 2,
+                    "text": "Did any problems occur in the course of the observation?",
+                    "orderNumber": 8,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": true,
+                            "isFlagged": false,
+                            "text": "Yes (please decribe)",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-A",
+                    "code": "9",
+                    "questionType": 1,
+                    "text": "How would you rate the PEC's knowledge?",
+                    "orderNumber": 9,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Very good",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Good",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Bad",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Very bad",
+                            "orderNumber": 4
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-A",
+                    "code": "10",
+                    "questionType": 1,
+                    "text": "How would you rate the work of the PEC?",
+                    "orderNumber": 10,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Very good",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Good",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Bad",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Very bad",
+                            "orderNumber": 4
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-A",
+                    "code": "11",
+                    "questionType": 1,
+                    "text": "How would you rate the conduct of the opening procedures?",
+                    "orderNumber": 11,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Very good",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Good",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Bad",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Very bad",
+                            "orderNumber": 4
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "order": 4
+}

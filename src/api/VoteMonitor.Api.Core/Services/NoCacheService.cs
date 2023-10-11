@@ -14,4 +14,8 @@ public class NoCacheService : ICacheService
 
     public Task SaveObjectSafeAsync<T>(string name, T value,
         DistributedCacheEntryOptions options = null) => throw new NotImplementedException();
+
+    public Task RemoveValueAsync(string cacheKey) => Task.CompletedTask;
+
+    public Task ClearAllValuesAsync() => Task.CompletedTask;
 }

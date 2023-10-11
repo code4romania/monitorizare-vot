@@ -21,6 +21,7 @@ public class CacheHandler : IRequestHandler<PrefillCache>
     {
         var provinces = await _context
              .Provinces
+             .AsNoTracking()
              .Include(x => x.Counties)
              .ThenInclude(x => x.Municipalities)
              .ToListAsync(cancellationToken: cancellationToken);

@@ -55,16 +55,17 @@ public class FormQuestionQueryHandler : IRequestHandler<FormQuestionQuery, IEnum
                         .Select(q=> OrderOptions(q))
                         .Select(q => new QuestionDTO()
                         {
-                            Code =q.Code,
+                            Id = q.Id,
+                            Code = q.Code,
                             Text = q.Text,
                             Hint = q.Hint,
                             FormCode = q.FormSection.Form.Code,
-                            Id = q.Id,
                             QuestionType = q.QuestionType,
                             IdSection = q.IdSection,
                             OrderNumber = q.OrderNumber,
                             OptionsToQuestions = q.OptionsToQuestions.Select(x=> new OptionToQuestionDTO()
                             {
+                                Id = x.Id,
                                 Text = x.Option.Text,
                                 IsFreeText = x.Option.IsFreeText,
                                 OrderNumber = x.Option.OrderNumber,

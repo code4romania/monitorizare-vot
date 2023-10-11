@@ -47,11 +47,11 @@ public class VoteMonitorContext : DbContext
 
             entity.Property(e => e.Code)
                 .IsRequired()
-                .HasMaxLength(20);
+                .HasMaxLength(256);
 
             entity.Property(e => e.Name)
                 .IsRequired()
-                .HasMaxLength(100);
+                .HasMaxLength(256);
 
             entity
                 .Property(x => x.Order)
@@ -68,11 +68,11 @@ public class VoteMonitorContext : DbContext
 
             entity.Property(e => e.Code)
                 .IsRequired()
-                .HasMaxLength(20);
+                .HasMaxLength(256);
 
             entity.Property(e => e.Name)
                 .IsRequired()
-                .HasMaxLength(100);
+                .HasMaxLength(256);
 
             entity
                 .Property(x => x.Diaspora)
@@ -98,11 +98,11 @@ public class VoteMonitorContext : DbContext
 
             entity.Property(e => e.Code)
                 .IsRequired()
-                .HasMaxLength(20);
+                .HasMaxLength(256);
 
             entity.Property(e => e.Name)
                 .IsRequired()
-                .HasMaxLength(100);
+                .HasMaxLength(256);
 
             entity
                 .Property(x => x.Order)
@@ -152,8 +152,8 @@ public class VoteMonitorContext : DbContext
             entity.HasKey(e => e.Id)
                 .HasName("PK_NoteAttachment");
 
-            entity.Property(e => e.FileName).HasMaxLength(1000);
-            entity.Property(e => e.Path).HasMaxLength(1000);
+            entity.Property(e => e.FileName);
+            entity.Property(e => e.Path);
 
             entity.HasOne(d => d.Note)
                 .WithMany(p => p.Attachments)

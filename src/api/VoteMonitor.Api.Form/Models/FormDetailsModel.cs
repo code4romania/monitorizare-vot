@@ -1,27 +1,27 @@
-﻿using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace VoteMonitor.Api.Form.Models;
 
 public class FormDetailsModel
 {
-    [JsonProperty(PropertyName = "id")]
+    [JsonPropertyName("id")]
     public int Id { get; set; }
 
-    [JsonProperty(PropertyName = "code")]
+    [JsonPropertyName("code")]
     public string Code { get; set; }
 
-    [JsonProperty(PropertyName = "description")]
+    [JsonPropertyName("description")]
     public string Description { get; set; }
 
-    [JsonProperty(PropertyName = "ver")]
+    [JsonPropertyName("ver")]
     public int CurrentVersion { get; set; }
 
-    [JsonProperty(PropertyName = "diaspora")]
+    [JsonPropertyName("diaspora")]
     public bool Diaspora { get; set; }
 
-    [JsonProperty(PropertyName = "order")]
+    [JsonPropertyName("order")]
     public int Order { get; set; }
 
-    [JsonProperty(PropertyName = "draft")]
+    [JsonPropertyName("draft")]
     public bool Draft { get; set; }
 }

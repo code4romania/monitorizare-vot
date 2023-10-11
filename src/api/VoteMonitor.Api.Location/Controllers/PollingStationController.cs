@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
-using System.Net;
 using VoteMonitor.Api.Core;
 using VoteMonitor.Api.Core.Models;
 using VoteMonitor.Api.Location.Commands;
@@ -156,12 +155,5 @@ public class PollingStationController : Controller
             return File(mem.ToArray(), "application/octet-stream", "observers-import-template.csv");
         }
     }
-    [HttpGet]
-    [Route("polling-stations-cache/prefill")]
-    [Authorize("Organizer")]
-    public async Task<IActionResult> PrefillCache()
-    {
-        await _mediator.Send(new PrefillCache());
-        return NoContent();
-    }
+
 }

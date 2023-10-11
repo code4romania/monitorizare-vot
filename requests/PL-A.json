@@ -1,0 +1,427 @@
+{
+    "code": "PL-A",
+    "currentVersion": 1,
+    "description": "PL-A",
+    "formSections": [
+        {
+            "uniqueId": "A",
+            "code": "A",
+            "description": "",
+            "orderNumber": 1,
+            "questions": [
+                {
+                    "formCode": "PL-A",
+                    "code": "1",
+                    "questionType": 1,
+                    "text": "Czy komisja sprawdziła, czy w lokalu znajduje się właściwy spis wyborców?",
+                    "orderNumber": 1,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-A",
+                    "code": "2",
+                    "questionType": 1,
+                    "text": "Czy komisja przeliczyła otrzymane karty do głosowania?",
+                    "orderNumber": 2,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-A",
+                    "code": "3",
+                    "questionType": 1,
+                    "text": "Czy komisja ostemplowała wszystkie karty do głosowania przed otwarciem lokalu wyborczego?",
+                    "orderNumber": 3,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-A",
+                    "code": "4",
+                    "questionType": 1,
+                    "text": "Czy komisja sprawdziła, że urna jest pusta?",
+                    "orderNumber": 4,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-A",
+                    "code": "5",
+                    "questionType": 1,
+                    "text": "Czy komisja zaplombowała/opieczętowała urnę pieczęcią komisji?",
+                    "orderNumber": 5,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": true,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-A",
+                    "code": "6",
+                    "questionType": 1,
+                    "text": "Jeśli plomba była oznaczona unikatowym numerem, to czy został on wpisany do protokołu wewnętrznego?",
+                    "orderNumber": 6,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-A",
+                    "code": "7",
+                    "questionType": 1,
+                    "text": "Czy komisja usunęła materiały agitacyjne, jeśli znajdowały się one w lokalu wyborczym i w jego bezpośrednim otoczeniu?",
+                    "orderNumber": 7,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-A",
+                    "code": "8",
+                    "questionType": 2,
+                    "text": "Czy komisja otworzyła lokal wyborczy dla wyborców o godz. 7.00?",
+                    "orderNumber": 8,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": true,
+                            "isFlagged": true,
+                            "text": "Nie (podaj przyczynę)",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-A",
+                    "code": "8.1",
+                    "questionType": 1,
+                    "text": "Jakie było opóźnienie?",
+                    "orderNumber": 9,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "<15 min",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "15-30 min",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "30 min - 1 godz.",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": ">1 godz.",
+                            "orderNumber": 4
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-A",
+                    "code": "9",
+                    "questionType": 1,
+                    "text": "Czy komisja pozwoliła obserwatorom i mężom zaufania na swobodną obserwację procedur przygotowania lokalu wyborczego do głosowania?",
+                    "orderNumber": 10,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": true,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-A",
+                    "code": "9.1",
+                    "questionType": 3,
+                    "text": "Czy w lokalu byli obecni inni obserwatorzy i/lub mężowie zaufania?",
+                    "orderNumber": 11,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "KW PiS",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "KKW KO",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "KKW Trzecia Droga",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "KW Konfederacja",
+                            "orderNumber": 4
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "KW Nowa Lewica",
+                            "orderNumber": 5
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "RKW",
+                            "orderNumber": 6
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Obserwatorium Wyborcze",
+                            "orderNumber": 7
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "KOD",
+                            "orderNumber": 8
+                        },
+                        {
+                            "isFreeText": true,
+                            "isFlagged": false,
+                            "text": "Inne (podaj)",
+                            "orderNumber": 9
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "brak",
+                            "orderNumber": 10
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-A",
+                    "code": "10",
+                    "questionType": 2,
+                    "text": "Czy wystąpiły inne problemy lub sytuacje mogące mieć wpływ na przebieg wyborów, np. obecność osób nieuprawnionych?",
+                    "orderNumber": 12,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": true,
+                            "isFlagged": true,
+                            "text": "Tak (podaj jakie)",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-A",
+                    "code": "11",
+                    "questionType": 1,
+                    "text": "Jak oceniasz wiedzę komisji odnośnie procesu otwarcia lokalu wyborczego?",
+                    "orderNumber": 13,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Bardzo dobrze",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Dobrze",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Źle",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Bardzo źle",
+                            "orderNumber": 4
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-A",
+                    "code": "12",
+                    "questionType": 1,
+                    "text": "Jak oceniasz pracę komisji na tym etapie?",
+                    "orderNumber": 14,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Bardzo dobrze",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Dobrze",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Źle",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Bardzo źle",
+                            "orderNumber": 4
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-A",
+                    "code": "13",
+                    "questionType": 1,
+                    "text": "Jak oceniasz przebieg procedur otwarcia lokalu wyborczego?",
+                    "orderNumber": 15,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Bardzo dobrze",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Dobrze",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Źle",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Bardzo źle",
+                            "orderNumber": 4
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "order": 1
+}

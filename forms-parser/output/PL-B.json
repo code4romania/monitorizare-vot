@@ -1,0 +1,967 @@
+{
+    "code": "PL-B",
+    "currentVersion": 1,
+    "description": "PL-B",
+    "formSections": [
+        {
+            "uniqueId": "B",
+            "code": "B",
+            "description": "",
+            "orderNumber": 1,
+            "questions": [
+                {
+                    "formCode": "PL-B",
+                    "code": "1",
+                    "questionType": 3,
+                    "text": "Jakie kwestie mogłyby sprawiać trudności osobom z niepelnosprawnosciami?",
+                    "orderNumber": 1,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Bariery architektoniczne przed i na wejściu",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Obwieszczenia zbyt wysoko",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Układ lokalu",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Miejsca zapewniające tajność",
+                            "orderNumber": 4
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Wysokość urny",
+                            "orderNumber": 5
+                        },
+                        {
+                            "isFreeText": true,
+                            "isFlagged": false,
+                            "text": "Inne (opisz)",
+                            "orderNumber": 6
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Żadne",
+                            "orderNumber": 7
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-B",
+                    "code": "2",
+                    "questionType": 1,
+                    "text": "Czy w lokalu wyborczym znajdowały się wymagane obwieszczenia i informacje dla wyborców?",
+                    "orderNumber": 2,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-B",
+                    "code": "3",
+                    "questionType": 2,
+                    "text": "Liczba wyborców, która zagłosowała do momentu przybycia obserwatora do lokalu wyborczego (liczba podpisów)?",
+                    "orderNumber": 3,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "liczba podpisów",
+                            "orderNumber": 1
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-B",
+                    "code": "4",
+                    "questionType": 1,
+                    "text": "Czy w lokalu wyborczym lub na terenie, na którym się on znajduje, była prowadzona kampania/agitacja wyborcza?",
+                    "orderNumber": 4,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": true,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-B",
+                    "code": "4.1",
+                    "questionType": 3,
+                    "text": "Jeśli tak, to jakie były jej formy?",
+                    "orderNumber": 5,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Banery",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Ulotki",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Ustne namawianie wyborców",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": true,
+                            "isFlagged": false,
+                            "text": "Instruowanie wyborców na kogo głosować (opisz)",
+                            "orderNumber": 4
+                        },
+                        {
+                            "isFreeText": true,
+                            "isFlagged": false,
+                            "text": "Inne (podaj jakie)",
+                            "orderNumber": 5
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-B",
+                    "code": "4.2",
+                    "questionType": 1,
+                    "text": "Czy komisja wyborcza zareagowała odpowiednio na przejawy prowadzonej kampanii wyborczej i wstrzymała takie działanie/a?",
+                    "orderNumber": 6,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-B",
+                    "code": "5",
+                    "questionType": 1,
+                    "text": "Czy komisja sprawdzała dokument tożsamości wyborcy zawierający zdjęcie przed wydaniem karty do głosowania?",
+                    "orderNumber": 7,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Zawsze",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Prawie zawsze",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": true,
+                            "text": "Czasami",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": true,
+                            "text": "Nigdy lub prawie nigdy",
+                            "orderNumber": 4
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-B",
+                    "code": "6",
+                    "questionType": 1,
+                    "text": "Czy wyborca potwierdzał otrzymanie kart własnym podpisem w odpowiedniej rubryce spisu wyborców?",
+                    "orderNumber": 8,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Zawsze",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Prawie zawsze",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": true,
+                            "text": "Czasami",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": true,
+                            "text": "Nigdy lub prawie nigdy",
+                            "orderNumber": 4
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-B",
+                    "code": "7",
+                    "questionType": 2,
+                    "text": "Czy wyborcy odmawiali przyjęcia karty do referendum?",
+                    "orderNumber": 9,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": true,
+                            "isFlagged": false,
+                            "text": "Tak (podaj liczbę)",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-B",
+                    "code": "7.1",
+                    "questionType": 1,
+                    "text": "Czy zaobserwowałeś, by członkowie komisji nie odnotowywali w uwagach informacji o odmowie?",
+                    "orderNumber": 10,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-B",
+                    "code": "7.2",
+                    "questionType": 1,
+                    "text": "Czy zaobserwowałeś/aś sytuację, kiedy komisja wydała wyborcy kartę do głosowania w referendum pomimo tego, że wyborca zgłosił, że nie chce głosować w referendum?",
+                    "orderNumber": 11,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": true,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-B",
+                    "code": "8",
+                    "questionType": 1,
+                    "text": "Czy zaobserwowałeś/aś sytuację, kiedy wyborca zdecydował się oddać komisji otrzymaną wcześniej kartę do głosowania w referendum?",
+                    "orderNumber": 12,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-B",
+                    "code": "8.1",
+                    "questionType": 1,
+                    "text": "Czy komisja przyjęła kartę od wyborcy?",
+                    "orderNumber": 13,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-B",
+                    "code": "9",
+                    "questionType": 1,
+                    "text": "Czy zaobserwowałeś/aś wydanie wyborcy kart/y bez stempla komisji?",
+                    "orderNumber": 14,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": true,
+                            "text": "Zawsze",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": true,
+                            "text": "Prawie zawsze",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Czasami",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nigdy",
+                            "orderNumber": 4
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-B",
+                    "code": "10",
+                    "questionType": 1,
+                    "text": "Czy członkowie komisji  korzystali z osłon na dane osobowe na spisie wyborców?",
+                    "orderNumber": 15,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Zawsze",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Prawie zawsze",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Czasami",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nigdy lub prawie nigdy",
+                            "orderNumber": 4
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-B",
+                    "code": "11",
+                    "questionType": 1,
+                    "text": "Czy w lokalu wyborczym była wystarczająca liczba miejsc zapewniających tajność głosowania? (ich liczba powinna pozwolić na głosowanie bez ‘nadmiernych’ kolejek w lokalu wyborczym)",
+                    "orderNumber": 16,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-B",
+                    "code": "11.1",
+                    "questionType": 1,
+                    "text": "Czy miejsca zapewniające tajność głosowania były odpowiednio ustawione i wystarczająco oświetlone?",
+                    "orderNumber": 17,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-B",
+                    "code": "12",
+                    "questionType": 3,
+                    "text": "Czy w lokalu odnotowałeś/aś naruszenia tajności głosowania?",
+                    "orderNumber": 18,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Głosowanie grupowe/rodzinne",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Głosowanie poza miejscami przeznoacznymi do głosowania",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Głośne ustalanie, na kogo oddać głos",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": true,
+                            "isFlagged": false,
+                            "text": "Inne (opisz)",
+                            "orderNumber": 4
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-B",
+                    "code": "12.1",
+                    "questionType": 1,
+                    "text": "Czy komisja reagowała poprzez zwrócenie uwagi lub inaczej wymuszała zachowanie tajności głosowania?",
+                    "orderNumber": 19,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Zawsze",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Prawie zawsze",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Czasami",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nigdy lub prawie nigdy",
+                            "orderNumber": 4
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-B",
+                    "code": "13",
+                    "questionType": 1,
+                    "text": "Czy urna była prawidłowo zaplombowana/ostemplowana?",
+                    "orderNumber": 20,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": true,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-B",
+                    "code": "14",
+                    "questionType": 1,
+                    "text": "Czy któryś członek komisji pełnił cały czas dyżur przy urnie?",
+                    "orderNumber": 21,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-B",
+                    "code": "16",
+                    "questionType": 2,
+                    "text": "Czy dochodziło do prób głosowania \"za kogoś\"?",
+                    "orderNumber": 22,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": true,
+                            "isFlagged": false,
+                            "text": "Tak (opisz reakcję komisji)",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-B",
+                    "code": "17",
+                    "questionType": 2,
+                    "text": "Czy w lokalu dochodziło do naruszenia ciszy wyborczej lub porządku publicznego?",
+                    "orderNumber": 23,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": true,
+                            "isFlagged": true,
+                            "text": "Tak (opisz)",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-B",
+                    "code": "18",
+                    "questionType": 2,
+                    "text": "Czy były próby wyniesienia karty do głosowania na zewnątrz lokalu wyborczego?",
+                    "orderNumber": 24,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": true,
+                            "isFlagged": true,
+                            "text": "Tak (opisz)",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-B",
+                    "code": "19",
+                    "questionType": 2,
+                    "text": "Czy były przypadki wyborców, którzy przedzierali kartę do głosowania?",
+                    "orderNumber": 25,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": true,
+                            "isFlagged": false,
+                            "text": "Tak (opisz)",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-B",
+                    "code": "20",
+                    "questionType": 2,
+                    "text": "Czy były przerwy w głosowaniu?",
+                    "orderNumber": 26,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": true,
+                            "isFlagged": true,
+                            "text": "Tak (opisz)",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-B",
+                    "code": "21",
+                    "questionType": 2,
+                    "text": "Czy w lokalu przebywały osoby nieuprawnione? (osoby niebędące wyborcami, obserwatorami, mężami zaufania i członkami komisji wyborczej)",
+                    "orderNumber": 27,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": true,
+                            "isFlagged": false,
+                            "text": "Tak (opisz)",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-B",
+                    "code": "22",
+                    "questionType": 2,
+                    "text": "Czy komisja pozwoliła obserwatorom i mężom zaufania na swobodną obserwację procedur głosowania?",
+                    "orderNumber": 28,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Tak",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": true,
+                            "isFlagged": true,
+                            "text": "Nie (opisz)",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-B",
+                    "code": "23",
+                    "questionType": 3,
+                    "text": "Z jakich organizacji/komitetów wyborczych byli obecnie obserwatorzy/mężowie zaufania?",
+                    "orderNumber": 29,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "KW PiS",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "KKW KO",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "KKW Trzecia Droga",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "KW Konfederacja",
+                            "orderNumber": 4
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "KW Nowa Lewica",
+                            "orderNumber": 5
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "RKW",
+                            "orderNumber": 6
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Obserwatorium Wyborcze",
+                            "orderNumber": 7
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "KOD",
+                            "orderNumber": 8
+                        },
+                        {
+                            "isFreeText": true,
+                            "isFlagged": false,
+                            "text": "Inne (wymień)",
+                            "orderNumber": 9
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-B",
+                    "code": "24",
+                    "questionType": 2,
+                    "text": "Czy wystąpiły inne problemy lub sytuacje mogące mieć wpływ na przebieg wyborów?",
+                    "orderNumber": 30,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": true,
+                            "isFlagged": true,
+                            "text": "Tak (opisz)",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nie",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-B",
+                    "code": "25",
+                    "questionType": 1,
+                    "text": "Czy członkowie komisji odbyli szkolenia (organizowane przez urzędnika wyborczego/urząd gminy)?",
+                    "orderNumber": 31,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Nikt",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Przewodniczący komisji",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Część komisji",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Cała komisja",
+                            "orderNumber": 4
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-B",
+                    "code": "26",
+                    "questionType": 1,
+                    "text": "Jak w opinii przewodniczącego został przygotowany do pracy?",
+                    "orderNumber": 32,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Bardzo dobrze",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Dobrze",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Źle",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Bardzo źle",
+                            "orderNumber": 4
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-B",
+                    "code": "27",
+                    "questionType": 1,
+                    "text": "Jak oceniasz wiedzę komisji odnośnie procesu głosowania?",
+                    "orderNumber": 33,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Bardzo dobrze",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Dobrze",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Źle",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Bardzo źle",
+                            "orderNumber": 4
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-B",
+                    "code": "28",
+                    "questionType": 1,
+                    "text": "Jak oceniasz pracę komisji na tym etapie?",
+                    "orderNumber": 34,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Bardzo dobrze",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Dobrze",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Źle",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Bardzo źle",
+                            "orderNumber": 4
+                        }
+                    ]
+                },
+                {
+                    "formCode": "PL-B",
+                    "code": "29",
+                    "questionType": 1,
+                    "text": "Jak oceniasz przebieg głosowania?",
+                    "orderNumber": 35,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Bardzo dobrze",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Dobrze",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Źle",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Bardzo źle",
+                            "orderNumber": 4
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "order": 2
+}

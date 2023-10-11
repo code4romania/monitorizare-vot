@@ -1,0 +1,901 @@
+{
+    "code": "EN-C",
+    "currentVersion": 1,
+    "description": "EN-C",
+    "formSections": [
+        {
+            "uniqueId": "C",
+            "code": "C",
+            "description": "",
+            "orderNumber": 1,
+            "questions": [
+                {
+                    "formCode": "EN-C",
+                    "code": "1",
+                    "questionType": 2,
+                    "text": "Was polling station closed on time?",
+                    "orderNumber": 1,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": true,
+                            "isFlagged": false,
+                            "text": "No (describe reason)",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-C",
+                    "code": "2",
+                    "questionType": 1,
+                    "text": "Was the required number of PEC members (at least 2/3) and the chairperson (or deputy) present during closing and counting?",
+                    "orderNumber": 2,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-C",
+                    "code": "3",
+                    "questionType": 1,
+                    "text": "Was the ballot box inlet sealed?",
+                    "orderNumber": 3,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-C",
+                    "code": "4",
+                    "questionType": 1,
+                    "text": "Did the PEC identify the number of eligible voters (based on the electoral roll)",
+                    "orderNumber": 4,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-C",
+                    "code": "5",
+                    "questionType": 0,
+                    "text": "Did the PEC identify (based on the electoral roll) the number of the voters, who were issued ballots (for each election/referendum separately)?",
+                    "orderNumber": 5,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Sejm",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Senat",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Referendum",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "None",
+                            "orderNumber": 4
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-C",
+                    "code": "6",
+                    "questionType": 0,
+                    "text": "Did the PEC identify the number of unused ballot papers?",
+                    "orderNumber": 6,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Sejm",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Senat",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Referendum",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "None",
+                            "orderNumber": 4
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-C",
+                    "code": "7",
+                    "questionType": 1,
+                    "text": "Was the seal on the ballot box intact?",
+                    "orderNumber": 7,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-C",
+                    "code": "8",
+                    "questionType": 1,
+                    "text": "Did the PEC separate torn ballots/other papers and put them in a separate package?",
+                    "orderNumber": 8,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-C",
+                    "code": "9",
+                    "questionType": 0,
+                    "text": "Did the PEC count whole (untorn) ballots taken out of the ballot box (per each election seperately)?",
+                    "orderNumber": 9,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Sejm",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Senat",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Referendum",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "None",
+                            "orderNumber": 4
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-C",
+                    "code": "10",
+                    "questionType": 1,
+                    "text": "This and next questions are regarding the SEJM election: Did the PEC separate and count invalid ballots?",
+                    "orderNumber": 10,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-C",
+                    "code": "11",
+                    "questionType": 2,
+                    "text": "How many invalid ballot papers were found?",
+                    "orderNumber": 11,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": true,
+                            "isFlagged": false,
+                            "text": "value",
+                            "orderNumber": 1
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-C",
+                    "code": "12",
+                    "questionType": 1,
+                    "text": "Did the PEC count valid ballots (as a separate activity, not just adding up the numers)?",
+                    "orderNumber": 12,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-C",
+                    "code": "13",
+                    "questionType": 1,
+                    "text": "Did the PEC identify the number of valid and invalid votes?",
+                    "orderNumber": 13,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-C",
+                    "code": "14",
+                    "questionType": 1,
+                    "text": "Did the PEC decide on the validity of the vote together?",
+                    "orderNumber": 14,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-C",
+                    "code": "15",
+                    "questionType": 1,
+                    "text": "Did the PEC identify the number of votes per each list?",
+                    "orderNumber": 15,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-C",
+                    "code": "16",
+                    "questionType": 1,
+                    "text": "Did the PEC identify the number of votes per each candidate?",
+                    "orderNumber": 16,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-C",
+                    "code": "17",
+                    "questionType": 1,
+                    "text": "Was the sum of votes per canddiate equal to the number of valid votes?",
+                    "orderNumber": 17,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Not counted",
+                            "orderNumber": 3
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-C",
+                    "code": "18",
+                    "questionType": 1,
+                    "text": "Did the PEC fill out the draft protocol?",
+                    "orderNumber": 18,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-C",
+                    "code": "19",
+                    "questionType": 1,
+                    "text": "This and next questions are regarding the SENATE elections: Did the PEC separate and count invalid ballots?",
+                    "orderNumber": 19,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-C",
+                    "code": "20",
+                    "questionType": 2,
+                    "text": "How many invalid ballots were found?",
+                    "orderNumber": 20,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": true,
+                            "isFlagged": false,
+                            "text": "value",
+                            "orderNumber": 1
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-C",
+                    "code": "21",
+                    "questionType": 1,
+                    "text": "Did the PEC count valid ballots (as a separate activity, not just adding up the numers)?",
+                    "orderNumber": 21,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-C",
+                    "code": "22",
+                    "questionType": 1,
+                    "text": "Did the PEC identify the number of valid and invalid votes?",
+                    "orderNumber": 22,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-C",
+                    "code": "23",
+                    "questionType": 1,
+                    "text": "Did the PEC decide on the validity of the vote together?",
+                    "orderNumber": 23,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-C",
+                    "code": "24",
+                    "questionType": 1,
+                    "text": "Did the PEC identify the number of votes per each candidate?",
+                    "orderNumber": 24,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-C",
+                    "code": "25",
+                    "questionType": 1,
+                    "text": "Was the sum of votes per canddiate equal to the number of valid votes?",
+                    "orderNumber": 25,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Not counted",
+                            "orderNumber": 3
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-C",
+                    "code": "26",
+                    "questionType": 1,
+                    "text": "Did the PEC fill out the draft protocol?",
+                    "orderNumber": 26,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-C",
+                    "code": "27",
+                    "questionType": 1,
+                    "text": "This and the next questions are about the REFERENDUM: Did the PEC separate and count invalid ballots?",
+                    "orderNumber": 27,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-C",
+                    "code": "28",
+                    "questionType": 0,
+                    "text": "Did the PEC decide the number of valid votes for each question separately?",
+                    "orderNumber": 28,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes, for question no. 1",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes, for question no. 2",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes, for question no. 3",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes, for question no. 4",
+                            "orderNumber": 4
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "For none of the questions",
+                            "orderNumber": 5
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-C",
+                    "code": "29",
+                    "questionType": 0,
+                    "text": "Was the sum of votes for \"yes\" and \"no\" answers equal to the number of valid votes?",
+                    "orderNumber": 29,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes, for question no. 1",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes, for question no. 2",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes, for question no. 3",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes, for question no. 4",
+                            "orderNumber": 4
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "For none of the questions",
+                            "orderNumber": 5
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-C",
+                    "code": "30",
+                    "questionType": 1,
+                    "text": "Did the PEC allow for the undisturbed observation of the entering of data into the online system?",
+                    "orderNumber": 30,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-C",
+                    "code": "31",
+                    "questionType": 1,
+                    "text": "Were the protocols read out loud before signing?",
+                    "orderNumber": 31,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-C",
+                    "code": "32",
+                    "questionType": 1,
+                    "text": "Were the PEC members working together, throughout the counting process?",
+                    "orderNumber": 32,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-C",
+                    "code": "33",
+                    "questionType": 2,
+                    "text": "Did the PEC allow observers and party agents to conduct an unobstructed observation of closing and counting procedures?",
+                    "orderNumber": 33,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Yes",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": true,
+                            "isFlagged": false,
+                            "text": "No (describe)",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-C",
+                    "code": "34",
+                    "questionType": 2,
+                    "text": "Did any problems occur?",
+                    "orderNumber": 34,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": true,
+                            "isFlagged": false,
+                            "text": "Yes (describe)",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "No",
+                            "orderNumber": 2
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-C",
+                    "code": "35",
+                    "questionType": 1,
+                    "text": "How would you rate the PEC's knowledge?",
+                    "orderNumber": 35,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Very good",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Good",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Bad",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Very bad",
+                            "orderNumber": 4
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-C",
+                    "code": "36",
+                    "questionType": 1,
+                    "text": "How would you rate the work of the PEC?",
+                    "orderNumber": 36,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Very good",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Good",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Bad",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Very bad",
+                            "orderNumber": 4
+                        }
+                    ]
+                },
+                {
+                    "formCode": "EN-C",
+                    "code": "37",
+                    "questionType": 1,
+                    "text": "How would you rate the conduct of the counting and closing procedures?",
+                    "orderNumber": 37,
+                    "optionsToQuestions": [
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Very good",
+                            "orderNumber": 1
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Good",
+                            "orderNumber": 2
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Bad",
+                            "orderNumber": 3
+                        },
+                        {
+                            "isFreeText": false,
+                            "isFlagged": false,
+                            "text": "Very bad",
+                            "orderNumber": 4
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "order": 6
+}

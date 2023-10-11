@@ -1,6 +1,6 @@
 # @url = https://localhost:44335
 @url = https://localhost:5001
-# @url = https://api-staging.votemonitor.org
+#@url = https://api.votemonitor.org
 # @url = http://localhost:53413
 
 # @name observerJwtToken
@@ -205,7 +205,7 @@ POST {{url}}/api/v1/form
 Content-Type: application/json
 Authorization: Bearer {{adminJwtToken.response.body.$.access_token}}
 
-< Saturday-A-Opening_B95q5oIoyG5dJi-9oxv3y.json
+< EN-C.json
 ###
 
 ###
@@ -255,10 +255,10 @@ Content-Disposition: form-data; name="ngoId"
 
 1
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
-Content-Disposition: form-data; name="file"; filename="staging_observers.csv"
+Content-Disposition: form-data; name="file"; filename="observers.csv"
 Content-Type: text/csv
 
-< ./staging_observers.csv
+< ./observers.csv
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
 ###
 
@@ -286,7 +286,7 @@ Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0g
 Content-Disposition: form-data; name="CsvFile"; filename="counties.csv"
 Content-Type: text/csv
 
-< ./polish_counties_2023.1.csv
+< ./polish_counties_2023.csv
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
 ###
 
@@ -361,9 +361,14 @@ GET {{url}}/api/v1/polling-station/polling-stations-cache/prefill
 Authorization: Bearer {{adminJwtToken.response.body.$.access_token}}
 ###
 
-
 ###
 # @name getPollingStations
 GET {{url}}/api/v1/polling-station
+Authorization: Bearer {{adminJwtToken.response.body.$.access_token}}
+###
+
+###
+# @name getObservers
+GET {{url}}/api/v1/observer?Name=&Number=074&Page=1&PageSize=100
 Authorization: Bearer {{adminJwtToken.response.body.$.access_token}}
 ###

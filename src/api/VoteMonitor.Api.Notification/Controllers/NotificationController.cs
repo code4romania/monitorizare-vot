@@ -8,7 +8,6 @@ using VoteMonitor.Api.Core;
 using VoteMonitor.Api.Core.Commands;
 using VoteMonitor.Api.Notification.Commands;
 using VoteMonitor.Api.Notification.Models;
-using VoteMonitor.Api.Notification.Queries;
 
 namespace VoteMonitor.Api.Notification.Controllers;
 
@@ -18,13 +17,15 @@ public class NotificationController : Controller
 {
     private readonly IMediator _mediator;
     private readonly ILogger<NotificationController> _logger;
-    private readonly IConfiguration _configuration;
+    private readonly int _defaultIdOng;
+    private readonly bool _defaultOrganizator;
 
     public NotificationController(IMediator mediator, ILogger<NotificationController> logger, IConfiguration configuration)
     {
         _mediator = mediator;
         _logger = logger;
-        _configuration = configuration;
+        _defaultIdOng = configuration.GetValue<int>("DefaultIdOng");
+        _defaultOrganizator = configuration.GetValue<bool>("DefaultOrganizator");
     }
 
     [HttpPost]
@@ -75,14 +76,14 @@ public class NotificationController : Controller
     public async Task<IActionResult> GetAll([FromQuery] PagingModel model)
     {
 
-        var ngoId = this.GetIdOngOrDefault(_configuration.GetValue<int>("DefaultIdOng"));
+        var ngoId = this.GetIdOngOrDefault(_defaultIdOng);
         var isOrganizer = this.GetOrganizatorOrDefault(false);
-        if (!isOrganizer && ngoId == _configuration.GetValue<int>("DefaultIdOng"))
+        if (!isOrganizer && ngoId == _defaultIdOng)
             return BadRequest();
 
         var query = new NotificationListCommand
         {
-            NgoId = ngoId != _configuration.GetValue<int>("DefaultIdOng") ? ngoId : (int?)null,
+            NgoId = ngoId != _defaultIdOng ? ngoId : (int?)null,
             IsOrganizer = isOrganizer,
             Page = model.Page,
             PageSize = model.PageSize
