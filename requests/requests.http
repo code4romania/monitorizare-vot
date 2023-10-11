@@ -205,7 +205,7 @@ POST {{url}}/api/v1/form
 Content-Type: application/json
 Authorization: Bearer {{adminJwtToken.response.body.$.access_token}}
 
-< PL-A.json
+< PL-C.json
 ###
 
 ###
@@ -258,7 +258,7 @@ Content-Disposition: form-data; name="ngoId"
 Content-Disposition: form-data; name="file"; filename="staging_observers.csv"
 Content-Type: text/csv
 
-< ./staging_observers.csv
+< ./observers.csv
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
 ###
 
@@ -286,7 +286,7 @@ Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0g
 Content-Disposition: form-data; name="CsvFile"; filename="counties.csv"
 Content-Type: text/csv
 
-< ./polish_counties_2023.1.csv
+< ./polish_counties_2023.csv
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
 ###
 

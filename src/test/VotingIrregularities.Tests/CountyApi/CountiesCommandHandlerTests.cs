@@ -151,7 +151,7 @@ public class CountiesCommandHandlerTests
 
             StringBuilder sb = new StringBuilder("Id,Code,Name,ProvinceCode,Diaspora,Order");
             sb.Append(Environment.NewLine);
-            sb.Append("2,Iasi11111111111111111111111111111111111111111111111111111111111111,Iasi,PR,TRUE,1");
+            sb.Append($"2,{new string('i',257)},Iasi,PR,TRUE,1");
             sb.Append(Environment.NewLine);
             sb.Append("3,Cluj,Cluj,PR,TRUE,1");
 
