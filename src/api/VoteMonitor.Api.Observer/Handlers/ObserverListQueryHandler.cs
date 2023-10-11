@@ -29,14 +29,14 @@ public class ObserverListQueryHandler : IRequestHandler<ObserverListCommand, Api
             observers = observers.Where(o => o.IdNgo == request.NgoId);
         }
 
-        if (!string.IsNullOrEmpty(request.Name))
+        if (!string.IsNullOrWhiteSpace(request.Name))
         {
-            observers = observers.Where(o => o.Name.Contains(request.Name));
+            observers = observers.Where(o => o.Name.Contains(request.Name.Trim()));
         }
 
-        if (!string.IsNullOrEmpty(request.Number))
+        if (!string.IsNullOrWhiteSpace(request.Number))
         {
-            observers = observers.Where(o => o.Phone.Contains(request.Number));
+            observers = observers.Where(o => o.Phone.Contains(request.Number.Trim()));
         }
 
         var count = await observers.CountAsync(cancellationToken);
