@@ -110,7 +110,7 @@ module "ecs_api" {
     },
     {
       name  = "EnableHealthChecks"
-      value = tostring(false)
+      value = tostring(true)
     },
     {
       name  = "DefaultNgoOptions__DefaultNgoId"
