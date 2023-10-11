@@ -48,3 +48,8 @@ variable "enable_execute_command" {
   type        = bool
   default     = false
 }
+
+variable "docker_tag" {
+  description = "Docker image tag"
+  type        = string
+}

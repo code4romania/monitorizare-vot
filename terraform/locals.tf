@@ -5,24 +5,22 @@ locals {
   images = {
     api = {
       image = "code4romania/monitorizare-vot-api"
-      tag   = "edge"
+      tag   = var.docker_tag
     }
 
     migrator = {
       image = "code4romania/monitorizare-vot-migrator"
-      tag   = "edge"
+      tag   = var.docker_tag
     }
 
     seed = {
       image = "code4romania/monitorizare-vot-seed"
-      tag   = "edge"
+      tag   = var.docker_tag
     }
   }
 
   ecs = {
     instance_types = {
-      # "m5.large"  = ""
-      # "m5a.large" = ""
       "t3a.medium" = ""
     }
   }
