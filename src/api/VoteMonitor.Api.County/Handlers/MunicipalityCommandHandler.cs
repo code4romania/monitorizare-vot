@@ -25,8 +25,8 @@ public class MunicipalityCommandHandler : IRequestHandler<GetMunicipalitiesForEx
     private readonly ICacheService _cacheService;
     private readonly ILogger _logger;
 
-    private const int NameMaxLength = 100;
-    private const int CodeMaxLength = 20;
+    private const int NameMaxLength = 256;
+    private const int CodeMaxLength = 256;
 
     public MunicipalityCommandHandler(VoteMonitorContext context, ICacheService cacheService, ILogger<MunicipalityCommandHandler> logger)
     {
@@ -124,14 +124,24 @@ public class MunicipalityCommandHandler : IRequestHandler<GetMunicipalitiesForEx
             return Result.Failure<List<MunicipalityCsvModel>>("Duplicated id in csv found");
         }
 
-        var invalidMunicipality = municipalities.FirstOrDefault(x =>
-            x == null
-            || string.IsNullOrEmpty(x.CountyCode)
-            || string.IsNullOrEmpty(x.Code)
-            || string.IsNullOrEmpty(x.Name)
-            || x.Name.Length > NameMaxLength
-            || x.Code.Length > CodeMaxLength
-            || x.CountyCode.Length > CodeMaxLength);
+        var invalidMunicipality = municipalities.Select(x =>
+            new
+            {
+                IsNull = x == null,
+                IsNullOrEmptyCountyCode = string.IsNullOrEmpty(x?.CountyCode),
+                IsNullOrEmptyCode = string.IsNullOrEmpty(x?.Code),
+                IsNullOrEmptyName = string.IsNullOrEmpty(x?.Name),
+                HasInvalidNameLength = x?.Name?.Length > NameMaxLength,
+                HasInvalidCodeLength = x?.Code?.Length > CodeMaxLength,
+                HasInvalidCountyCodeLength = x?.CountyCode?.Length > CodeMaxLength,
+                Municipality = x
+            }).FirstOrDefault(x => x.IsNull
+            || x.IsNullOrEmptyCountyCode
+            || x.IsNullOrEmptyCode
+            || x.IsNullOrEmptyName
+            || x.HasInvalidNameLength
+            || x.HasInvalidCodeLength
+            || x.HasInvalidCountyCodeLength);
 
         if (invalidMunicipality != null)
         {

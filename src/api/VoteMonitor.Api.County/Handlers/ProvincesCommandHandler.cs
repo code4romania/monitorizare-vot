@@ -26,7 +26,7 @@ public class ProvincesCommandHandler : IRequestHandler<GetProvincesForExport, Re
     private readonly ILogger _logger;
 
     private const int NameMaxLength = 100;
-    private const int CodeMaxLength = 20;
+    private const int CodeMaxLength = 256;
 
     public ProvincesCommandHandler(VoteMonitorContext context, ICacheService cacheService, ILogger<ProvincesCommandHandler> logger)
     {
@@ -120,12 +120,21 @@ public class ProvincesCommandHandler : IRequestHandler<GetProvincesForExport, Re
             return Result.Failure<List<ProvinceCsvModel>>("Duplicated id in csv found");
         }
 
-        var invalidProvince = provinces.FirstOrDefault(x =>
-            x == null
-            || string.IsNullOrEmpty(x.Code)
-            || string.IsNullOrEmpty(x.Name)
-            || x.Name.Length > NameMaxLength
-            || x.Code.Length > CodeMaxLength);
+        var invalidProvince = provinces
+                .Select(x =>
+                    new
+                    {
+                        IsNull = x == null,
+                        IsNullOrEmptyCode = string.IsNullOrEmpty(x?.Code),
+                        IsNullOrEmptyName = string.IsNullOrEmpty(x?.Name),
+                        HasInvalidNameLength = x?.Name?.Length > NameMaxLength,
+                        HasInvalidCodeLength = x?.Code?.Length > CodeMaxLength,
+                        Province = x
+                    }).FirstOrDefault(x => x.IsNull
+                                           || x.IsNullOrEmptyCode
+                                           || x.IsNullOrEmptyName
+                                           || x.HasInvalidNameLength
+                                           || x.HasInvalidCodeLength);
 
         if (invalidProvince == null)
         {

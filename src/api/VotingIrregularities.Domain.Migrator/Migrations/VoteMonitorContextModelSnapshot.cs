@@ -117,8 +117,8 @@ namespace VotingIrregularities.Domain.Seed.Migrations
 
                     b.Property<string>("Code")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<bool>("Diaspora")
                         .ValueGeneratedOnAdd()
@@ -127,8 +127,8 @@ namespace VotingIrregularities.Domain.Seed.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<int>("Order")
                         .ValueGeneratedOnAdd()
@@ -271,16 +271,16 @@ namespace VotingIrregularities.Domain.Seed.Migrations
 
                     b.Property<string>("Code")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<int>("CountyId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<int>("Order")
                         .ValueGeneratedOnAdd()
@@ -716,13 +716,13 @@ namespace VotingIrregularities.Domain.Seed.Migrations
 
                     b.Property<string>("Code")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<int>("Order")
                         .ValueGeneratedOnAdd()

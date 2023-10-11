@@ -47,11 +47,11 @@ public class VoteMonitorContext : DbContext
 
             entity.Property(e => e.Code)
                 .IsRequired()
-                .HasMaxLength(20);
+                .HasMaxLength(256);
 
             entity.Property(e => e.Name)
                 .IsRequired()
-                .HasMaxLength(100);
+                .HasMaxLength(256);
 
             entity
                 .Property(x => x.Order)
@@ -68,11 +68,11 @@ public class VoteMonitorContext : DbContext
 
             entity.Property(e => e.Code)
                 .IsRequired()
-                .HasMaxLength(20);
+                .HasMaxLength(256);
 
             entity.Property(e => e.Name)
                 .IsRequired()
-                .HasMaxLength(100);
+                .HasMaxLength(256);
 
             entity
                 .Property(x => x.Diaspora)
@@ -98,11 +98,11 @@ public class VoteMonitorContext : DbContext
 
             entity.Property(e => e.Code)
                 .IsRequired()
-                .HasMaxLength(20);
+                .HasMaxLength(256);
 
             entity.Property(e => e.Name)
                 .IsRequired()
-                .HasMaxLength(100);
+                .HasMaxLength(256);
 
             entity
                 .Property(x => x.Order)

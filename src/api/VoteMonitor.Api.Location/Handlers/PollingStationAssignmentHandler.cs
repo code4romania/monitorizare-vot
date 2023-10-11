@@ -24,7 +24,9 @@ public class PollingStationAssignmentHandler : IRequestHandler<PollingStationsAs
 
         if (_options.OverrideDefaultSorting)
         {
-            return counties.OrderByDescending(o => o.Code == _options.CodeOfFirstToDisplayCounty).ThenBy(o => o.Code);
+            return counties
+                .OrderByDescending(o => o.Code == _options.CodeOfFirstToDisplayCounty)
+                .ThenBy(o => o.Code);
         }
 
         return counties;
