@@ -1,0 +1,20 @@
+version: '3.4'
+
+services:
+  loki:
+    image: grafana/loki:master
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - loki
+
+  grafana:
+    image: grafana/grafana:master
+    ports:
+      - "3000:3000"
+    networks:
+      - loki
+
+networks:
+  loki:

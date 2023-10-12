@@ -15,13 +15,13 @@ public class DataExportV2Controller : Controller
     {
         _mediator = mediator;
     }
+
     /// <summary>
     /// Exports all data in excel file
     /// </summary>
     /// <returns></returns>
     [HttpGet("all")]
     [Authorize("Organizer")]
-    [AllowAnonymous]
     public async Task<IActionResult> GetAllData()
     {
 

@@ -12,15 +12,15 @@ const pollingStations = new SharedArray('polling-stations', function () {
     const data = papaparse.parse(open('./polling-stations.csv'), { header: true }).data;
 
     return [data.reduce((result, item) => {
-        const { code, number } = item;
+        const { communityCode, number } = item;
 
         // Check if the code already exists in the result object
-        if (!result[code]) {
-            result[code] = [];
+        if (!result[communityCode]) {
+            result[communityCode] = [];
         }
 
         // Add the number to the list associated with the code
-        result[code].push(number);
+        result[communityCode].push(number);
 
         return result;
     }, {})];

@@ -1,7 +1,10 @@
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using System.Collections;
 using System.ComponentModel;
+using System.Data;
 
 namespace VoteMonitor.Api.DataExport.FileGenerator;
 
@@ -26,7 +29,47 @@ public class ExcelFile
         return new ExcelFile();
     }
 
-    public ExcelFile WithSheet<T>(string sheetName, List<T> exportData)
+    public ExcelFile WithSheet(string sheetName, DataTable dataTable)
+    {
+        var sheet = _workbook.CreateSheet(sheetName);
+        Dictionary<int, string> headers = new Dictionary<int, string>();
+
+        #region Generating SheetRow based on datatype
+
+        // Create header row
+        IRow headerRow = sheet.CreateRow(0);
+        for (int i = 0; i < dataTable.Columns.Count; i++)
+        {
+            headers.TryAdd(i, dataTable.Columns[i].ColumnName);
+            headerRow.CreateCell(i).SetCellValue(dataTable.Columns[i].ColumnName);
+        }
+
+        // Create data rows
+        for (int rowIndex = 0; rowIndex < dataTable.Rows.Count; rowIndex++)
+        {
+            IRow dataRow = sheet.CreateRow(rowIndex + 1);
+            for (int colIndex = 0; colIndex < dataTable.Columns.Count; colIndex++)
+            {
+                dataRow.CreateCell(colIndex).SetCellValue(dataTable.Rows[rowIndex][colIndex].ToString());
+            }
+        }
+        #endregion
+
+        #region Generating Header Cells
+        var header = sheet.CreateRow(0);
+        for (var i = 0; i < headers.Count; i++)
+        {
+            var cell = header.CreateCell(i);
+            cell.SetCellValue(headers[i]);
+            cell.CellStyle = _headerStyle;
+            // It's heavy, it slows down your Excel if you have large data
+            sheet.AutoSizeColumn(i);
+        }
+        #endregion
+
+        return this;
+    }
+    public ExcelFile WithSheet<T>(string sheetName, List<T> exportData) where T:class
     {
         var sheet = _workbook.CreateSheet(sheetName);
 
@@ -106,19 +149,6 @@ public class ExcelFile
             {
                 cell.SetCellValue(Convert.ToString(prop.GetValue(item)));
                 headers.TryAdd(columnIndex, columnName);
-            }
-
-            if (prop.PropertyType.IsGenericType &&
-                prop.PropertyType.GetGenericTypeDefinition() == typeof(List<>))
-            {
-                var type = prop.PropertyType.GetGenericArguments()[0];
-                var childItems = prop.GetValue(item) as IList;
-
-                for (var index = 0; index < childItems.Count; index++)
-                {
-                    var childItem = childItems[index];
-                    WriteValues(childItem, headers, TypeDescriptor.GetProperties(type), row, ref columnIndex, $"{prop.Name}[{index}]_");
-                }
             }
 
             columnIndex++;
