@@ -24,6 +24,7 @@ public class NoteController : Controller
 
 
     [HttpGet]
+    [Authorize("NgoAdmin")]
     [Produces(type: typeof(List<NoteModel>))]
     public async Task<IActionResult> GetNotes([FromQuery] NoteQuery filter)
     {

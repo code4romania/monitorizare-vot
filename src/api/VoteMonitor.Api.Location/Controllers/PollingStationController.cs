@@ -97,6 +97,7 @@ public class PollingStationController : Controller
     /// </summary>
     /// <returns>{ "countyCode": "numberOfPollingStationsAssigned", ... }</returns>
     [HttpGet]
+    [Authorize("Organizer")]
     [Produces(typeof(IEnumerable<CountyPollingStationLimit>))]
     public async Task<IActionResult> PollingStationsLimits([FromQuery] bool? diaspora)
     {

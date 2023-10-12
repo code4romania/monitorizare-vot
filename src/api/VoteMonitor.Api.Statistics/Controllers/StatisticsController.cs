@@ -249,49 +249,49 @@ public class StatisticsController : Controller
     }
 
     [HttpGet]
-    [AllowAnonymous]
+    [Authorize] // for now do not allow anonymous users.
     [Route("mini/answers")]
     public async Task<SimpleStatisticsModel> Answers()
     {
         return await _mediator.Send(new AnswersQuery());
     }
     [HttpGet]
-    [AllowAnonymous]
+    [Authorize] // for now do not allow anonymous users.
     [Route("mini/stations")]
     public async Task<SimpleStatisticsModel> StationsVisited()
     {
         return await _mediator.Send(new StationsVisitedQuery());
     }
     [HttpGet]
-    [AllowAnonymous]
+    [Authorize] // for now do not allow anonymous users.
     [Route("mini/counties")]
     public async Task<SimpleStatisticsModel> Counties()
     {
         return await _mediator.Send(new CountiesVisitedQuery());
     }
     [HttpGet]
-    [AllowAnonymous]
+    [Authorize] // for now do not allow anonymous users.
     [Route("mini/notes")]
     public async Task<SimpleStatisticsModel> Notes()
     {
         return await _mediator.Send(new NotesUploadedQuery());
     }
     [HttpGet]
-    [AllowAnonymous]
+    [Authorize] // for now do not allow anonymous users.
     [Route("mini/loggedinobservers")]
     public async Task<SimpleStatisticsModel> LoggedInObservers()
     {
         return await _mediator.Send(new LoggedInObserversQuery());
     }
     [HttpGet]
-    [AllowAnonymous]
+    [Authorize] // for now do not allow anonymous users.
     [Route("mini/flaggedanswers")]
     public async Task<SimpleStatisticsModel> FlaggedAnswers()
     {
         return await _mediator.Send(new FlaggedAnswersQuery());
     }
     [HttpGet]
-    [AllowAnonymous]
+    [Authorize] // for now do not allow anonymous users.
     [Route("mini/all")]
     public async Task<List<SimpleStatisticsModel>> All()
     {

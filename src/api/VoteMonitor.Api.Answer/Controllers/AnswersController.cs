@@ -10,6 +10,7 @@ namespace VoteMonitor.Api.Answer.Controllers;
 
 [ApiController]
 [Route("api/v1/answers")]
+[Authorize]
 public class AnswersController : Controller
 {
     private readonly IMediator _mediator;
