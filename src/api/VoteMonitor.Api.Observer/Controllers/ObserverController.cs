@@ -32,6 +32,7 @@ public class ObserverController : Controller
 
     [HttpGet]
     [Produces(type: typeof(ApiListResponse<ObserverModel>))]
+    [Authorize] // for now do not allow anonymous users.
     public async Task<ApiListResponse<ObserverModel>> GetObservers([FromQuery] ObserverListQuery query)
     {
         var command = new ObserverListCommand()
@@ -61,6 +62,7 @@ public class ObserverController : Controller
 
     [HttpGet]
     [Produces(type: typeof(int))]
+    [Authorize] // for now do not allow anonymous users.
     [Route("count")]
     public async Task<int> GetTotalObserverCount()
     {

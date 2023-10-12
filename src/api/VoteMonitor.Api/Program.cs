@@ -12,7 +12,7 @@ using VoteMonitor.Api;
 const string CorsPolicyName = "Permissive";
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Host.AddLoggingConfiguration(builder.Environment);
+builder.Host.AddLoggingConfiguration(builder.Configuration, builder.Environment);
 
 builder.Services.AddControllers();
 builder.Services.ConfigureCustomOptions(builder.Configuration);
@@ -44,6 +44,7 @@ builder.Services.AddCors(options => options.AddPolicy(CorsPolicyName, builder =>
 
 
 var app = builder.Build();
+app.UseSerilogRequestLogging();
 app.UseStaticFiles();
 if (builder.Environment.IsDevelopment())
 {

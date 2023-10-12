@@ -23,6 +23,7 @@ public class PollingStationController : Controller
 
     /// Retrieves all of the polling stations matching a certain filter.
     [HttpGet]
+    [Authorize] // for now do not allow anonymous users.
     [Produces(typeof(IEnumerable<GetPollingStationModel>))]
     public async Task<IActionResult> GetAllPollingStations([FromQuery] PollingStationsFilterModel request)
     {

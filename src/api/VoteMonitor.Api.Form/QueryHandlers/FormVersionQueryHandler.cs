@@ -34,6 +34,7 @@ public class FormVersionQueryHandler : IRequestHandler<FormVersionQuery, List<Fo
                 Description = x.Description,
                 Code = x.Code,
                 CurrentVersion = x.CurrentVersion,
+                CurrentVersionOld = x.CurrentVersion,
                 Diaspora = x.Diaspora,
                 Order = x.Order,
                 Draft = x.Draft

@@ -118,5 +118,5 @@ export default () => {
     const authToken = login();
 
     const pollingStation = pollingStations[scenario.iterationInTest % pollingStations.length];
-    addNote(authToken, pollingStation.code, pollingStation.number);
+    addNote(authToken, pollingStation.communityCode, pollingStation.number);
 };

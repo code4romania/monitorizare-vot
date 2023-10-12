@@ -130,7 +130,7 @@ public class ServiceExtensions_ConditionalChecksRegistrationsTests
             .AddInMemoryCollection(new Dictionary<string, string>
             {
                 { "EnableHealthChecks", "true"},
-                { "FileServiceOptions:Type", "LocalFileService"}
+                { "FileStorageType", "LocalFileService"}
             })
             .Build();
         var (registration, conditionalHealthCheck) = ArrangeRegistration(healthCheckMock, serviceCollection, configuration, "AzureBlobStorage");
@@ -155,7 +155,7 @@ public class ServiceExtensions_ConditionalChecksRegistrationsTests
             .AddInMemoryCollection(new Dictionary<string, string>
             {
                 { "EnableHealthChecks", "true"},
-                { "FileServiceOptions:Type", "BlobService"}
+                { "FileStorageType", "BlobService"}
             })
             .Build();
         var (registration, conditionalHealthCheck) = ArrangeRegistration(healthCheckMock, serviceCollection, configuration, "AzureBlobStorage");

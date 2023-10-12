@@ -143,11 +143,11 @@ public static class ServicesExtensions
             .AddRedis(configuration["RedisCacheOptions:Configuration"], "Redis")
             .CheckOnlyWhen("Redis", () => enableHealthChecks && configuration["ApplicationCacheOptions:Implementation"] == "RedisCache")
             .AddAzureBlobStorage("AzureBlobStorage")
-            .CheckOnlyWhen("AzureBlobStorage", () => enableHealthChecks && configuration["FileServiceOptions:Type"] == "BlobService")
+            .CheckOnlyWhen("AzureBlobStorage", () => enableHealthChecks && configuration["FileStorageType"] == "BlobService")
             .AddFirebase("Firebase")
             .CheckOnlyWhen("Firebase", () => enableHealthChecks && !string.IsNullOrEmpty(configuration["FirebaseServiceOptions:ServerKey"]))
             .AddS3Storage("S3")
-            .CheckOnlyWhen("S3", () => enableHealthChecks && configuration["FileServiceOptions:Type"] == "S3Service");
+            .CheckOnlyWhen("S3", () => enableHealthChecks && configuration["FileStorageType"] == "S3Service");
 
         return services;
     }
