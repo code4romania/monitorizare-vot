@@ -58,3 +58,18 @@ variable "docker_tag" {
   description = "Docker image tag"
   type        = string
 }
+
+variable "loki_uri" {
+  description = "Loki uri"
+  type        = string
+}
+
+variable "loki_user" {
+  description = "Loki user"
+  type        = string
+}
+
+variable "loki_password" {
+  description = "Loki password"
+  type        = string
+}

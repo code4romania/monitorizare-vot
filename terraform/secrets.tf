@@ -69,3 +69,33 @@ resource "aws_secretsmanager_secret_version" "firebase_serverkey" {
   secret_id     = aws_secretsmanager_secret.firebase_serverkey.id
   secret_string = var.firebase_serverkey
 }
+
+# LOKI URI
+resource "aws_secretsmanager_secret" "loki_uri" {
+  name = "${local.namespace}-loki_uri-${random_string.secrets_suffix.result}"
+}
+
+resource "aws_secretsmanager_secret_version" "loki_uri" {
+  secret_id     = aws_secretsmanager_secret.loki_uri.id
+  secret_string = var.loki_uri
+}
+
+# LOKI USER
+resource "aws_secretsmanager_secret" "loki_user" {
+  name = "${local.namespace}-loki_user-${random_string.secrets_suffix.result}"
+}
+
+resource "aws_secretsmanager_secret_version" "loki_user" {
+  secret_id     = aws_secretsmanager_secret.loki_user.id
+  secret_string = var.loki_user
+}
+
+# LOKI PASSWORD
+resource "aws_secretsmanager_secret" "loki_password" {
+  name = "${local.namespace}-loki_password-${random_string.secrets_suffix.result}"
+}
+
+resource "aws_secretsmanager_secret_version" "loki_password" {
+  secret_id     = aws_secretsmanager_secret.loki_password.id
+  secret_string = var.loki_password
+}

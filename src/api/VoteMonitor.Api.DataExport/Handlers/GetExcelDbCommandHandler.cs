@@ -1,7 +1,6 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
-using System.Text;
 using VoteMonitor.Api.DataExport.FileGenerator;
 using VoteMonitor.Api.DataExport.Queries;
 using VoteMonitor.Entities;
@@ -20,11 +19,13 @@ public class GetExcelDbCommandHandler : IRequestHandler<GetExcelDbCommand, byte[
     public async Task<byte[]> Handle(GetExcelDbCommand request, CancellationToken cancellationToken)
     {
         var ngos = await _context.Ngos
+            .AsNoTracking()
             .Select(ngo => new { ngo.Id, ngo.Name, ngo.Organizer, })
             .OrderBy(x => x.Id)
             .ToListAsync(cancellationToken: cancellationToken);
 
         var observers = await _context.Observers
+            .AsNoTracking()
             .Select(observer => new
             {
                 observer.Id,
@@ -39,17 +40,20 @@ public class GetExcelDbCommandHandler : IRequestHandler<GetExcelDbCommand, byte[
             .ToListAsync(cancellationToken: cancellationToken);
 
         var provinces = await _context.Provinces
+            .AsNoTracking()
             .OrderBy(x => x.Order)
             .Select(province => new { province.Id, province.Code, province.Name })
             .ToListAsync(cancellationToken: cancellationToken);
 
         var counties = await _context.Counties
+            .AsNoTracking()
             .Include(x => x.Province)
             .OrderBy(x => x.Order)
             .Select(county => new { county.Id, county.Code, ProvinceCode = county.Province.Code, county.Name, county.Diaspora })
             .ToListAsync(cancellationToken: cancellationToken);
 
         var municipalities = await _context.Municipalities
+            .AsNoTracking()
             .Include(x => x.County)
             .OrderBy(x => x.Order)
             .Select(municipality => new { municipality.Id, municipality.Code, CountyCode = municipality.County.Code, municipality.Name })
@@ -67,44 +71,10 @@ public class GetExcelDbCommandHandler : IRequestHandler<GetExcelDbCommand, byte[
                 pollingStation.Number,
                 pollingStation.Address
             })
-
             .ToListAsync(cancellationToken: cancellationToken);
 
-        var forms = await _context.Forms
-            .AsNoTracking()
-            .Include(f => f.FormSections)
-            .ThenInclude(fs => fs.Questions)
-            .ThenInclude(q => q.OptionsToQuestions)
-            .ThenInclude(otq => otq.Option)
-            .Where(x => x.Draft == false)
-            .OrderBy(f => f.Order)
-            .ToListAsync(cancellationToken);
-
-        var aggregatedForms = forms.SelectMany(form => form.FormSections
-                .OrderBy(x => x.OrderNumber)
-                .SelectMany(formSection => formSection.Questions.OrderBy(x => x.OrderNumber)
-                    .Select(question => new
-                    {
-                        FormCode = form.Code,
-                        FormSectionCode = formSection.Code,
-                        FormSectionDescription = formSection.Description,
-                        QuestionCode = question.Code,
-                        QuestionQuestionType = question.QuestionType,
-                        QuestionText = question.Text,
-                        Options = question.OptionsToQuestions
-                            .OrderBy(x => x.Option.OrderNumber)
-                            .Select(optionToQuestion => new
-                            {
-                                optionToQuestion.Option.Text,
-                                optionToQuestion.Option.IsFreeText,
-                                IsFlagged = optionToQuestion.Flagged
-                            })
-                            .ToList()
-                    })))
-            .ToList();
-
+        var aggregatedForms = await GetForms(cancellationToken);
         var filledInForms = await GetFilledInForms(cancellationToken);
-
         var notes = await GetNotesForExport(cancellationToken);
 
         var excelBuilder = ExcelFile
@@ -125,6 +95,77 @@ public class GetExcelDbCommandHandler : IRequestHandler<GetExcelDbCommand, byte[
         excelBuilder = excelBuilder.WithSheet("notes", notes);
 
         return excelBuilder.Write();
+    }
+
+    private async Task<DataTable> GetForms(CancellationToken cancellationToken)
+    {
+        var forms = await _context.Forms
+            .AsNoTracking()
+            .Include(f => f.FormSections)
+            .ThenInclude(fs => fs.Questions)
+            .ThenInclude(q => q.OptionsToQuestions)
+            .ThenInclude(otq => otq.Option)
+            .Where(x => x.Draft == false)
+            .OrderBy(f => f.Order)
+            .ToListAsync(cancellationToken);
+
+        var questions = forms.SelectMany(form => form.FormSections
+                .OrderBy(x => x.OrderNumber)
+                .SelectMany(formSection => formSection.Questions.OrderBy(x => x.OrderNumber)
+                    .Select(question => new
+                    {
+                        FormCode = form.Code,
+                        FormOrderNumber = form.Order,
+                        FormSectionCode = formSection.Code,
+                        QuestionCode = question.Code,
+                        QuestionType = question.QuestionType,
+                        QuestionText = question.Text,
+                        QuestionOrderNumber = question.OrderNumber,
+                        Options = question.OptionsToQuestions
+                            .OrderBy(x => x.Option.OrderNumber)
+                            .Select(optionToQuestion => new
+                            {
+                                optionToQuestion.Option.Text,
+                                optionToQuestion.Option.IsFreeText,
+                                IsFlagged = optionToQuestion.Flagged
+                            })
+                            .ToList()
+                    })))
+            .OrderBy(q => q.FormOrderNumber)
+            .ThenBy(q => q.QuestionOrderNumber)
+            .ToList();
+
+        DataTable dataTable = new DataTable();
+
+        dataTable.Columns.Add("FormCode", typeof(string));
+        dataTable.Columns.Add("FormSectionCode", typeof(string));
+        dataTable.Columns.Add("QuestionCode", typeof(string));
+        dataTable.Columns.Add("Question", typeof(string));
+        dataTable.Columns.Add("Type", typeof(string));
+        var maxNumberOfOptions = questions.Select(x => x.Options.Count).DefaultIfEmpty(0).Max();
+
+        for (int i = 1; i <= maxNumberOfOptions; i++)
+        {
+            dataTable.Columns.Add($"Options-{i}", typeof(string));
+        }
+
+        foreach (var question in questions)
+        {
+            object?[] rowValues = new List<object?>
+                {
+                    question.FormCode,
+                    question.FormSectionCode,
+                    question.QuestionCode,
+                    question.QuestionText,
+                    GetFormattedQuestionType(question.QuestionType),
+                }
+                .Union(question.Options.Select(x => FormatOption(x.Text, x.IsFreeText, x.IsFlagged)))
+                .ToArray();
+
+            dataTable.Rows.Add(rowValues);
+        }
+
+        return dataTable;
     }
 
     private async Task<DataTable> GetNotesForExport(CancellationToken cancellationToken)
@@ -201,6 +242,7 @@ public class GetExcelDbCommandHandler : IRequestHandler<GetExcelDbCommand, byte[
     private async Task<List<(string Code, DataTable Data)>> GetFilledInForms(CancellationToken cancellationToken)
     {
         var answers = await _context.Answers
+            .AsNoTracking()
             .Include(a => a.Observer)
             .Include(a => a.PollingStation)
             .ThenInclude(x => x.Municipality)
@@ -296,7 +338,7 @@ public class GetExcelDbCommandHandler : IRequestHandler<GetExcelDbCommand, byte[
         return result;
     }
 
-    private string GetSelectedOptionText(string optionText, string enteredFreeText)
+    private static string GetSelectedOptionText(string optionText, string enteredFreeText)
     {
         if (!string.IsNullOrWhiteSpace(enteredFreeText))
         {
@@ -304,5 +346,30 @@ public class GetExcelDbCommandHandler : IRequestHandler<GetExcelDbCommand, byte[
         }
 
         return optionText;
+    }
+
+    private static string GetFormattedQuestionType(QuestionType questionType)
+    {
+        switch (questionType)
+        {
+            case QuestionType.MultipleOption:
+                return "multiple choice";
+            case QuestionType.SingleOption:
+                return "single choice";
+            case QuestionType.MultipleOptionWithText:
+                return "multiple choice with text";
+            case QuestionType.SingleOptionWithText:
+                return "single choice with text";
+            default:
+                return "unknown";
+        }
+    }
+
+    private static string FormatOption(string text, bool isFreeText, bool isFlagged)
+    {
+        string isFreeTextFlag = isFreeText ? "$text" : string.Empty;
+        string isFlaggedFlag = isFlagged ? "$flagged" : string.Empty;
+
+        return $"{text}{isFreeTextFlag}{isFlaggedFlag}";
     }
 }

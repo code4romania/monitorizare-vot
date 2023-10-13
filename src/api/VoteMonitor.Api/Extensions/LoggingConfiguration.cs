@@ -2,7 +2,6 @@ using Serilog;
 using Serilog.Core;
 using Serilog.Events;
 using Serilog.Exceptions;
-using Serilog.Formatting.Compact;
 using Serilog.Sinks.Grafana.Loki;
 
 namespace VoteMonitor.Api.Extensions;
@@ -34,7 +33,7 @@ public static class LoggingConfiguration
             .Enrich.WithProperty("Application", env.ApplicationName)
             .Enrich.WithExceptionDetails()
             .WriteTo.Console()
-            .WriteTo.GrafanaLoki(configuration["LokiConfig:Uri"], propertiesAsLabels: new[] { "Environment", "Application" });
+            .WriteTo.GrafanaLoki(configuration["LokiConfig:Uri"], credentials: lokiCredentials, propertiesAsLabels: new[] { "Environment", "Application" });
 
         Log.Logger = logger.CreateLogger();
 

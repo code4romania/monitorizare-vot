@@ -1,8 +1,5 @@
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
-using System.Collections;
 using System.ComponentModel;
 using System.Data;
 
@@ -62,8 +59,6 @@ public class ExcelFile
             var cell = header.CreateCell(i);
             cell.SetCellValue(headers[i]);
             cell.CellStyle = _headerStyle;
-            // It's heavy, it slows down your Excel if you have large data
-            sheet.AutoSizeColumn(i);
         }
         #endregion
 
@@ -95,8 +90,6 @@ public class ExcelFile
             var cell = header.CreateCell(i);
             cell.SetCellValue(headers[i]);
             cell.CellStyle = _headerStyle;
-            // It's heavy, it slows down your Excel if you have large data
-            sheet.AutoSizeColumn(i);
         }
         #endregion
 
