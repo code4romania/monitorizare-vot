@@ -321,6 +321,7 @@ Content-Type: text/csv
 ###
 # @name exportAll
 GET {{url}}/api/v2/export/all
+Authorization: Bearer {{adminJwtToken.response.body.$.access_token}}
 ###
 
 ###

@@ -13,7 +13,7 @@ public class FormDetailsModel
     [JsonPropertyName("description")]
     public string Description { get; set; }
 
-    [JsonPropertyName("version")]
+    [JsonPropertyName("currentVersion")]
     public int CurrentVersion { get; set; }
 
     // quick and dirty fix to sync iOS and Android

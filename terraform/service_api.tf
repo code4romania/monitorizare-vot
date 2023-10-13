@@ -66,7 +66,7 @@ module "ecs_api" {
     },
     {
       name  = "MobileSecurityOptions__InvalidCredentialsErrorMessage"
-      value = "{ \"error\": \"A aparut o eroare la logarea in aplicatie. Va rugam sa verificati ca ati introdus corect numarul de telefon si codul de acces, iar daca eroarea persista va rugam contactati serviciul de suport la numarul 07......\" }"
+      value = var.invalid_credentials_error_message
     },
     {
       name  = "MobileSecurityOptions__LockDevice"
@@ -143,6 +143,18 @@ module "ecs_api" {
       name      = "HashOptions__Salt"
       valueFrom = aws_secretsmanager_secret.hash_salt.arn
     },
+    {
+      name      = "LokiConfig__Uri"
+      valueFrom = "${aws_secretsmanager_secret.loki.arn}:uri::"
+    },
+    {
+      name      = "LokiConfig__User"
+      valueFrom = "${aws_secretsmanager_secret.loki.arn}:user::"
+    },
+    {
+      name      = "LokiConfig__Password"
+      valueFrom = "${aws_secretsmanager_secret.loki.arn}:password::"
+    },
 
   ]
 
@@ -151,6 +163,7 @@ module "ecs_api" {
     aws_secretsmanager_secret.jwt_signing_key.arn,
     aws_secretsmanager_secret.hash_salt.arn,
     aws_secretsmanager_secret.rds.arn,
+    aws_secretsmanager_secret.loki.arn,
   ]
 }
 

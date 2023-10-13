@@ -69,3 +69,17 @@ resource "aws_secretsmanager_secret_version" "firebase_serverkey" {
   secret_id     = aws_secretsmanager_secret.firebase_serverkey.id
   secret_string = var.firebase_serverkey
 }
+
+resource "aws_secretsmanager_secret" "loki" {
+  name = "${local.namespace}-loki-${random_string.secrets_suffix.result}"
+}
+
+resource "aws_secretsmanager_secret_version" "loki" {
+  secret_id = aws_secretsmanager_secret.loki.id
+
+  secret_string = jsonencode({
+    "uri"      = var.loki_uri
+    "user"     = var.loki_user
+    "password" = var.loki_password
+  })
+}
