@@ -73,3 +73,9 @@ variable "loki_password" {
   description = "Loki password"
   type        = string
 }
+
+variable "invalid_credentials_error_message" {
+  description = "Error message to show when invalid credentials are provided"
+  type        = string
+  default     = "{ \"error\": \"A apărut o eroare la logarea în aplicație. Vă rugăm să verificați că ați introdus corect numărul de telefon și codul de acces, iar dacă eroarea persistă, vă rugăm contactați serviciul de suport la numarul 07......\" }"
+}

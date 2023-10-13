@@ -66,7 +66,7 @@ module "ecs_api" {
     },
     {
       name  = "MobileSecurityOptions__InvalidCredentialsErrorMessage"
-      value = "{ \"error\": \"A aparut o eroare la logarea in aplicatie. Va rugam sa verificati ca ati introdus corect numarul de telefon si codul de acces, iar daca eroarea persista va rugam contactati serviciul de suport la numarul 07......\" }"
+      value = var.invalid_credentials_error_message
     },
     {
       name  = "MobileSecurityOptions__LockDevice"
