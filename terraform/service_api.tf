@@ -145,15 +145,15 @@ module "ecs_api" {
     },
     {
       name      = "LokiConfig__Uri"
-      valueFrom = aws_secretsmanager_secret.loki_uri.arn
+      valueFrom = "${aws_secretsmanager_secret.loki.arn}:uri::"
     },
     {
       name      = "LokiConfig__User"
-      valueFrom = aws_secretsmanager_secret.loki_user.arn
+      valueFrom = "${aws_secretsmanager_secret.loki.arn}:user::"
     },
     {
       name      = "LokiConfig__Password"
-      valueFrom = aws_secretsmanager_secret.loki_password.arn
+      valueFrom = "${aws_secretsmanager_secret.loki.arn}:password::"
     },
 
   ]
@@ -163,9 +163,7 @@ module "ecs_api" {
     aws_secretsmanager_secret.jwt_signing_key.arn,
     aws_secretsmanager_secret.hash_salt.arn,
     aws_secretsmanager_secret.rds.arn,
-    aws_secretsmanager_secret.loki_uri.arn,
-    aws_secretsmanager_secret.loki_user.arn,
-    aws_secretsmanager_secret.loki_password.arn,
+    aws_secretsmanager_secret.loki.arn,
   ]
 }
 
