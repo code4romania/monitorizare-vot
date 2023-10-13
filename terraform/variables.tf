@@ -62,16 +62,19 @@ variable "docker_tag" {
 variable "loki_uri" {
   description = "Loki uri"
   type        = string
+  default     = null
 }
 
 variable "loki_user" {
   description = "Loki user"
   type        = string
+  default     = null
 }
 
 variable "loki_password" {
   description = "Loki password"
   type        = string
+  default     = null
 }
 
 variable "invalid_credentials_error_message" {
