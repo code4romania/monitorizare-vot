@@ -63,7 +63,7 @@ public class NoteController : Controller
         }
         else
         {
-            var command = new AddNoteToUnknownPollingStation(this.GetIdObserver(), note.CountyCode, note.MunicipalityCode, note.QuestionId, note.Text, attachments);
+            var command = new AddNoteToUnknownPollingStation(this.GetIdObserver(), note.CountyCode, note.MunicipalityCode, note.PollingStationNumber, note.QuestionId, note.Text, attachments);
             var result = await _mediator.Send(command);
             return ProcessUpload(result, note, command.Attachments.Select(x => x.Path).ToArray());
         }

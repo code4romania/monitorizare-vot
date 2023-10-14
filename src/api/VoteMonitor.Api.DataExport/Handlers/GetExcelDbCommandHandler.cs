@@ -148,7 +148,8 @@ public class GetExcelDbCommandHandler : IRequestHandler<GetExcelDbCommand, byte[
         {
             object?[] rowValues =
             {
-                row.ObserverId, row.ObserverPhone,
+                row.ObserverId, 
+                row.ObserverPhone,
                 row.ObserverName,
                 row.PollingStation,
                 row.LastModified.ToString("s"),

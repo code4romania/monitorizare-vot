@@ -159,6 +159,7 @@ public class VoteMonitorContext : DbContext
             entity.HasIndex(e => e.MunicipalityCode);
 
             entity.Property(e => e.LastModified);
+            entity.Property(e => e.PollingStationNumber);
 
             entity.HasOne(d => d.Question)
                 .WithMany(p => p.NotesCorrupted)
