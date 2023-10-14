@@ -23,8 +23,8 @@ module "ecs_api" {
   lb_health_check_enabled = true
   lb_path                 = "/health"
 
-  container_memory_soft_limit = 1024
-  container_memory_hard_limit = 2048
+  container_memory_soft_limit = 768
+  container_memory_hard_limit = 1536
 
   log_group_name                 = module.ecs_cluster.log_group_name
   service_discovery_namespace_id = module.ecs_cluster.service_discovery_namespace_id
