@@ -119,6 +119,7 @@ public class NoteQueriesHandler :
             Text = request.Text,
             CountyCode = request.CountyCode,
             MunicipalityCode = request.MunicipalityCode,
+            PollingStationNumber = request.PollingStationNumber,
             // A note can be added to a polling station as well.
             // In that case IdQuestion is either null or 0
             IdQuestion = request.QuestionId == 0 ? null : request.QuestionId,
