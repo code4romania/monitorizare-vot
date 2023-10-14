@@ -158,6 +158,8 @@ public class GetExcelDbCommandHandler : IRequestHandler<GetExcelDbCommand, byte[
                 row.NumberOfFemaleMembers,
                 row.MinPresentMembers,
                 row.ChairmanPresence,
+                row.SinglePollingStationOrCommission,
+                row.AdequatePollingStationSize,
             };
             dataTable.Rows.Add(rowValues);
         }
