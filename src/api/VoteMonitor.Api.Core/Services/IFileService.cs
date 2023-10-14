@@ -21,5 +21,5 @@ public interface IFileService
     /// </summary>
     /// <param name="filename"></param>
     /// <returns></returns>
-    Task<string> GetPreSignedUrl(string filename);
+    string GetPreSignedUrl(string filename);
 }

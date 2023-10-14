@@ -14,8 +14,10 @@ public class Observer : IIdentifiableEntity
     public bool IsTestObserver { get; set; }
 
     public ICollection<Note> Notes { get; set; } = new HashSet<Note>();
+    public ICollection<NoteCorrupted> NotesCorrupted { get; set; } = new HashSet<NoteCorrupted>();
     public ICollection<Answer> Answers { get; set; } = new HashSet<Answer>();
     public ICollection<PollingStationInfo> PollingStationInfos { get; set; } = new HashSet<PollingStationInfo>();
+    public ICollection<PollingStationInfoCorrupted> PollingStationInfosCorrupted { get; set; } = new HashSet<PollingStationInfoCorrupted>();
     public Ngo Ngo { get; set; }
     public ICollection<NotificationRecipient> Notifications { get; set; }
 }

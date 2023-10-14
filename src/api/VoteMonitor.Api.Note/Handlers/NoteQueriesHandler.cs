@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using VoteMonitor.Api.Core.Services;
 using VoteMonitor.Api.Note.Commands;
 using VoteMonitor.Api.Note.Models;
 using VoteMonitor.Api.Note.Queries;
@@ -10,14 +11,17 @@ namespace VoteMonitor.Api.Note.Handlers;
 public class NoteQueriesHandler :
     IRequestHandler<NoteQuery, List<NoteModel>>,
     IRequestHandler<AddNoteCommandV2, int>,
+    IRequestHandler<AddNoteToUnknownPollingStation, int>,
     IRequestHandler<AddNoteCommand, int>
 {
 
     private readonly VoteMonitorContext _context;
+    private readonly IFileService _fileService;
 
-    public NoteQueriesHandler(VoteMonitorContext context)
+    public NoteQueriesHandler(VoteMonitorContext context, IFileService fileService)
     {
         _context = context;
+        _fileService = fileService;
     }
     public async Task<List<NoteModel>> Handle(NoteQuery message, CancellationToken token)
     {
@@ -32,11 +36,12 @@ public class NoteQueriesHandler :
         if (message.PollingStationId.HasValue)
             query = query.Where(x => x.IdPollingStation == message.PollingStationId);
 
-        var notes =  await query
+        var notes = await query
             .OrderBy(n => n.LastModified)
             .Include(n => n.Attachments)
-            .Select(n=> new {
-                AttachmentsPaths = n.Attachments.Select(x => x.Path).ToArray(),
+            .Select(n => new
+            {
+                Files = n.Attachments.Select(x => x.FileName).ToArray(),
                 Text = n.Text,
                 FormCode = (string?)n.Question.FormSection.Form.Code,
                 FormId = (int?)n.Question.FormSection.Form.Id,
@@ -49,7 +54,7 @@ public class NoteQueriesHandler :
 
         return notes.Select(n => new NoteModel
         {
-            AttachmentsPaths = n.AttachmentsPaths,
+            AttachmentsPaths = n.Files.Select(x => _fileService.GetPreSignedUrl(x)).ToArray(),
             Text = n.Text,
             FormCode = n.FormCode,
             FormId = n.FormId ?? -1,
@@ -71,7 +76,7 @@ public class NoteQueriesHandler :
             IdQuestion = request.QuestionId == 0 ? null : request.QuestionId,
             IdObserver = request.ObserverId,
             LastModified = DateTime.UtcNow,
-            Attachments = request.Attachments.Select(a => new NotesAttachments { Path = a.Path, FileName= a.FileName }).ToList()
+            Attachments = request.Attachments.Select(a => new NotesAttachments { Path = a.Path, FileName = a.FileName }).ToList()
         };
 
         _context.Notes.Add(noteEntity);
@@ -87,13 +92,13 @@ public class NoteQueriesHandler :
             IdPollingStation = request.IdPollingStation,
             // A note can be added to a polling station as well.
             // In that case IdQuestion is either null or 0
-            IdQuestion = request.IdQuestion == 0 ? null : request.IdQuestion, 
+            IdQuestion = request.IdQuestion == 0 ? null : request.IdQuestion,
             IdObserver = request.IdObserver,
             LastModified = DateTime.UtcNow,
             Attachments = new List<NotesAttachments>()
         };
 
-        if (request.Attachement!=null)
+        if (request.Attachement != null)
         {
             noteEntity.Attachments.Add(new NotesAttachments
             {
@@ -103,6 +108,26 @@ public class NoteQueriesHandler :
         }
 
         _context.Notes.Add(noteEntity);
+
+        return await _context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<int> Handle(AddNoteToUnknownPollingStation request, CancellationToken cancellationToken)
+    {
+        var noteEntity = new Entities.NoteCorrupted()
+        {
+            Text = request.Text,
+            CountyCode = request.CountyCode,
+            MunicipalityCode = request.MunicipalityCode,
+            // A note can be added to a polling station as well.
+            // In that case IdQuestion is either null or 0
+            IdQuestion = request.QuestionId == 0 ? null : request.QuestionId,
+            IdObserver = request.ObserverId,
+            LastModified = DateTime.UtcNow,
+            Attachments = request.Attachments.Select(a => new NotesAttachmentCorrupted() { Path = a.Path, FileName = a.FileName }).ToList()
+        };
+
+        _context.NotesCorrupted.Add(noteEntity);
 
         return await _context.SaveChangesAsync(cancellationToken);
     }

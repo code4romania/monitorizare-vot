@@ -25,7 +25,6 @@ Content-Type: application/json
   "uniqueId": "a channel name"
 }
 ###
-
 # @name adminJwtToken
 POST {{url}}/api/v2/access/authorize
 Content-Type: application/json
@@ -34,18 +33,6 @@ Content-Type: application/json
   "user": "admin@code4ro.org",
   "password": "password"
 }
-###
-
-# @name exportForms
-POST {{url}}/api/v1/export/forms
-Content-Type: application/json
-Authorization: Bearer {{adminJwtToken.response.body.$.access_token}}
-###
-
-# @name exportFilledInForms
-POST {{url}}/api/v1/export/filled-forms
-Content-Type: application/json
-Authorization: Bearer {{adminJwtToken.response.body.$.access_token}}
 ###
 
 # @name getCounties
@@ -123,14 +110,6 @@ Content-Type: application/json
 Authorization: Bearer {{observerJwtToken.response.body.$.access_token}}
 ###
 
-
-# @name exportNotes
-GET {{url}}/api/v2/api/v1/export/all/notes
-  ?idNgo=1
-  &idObserver=1
-  &pollingStationNumber=1
-
-###
 
 # @name uploadNotes
 POST {{url}}/api/v2/note
@@ -302,6 +281,27 @@ Content-Type: text/csv
 
 < ./polish_municipalities_2023.csv
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
+###
+
+###
+# @name addPollingStationsDetails
+POST {{url}}/api/v1/polling-station
+Authorization: Bearer {{observerJwtToken.response.body.$.access_token}}
+Content-Type: application/json
+
+{
+        "countyCode": "11",
+        "municipalityCode": "22",
+        "pollingStationNumber": 111,
+        "observerArrivalTime": "2023-10-13T23:35:11",
+        "numberOfVotersOnTheList": 77,
+        "numberOfCommissionMembers": 99,
+        "numberOfFemaleMembers": 44,
+        "minPresentMembers": 3,
+        "chairmanPresence": true,
+        "singlePollingStationOrCommission": false,
+        "adequatePollingStationSize": true
+    }
 ###
 
 ###

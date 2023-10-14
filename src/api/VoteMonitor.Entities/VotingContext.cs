@@ -111,7 +111,7 @@ public class VoteMonitorContext : DbContext
             entity
                 .HasOne(e => e.County)
                 .WithMany(c => c.Municipalities)
-                .HasForeignKey(x=>x.CountyId)
+                .HasForeignKey(x => x.CountyId)
                 .OnDelete(DeleteBehavior.Cascade);
         });
 
@@ -147,11 +147,46 @@ public class VoteMonitorContext : DbContext
                 .OnDelete(DeleteBehavior.Restrict);
         });
 
+        modelBuilder.Entity<NoteCorrupted>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+
+            entity.HasIndex(e => e.IdQuestion);
+
+            entity.HasIndex(e => e.IdObserver);
+
+            entity.HasIndex(e => e.CountyCode);
+            entity.HasIndex(e => e.MunicipalityCode);
+
+            entity.Property(e => e.LastModified);
+
+            entity.HasOne(d => d.Question)
+                .WithMany(p => p.NotesCorrupted)
+                .HasForeignKey(d => d.IdQuestion);
+
+            entity.HasOne(d => d.Observer)
+                .WithMany(p => p.NotesCorrupted)
+                .HasForeignKey(d => d.IdObserver)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
         modelBuilder.Entity<NotesAttachments>(entity =>
         {
             entity.HasKey(e => e.Id)
                 .HasName("PK_NoteAttachment");
 
+            entity.Property(e => e.FileName);
+            entity.Property(e => e.Path);
+
+            entity.HasOne(d => d.Note)
+                .WithMany(p => p.Attachments)
+                .HasForeignKey(d => d.NoteId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<NotesAttachmentCorrupted>(entity =>
+        {
+            entity.HasKey(e => e.Id);
             entity.Property(e => e.FileName);
             entity.Property(e => e.Path);
 
@@ -289,7 +324,7 @@ public class VoteMonitorContext : DbContext
 
             entity.Property(e => e.LastModified)
                 .HasDefaultValueSql("timezone('utc', now())");
-     
+
             entity.Property(e => e.NumberOfVotersOnTheList);
             entity.Property(e => e.NumberOfCommissionMembers);
             entity.Property(e => e.NumberOfFemaleMembers);
@@ -310,6 +345,34 @@ public class VoteMonitorContext : DbContext
             entity.HasOne(d => d.PollingStation)
                 .WithMany(p => p.PollingStationInfos)
                 .HasForeignKey(d => d.IdPollingStation)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<PollingStationInfoCorrupted>(entity =>
+        {
+            entity.HasKey(e => new { e.IdObserver, e.CountyCode, e.MunicipalityCode });
+
+            entity.HasIndex(e => e.IdObserver);
+
+            entity.Property(e => e.LastModified)
+                .HasDefaultValueSql("timezone('utc', now())");
+
+            entity.Property(e => e.CountyCode);
+            entity.Property(e => e.MunicipalityCode);
+            entity.Property(e => e.NumberOfVotersOnTheList);
+            entity.Property(e => e.NumberOfCommissionMembers);
+            entity.Property(e => e.NumberOfFemaleMembers);
+            entity.Property(e => e.MinPresentMembers);
+            entity.Property(e => e.ChairmanPresence);
+            entity.Property(e => e.SinglePollingStationOrCommission);
+            entity.Property(e => e.AdequatePollingStationSize);
+
+            entity.Property(e => e.ObserverArrivalTime);
+            entity.Property(e => e.ObserverLeaveTime);
+
+            entity.HasOne(d => d.Observer)
+                .WithMany(p => p.PollingStationInfosCorrupted)
+                .HasForeignKey(d => d.IdObserver)
                 .OnDelete(DeleteBehavior.Restrict);
         });
 
@@ -486,8 +549,8 @@ public class VoteMonitorContext : DbContext
                 .WithMany(p => p.Notifications)
                 .HasForeignKey(d => d.ObserverId)
                 .OnDelete(DeleteBehavior.Restrict);
-        });           
-            
+        });
+
         modelBuilder.Entity<Notification>(entity =>
         {
             entity.HasOne(d => d.SenderAdmin)
@@ -506,6 +569,7 @@ public class VoteMonitorContext : DbContext
     public virtual DbSet<County> Counties { get; set; }
     public virtual DbSet<Municipality> Municipalities { get; set; }
     public virtual DbSet<Note> Notes { get; set; }
+    public virtual DbSet<NoteCorrupted> NotesCorrupted { get; set; }
     public virtual DbSet<NotesAttachments> NotesAttachments { get; set; }
     public virtual DbSet<Observer> Observers { get; set; }
     public virtual DbSet<NotificationRegistrationData> NotificationRegistrationData { get; set; }
@@ -514,6 +578,7 @@ public class VoteMonitorContext : DbContext
     public virtual DbSet<Answer> Answers { get; set; }
     public virtual DbSet<OptionToQuestion> OptionsToQuestions { get; set; }
     public virtual DbSet<PollingStationInfo> PollingStationInfos { get; set; }
+    public virtual DbSet<PollingStationInfoCorrupted> PollingStationInfosCorrupted { get; set; }
     public virtual DbSet<PollingStation> PollingStations { get; set; }
     public virtual DbSet<FormSection> FormSections { get; set; }
     public virtual DbSet<Form> Forms { get; set; }

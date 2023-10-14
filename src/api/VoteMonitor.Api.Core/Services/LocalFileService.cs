@@ -52,13 +52,13 @@ public class LocalFileService : IFileService
         });
     }
 
-    public Task<string> GetPreSignedUrl(string filename)
+    public string GetPreSignedUrl(string filename)
     {
         if (_uploadedFiles.TryGetValue(filename, out var path))
         {
-            return Task.FromResult(path);
+            return path;
         }
 
-        return Task.FromResult(string.Empty);
+        return string.Empty;
     }
 }
