@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
+using VoteMonitor.Api.Core.Services;
 using VoteMonitor.Api.DataExport.FileGenerator;
 using VoteMonitor.Api.DataExport.Queries;
 using VoteMonitor.Entities;
@@ -9,10 +10,12 @@ namespace VoteMonitor.Api.DataExport.Handlers;
 
 public class GetExcelDbCommandHandler : IRequestHandler<GetExcelDbCommand, byte[]>
 {
+    private readonly IFileService _fileService;
     private readonly VoteMonitorContext _context;
 
-    public GetExcelDbCommandHandler(VoteMonitorContext context)
+    public GetExcelDbCommandHandler(IFileService fileService, VoteMonitorContext context)
     {
+        _fileService = fileService;
         _context = context;
     }
 
@@ -73,6 +76,8 @@ public class GetExcelDbCommandHandler : IRequestHandler<GetExcelDbCommand, byte[
             })
             .ToListAsync(cancellationToken: cancellationToken);
 
+        var pollingStationObservations = await GetPollingStationsObservations(cancellationToken);
+
         var aggregatedForms = await GetForms(cancellationToken);
         var filledInForms = await GetFilledInForms(cancellationToken);
         var notes = await GetNotesForExport(cancellationToken);
@@ -85,7 +90,8 @@ public class GetExcelDbCommandHandler : IRequestHandler<GetExcelDbCommand, byte[
             .WithSheet("counties", counties)
             .WithSheet("municipalities", municipalities)
             .WithSheet("polling-stations", pollingStations)
-            .WithSheet("forms", aggregatedForms);
+            .WithSheet("forms", aggregatedForms)
+            .WithSheet("polling-stations-observations", pollingStationObservations);
 
         filledInForms.ForEach(f =>
         {
@@ -95,6 +101,68 @@ public class GetExcelDbCommandHandler : IRequestHandler<GetExcelDbCommand, byte[
         excelBuilder = excelBuilder.WithSheet("notes", notes);
 
         return excelBuilder.Write();
+    }
+
+    private async Task<DataTable> GetPollingStationsObservations(CancellationToken cancellationToken)
+    {
+        var data = await _context.PollingStationInfos
+            .AsNoTracking()
+            .Include(x => x.Observer)
+            .Include(x => x.PollingStation)
+            .ThenInclude(x => x.Municipality)
+            .Select(x => new
+            {
+                ObserverId = x.Observer.Id,
+                ObserverName = x.Observer.Name,
+                ObserverPhone = x.Observer.Phone,
+                PollingStation = x.PollingStation.Municipality.Code + ":" + x.PollingStation.Number,
+                LastModified = x.LastModified,
+                ArrivalTime = x.ObserverArrivalTime,
+                NumberOfVotersOnTheList = x.NumberOfVotersOnTheList,
+                NumberOfCommissionMembers = x.NumberOfCommissionMembers,
+                NumberOfFemaleMembers = x.NumberOfFemaleMembers,
+                MinPresentMembers = x.MinPresentMembers,
+                ChairmanPresence = x.ChairmanPresence,
+                SinglePollingStationOrCommission = x.SinglePollingStationOrCommission,
+                AdequatePollingStationSize = x.AdequatePollingStationSize
+            })
+            .ToListAsync(cancellationToken);
+
+        var dataTable = new DataTable();
+
+        dataTable.Columns.Add("Observer Id", typeof(int));
+        dataTable.Columns.Add("Observer Phone", typeof(string));
+        dataTable.Columns.Add("Observer Name", typeof(string));
+        dataTable.Columns.Add("Polling Station (municipalityCode:number)", typeof(string));
+        dataTable.Columns.Add("Last Modified (UTC)", typeof(string));
+        dataTable.Columns.Add("Observer Arrival Time (UTC)", typeof(string));
+        dataTable.Columns.Add("NumberOfVotersOnTheList", typeof(string));
+        dataTable.Columns.Add("NumberOfCommissionMembers", typeof(string));
+        dataTable.Columns.Add("NumberOfFemaleMembers", typeof(string));
+        dataTable.Columns.Add("MinPresentMembers", typeof(string));
+        dataTable.Columns.Add("ChairmanPresence", typeof(bool));
+        dataTable.Columns.Add("SinglePollingStationOrCommission", typeof(bool));
+        dataTable.Columns.Add("AdequatePollingStationSize", typeof(bool));
+
+        foreach (var row in data)
+        {
+            object?[] rowValues =
+            {
+                row.ObserverId, row.ObserverPhone,
+                row.ObserverName,
+                row.PollingStation,
+                row.LastModified.ToString("s"),
+                row.ArrivalTime?.ToString("s") ?? "",
+                row.NumberOfVotersOnTheList,
+                row.NumberOfCommissionMembers,
+                row.NumberOfFemaleMembers,
+                row.MinPresentMembers,
+                row.ChairmanPresence,
+            };
+            dataTable.Rows.Add(rowValues);
+        }
+
+        return dataTable;
     }
 
     private async Task<DataTable> GetForms(CancellationToken cancellationToken)
@@ -188,7 +256,7 @@ public class GetExcelDbCommandHandler : IRequestHandler<GetExcelDbCommand, byte[
                 ObserverId = note.Observer.Id,
                 LastModified = note.LastModified,
                 note.Text,
-                Attachments = note.Attachments.Select(attachment => new { attachment.Path, attachment.FileName }).ToList()
+                Attachments = note.Attachments.Select(attachment => new { attachment.FileName }).ToList()
             })
             .OrderBy(x => x.ObserverId)
             .ThenBy(x => x.LastModified)
@@ -220,7 +288,7 @@ public class GetExcelDbCommandHandler : IRequestHandler<GetExcelDbCommand, byte[
                     note.LastModified.ToString("s"),
                     note.Text
                 }
-                .Union(note.Attachments.Select(x => x.Path))
+                .Union(note.Attachments.Select(x => _fileService.GetPreSignedUrl(x.FileName)))
                 .ToArray();
 
             dataTable.Rows.Add(rowValues);

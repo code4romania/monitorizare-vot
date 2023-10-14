@@ -47,7 +47,19 @@ public class ExcelFile
             IRow dataRow = sheet.CreateRow(rowIndex + 1);
             for (int colIndex = 0; colIndex < dataTable.Columns.Count; colIndex++)
             {
-                dataRow.CreateCell(colIndex).SetCellValue(dataTable.Rows[rowIndex][colIndex].ToString());
+                var cell = dataRow.CreateCell(colIndex);
+                var cellValue = dataTable.Rows[rowIndex][colIndex].ToString();
+                cell.SetCellValue(cellValue);
+
+                if ((cellValue?.StartsWith("https://") ?? false) || (cellValue?.StartsWith("http://") ?? false))
+                {
+                    var targetLink = new XSSFHyperlink(HyperlinkType.Url)
+                    {
+                        Address = cellValue
+                    };
+
+                    cell.Hyperlink = targetLink;
+                }
             }
         }
         #endregion

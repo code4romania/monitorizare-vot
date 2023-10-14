@@ -50,9 +50,9 @@ public class S3Service : IFileService
         return CreatePreSignedUrl(fileKey);
     }
 
-    public Task<string> GetPreSignedUrl(string filename)
+    public string GetPreSignedUrl(string filename)
     {
-        return Task.FromResult(CreatePreSignedUrl(filename).Path);
+        return CreatePreSignedUrl(filename).Path;
     }
 
     private UploadedFileModel CreatePreSignedUrl(string fileKey)

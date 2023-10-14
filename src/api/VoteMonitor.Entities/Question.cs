@@ -18,6 +18,7 @@ public class Question : IHierarchicalEntity<OptionToQuestion>, IIdentifiableEnti
     public int OrderNumber { get; set; }
 
     public ICollection<Note> Notes { get; set; } = new HashSet<Note>();
+    public ICollection<NoteCorrupted> NotesCorrupted { get; set; } = new HashSet<NoteCorrupted>();
     public ICollection<OptionToQuestion> OptionsToQuestions { get; set; } = new HashSet<OptionToQuestion>();
     public FormSection FormSection { get; set; }
 

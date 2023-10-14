@@ -48,11 +48,6 @@ public class NoteController : Controller
         // daca nota este asociata sectiei
         var pollingStationId = await _mediator.Send(new GetPollingStationId(note.CountyCode, note.MunicipalityCode, note.PollingStationNumber));
 
-        if (pollingStationId < 0)
-        {
-            return NotFound();
-        }
-
         UploadedFileModel[] attachments = { };
         if (note.Files != null && note.Files.Any())
         {
@@ -60,17 +55,30 @@ public class NoteController : Controller
             attachments = files;
         }
 
-        var command = new AddNoteCommandV2(this.GetIdObserver(), pollingStationId, note.QuestionId, note.Text, attachments);
-        var result = await _mediator.Send(command);
+        if (pollingStationId > 0)
+        {
+            var command = new AddNoteCommandV2(this.GetIdObserver(), pollingStationId, note.QuestionId, note.Text, attachments);
+            var result = await _mediator.Send(command);
+            return ProcessUpload(result, note, command.Attachments.Select(x => x.Path).ToArray());
+        }
+        else
+        {
+            var command = new AddNoteToUnknownPollingStation(this.GetIdObserver(), note.CountyCode, note.MunicipalityCode, note.QuestionId, note.Text, attachments);
+            var result = await _mediator.Send(command);
+            return ProcessUpload(result, note, command.Attachments.Select(x => x.Path).ToArray());
+        }
+    }
 
-        if (result < 0)
+    private IActionResult ProcessUpload(int saveOperationResult, UploadNoteModelV2 note, string[] fileAddress)
+    {
+        if (saveOperationResult < 0)
         {
             return NotFound();
         }
 
-        return Ok(new UploadNoteResultV2
+        var model = new UploadNoteResultV2
         {
-            FilesAddress = command.Attachments.Select(x => x.Path).ToArray(),
+            FilesAddress = fileAddress,
             Note = new UploadNoteModelV2()
             {
                 CountyCode = note.CountyCode,
@@ -79,7 +87,9 @@ public class NoteController : Controller
                 PollingStationNumber = note.PollingStationNumber,
                 QuestionId = note.QuestionId
             }
-        });
+        };
+
+        return Ok(model);
     }
 
 

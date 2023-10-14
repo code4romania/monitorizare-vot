@@ -32,7 +32,7 @@ public class RegisterPollingSectionHandler : IRequestHandler<RegisterPollingStat
 
             if (pollingStation == null)
             {
-                throw new ArgumentException($"polling station not found for {message.CountyCode} {message.MunicipalityCode} {message.PollingStationNumber}");
+                return await SaveToPollingStationInfoCorruptedData(message);
             }
 
             var pollingStationInfo = await _context.PollingStationInfos
@@ -75,7 +75,7 @@ public class RegisterPollingSectionHandler : IRequestHandler<RegisterPollingStat
                 pollingStationInfo.AdequatePollingStationSize = message.AdequatePollingStationSize;
             }
 
-            return await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync(cancellationToken);
         }
         catch (Exception ex)
         {
@@ -83,5 +83,52 @@ public class RegisterPollingSectionHandler : IRequestHandler<RegisterPollingStat
         }
 
         return -1;
+    }
+
+    private async Task<int> SaveToPollingStationInfoCorruptedData(RegisterPollingStationCommand message)
+    {
+        var pollingStationInfo = await _context.PollingStationInfosCorrupted
+               .FirstOrDefaultAsync(a =>
+                   a.IdObserver == message.IdObserver &&
+                   a.MunicipalityCode == message.MunicipalityCode &&
+                   a.CountyCode == message.CountyCode);
+
+        if (pollingStationInfo == null)
+        {
+            pollingStationInfo = new PollingStationInfoCorrupted
+            {
+                IdObserver = message.IdObserver,
+                CountyCode = message.CountyCode,
+                MunicipalityCode = message.MunicipalityCode,
+
+                LastModified = DateTime.UtcNow,
+                ObserverArrivalTime = message.ObserverArrivalTime.AsUtc(),
+                ObserverLeaveTime = message.ObserverLeaveTime.AsUtc(),
+                NumberOfVotersOnTheList = message.NumberOfVotersOnTheList,
+                NumberOfCommissionMembers = message.NumberOfCommissionMembers,
+                NumberOfFemaleMembers = message.NumberOfFemaleMembers,
+                MinPresentMembers = message.MinPresentMembers,
+                ChairmanPresence = message.ChairmanPresence,
+                SinglePollingStationOrCommission = message.SinglePollingStationOrCommission,
+                AdequatePollingStationSize = message.AdequatePollingStationSize,
+            };
+
+            _context.Add(pollingStationInfo);
+        }
+        else
+        {
+            pollingStationInfo.LastModified = DateTime.UtcNow;
+            pollingStationInfo.ObserverArrivalTime = message.ObserverArrivalTime.AsUtc();
+            pollingStationInfo.ObserverLeaveTime = message.ObserverLeaveTime.AsUtc();
+            pollingStationInfo.NumberOfVotersOnTheList = message.NumberOfVotersOnTheList;
+            pollingStationInfo.NumberOfCommissionMembers = message.NumberOfCommissionMembers;
+            pollingStationInfo.NumberOfFemaleMembers = message.NumberOfFemaleMembers;
+            pollingStationInfo.MinPresentMembers = message.MinPresentMembers;
+            pollingStationInfo.ChairmanPresence = message.ChairmanPresence;
+            pollingStationInfo.SinglePollingStationOrCommission = message.SinglePollingStationOrCommission;
+            pollingStationInfo.AdequatePollingStationSize = message.AdequatePollingStationSize;
+        }
+
+        return await _context.SaveChangesAsync();
     }
 }
