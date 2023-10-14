@@ -42,9 +42,10 @@ builder.Services.AddCors(options => options.AddPolicy(CorsPolicyName, builder =>
         .AllowAnyHeader();
 }));
 
-
 var app = builder.Build();
+app.UseDefaultExceptionHandler();
 app.UseSerilogRequestLogging();
+
 app.UseStaticFiles();
 if (builder.Environment.IsDevelopment())
 {
@@ -58,7 +59,6 @@ app.UseAuthorization();
 
 app.UseSwaggerAndUi();
 app.UseCors(CorsPolicyName);
-
 app.MapControllers();
 app.MapHealthChecks("/health", new HealthCheckOptions
 {
