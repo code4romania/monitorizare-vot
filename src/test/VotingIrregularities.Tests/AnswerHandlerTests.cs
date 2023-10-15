@@ -50,7 +50,7 @@ public class AnswerHandlerTests
             }
         };
 
-        var message = new FillInAnswerCommand(1, answersBuilder);
+        var message = new FillInAnswerCommand(1, answersBuilder, Array.Empty<CorruptedAnswerDto>());
 
         var reducedCollection = FillInAnswerQueryHandler.GetFlatListOfAnswers(message, lastModified);
 

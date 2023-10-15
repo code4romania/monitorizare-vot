@@ -100,6 +100,7 @@ public class RegisterPollingSectionHandler : IRequestHandler<RegisterPollingStat
                 IdObserver = message.IdObserver,
                 CountyCode = message.CountyCode,
                 MunicipalityCode = message.MunicipalityCode,
+                PollingStationNumber = message.PollingStationNumber,
 
                 LastModified = DateTime.UtcNow,
                 ObserverArrivalTime = message.ObserverArrivalTime.AsUtc(),

@@ -86,10 +86,6 @@ public class AnswersController : Controller
     {
         // TODO[DH] use a pipeline instead of separate Send commands
         var command = await _mediator.Send(new Commands.BulkAnswers(this.GetIdObserver(), answerModel.Answers));
-        if (!command.Answers.Any())
-        {
-            return NotFound();
-        }
 
         var result = await _mediator.Send(command);
 
