@@ -148,7 +148,7 @@ public class GetExcelDbCommandHandler : IRequestHandler<GetExcelDbCommand, byte[
         {
             object?[] rowValues =
             {
-                row.ObserverId, 
+                row.ObserverId,
                 row.ObserverPhone,
                 row.ObserverName,
                 row.PollingStation,
@@ -222,18 +222,17 @@ public class GetExcelDbCommandHandler : IRequestHandler<GetExcelDbCommand, byte[
 
         foreach (var question in questions)
         {
-            object?[] rowValues = new List<object?>
+            var rowValues = new List<object?>
                 {
                     question.FormCode,
                     question.FormSectionCode,
                     question.QuestionCode,
                     question.QuestionText,
                     GetFormattedQuestionType(question.QuestionType),
-                }
-                .Union(question.Options.Select(x => FormatOption(x.Text, x.IsFreeText, x.IsFlagged)))
-                .ToArray();
+                };
 
-            dataTable.Rows.Add(rowValues);
+            rowValues.AddRange(question.Options.Select(x => FormatOption(x.Text, x.IsFreeText, x.IsFlagged)));
+            dataTable.Rows.Add(rowValues.ToArray());
         }
 
         return dataTable;
@@ -282,19 +281,19 @@ public class GetExcelDbCommandHandler : IRequestHandler<GetExcelDbCommand, byte[
 
         foreach (var note in notes)
         {
-            object?[] rowValues = new List<object?>
-                {
-                    note.ObserverId,
-                    note.ObserverPhone,
-                    note.ObserverName,
-                    GetNoteLocation(note.PollingStation, note.Question?.FormSection?.Form?.Code, note.Question?.Code),
-                    note.LastModified.ToString("s"),
-                    note.Text
-                }
-                .Union(note.Attachments.Select(x => _fileService.GetPreSignedUrl(x.FileName)))
-                .ToArray();
+            var rowValues = new List<object?>
+            {
+                note.ObserverId,
+                note.ObserverPhone,
+                note.ObserverName,
+                GetNoteLocation(note.PollingStation, note.Question?.FormSection?.Form?.Code, note.Question?.Code),
+                note.LastModified.ToString("s"),
+                note.Text
+            };
 
-            dataTable.Rows.Add(rowValues);
+            rowValues.AddRange(note.Attachments.Select(x => _fileService.GetPreSignedUrl(x.FileName)));
+                
+            dataTable.Rows.Add(rowValues.ToArray());
         }
 
         return dataTable;
@@ -359,7 +358,10 @@ public class GetExcelDbCommandHandler : IRequestHandler<GetExcelDbCommand, byte[
                 (key, group) => new
                 {
                     FormCode = key,
-                    Answers = group.OrderBy(x => x.ObserverId).ThenBy(x => x.LastModified).ToList()
+                    Answers = group
+                        .OrderBy(x => x.ObserverId)
+                        .ThenBy(x => x.LastModified)
+                        .ToList()
                 })
             .ToDictionary(x => x.FormCode, y => y.Answers);
 
@@ -388,7 +390,7 @@ public class GetExcelDbCommandHandler : IRequestHandler<GetExcelDbCommand, byte[
 
             foreach (var row in filledInForm.Value)
             {
-                object?[] rowValues = new List<object?>
+                var rowValues = new List<object?>
                 {
                     row.ObserverId,
                     row.ObserverPhone,
@@ -396,11 +398,10 @@ public class GetExcelDbCommandHandler : IRequestHandler<GetExcelDbCommand, byte[
                     row.FormCode,
                     row.PollingStation,
                     row.LastModified
-                }
-                    .Union(row.Answers.Select(x => x.SelectedValues))
-                    .ToArray();
+                };
 
-                dataTable.Rows.Add(rowValues);
+                rowValues.AddRange(row.Answers.OrderBy(x => x.QuestionOrderNumber).Select(x => x.SelectedValues));
+                dataTable.Rows.Add(rowValues.ToArray());
             }
 
             result.Add((filledInForm.Key, dataTable));
