@@ -79,7 +79,7 @@ public class RegisterPollingSectionHandler : IRequestHandler<RegisterPollingStat
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message);
+            _logger.LogError(ex, "Error adding polling stations info {@request}", message);
         }
 
         return -1;

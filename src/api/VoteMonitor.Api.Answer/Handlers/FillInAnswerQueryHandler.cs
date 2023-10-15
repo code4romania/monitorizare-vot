@@ -39,7 +39,7 @@ public class FillInAnswerQueryHandler : IRequestHandler<FillInAnswerCommand, int
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message);
+            _logger.LogError(ex, "failed to save in db answers @{message}", message);
         }
 
         return await Task.FromResult(-1);

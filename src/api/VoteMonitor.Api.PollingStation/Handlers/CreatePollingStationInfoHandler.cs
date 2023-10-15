@@ -34,7 +34,7 @@ public class CreatePollingStationInfoHandler : IRequestHandler<CreatePollingStat
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error creating polling station info: ");
+            _logger.LogError(ex, "Error creating polling station info: {@request}", request);
             throw;
         }
     }
