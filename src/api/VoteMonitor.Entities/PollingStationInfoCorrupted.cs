@@ -24,4 +24,5 @@ public class PollingStationInfoCorrupted
     public virtual Observer Observer { get; set; }
     public string CountyCode { get; set; }
     public string MunicipalityCode { get; set; }
+    public int PollingStationNumber { get; set; }
 }

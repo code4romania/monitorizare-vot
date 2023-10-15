@@ -22,6 +22,7 @@ public class AnswerQueryHandler :
     public async Task<FillInAnswerCommand> Handle(BulkAnswers message, CancellationToken cancellationToken)
     {
         var answersBuilder = new List<AnswerDto>();
+        var corruptedAnswersBuilder = new List<CorruptedAnswerDto>();
 
         foreach (var answer in message.Answers)
         {
@@ -37,8 +38,19 @@ public class AnswerQueryHandler :
                     CountyCode = answer.CountyCode,
                 });
             }
+            else
+            {
+                corruptedAnswersBuilder.Add(new CorruptedAnswerDto()
+                {
+                    QuestionId = answer.QuestionId,
+                    Options = answer.Options,
+                    PollingStationNumber = answer.PollingStationNumber,
+                    CountyCode = answer.CountyCode,
+                    MunicipalityCode = answer.MunicipalityCode,
+                });
+            }
         }
-        var command = new FillInAnswerCommand(message.ObserverId, answersBuilder);
+        var command = new FillInAnswerCommand(message.ObserverId, answersBuilder, corruptedAnswersBuilder);
         return command;
     }
 }

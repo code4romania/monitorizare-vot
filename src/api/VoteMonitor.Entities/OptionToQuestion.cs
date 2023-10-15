@@ -13,6 +13,7 @@ public class OptionToQuestion : IIdentifiableEntity
     public bool Flagged { get; set; }
 
     public virtual ICollection<Answer> Answers { get; } = new HashSet<Answer>();
+    public virtual ICollection<AnswerCorrupted> CorruptedAnswers { get; } = new HashSet<AnswerCorrupted>();
     public virtual Question Question { get; set; }
     public virtual Option Option { get; set; }
 }

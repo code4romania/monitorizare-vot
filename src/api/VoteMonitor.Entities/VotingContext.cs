@@ -219,8 +219,7 @@ public class VoteMonitorContext : DbContext
             entity.Property(e => e.MobileDeviceId).HasMaxLength(500);
 
             entity.Property(e => e.Phone)
-                .IsRequired()
-                .HasMaxLength(20);
+                .IsRequired();
 
             entity.Property(e => e.Name)
                 .IsRequired()
@@ -288,8 +287,7 @@ public class VoteMonitorContext : DbContext
             entity.Property(e => e.LastModified)
                 .HasDefaultValueSql("timezone('utc', now())");
 
-            entity.Property(e => e.Value)
-                .HasMaxLength(1000);
+            entity.Property(e => e.Value);
 
             entity.Property(e => e.CountyCode)
                 .HasMaxLength(100);
@@ -311,6 +309,44 @@ public class VoteMonitorContext : DbContext
                 .OnDelete(DeleteBehavior.Restrict);
         });
 
+        modelBuilder.Entity<AnswerCorrupted>(entity =>
+        {
+            entity.HasKey(e => new
+            {
+                IdObservator = e.IdObserver,
+                IdRaspunsDisponibil = e.IdOptionToQuestion,
+                e.CountyCode,
+                e.MunicipalityCode,
+                e.PollingStationNumber,
+            });
+
+            entity.HasIndex(e => e.IdObserver);
+
+            entity.HasIndex(e => e.IdOptionToQuestion);
+
+            entity.HasIndex(e => new { e.IdObserver, e.CountyCode, e.MunicipalityCode, e.PollingStationNumber, e.LastModified });
+
+            entity.Property(e => e.LastModified)
+                .HasDefaultValueSql("timezone('utc', now())");
+
+            entity.Property(e => e.Value);
+
+            entity.Property(e => e.MunicipalityCode)
+                .HasMaxLength(100);
+
+            entity.Property(e => e.CountyCode)
+                .HasMaxLength(100);
+
+            entity.HasOne(d => d.Observer)
+                .WithMany(p => p.CorruptedAnswers)
+                .HasForeignKey(d => d.IdObserver)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(d => d.OptionAnswered)
+                .WithMany(p => p.CorruptedAnswers)
+                .HasForeignKey(d => d.IdOptionToQuestion)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
 
         modelBuilder.Entity<PollingStationInfo>(entity =>
         {
@@ -360,6 +396,7 @@ public class VoteMonitorContext : DbContext
 
             entity.Property(e => e.CountyCode);
             entity.Property(e => e.MunicipalityCode);
+            entity.Property(e => e.PollingStationNumber);
             entity.Property(e => e.NumberOfVotersOnTheList);
             entity.Property(e => e.NumberOfCommissionMembers);
             entity.Property(e => e.NumberOfFemaleMembers);
@@ -577,6 +614,7 @@ public class VoteMonitorContext : DbContext
     public virtual DbSet<Ngo> Ngos { get; set; }
     public virtual DbSet<Option> Options { get; set; }
     public virtual DbSet<Answer> Answers { get; set; }
+    public virtual DbSet<AnswerCorrupted> CorruptedAnswers { get; set; }
     public virtual DbSet<OptionToQuestion> OptionsToQuestions { get; set; }
     public virtual DbSet<PollingStationInfo> PollingStationInfos { get; set; }
     public virtual DbSet<PollingStationInfoCorrupted> PollingStationInfosCorrupted { get; set; }

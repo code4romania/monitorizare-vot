@@ -50,9 +50,7 @@ public class AnswerHandlerTests
             }
         };
 
-        var message = new FillInAnswerCommand(1, answersBuilder);
-
-        var reducedCollection = FillInAnswerQueryHandler.GetFlatListOfAnswers(message, lastModified);
+        var reducedCollection = FillInAnswerQueryHandler.GetFlatListOfAnswers(1, answersBuilder, lastModified);
 
         Assert.Equal(4, reducedCollection.Count);
         Assert.Equal(3, reducedCollection.Count(c=>c.IdOptionToQuestion > 20));
