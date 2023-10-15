@@ -31,13 +31,6 @@ public static class ExceptionHandlerExtensions
                     var http = exHandlerFeature.Endpoint?.DisplayName?.Split(" => ")[0];
                     var type = exHandlerFeature.Error.GetType().Name;
                     var error = exHandlerFeature.Error.Message;
-                    var msg =
-$@"================================= 
-{http} 
-TYPE: {type} 
-REASON: {error} 
---------------------------------- 
-{exHandlerFeature.Error.StackTrace}";
 
                     Log.Error("{@http}{@type}{@reason}{@exception}", http, type, error, exHandlerFeature.Error);
 

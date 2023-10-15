@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using VoteMonitor.Api.Core.Services;
 using VoteMonitor.Api.Note.Commands;
 using VoteMonitor.Api.Note.Models;
@@ -17,11 +18,13 @@ public class NoteQueriesHandler :
 
     private readonly VoteMonitorContext _context;
     private readonly IFileService _fileService;
+    private readonly ILogger<NoteQueriesHandler> _logger;
 
-    public NoteQueriesHandler(VoteMonitorContext context, IFileService fileService)
+    public NoteQueriesHandler(VoteMonitorContext context, IFileService fileService, ILogger<NoteQueriesHandler> logger)
     {
         _context = context;
         _fileService = fileService;
+        _logger = logger;
     }
     public async Task<List<NoteModel>> Handle(NoteQuery message, CancellationToken token)
     {
@@ -67,21 +70,29 @@ public class NoteQueriesHandler :
 
     public async Task<int> Handle(AddNoteCommandV2 request, CancellationToken cancellationToken)
     {
-        var noteEntity = new Entities.Note
+        try
         {
-            Text = request.Text,
-            IdPollingStation = request.PollingStationId,
-            // A note can be added to a polling station as well.
-            // In that case IdQuestion is either null or 0
-            IdQuestion = request.QuestionId == 0 ? null : request.QuestionId,
-            IdObserver = request.ObserverId,
-            LastModified = DateTime.UtcNow,
-            Attachments = request.Attachments.Select(a => new NotesAttachments { Path = a.Path, FileName = a.FileName }).ToList()
-        };
+            var noteEntity = new Entities.Note
+            {
+                Text = request.Text,
+                IdPollingStation = request.PollingStationId,
+                // A note can be added to a polling station as well.
+                // In that case IdQuestion is either null or 0
+                IdQuestion = request.QuestionId == 0 ? null : request.QuestionId,
+                IdObserver = request.ObserverId,
+                LastModified = DateTime.UtcNow,
+                Attachments = request.Attachments.Select(a => new NotesAttachments { Path = a.Path, FileName = a.FileName }).ToList()
+            };
 
-        _context.Notes.Add(noteEntity);
+            _context.Notes.Add(noteEntity);
 
-        return await _context.SaveChangesAsync(cancellationToken);
+            return await _context.SaveChangesAsync(cancellationToken);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error when adding note {@request}", request);
+            throw;
+        }
     }
 
     public async Task<int> Handle(AddNoteCommand request, CancellationToken cancellationToken)
@@ -114,22 +125,30 @@ public class NoteQueriesHandler :
 
     public async Task<int> Handle(AddNoteToUnknownPollingStation request, CancellationToken cancellationToken)
     {
-        var noteEntity = new Entities.NoteCorrupted()
+        try
         {
-            Text = request.Text,
-            CountyCode = request.CountyCode,
-            MunicipalityCode = request.MunicipalityCode,
-            PollingStationNumber = request.PollingStationNumber,
-            // A note can be added to a polling station as well.
-            // In that case IdQuestion is either null or 0
-            IdQuestion = request.QuestionId == 0 ? null : request.QuestionId,
-            IdObserver = request.ObserverId,
-            LastModified = DateTime.UtcNow,
-            Attachments = request.Attachments.Select(a => new NotesAttachmentCorrupted() { Path = a.Path, FileName = a.FileName }).ToList()
-        };
+            var noteEntity = new NoteCorrupted()
+            {
+                Text = request.Text,
+                CountyCode = request.CountyCode,
+                MunicipalityCode = request.MunicipalityCode,
+                PollingStationNumber = request.PollingStationNumber,
+                // A note can be added to a polling station as well.
+                // In that case IdQuestion is either null or 0
+                IdQuestion = request.QuestionId == 0 ? null : request.QuestionId,
+                IdObserver = request.ObserverId,
+                LastModified = DateTime.UtcNow,
+                Attachments = request.Attachments.Select(a => new NotesAttachmentCorrupted() { Path = a.Path, FileName = a.FileName }).ToList()
+            };
 
-        _context.NotesCorrupted.Add(noteEntity);
+            _context.NotesCorrupted.Add(noteEntity);
 
-        return await _context.SaveChangesAsync(cancellationToken);
+            return await _context.SaveChangesAsync(cancellationToken);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error when adding corrupted note {@request}", request);
+            throw;
+        }
     }
 }

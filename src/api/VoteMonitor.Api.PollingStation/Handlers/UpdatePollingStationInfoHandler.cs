@@ -37,7 +37,7 @@ public class UpdatePollingStationInfoHandler : IRequestHandler<UpdatePollingStat
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error updating polling station info: ");
+            _logger.LogError(ex, "Error updating polling station info {@request}", request);
             throw;
         }
     }
