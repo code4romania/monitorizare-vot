@@ -377,7 +377,7 @@ public class GetExcelDbCommandHandler : IRequestHandler<GetExcelDbCommand, byte[
                  .DistinctBy(x => x.QuestionCode)
                  .OrderBy(x => x.QuestionOrderNumber)
                  .Select(x => x.QuestionCode)
-                 .Select(x => new DataColumn(x, typeof(string)))
+               
                  .ToArray();
 
             dataTable.Columns.Add("Observer Id", typeof(int));
@@ -386,7 +386,8 @@ public class GetExcelDbCommandHandler : IRequestHandler<GetExcelDbCommand, byte[
             dataTable.Columns.Add("FormCode", typeof(string));
             dataTable.Columns.Add("Polling Station (municipalityCode:number)", typeof(string));
             dataTable.Columns.Add("Last Modified (UTC)", typeof(string));
-            dataTable.Columns.AddRange(questionCodes);
+
+            dataTable.Columns.AddRange(questionCodes.Select(x => new DataColumn(x, typeof(string))).ToArray());
 
             foreach (var row in filledInForm.Value)
             {
@@ -400,7 +401,15 @@ public class GetExcelDbCommandHandler : IRequestHandler<GetExcelDbCommand, byte[
                     row.LastModified
                 };
 
-                rowValues.AddRange(row.Answers.OrderBy(x => x.QuestionOrderNumber).Select(x => x.SelectedValues));
+                var userAnswers = row.Answers
+                    .ToDictionary(x => x.QuestionCode, y => y.SelectedValues);
+
+                foreach (var questionCode in questionCodes)
+                {
+                    var hasFilledInAnswer = userAnswers.TryGetValue(questionCode, out var selectedValues);
+                    rowValues.Add(hasFilledInAnswer ? selectedValues : string.Empty);
+                }
+
                 dataTable.Rows.Add(rowValues.ToArray());
             }
 
