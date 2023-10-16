@@ -27,8 +27,8 @@ locals {
 
   db = {
     name           = "votemonitor"
-    instance_class = "db.t4g.medium"
-    # instance_class = "db.t4g.micro"
+    instance_class = "db.t4g.micro"
+    # instance_class = "db.t4g.medium"
   }
 
   networking = {
