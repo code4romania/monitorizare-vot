@@ -2,17 +2,14 @@
    "name": "forms-parser",
    "version": "1.0.0",
    "description": "",
-   "main": "bin/index.js",
+   "main": "form-parser.js",
    "type": "module",
    "scripts": {
-      "test": "echo \"Error: no test specified\" && exit 1"
+      "form-parser": " node form-parser.js -f forms-2023-10-11.xlsx -s 1 -o output"
    },
    "keywords": [],
    "author": "Ion Dormenco",
    "license": "MIT",
-   "bin": {
-      "hello": "./bin/index.js"
-   },
    "dependencies": {
       "lodash-es": "^4.17.21",
       "nanoid": "^4.0.2",
