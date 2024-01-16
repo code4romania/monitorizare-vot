@@ -12,7 +12,7 @@
 		<PackageReference Include="Dapper" Version="2.0.151" />
 		<PackageReference Include="DotNetCore.NPOI" Version="1.2.3" />
 		<PackageReference Include="MediatR" Version="12.1.1" />
-		<PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
+		<PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\VoteMonitor.Api.Core\VoteMonitor.Api.Core.csproj" />
